@@ -10,7 +10,7 @@ import { componentMetadata } from "@site/lib/seo"
 
 const ITEM = "split-button"
 
-export const metadata = componentMetadata("Split button", "A React split button: the usual action and its alternatives in one frame. One press runs the action; the caret opens a menu docked to the whole frame. On Base UI.", "split-button")
+export const metadata = componentMetadata("Split button", "A React split button on Base UI: the usual action and its alternatives in one frame. One press runs the action; the caret opens a menu docked to the frame.", "split-button")
 
 const IMPORT = `import { MenuItem } from "@/components/keyline/ui/menu"
 import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/components/keyline/ui/split-button"`

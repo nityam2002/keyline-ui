@@ -10,7 +10,7 @@ import { componentMetadata } from "@site/lib/seo"
 
 const ITEM = "toggle"
 
-export const metadata = componentMetadata("Toggle", "A React toggle button that stays pressed: the cell fills yellow and lights its lamp, so the state has a shape as well as a colour. The label never changes. On Base UI.", "toggle")
+export const metadata = componentMetadata("Toggle", "A React toggle button on Base UI that stays pressed: the cell fills yellow and lights its lamp, so the state has a shape as well as a colour.", "toggle")
 
 const IMPORT = `import { Toggle } from "@/components/keyline/ui/toggle"`
 

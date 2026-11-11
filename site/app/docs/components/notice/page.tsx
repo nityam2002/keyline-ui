@@ -10,7 +10,7 @@ import { NoticeStock } from "@site/components/overlay-previews"
 
 const ITEM = "notice"
 
-export const metadata = componentMetadata("Notice", "A React inline notice (alert banner) about the place it sits in: the tone as a shape and a colour, and its actions as cells. For events that just happened, use Toast.", "notice")
+export const metadata = componentMetadata("Notice", "A React inline notice (alert banner) about the place it sits in: tone as a shape and a colour, actions as cells. For events that just happened, use Toast.", "notice")
 
 const IMPORT = `import { Notice } from "@/components/keyline/ui/notice"`
 

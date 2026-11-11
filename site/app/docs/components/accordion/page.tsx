@@ -10,7 +10,7 @@ import { AccordionPolicies } from "@site/components/layout-previews"
 
 const ITEM = "accordion"
 
-export const metadata = componentMetadata("Accordion", "A React accordion: stacked sections in one frame, with real heading triggers, Tab between headers, and find-in-page that opens the panel holding the match. On Base UI.", "accordion")
+export const metadata = componentMetadata("Accordion", "A React accordion on Base UI: stacked sections in one frame, real heading triggers, Tab between headers, and find-in-page that opens the matching panel.", "accordion")
 
 const IMPORT = `import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from "@/components/keyline/ui/accordion"`
 

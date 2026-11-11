@@ -10,7 +10,7 @@ import { HoverCardClient } from "@site/components/overlay-previews"
 
 const ITEM = "hover-card"
 
-export const metadata = componentMetadata("Hover card", "A React hover card that previews what a link points to, on hover or keyboard focus, and stays while the pointer crosses to it. The link still navigates. On Base UI.", "hover-card")
+export const metadata = componentMetadata("Hover card", "A React hover card on Base UI that previews a link's target on hover or keyboard focus, and stays while the pointer crosses to it. The link still navigates.", "hover-card")
 
 const IMPORT = `import { HoverCard, HoverCardBody, HoverCardContent, HoverCardFacts, HoverCardHeader, HoverCardTrigger } from "@/components/keyline/ui/hover-card"`
 

@@ -10,7 +10,7 @@ import { InspectorOrder } from "@site/components/layout-previews"
 
 const ITEM = "inspector"
 
-export const metadata = componentMetadata("Inspector", "A React inspector panel beside a list that shows the chosen record under the row's own code. The body scrolls, the actions stay at the foot, and the list stays usable.", "inspector")
+export const metadata = componentMetadata("Inspector", "A React inspector panel beside a list that shows the chosen record under the row's own code. The body scrolls, actions stay at the foot, the list stays usable.", "inspector")
 
 const IMPORT = `import { Inspector, InspectorActions, InspectorBody, InspectorFacts, InspectorHeader, InspectorRow, InspectorSection } from "@/components/keyline/ui/inspector"`
 

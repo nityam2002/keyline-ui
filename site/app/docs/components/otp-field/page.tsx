@@ -10,7 +10,7 @@ import { OtpSignIn } from "@site/components/input-previews"
 
 const ITEM = "otp-field"
 
-export const metadata = componentMetadata("OTP field", "A React one-time code (OTP) input: one frame with a cell per character, plus checking, verified and failed states. A wrong code returns the caret to the start. On Base UI.", "otp-field")
+export const metadata = componentMetadata("OTP field", "A React one-time code (OTP) input on Base UI: one frame with a cell per character, plus checking, verified and failed states. A wrong code resets the caret.", "otp-field")
 
 const IMPORT = `import { OtpField } from "@/components/keyline/ui/otp-field"`
 

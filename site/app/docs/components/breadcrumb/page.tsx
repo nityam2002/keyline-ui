@@ -10,7 +10,7 @@ import { BreadcrumbDrive } from "@site/components/nav-previews"
 
 const ITEM = "breadcrumb"
 
-export const metadata = componentMetadata("Breadcrumb", "A React breadcrumb as cells in one frame. Past four levels, or in a narrow container, the earlier levels fold into a menu; the parent and current page always show.", "breadcrumb")
+export const metadata = componentMetadata("Breadcrumb", "A React breadcrumb as cells in one frame. Past four levels, or when narrow, earlier levels fold into a menu; the parent and current page always show.", "breadcrumb")
 
 const IMPORT = `import { Breadcrumb } from "@/components/keyline/ui/breadcrumb"`
 

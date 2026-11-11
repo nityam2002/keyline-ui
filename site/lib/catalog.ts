@@ -119,17 +119,17 @@ export const CATALOG: Group[] = [
  *  `description` is the page's meta description and its line in /llms.txt (pageDescription). */
 export type Guide = { name: string; href: string; keywords: string; description: string }
 export const GUIDES: Guide[] = [
-  { name: "Installation", href: "/docs/installation", keywords: "install setup get started shadcn registry namespace components.json troubleshooting error", description: "Install Keyline components into a React app with the shadcn CLI: map the @keyline-ui registry once, then add components by name. Requirements, updates and troubleshooting." },
-  { name: "Theming", href: "/docs/theming", keywords: "theme tokens colour color palette brand roles tailwind utilities fonts atkinson plex system shadcn keyline-shadcn", description: "Theme Keyline with ten source tokens: brand colours, the colours derived from them, colour roles as Tailwind utilities, fonts, and the opt-in theme for shadcn components." },
-  { name: "Modes", href: "/docs/modes", keywords: "dark mode light density compact comfortable cut rtl direction reduced motion", description: "Dark mode, density, the cut (Keyline's corner shape), right-to-left and reduced motion. Each is a class or attribute, so it applies to the whole app or one region." },
-  { name: "Configuration", href: "/docs/configuration", keywords: "configuration config scope KeylineConfigScope playground export css portals overlays tenant", description: "Configure Keyline for a whole React app or one region with KeylineConfigScope, generate the matching CSS, and keep portalled overlays in their region's configuration." },
+  { name: "Installation", href: "/docs/installation", keywords: "install setup get started shadcn registry namespace components.json troubleshooting error", description: "Install Keyline into a React app with the shadcn CLI: map the @keyline-ui registry once, then add components by name. Requirements, updates, troubleshooting." },
+  { name: "Theming", href: "/docs/theming", keywords: "theme tokens colour color palette brand roles tailwind utilities fonts atkinson plex system shadcn keyline-shadcn", description: "Theme Keyline with ten source tokens: brand colours, derived colours, colour roles as Tailwind utilities, fonts, and an opt-in theme for shadcn components." },
+  { name: "Modes", href: "/docs/modes", keywords: "dark mode light density compact comfortable cut rtl direction reduced motion", description: "Dark mode, density, the cut (Keyline's corner shape), right-to-left and reduced motion. Each is a class or attribute, for the whole app or one region." },
+  { name: "Configuration", href: "/docs/configuration", keywords: "configuration config scope KeylineConfigScope playground export css portals overlays tenant", description: "Configure Keyline for a whole React app or one region with KeylineConfigScope, generate the matching CSS, and keep portalled overlays in their region." },
   { name: "Composition", href: "/docs/composition", keywords: "composition layout cell control frame seam edges sizing overlays z-index public classes limitations helpers", description: "How Keyline components fit together: controls and cells, one owner per edge, sizing, overlay stacking, the public API, shared helpers and known limitations." },
 ]
 
 /** Registry blocks: whole screens composed from the components. Each names the item it installs, like the catalogue. */
 export const BLOCKS: Group = {
   group: "Blocks",
-  items: [{ name: "Shipments", item: "shipments-demo", href: "/docs/blocks/shipments", description: "A complete React records screen built from Keyline: app shell, filterable and sortable table, selection with bulk actions and undo, an inspector, command menu and toasts." }],
+  items: [{ name: "Shipments", item: "shipments-demo", href: "/docs/blocks/shipments", description: "A complete React records screen built from Keyline: app shell, filterable, sortable table, bulk actions with undo, an inspector, command menu and toasts." }],
 }
 
 /** The docs index: the guides, then the catalogue, then the blocks built from it. */

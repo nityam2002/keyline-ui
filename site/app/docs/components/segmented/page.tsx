@@ -10,7 +10,7 @@ import { SegmentedPeriod, SegmentedPanel } from "@site/components/input-previews
 
 const ITEM = "segmented"
 
-export const metadata = componentMetadata("Segmented", "A React segmented control: one choice of a few on one line, with an ink band that stretches to the chosen cell. Scrolls inside its frame when out of room. On Base UI.", "segmented")
+export const metadata = componentMetadata("Segmented", "A React segmented control on Base UI: one choice of a few on one line, with an ink band that stretches to the chosen cell. Scrolls when out of room.", "segmented")
 
 const IMPORT = `import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented"`
 

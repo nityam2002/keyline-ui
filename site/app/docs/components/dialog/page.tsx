@@ -10,7 +10,7 @@ import { DialogNewClient } from "@site/components/overlay-previews"
 
 const ITEM = "dialog"
 
-export const metadata = componentMetadata("Dialog", "A React modal dialog: one frame over a dimmed page, a body that scrolls when long, actions as cells on the bottom edge, and focus that returns to the trigger. On Base UI.", "dialog")
+export const metadata = componentMetadata("Dialog", "A React modal dialog on Base UI: one frame over a dimmed page, a body that scrolls when long, actions on the bottom edge, and focus that returns to the trigger.", "dialog")
 
 const IMPORT = `import { Dialog, DialogBody, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/keyline/ui/dialog"`
 

@@ -10,7 +10,7 @@ import { FieldOrder, FieldTracking, FieldCarton } from "@site/components/input-p
 
 const ITEM = "field"
 
-export const metadata = componentMetadata("Field and form", "React form fields: label, frame, description and error for any input, and a form that lines them up and validates. A failed check opens a ! cell and says what to do.", "field")
+export const metadata = componentMetadata("Field and form", "React form fields: label, frame, description and error for any input, and a form that lines them up and validates. A failed check says what to do.", "field")
 
 const IMPORT = `import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldInput, FieldError } from "@/components/keyline/ui/field"`
 

@@ -10,7 +10,7 @@ import { componentMetadata } from "@site/lib/seo"
 
 const ITEM = "button"
 
-export const metadata = componentMetadata("Button", "A React button that shows pending, done and failed inside its own frame, so nothing around it moves. Primary, secondary, destructive and quiet variants, on Base UI.", "button")
+export const metadata = componentMetadata("Button", "A React button on Base UI that shows pending, done and failed inside its own frame, so nothing moves. Primary, secondary, destructive and quiet variants.", "button")
 
 const IMPORT = `import { Button } from "@/components/keyline/ui/button"`
 

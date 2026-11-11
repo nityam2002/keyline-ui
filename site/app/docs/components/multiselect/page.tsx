@@ -10,7 +10,7 @@ import { MultiselectMemo } from "@site/components/input-previews"
 
 const ITEM = "multiselect"
 
-export const metadata = componentMetadata("Multiselect", "A React multiselect: search and pick several values, each a token in the field with its own remove cell. Chosen options stay listed while new matches load. On Base UI.", "multiselect")
+export const metadata = componentMetadata("Multiselect", "A React multiselect on Base UI: search and pick several values, each a token with its own remove cell. Chosen options stay listed while new matches load.", "multiselect")
 
 const IMPORT = `import { Multiselect } from "@/components/keyline/ui/multiselect"`
 

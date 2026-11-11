@@ -31,6 +31,8 @@ export const INDEXABLE = (process.env.KEYLINE_SITE_ENV ?? process.env.VERCEL_ENV
  * `title` goes through the root template ("%s · Keyline UI"); `absolute` skips it (the homepage).
  */
 export function pageMetadata({ title, description, path, absolute = false }: { title: string; description: string; path: string; absolute?: boolean }): Metadata {
+  // Google cuts snippets at about 160 characters; fail the build rather than ship a truncated description
+  if (description.length > 160) throw new Error(`${path}: meta description is ${description.length} characters (max 160)`)
   const full = absolute ? title : `${title} · ${SITE_NAME}`
   return {
     title: absolute ? { absolute: title } : title,
@@ -49,7 +51,7 @@ export function componentMetadata(name: string, description: string, slug: strin
 
 /** What Keyline is, in one sentence: the root description and the WebSite structured data. */
 export const SITE_DESCRIPTION =
-  "React and TypeScript components for dense, work-heavy interfaces: toolbars, data tables, menus, inspectors and app shells. Built on Base UI and installed as source with the shadcn CLI."
+  "React and TypeScript components for dense interfaces: toolbars, data tables, menus, inspectors and app shells. Built on Base UI, installed with the shadcn CLI."
 
 /** WebSite structured data for the homepage: the site's name and address, which Google uses for the site name in
  *  results. Nothing else is claimed here that the page doesn't show. */

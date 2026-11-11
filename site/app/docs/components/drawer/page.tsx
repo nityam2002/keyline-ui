@@ -10,7 +10,7 @@ import { DrawerDelivery } from "@site/components/overlay-previews"
 
 const ITEM = "drawer"
 
-export const metadata = componentMetadata("Drawer", "A React drawer made for touch: a panel that slides from an edge, follows your finger, and leaves on a flick or past halfway. Escape and Close always work. On Base UI.", "drawer")
+export const metadata = componentMetadata("Drawer", "A React drawer for touch, on Base UI: a panel that slides from an edge, follows your finger, and leaves on a flick or past halfway. Escape always works.", "drawer")
 
 const IMPORT = `import { Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/keyline/ui/drawer"`
 

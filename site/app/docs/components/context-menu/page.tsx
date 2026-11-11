@@ -10,7 +10,7 @@ import { componentMetadata } from "@site/lib/seo"
 
 const ITEM = "context-menu"
 
-export const metadata = componentMetadata("Context menu", "A React context menu opened on an object by right-click, long-press or Shift+F10, with an ink keyline marking the object it acts on while it is open. On Base UI.", "context-menu")
+export const metadata = componentMetadata("Context menu", "A React context menu on Base UI, opened by right-click, long-press or Shift+F10, with an ink keyline marking the object it acts on while it is open.", "context-menu")
 
 const IMPORT = `import {
   ContextMenu,

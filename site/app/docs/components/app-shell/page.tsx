@@ -11,7 +11,7 @@ import { AppShellOffice } from "@site/components/layout-previews"
 
 const ITEM = "app-shell"
 
-export const metadata = componentMetadata("App shell", "A React app shell: header, sidebar, page and aside laid out by the shell's own width, so it works in a pane too. Narrower, the aside and then the sidebar open as sheets.", "app-shell")
+export const metadata = componentMetadata("App shell", "A React app shell: header, sidebar, page and aside laid out by the shell's own width, so it works in a pane too. When narrow, aside and sidebar become sheets.", "app-shell")
 
 const IMPORT = `import { AppShell } from "@/components/keyline/ui/app-shell"`
 

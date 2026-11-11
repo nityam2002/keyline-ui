@@ -11,7 +11,7 @@ import { NavSidebar } from "@site/components/nav-previews"
 
 const ITEM = "nav"
 
-export const metadata = componentMetadata("Nav", "React app navigation for a sidebar or a row: links or buttons, nested lists, and a band that stretches to the current section. Folds to icons in AppShell's rail.", "nav")
+export const metadata = componentMetadata("Nav", "React app navigation for a sidebar or a row: links or buttons, nested lists, and a band that stretches to the current section. Folds to icons in a rail.", "nav")
 
 const IMPORT = `import { Nav, type NavGroup } from "@/components/keyline/ui/nav"`
 

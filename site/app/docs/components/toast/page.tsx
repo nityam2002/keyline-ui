@@ -10,7 +10,7 @@ import { ToastUndo, ToastPromise } from "@site/components/overlay-previews"
 
 const ITEM = "toast"
 
-export const metadata = componentMetadata("Toast", "React toast notifications: a short record of what just happened with at most one action, such as Undo. Hover or focus fans the stack and pauses every timer. On Base UI.", "toast")
+export const metadata = componentMetadata("Toast", "React toast notifications on Base UI: a short record of what just happened, with at most one action such as Undo. Hover or focus fans the stack and pauses it.", "toast")
 
 const IMPORT = `import { ToastFloating, ToastProvider, useToaster } from "@/components/keyline/ui/toast"`
 

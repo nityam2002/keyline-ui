@@ -10,7 +10,7 @@ import { ChartSales, ChartTarget, ChartReturns } from "@site/components/data-pre
 
 const ITEM = "chart"
 
-export const metadata = componentMetadata("Chart", "React charts on Recharts in Keyline's construction: hairline grid, square marks, series colours by role, and a Table view of the same rows so no reading depends on colour.", "chart")
+export const metadata = componentMetadata("Chart", "React charts on Recharts: hairline grid, square marks, series colours by role, and a Table view of the same rows so no reading depends on colour.", "chart")
 
 const IMPORT = `import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartFigure, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/keyline/ui/chart"`
