@@ -461,6 +461,39 @@ for (const width of run("docs") ? [1440, 390] : []) {
     ok(await toc.getByText("On this page").isVisible() && (await toc.locator("li").filter({ hasText: /^On this page$/ }).count()) === 0, `${tag}: "On this page" is the index's title, not a group`)
     await p.evaluate(() => scrollTo(0, 0))
     await p.waitForTimeout(300)
+    // the index's band never freezes mid-stretch. The next page's render is one long task (its JS, style and
+    // layout). A band that set off on the press was always mid-flight when that task landed, so it stood still
+    // several rows tall (and the row it left showed white text on paper) for as long as the render took: 130-200ms
+    // on a 6x slower CPU. It follows the URL now, so the render comes first and the travel runs after it.
+    {
+      const q = await page(width)
+      await q.goto(`${BASE}/docs/components/button-group`, { waitUntil: "networkidle" })
+      await q.waitForTimeout(500)
+      const cdp = await q.context().newCDPSession(q)
+      await cdp.send("Emulation.setCPUThrottlingRate", { rate: 6 })
+      await q.evaluate(() => {
+        const band = document.querySelector('nav[aria-label="Components"] [data-kl-band]')
+        const row = document.querySelector('nav[aria-label="Components"] [aria-current="page"]').getBoundingClientRect().height
+        const f = (window.__band = { row, frames: [] })
+        const t0 = performance.now()
+        const tick = () => {
+          const r = band.getBoundingClientRect()
+          f.frames.push([performance.now(), r.height])
+          if (performance.now() - t0 < 4000) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      })
+      await q.getByRole("navigation", { name: "Components" }).getByRole("link", { name: "Theming", exact: true }).click()
+      await q.waitForURL("**/docs/theming")
+      await q.waitForTimeout(1500)
+      const { row, frames } = await q.evaluate(() => window.__band)
+      // a stretched frame (over 1.5 rows tall) left on screen for more than 50ms: the band standing still mid-stretch
+      let stuck = 0
+      for (let i = 0; i + 1 < frames.length; i++) if (frames[i][1] > row * 1.5) stuck = Math.max(stuck, frames[i + 1][0] - frames[i][0])
+      const moved = frames.some(([, h]) => h > row * 1.5)
+      ok(moved && stuck <= 50, `${tag}: the index band never stands still mid-stretch while the next page renders (longest stretched frame ${Math.round(stuck)}ms, 6x CPU)`)
+      await q.context().close()
+    }
   } else {
     const trig = p.getByRole("button", { name: "Show component index" })
     await trig.focus()
