@@ -73,7 +73,7 @@
         "border-block-start": "0",
         "margin-block-start": "0"
       },
-      ".kl-tb > :not(.kl-more-fade) + :not(.kl-more-fade), .kl-tb-group > :not([data-kl-band]) + *": {
+      ".kl-tb > :not(.kl-more-fade) + :not(.kl-more-fade), .kl-tb-group > :not(.kl-tb-band) + *": {
         "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
       },
       ".kl-tb > * + .kl-tb-group, .kl-tb > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep)": {
@@ -188,9 +188,6 @@
       },
       ".kl-tb-toggle[data-pressed] .kl-lamp": {
         "border-width": "5px"
-      },
-      ".kl-tb-choice": {
-        "transition": "color 0s linear var(--kl-t-flip)"
       },
       ".kl-tb-choice[data-kl-covered]": {
         "color": "var(--kl-on-inverse)"
@@ -335,7 +332,7 @@
       ".kl-tb[data-orientation=\"vertical\"] > .kl-tb-group": {
         "flex-direction": "column"
       },
-      ".kl-tb[data-orientation=\"vertical\"] > :not(.kl-more-fade) + :not(.kl-more-fade), .kl-tb[data-orientation=\"vertical\"] .kl-tb-group > :not([data-kl-band]) + *": {
+      ".kl-tb[data-orientation=\"vertical\"] > :not(.kl-more-fade) + :not(.kl-more-fade), .kl-tb[data-orientation=\"vertical\"] .kl-tb-group > :not(.kl-tb-band) + *": {
         "border-inline-start": "0",
         "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
       },

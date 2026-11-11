@@ -1,6 +1,6 @@
 // Sidebar on the specimen: nested links (the band handed between parent and list frame by frame), row actions,
 // the icon rail, the narrow start sheet, RTL, forced colours.
-import { test, idle, stable } from "./fixtures.mjs"
+import { test, idle, stable, landed } from "./fixtures.mjs"
 import { at, focused } from "./lib/section.mjs"
 import { until } from "./lib/probe.mjs"
 // the specimen entries these tests use (fixtures.mjs: only)
@@ -8,10 +8,10 @@ test.use({ only: ["sidebar"] })
 
 const VP = { width: 1440, height: 900 }
 const shell = async (p) => (await at(p, "sidebar")).locator('[data-slot="app-shell"]')
-// the band and the folds have come to rest (the band is JS-driven, the folds are CSS transitions)
+// the band has landed and the folds have come to rest (both are animations on the document timeline)
 const rest = async (p) => {
   await idle(p)
-  await stable(p.locator("#sidebar .kl-nav-list > .kl-nav-band").first())
+  await landed(p.locator("#sidebar .kl-nav-list > .kl-nav-band").first())
 }
 
 test("sidebar: nested list and the band", async ({ open, ok }) => {
@@ -30,18 +30,19 @@ test("sidebar: nested list and the band", async ({ open, ok }) => {
   const hov = await reports.evaluate((el) => getComputedStyle(el).backgroundColor)
   ok("sidebar: hovering the parent the band rests on keeps the band showing (no tint over it)", hov === "rgba(0, 0, 0, 0)" || hov === "transparent", hov)
   // Frame by frame, the band and the covered colours stay on the selection while a list folds and
-  // unfolds; nothing else is ever under the band or covered (rows inside a fold count only their visible part)
+  // unfolds; nothing else is ever under the band or covered (rows inside a fold count only their visible part; the
+// band is measured as drawn, and the rows are the real ones, not the covered copy that rides in the band in flight)
   const frames = () =>
     p.evaluate(
       () =>
         new Promise((res) => {
           const list = document.querySelector("#sidebar .kl-nav-list")
-          const band = list.querySelector(".kl-nav-band")
+          const band = list.querySelector(":scope > .kl-nav-band")
           const out = []
           const t0 = performance.now()
           const f = () => {
-            const br = band.getBoundingClientRect()
-            const rows = [...list.querySelectorAll(".kl-nav-i")].map((e) => {
+            const br = window.__klBand(band)
+            const rows = [...list.querySelectorAll(".kl-nav-i")].filter((e) => !e.closest("[data-kl-ghost]")).map((e) => {
               let { top, bottom } = e.getBoundingClientRect()
               const fold = e.closest(".kl-nav-fold")
               if (fold) { const fr = fold.getBoundingClientRect(); top = Math.max(top, fr.top); bottom = Math.max(top, Math.min(bottom, fr.bottom)) }
@@ -126,7 +127,8 @@ test("sidebar: icon rail", async ({ open, ok }) => {
   await idle(p)
   const rail = await s.evaluate((el) => ({ nav: el.getAttribute("data-kl-nav"), acts: el.querySelectorAll(".kl-shell-nav .kl-nav-act").length, subs: el.querySelectorAll(".kl-shell-nav .kl-nav-sub").length }))
   ok("sidebar: collapse to the icon rail hides labels' lists and row actions", rail.nav === "rail" && rail.acts === 0 && rail.subs === 0, rail)
-  await s.locator('.kl-shell-nav button:has-text("Reports")').click()
+  // (not the covered copy of the list that rides inside a moving band)
+  await s.locator('.kl-shell-nav button:not([data-kl-ghost] *):has-text("Reports")').click()
   await until(() => s.evaluate((el) => el.getAttribute("data-kl-nav") === "open" && el.querySelector(".kl-nav-parent")?.getAttribute("aria-expanded") === "true"))
   const wide = await s.evaluate((el) => ({ nav: el.getAttribute("data-kl-nav"), exp: el.querySelector(".kl-nav-parent")?.getAttribute("aria-expanded") }))
   ok("sidebar: pressing a nested item on the rail widens the sidebar with its list open", wide.nav === "open" && wide.exp === "true", wide)

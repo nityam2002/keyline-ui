@@ -2,7 +2,7 @@
   .kl-radio-group { position: relative; isolation: isolate; display: flex; flex-direction: column; background-color: var(--kl-cell); min-width: 0; }
   .kl-radio-band { position: absolute; z-index: -1; background-color: var(--kl-inverse); pointer-events: none; }
   /* the band is drawn under the row; its keylines stay on top */
-  .kl-radio-row { all: unset; box-sizing: border-box; display: flex; align-items: stretch; min-height: var(--kl-row); cursor: pointer; color: var(--kl-ink); transition: color 0s linear var(--kl-t-flip); }
+  .kl-radio-row { all: unset; box-sizing: border-box; display: flex; align-items: stretch; min-height: var(--kl-row); cursor: pointer; color: var(--kl-ink); }
   .kl-radio-group.kl-rows > .kl-radio-row:nth-child(2) { border-block-start: 0; }
   .kl-radio-row:hover:not([data-checked]):not([data-disabled]) { background-color: var(--kl-tint); }
   .kl-radio-row:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }

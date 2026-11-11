@@ -1,6 +1,6 @@
 // NavigationMenu's open cell is the shared Stretch band: hidden and an <li> when closed, it lands on the newly
-// open trigger and travels through intermediate geometry, or snaps under reduced motion. The band's geometry is
-// sampled every frame during the move: that sampling is the measurement.
+// open trigger and travels through intermediate geometry, or snaps under reduced motion. The band's geometry (as
+// drawn: window.__klBand) is sampled every frame during the move: that sampling is the measurement.
 import { test, idle } from "./fixtures.mjs"
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["navigation-menu"] })
@@ -15,7 +15,7 @@ for (const motion of ["normal", "reduce"]) {
       list.evaluate((l) => {
         const band = l.querySelector(":scope > [data-kl-band]")
         const open = l.querySelector("[data-popup-open]")
-        const a = band.getBoundingClientRect()
+        const a = window.__klBand(band)
         const o = open?.getBoundingClientRect()
         // the band runs 1px under the next seam (no anti-aliased hairline between them), so one edge may be 2px off
         return { hidden: band.hidden, tag: band.tagName, on: o ? Math.max(Math.abs(a.left - o.left), Math.abs(a.right - o.right)) : null, covered: open?.hasAttribute("data-kl-covered") ?? null }
@@ -31,7 +31,7 @@ for (const motion of ["normal", "reduce"]) {
       window.__n = new Set()
       const t0 = performance.now()
       const loop = () => {
-        const r = band.getBoundingClientRect()
+        const r = window.__klBand(band)
         window.__n.add(`${Math.round(r.left)}:${Math.round(r.right)}`)
         if (performance.now() - t0 < 500) requestAnimationFrame(loop)
       }

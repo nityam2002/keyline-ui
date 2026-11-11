@@ -38,7 +38,7 @@
 
   /* seams: every item after the first in the row, and inside a group, draws its start edge */
   .kl-tb > :not(.kl-more-fade) + :not(.kl-more-fade),
-  .kl-tb-group > :not([data-kl-band]) + * { border-inline-start: var(--kl-k1) solid var(--kl-seam); }
+  .kl-tb-group > :not(.kl-tb-band) + * { border-inline-start: var(--kl-k1) solid var(--kl-seam); }
   /* a group meets its neighbours on a 2px keyline; so does an explicit separator (which owns that edge) */
   .kl-tb > * + .kl-tb-group, .kl-tb > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) { border-inline-start: var(--kl-k2) solid var(--kl-line); }
   .kl-tb > .kl-tb-sep.kl-tb-sep { flex: none; width: 0; align-self: stretch; border: 0; border-inline-start: var(--kl-k2) solid var(--kl-line); }
@@ -82,8 +82,7 @@
   /* independent toggle: the lamp fills with the flood (the lamp sits in the label, not on the item) */
   .kl-tb-toggle[data-pressed] .kl-lamp { border-width: 5px; }
 
-  /* exclusive choice: the ink band is under the cell; text flips once the band covers it */
-  .kl-tb-choice { transition: color 0s linear var(--kl-t-flip); }
+  /* exclusive choice: the ink band is under the cell; a covered cell's text reads on the band */
   .kl-tb-choice[data-kl-covered] { color: var(--kl-on-inverse); }
   .kl-tb-choice[data-kl-covered]:focus-visible { outline-color: currentColor; }
 
@@ -133,7 +132,7 @@
   .kl-tb[data-orientation="vertical"] { flex-direction: column; width: max-content; overflow-x: hidden; overflow-y: auto; }
   .kl-tb[data-orientation="vertical"] > .kl-tb-group { flex-direction: column; }
   .kl-tb[data-orientation="vertical"] > :not(.kl-more-fade) + :not(.kl-more-fade),
-  .kl-tb[data-orientation="vertical"] .kl-tb-group > :not([data-kl-band]) + * { border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  .kl-tb[data-orientation="vertical"] .kl-tb-group > :not(.kl-tb-band) + * { border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
   .kl-tb[data-orientation="vertical"] > * + .kl-tb-group, .kl-tb[data-orientation="vertical"] > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) { border-inline-start: 0; border-block-start: var(--kl-k2) solid var(--kl-line); }
   .kl-tb[data-orientation="vertical"] > .kl-tb-sep.kl-tb-sep { width: auto; height: 0; border-inline-start: 0; border-block-start: var(--kl-k2) solid var(--kl-line); }
   .kl-tb[data-orientation="vertical"] > .kl-tb-sep + :not(.kl-more-fade) { border-block-start: 0; }

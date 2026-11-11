@@ -132,8 +132,6 @@
     --kl-stretch-tug: 12;
     /* The radius of the flood seed under a held press (the flood grows on from it at release) */
     --kl-flood-seed: 7px;
-    /* a label covered by a moving band flips colour this long after the band crosses half of it (no ghost label) */
-    --kl-t-flip: 40ms;
     /* layering: every overlay shares one level and stacks by DOM order (portals append in opening order,
        so a select opened inside a dialog sits above it); floating toasts sit above all overlays */
     --kl-z-overlay: 60;
@@ -243,7 +241,6 @@
     --kl-stretch-lead: 0;
     --kl-stretch-trail: 0;
     --kl-stretch-tug: 0;
-    --kl-t-flip: 0ms;
   }
   @media (prefers-reduced-motion: reduce) {
     :root {
@@ -255,7 +252,6 @@
       --kl-stretch-lead: 0;
       --kl-stretch-trail: 0;
       --kl-stretch-tug: 0;
-    --kl-t-flip: 0ms;
     }
   }
   /* Keyline writes nothing outside its own names: no body, no shadcn tokens, no global focus.
@@ -523,6 +519,14 @@
      where the pointer is. While the host leans (data-kl-tug, keyline-motion) item tints give way; important because
      each component's own hover rule sits in a later layer with more specificity. */
   [data-kl-tug] [data-kl-item]:is(:hover, :active) { background-color: transparent !important; }
+
+  /* ---------- STRETCH IN FLIGHT: the band moves on the compositor (keyline-motion) ----------
+     While it moves the band is a clip from its leading-in edge, and a fill inside it (the band's own class, so its
+     colour, ink column or mark) ends at the far edge: it paints nothing of its own. A travel carries a copy of the
+     labels in their covered colours, so the band rises over the real items until it lands. */
+  [data-kl-band][data-kl-flight] { background: none !important; overflow: hidden; }
+  [data-kl-band][data-kl-flight]::before, [data-kl-band][data-kl-flight]::after { content: none !important; }
+  [data-kl-band][data-kl-flight="travel"] { z-index: 2 !important; }
 
   /* ---------- FLOOD: a cell's own state, from the input point ---------- */
   .kl-flood { position: relative; isolation: isolate; --kl-fc: var(--kl-yellow); --kl-fg: var(--kl-on-yellow); }

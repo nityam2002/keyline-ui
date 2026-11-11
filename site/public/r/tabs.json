@@ -61,8 +61,7 @@
         "font-family": "var(--kl-font)",
         "cursor": "pointer",
         "text-align": "start",
-        "white-space": "nowrap",
-        "transition": "color 0s linear var(--kl-t-flip)"
+        "white-space": "nowrap"
       },
       ".kl-tabs-list > .kl-tab:nth-child(2)": {
         "border-inline-start": "0"

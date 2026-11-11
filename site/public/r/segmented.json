@@ -47,8 +47,7 @@
         "white-space": "nowrap",
         "cursor": "pointer",
         "color": "var(--kl-ink)",
-        "background": "transparent",
-        "transition": "color 0s linear var(--kl-t-flip)"
+        "background": "transparent"
       },
       ".kl-segmented-item:hover:not([data-checked]):not([data-disabled])": {
         "background-color": "var(--kl-tint)"
