@@ -1,0 +1,36 @@
+@layer components {
+  /* PAGINATION: the frame hugs its cells. Number cells are as wide as the largest page number (tabular
+     figures), so paging never changes the frame's width. */
+  .kl-pg { container: kl-pg / inline-size; min-width: 0; }
+  .kl-pg-frame { display: inline-flex; max-width: 100%; box-sizing: border-box; min-height: var(--kl-ctl); background-color: var(--kl-cell); vertical-align: top; }
+  .kl-pg-frame[data-kl-layout="cell"] { display: flex; min-height: var(--kl-row); }
+  /* as a row of a wider frame, the rest of the row is an empty cell: its seam closes the last key */
+  .kl-pg-frame[data-kl-layout="cell"]::after { content: ""; flex: 1 1 0; border-inline-start: var(--kl-k1) solid var(--kl-line); }
+  /* one weight for every cell, so `ch` (and with it each cell's width) is the same in numbers and gaps */
+  .kl-pg-frame > .kl-cell { min-height: 0; justify-content: center; font-variant-numeric: tabular-nums; font-weight: var(--kl-weight-strong); }
+  .kl-pg-n { min-width: calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset)); padding-inline: var(--kl-inset); box-sizing: border-box; }
+  .kl-pg-frame { --kl-pg-sw: calc(var(--kl-ctl) - 2 * var(--kl-bw, 0px)); }
+  .kl-pg-frame[data-kl-layout="cell"] { --kl-pg-sw: var(--kl-row); }
+  .kl-pg-step { width: var(--kl-pg-sw); padding: 0; flex: none; }
+  .kl-pg-step:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) svg { scale: -1 1; }
+  /* the cut's room: the first cell (Previous) widens by the corner's share */
+  .kl-pg-frame > .kl-pg-step:first-child { width: calc(var(--kl-pg-sw) + var(--kl-c, 0px) * 0.35); padding-inline-start: calc(var(--kl-c, 0px) * 0.35); }
+  .kl-pg-gap { min-width: calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset)); box-sizing: border-box; padding-inline: 4px; color: var(--kl-ink-2); }
+  /* here: the location cell */
+  .kl-pg-n[aria-current="page"] { background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); cursor: default; }
+  .kl-pg-n[aria-current="page"]:focus-visible { outline-color: currentColor; }
+  /* ends: out of service */
+  .kl-pg-step:is(:disabled, [data-disabled]) { color: var(--kl-dis); background-image: var(--kl-hatch); cursor: not-allowed; }
+  .kl-pg-of { display: none; min-width: calc(var(--kl-pg-ch, 2) * 2ch + 3ch + 2 * var(--kl-inset)); font-size: 13px; color: var(--kl-ink); }
+  /* unknown count: the window is empty, the "of" cell shows "–" */
+  .kl-pg-frame:not(:has(.kl-pg-n)) .kl-pg-of { display: flex; }
+  @container kl-pg (max-width: 360px) {
+    .kl-pg-n, .kl-pg-gap { display: none; }
+    .kl-pg-of { display: flex; }
+    .kl-pg-frame { display: flex; }
+    .kl-pg-of { flex: 1; }
+  }
+  @media (forced-colors: active) {
+    .kl-pg-n[aria-current="page"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  }
+}

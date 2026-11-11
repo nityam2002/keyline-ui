@@ -1,0 +1,40 @@
+@layer components {
+  .kl-select-trigger { width: 100%; padding: 0; font: inherit; font-family: var(--kl-font); color: inherit; text-align: start; cursor: pointer; }
+  /* The value is a BLOCK, not a flex container: text-overflow only applies to a block container's own
+     line, so on a flex box the ellipsis never appeared and a long value pushed the caret cell. */
+  .kl-select-value { flex: 1 1 0; min-width: 0; align-self: center; display: block; padding-inline: var(--kl-inset); font-size: 15px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* the value is centred, not stretched, so the invalid seam Field draws on the cell after the ! would be a
+     text-high red stub; the ! cell's red fill is already the edge there. The doubled class puts this one step
+     above that Field rule, so the winner never depends on stylesheet order. */
+  .kl-field[data-invalid] .kl-select-trigger > .kl-field-bang + .kl-select-value.kl-select-value { border-inline-start: 0; }
+  .kl-select-ph { color: var(--kl-ink-3); }
+  .kl-select-caret { flex: none; display: grid; place-items: center; width: 36px; align-self: stretch; }
+  .kl-select-trigger[data-popup-open] .kl-select-caret { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
+  .kl-select[data-disabled] .kl-select-trigger, .kl-select-trigger[data-disabled] { cursor: not-allowed; background-image: var(--kl-hatch); border-color: var(--kl-dis-line); color: var(--kl-dis); }
+
+  /* at least the owner's width; a 15rem minimum only when the owner is clearly narrower (dock geometry) */
+  .kl-select-panel { --kl-dock-w: 15rem; max-height: min(var(--available-height), 360px); overflow: auto; background-color: var(--kl-cell); color: var(--kl-ink); outline: 0; overscroll-behavior: contain; scroll-padding-block: 4px; }
+  .kl-select-opt { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: stretch; min-height: var(--kl-row); cursor: default; outline: 0; user-select: none; }
+  .kl-select-opt + .kl-select-opt { border-block-start: var(--kl-k1) solid var(--kl-line-soft); }
+  .kl-select-mark { display: grid; place-items: center; border-inline-end: var(--kl-k1) solid var(--kl-seam); }
+  /* the chosen option: the exclusive-choice mark (same as RadioGroup), drawn with borders so it
+     survives forced colours; unselected rows keep the cell empty */
+  .kl-select-ind { width: 16px; height: 16px; display: grid; place-items: center; border: 2px solid currentColor; }
+  .kl-select-dot { width: 6px; height: 6px; background-color: currentColor; }
+  .kl-select-ind:not([data-selected]) { visibility: hidden; }
+  /* labels wrap (the full text is always readable here); codes keep their own cell and never squeeze */
+  .kl-select-label { display: grid; align-content: center; gap: 1px; padding: 8px var(--kl-inset); min-width: 0; overflow-wrap: anywhere; line-height: 1.3; }
+  .kl-select-label small { font-size: 12px; color: var(--kl-ink-2); }
+  .kl-select-code { display: flex; align-items: center; padding-inline: var(--kl-inset); white-space: nowrap; }
+  .kl-select-opt[data-highlighted] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
+  .kl-select-opt[data-highlighted] :is(small, .kl-code) { color: inherit; }
+  .kl-select-opt[data-highlighted] .kl-select-mark { border-color: var(--kl-on-inverse); }
+  .kl-select-opt[data-disabled] { color: var(--kl-dis); background-image: var(--kl-hatch); cursor: not-allowed; }
+  /* groups: a heading in the Code voice; groups and separators are divided by a seam, and the
+     row after a heading or a separator does not draw a second rule */
+  .kl-select-group + .kl-select-group { border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  .kl-select-group-label { display: block; padding: 10px var(--kl-inset) 4px; font: 500 11px/1.2 var(--kl-font-mono); color: var(--kl-ink-2); cursor: default; }
+  .kl-select-sep { height: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  :is(.kl-select-group-label, .kl-select-sep) + .kl-select-opt, .kl-select-sep + .kl-select-group { border-block-start: 0; }
+  @media (forced-colors: active) { .kl-select-opt[data-highlighted] { outline: 3px solid Highlight; outline-offset: -4px; } }
+}

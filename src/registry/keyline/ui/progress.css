@@ -1,0 +1,25 @@
+@layer components {
+  /* PROGRESS: the Meter's rail (k1, 10px), the pending signal's colour. The fill's leading end is an
+     ink keyline, so the boundary holds where yellow on paper is faint (light) and reads as one edge
+     in dark. Indeterminate runs the pending segment inside the rail. */
+  .kl-progress { display: grid; gap: 4px; min-width: 0; }
+  .kl-progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; }
+  .kl-progress-l { min-width: 0; font-size: 13px; font-weight: var(--kl-weight-strong); overflow-wrap: anywhere; }
+  .kl-progress-v { flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: var(--kl-weight-strong); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kl-progress-v[data-tone="failed"] { color: var(--kl-red-text); }
+  .kl-progress-v .kl-glyph[data-kind="done"] { translate: 0 -1px; }
+  .kl-progress-rail { position: relative; display: block; height: 10px; box-sizing: border-box; border: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-cell); overflow: hidden; }
+  .kl-progress-fill { display: block; height: 100%; box-sizing: border-box; background-color: var(--kl-yellow); transition: width var(--kl-t-unfold) var(--kl-ease-out); }
+  .kl-progress[data-progressing] .kl-progress-fill { border-inline-end: var(--kl-k1) solid var(--kl-line); }
+  .kl-progress[data-failed] .kl-progress-fill { background-color: var(--kl-red); border-inline-end-color: var(--kl-red); }
+  /* indeterminate: Base UI leaves the indicator unsized; the pending segment runs instead */
+  .kl-progress[data-indeterminate] .kl-progress-fill { position: absolute; inset-block: 0; left: 0; width: 34%; border-inline: var(--kl-k1) solid var(--kl-line); animation: kl-run 1100ms linear infinite var(--kl-run-dir, normal); }
+  [data-kl-motion="reduce"] .kl-progress[data-indeterminate] .kl-progress-fill { animation: none; inset-inline-start: 0; width: 100%; border: 0; background: var(--kl-hatch), var(--kl-yellow); }
+  @media (prefers-reduced-motion: reduce) { .kl-progress[data-indeterminate] .kl-progress-fill { animation: none; inset-inline-start: 0; width: 100%; border: 0; background: var(--kl-hatch), var(--kl-yellow); } }
+  .kl-progress-detail { font-size: 13px; color: var(--kl-ink-2); overflow-wrap: anywhere; }
+  .kl-progress[data-failed] .kl-progress-detail { color: var(--kl-ink); }
+  @media (forced-colors: active) {
+    .kl-progress-fill { forced-color-adjust: none; background: Highlight; }
+    .kl-progress[data-failed] .kl-progress-fill { background: CanvasText; }
+  }
+}

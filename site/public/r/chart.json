@@ -1,0 +1,214 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart",
+  "title": "Chart",
+  "description": "Charts on recharts, as the reference: series colours by role from the data tokens (focal, comparison, rest, mark, alert) as --color-<key>; solid hairline grid, Code-voice ticks, square marks and keys, an inverse tooltip with tabular figures. ChartFigure adds a title and a Chart / Table switch over the same rows. RTL axes and reduced motion are applied for you.",
+  "dependencies": [
+    "recharts@3.10.1"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/table",
+    "utils",
+    "@keyline-ui/segmented",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/chart.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport * as Recharts from \"recharts\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Segmented, SegmentedItem } from \"./segmented\"\nimport { domDir } from \"../lib/keyline-scope\"\n\n/* Charts are recharts (as in shadcn and neobrutalism.dev): scales, shapes, keyboard (the accessibility\n   layer: Tab to the plot, arrows step through the points) and tooltips are the library's. Keyline adds:\n   - series colours by role from the data tokens (`--kl-data-1` focal, `-2` comparison, `-3` the rest,\n     `-mark`, `-alert`), written as `--color-<key>` so marks use `var(--color-<key>)` as in shadcn;\n   - the construction: recessive solid hairline grid, Code-voice ticks, square marks (no radius: a chart\n     never takes the cut), an inverse tooltip with tabular figures, square legend keys;\n   - a Table view of the same rows (ChartFigure), so no reading depends on colour or on seeing the plot;\n   - RTL (the category axis runs from the inline start, the value axis sits at the start edge) and reduced\n     motion (prefers-reduced-motion or data-kl-motion=\"reduce\" turns every series animation off). */\n\nexport type ChartConfig = Record<\n  string,\n  {\n    label?: React.ReactNode\n    /** Any CSS colour; Keyline's roles are \"var(--kl-data-1)\" … Defaults by order: data-1, data-2, data-3. */\n    color?: string\n    /** Unit printed after values in the tooltip and table, in the Code voice. */\n    unit?: string\n  }\n>\n\nconst ROLE = [\"var(--kl-data-1)\", \"var(--kl-data-2)\", \"var(--kl-data-3)\"]\n\nconst ChartContext = React.createContext<{ config: ChartConfig; format: (v: number) => string; announce: (text: string) => void } | null>(null)\n\nfunction useChart() {\n  const ctx = React.useContext(ChartContext)\n  if (!ctx) throw new Error(\"useChart must be used within a <ChartContainer />\")\n  return ctx\n}\n\nconst SERIES = new Set<unknown>([Recharts.Bar, Recharts.Line, Recharts.Area, Recharts.Pie, Recharts.Scatter, Recharts.Radar, Recharts.RadialBar])\n\n/** Walks the composed chart and sets what the reader's settings ask for, unless the author set it. */\nfunction adapt(node: React.ReactNode, o: { still: boolean; rtl: boolean }): React.ReactNode {\n  return React.Children.map(node, (el) => {\n    if (!React.isValidElement(el)) return el\n    const p = el.props as Record<string, unknown> & { children?: React.ReactNode }\n    const extra: Record<string, unknown> = {}\n    if (o.still && SERIES.has(el.type) && p.isAnimationActive === undefined) extra.isAnimationActive = false\n    // an Operate chart updates, it does not perform: data changes and the first draw take the unfold time, not\n    // recharts' 1.5s (switching Table → Chart replayed a 1.5s line draw every time)\n    else if (SERIES.has(el.type) && p.animationDuration === undefined) extra.animationDuration = 220\n    if (o.rtl && el.type === Recharts.XAxis && p.reversed === undefined) extra.reversed = true\n    if (o.rtl && el.type === Recharts.YAxis && p.orientation === undefined) extra.orientation = \"right\"\n    const kids = p.children !== undefined && typeof p.children !== \"function\" ? adapt(p.children, o) : undefined\n    return Object.keys(extra).length || kids !== undefined ? React.cloneElement(el, extra, ...(kids !== undefined ? [kids] : [])) : el\n  })\n}\n\ntype ChartContainerProps = Omit<React.ComponentProps<\"div\">, \"children\"> & {\n  config: ChartConfig\n  /** A recharts chart (BarChart, LineChart, AreaChart …). */\n  children: React.ReactElement\n  /** Formats values in the tooltip and table. Default: the locale's grouping, at most two decimals. */\n  format?: (v: number) => string\n  locale?: string\n}\n\n/**\n * The plot area. Sized by CSS (default aspect 16/9; set a height or aspect-ratio with className or style).\n * Name it: `aria-label`, or `aria-labelledby` pointing at a visible title (ChartFigure does this).\n */\nfunction ChartContainer({ config, children, className, style, format, locale, \"aria-label\": label, \"aria-labelledby\": labelledBy, ...props }: ChartContainerProps) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  const live = React.useRef<HTMLSpanElement>(null)\n  const hint = React.useId()\n  // the tooltip is drawn for pointer and keyboard alike; it is read out only while focus is on the plot,\n  // so arrowing through the points announces each category's figures\n  const announce = React.useCallback((text: string) => {\n    if (live.current && ref.current?.contains(document.activeElement) && live.current.textContent !== text) live.current.textContent = text\n  }, [])\n  // first guess from the page, so a reduced-motion or RTL page does not draw (and start animating) twice\n  const [env, setEnv] = React.useState(() =>\n    typeof document === \"undefined\"\n      ? { still: false, rtl: false }\n      : { still: window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches || document.documentElement.dataset.klMotion === \"reduce\", rtl: document.documentElement.dir === \"rtl\" },\n  )\n  React.useLayoutEffect(() => {\n    const el = ref.current\n    if (!el) return\n    const read = () => {\n      const still = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches || !!el.closest('[data-kl-motion=\"reduce\"]')\n      const rtl = domDir(el) === \"rtl\"\n      setEnv((e) => (e.still === still && e.rtl === rtl ? e : { still, rtl }))\n    }\n    read()\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    mq.addEventListener(\"change\", read)\n    // the motion and direction settings are attributes on an ancestor; follow them if they change\n    const mo = new MutationObserver(read)\n    mo.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: [\"data-kl-motion\", \"dir\"] })\n    return () => {\n      mq.removeEventListener(\"change\", read)\n      mo.disconnect()\n    }\n  }, [])\n  const keys = Object.keys(config)\n  const vars = Object.fromEntries(keys.map((k, i) => [`--color-${k}`, config[k].color ?? ROLE[Math.min(i, ROLE.length - 1)]]))\n  const fmt = React.useMemo(() => format ?? ((v: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v)), [format, locale])\n  const plot = React.Children.toArray(adapt(children, env))[0] as React.ReactElement<Record<string, string | undefined>>\n  return (\n    <ChartContext.Provider value={{ config, format: fmt, announce }}>\n      <div ref={ref} data-slot=\"chart\" className={cn(\"kl-chart\", className)} style={{ ...vars, ...style } as React.CSSProperties} {...props}>\n        <Recharts.ResponsiveContainer initialDimension={{ width: 320, height: 180 }}>\n          {/* the plot is the library's one tab stop (role application); it carries the chart's name */}\n          {React.cloneElement(plot, {\n            \"aria-label\": plot.props[\"aria-label\"] ?? label,\n            \"aria-labelledby\": plot.props[\"aria-labelledby\"] ?? labelledBy,\n            \"aria-describedby\": plot.props[\"aria-describedby\"] ?? hint,\n          })}\n        </Recharts.ResponsiveContainer>\n        <span className=\"kl-sr\" id={hint}>\n          Arrow keys step through the points.\n        </span>\n        <span className=\"kl-sr\" role=\"status\" ref={live} />\n      </div>\n    </ChartContext.Provider>\n  )\n}\n\nconst ChartTooltip = Recharts.Tooltip\n\ntype TooltipItem = { dataKey?: string | number | ((o: unknown) => unknown); name?: string | number; value?: unknown; color?: string; payload?: Record<string, unknown> }\n\n/** The tooltip body: the category in the Code voice, then one row per series (key, name, figure). */\nfunction ChartTooltipContent({\n  active,\n  payload,\n  label,\n  hideLabel,\n  labelFormatter,\n  nameKey,\n  className,\n}: {\n  active?: boolean\n  payload?: readonly TooltipItem[]\n  label?: React.ReactNode\n  hideLabel?: boolean\n  labelFormatter?: (label: React.ReactNode, payload: readonly TooltipItem[]) => React.ReactNode\n  /** For one-series-per-row data (pie): the row field that names the item. */\n  nameKey?: string\n  className?: string\n}) {\n  const { config, format, announce } = useChart()\n  const said = active && payload?.length ? [label, ...payload.map((it) => `${config[String(it.dataKey)]?.label ?? it.name ?? \"\"} ${typeof it.value === \"number\" ? format(it.value) : String(it.value ?? \"–\")} ${config[String(it.dataKey)]?.unit ?? \"\"}`.trim())].filter((x) => x != null && x !== \"\").join(\", \") : \"\"\n  React.useEffect(() => {\n    if (said) announce(said)\n  }, [said, announce])\n  if (!active || !payload?.length) return null\n  const head = hideLabel ? null : labelFormatter ? labelFormatter(label, payload) : label\n  return (\n    <div className={cn(\"kl-chart-tip\", className)}>\n      {head != null && head !== \"\" ? <div className=\"kl-chart-tip-h\">{head}</div> : null}\n      {payload.map((it, i) => {\n        const key = String(nameKey ? it.payload?.[nameKey] : it.dataKey ?? it.name ?? i)\n        const c = config[key]\n        const v = typeof it.value === \"number\" ? format(it.value) : String(it.value ?? \"–\")\n        return (\n          <div className=\"kl-chart-tip-r\" key={key + i}>\n            <span className=\"kl-chart-key\" style={{ background: c?.color ?? `var(--color-${key}, ${it.color})` }} aria-hidden />\n            <span className=\"kl-chart-tip-n\">{c?.label ?? it.name ?? key}</span>\n            <span className=\"kl-chart-tip-v\">\n              {v}\n              {c?.unit ? <span className=\"kl-chart-unit\"> {c.unit}</span> : null}\n            </span>\n          </div>\n        )\n      })}\n    </div>\n  )\n}\n\nconst ChartLegend = Recharts.Legend\n\n/** Square keys with the series names, in config order. Recharts passes `payload`; without it, the config is the legend. */\nfunction ChartLegendContent({ payload, className }: { payload?: readonly { dataKey?: unknown; value?: unknown }[]; className?: string }) {\n  const { config } = useChart()\n  // config order, so a stacked chart's legend reads in the author's order whatever order recharts draws\n  const shown = new Set(payload?.map((p) => String(p.dataKey ?? p.value)))\n  const keys = payload?.length ? [...Object.keys(config).filter((k) => shown.has(k)), ...[...shown].filter((k) => !(k in config))] : Object.keys(config)\n  return (\n    <ul className={cn(\"kl-chart-legend\", className)}>\n      {keys.map((k) => (\n        <li key={k}>\n          <span className=\"kl-chart-key\" style={{ background: `var(--color-${k})` }} aria-hidden />\n          {config[k]?.label ?? k}\n        </li>\n      ))}\n    </ul>\n  )\n}\n\ntype ChartTableProps = {\n  data: readonly Record<string, unknown>[]\n  config: ChartConfig\n  /** The row field that names each category (the x axis). */\n  labelKey: string\n  /** Header of the category column. */\n  labelHeader?: React.ReactNode\n  caption?: React.ReactNode\n  format?: (v: number) => string\n  locale?: string\n  className?: string\n}\n\n/** The same rows as a table: a category column, then one column per series, figures right-aligned. */\nfunction ChartTable({ data, config, labelKey, labelHeader, caption, format, locale, className }: ChartTableProps) {\n  const fmt = format ?? ((v: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v))\n  const keys = Object.keys(config)\n  return (\n    <div className={cn(\"kl-chart-table\", className)}>\n      <table className=\"kl-table\">\n        {caption ? <caption className=\"kl-sr\">{caption}</caption> : null}\n        <thead>\n          <tr>\n            <th className=\"kl-th\" scope=\"col\">{labelHeader ?? labelKey}</th>\n            {keys.map((k) => (\n              <th className=\"kl-th kl-chart-num\" scope=\"col\" key={k}>\n                <span className=\"kl-chart-key\" style={{ background: config[k].color ?? ROLE[Math.min(keys.indexOf(k), ROLE.length - 1)] }} aria-hidden />\n                {config[k].label ?? k}\n                {config[k].unit ? <span className=\"kl-code\"> {config[k].unit}</span> : null}\n              </th>\n            ))}\n          </tr>\n        </thead>\n        <tbody>\n          {data.map((row, i) => (\n            <tr key={i}>\n              <th className=\"kl-td kl-chart-rowh\" scope=\"row\">{String(row[labelKey] ?? \"\")}</th>\n              {keys.map((k) => (\n                <td className=\"kl-td kl-chart-num\" key={k}>\n                  {typeof row[k] === \"number\" ? fmt(row[k] as number) : String(row[k] ?? \"–\")}\n                </td>\n              ))}\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </div>\n  )\n}\n\ntype ChartFigureProps = Omit<React.ComponentProps<\"figure\">, \"title\"> & {\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** The rows behind the chart, for the Table view. */\n  data: readonly Record<string, unknown>[]\n  config: ChartConfig\n  labelKey: string\n  labelHeader?: React.ReactNode\n  format?: (v: number) => string\n  locale?: string\n  /** Starting view. */\n  defaultView?: \"chart\" | \"table\"\n  /** The plot (a ChartContainer); it is named by the title. */\n  children: React.ReactElement<ChartContainerProps>\n}\n\n/**\n * A titled chart with a Chart / Table switch. The table carries the same rows, so every value is\n * readable without the plot (screen readers, forced colours, print, copying figures).\n */\nfunction ChartFigure({ title, description, data, config, labelKey, labelHeader, format, locale, defaultView = \"chart\", children, className, ...props }: ChartFigureProps) {\n  const [view, setView] = React.useState(defaultView)\n  const id = React.useId()\n  return (\n    <figure data-slot=\"chart-figure\" className={cn(\"kl-chart-fig\", className)} aria-labelledby={`${id}t`} {...props}>\n      <figcaption className=\"kl-chart-cap\">\n        <span className=\"kl-chart-cap-t\">\n          <span className=\"kl-chart-title\" id={`${id}t`}>\n            {title}\n          </span>\n          {description ? <span className=\"kl-chart-desc\">{description}</span> : null}\n        </span>\n        <Segmented size=\"compact\" value={view} onValueChange={(v) => setView(v as \"chart\" | \"table\")} aria-label=\"View\">\n          <SegmentedItem value=\"chart\">Chart</SegmentedItem>\n          <SegmentedItem value=\"table\">Table</SegmentedItem>\n        </Segmented>\n      </figcaption>\n      {view === \"chart\" ? (\n        React.cloneElement(children, { \"aria-labelledby\": children.props[\"aria-labelledby\"] ?? `${id}t` } as Partial<ChartContainerProps>)\n      ) : (\n        <ChartTable data={data} config={config} labelKey={labelKey} labelHeader={labelHeader} caption={title} format={format} locale={locale} />\n      )}\n    </figure>\n  )\n}\n\nexport { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, ChartTable, ChartFigure, useChart }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/chart.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-chart": {
+        "position": "relative",
+        "width": "100%",
+        "aspect-ratio": "16 / 9",
+        "min-width": "0",
+        "font-size": "11px"
+      },
+      ".kl-chart .recharts-wrapper, .kl-chart .recharts-surface": {
+        "outline": "0"
+      },
+      ".kl-chart .recharts-surface": {
+        "direction": "ltr"
+      },
+      ".kl-chart .recharts-wrapper:has(.recharts-surface:focus-visible), .kl-chart .recharts-wrapper:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-out)"
+      },
+      ".kl-chart .recharts-cartesian-axis-tick-value, .kl-chart .recharts-polar-angle-axis-tick-value, .kl-chart .recharts-label": {
+        "fill": "var(--kl-ink-3)",
+        "font-family": "var(--kl-font-mono)",
+        "font-size": "11px",
+        "font-weight": "500",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-chart .recharts-cartesian-grid line, .kl-chart .recharts-polar-grid :is(line, polygon, circle)": {
+        "stroke": "var(--kl-line-soft)",
+        "stroke-dasharray": "none"
+      },
+      ".kl-chart .recharts-cartesian-axis-line": {
+        "stroke": "var(--kl-line)"
+      },
+      ".kl-chart .recharts-cartesian-axis-tick-line": {
+        "stroke": "var(--kl-line-soft)"
+      },
+      ".kl-chart .recharts-reference-line line": {
+        "stroke": "var(--kl-ink-2)"
+      },
+      ".kl-chart .recharts-tooltip-cursor:is(.recharts-rectangle, path[fill]:not([fill=\"none\"]))": {
+        "fill": "var(--kl-tint)"
+      },
+      ".kl-chart .recharts-tooltip-cursor:is(.recharts-curve, line)": {
+        "stroke": "var(--kl-ink-3)",
+        "stroke-width": "1"
+      },
+      ".kl-chart .recharts-active-dot circle, .kl-chart .recharts-dot": {
+        "stroke": "var(--kl-cell)",
+        "stroke-width": "2"
+      },
+      ".kl-chart .recharts-sector, .kl-chart[data-kl-stack] .recharts-bar-rectangle path": {
+        "stroke": "var(--kl-cell)",
+        "stroke-width": "2"
+      },
+      ".kl-chart .recharts-sector:focus-visible": {
+        "outline": "0"
+      },
+      ".kl-chart .recharts-tooltip-wrapper": {
+        "z-index": "2"
+      },
+      ".kl-chart .recharts-default-legend": {
+        "display": "none"
+      },
+      ".kl-chart-tip": {
+        "min-width": "140px",
+        "max-width": "260px",
+        "display": "grid",
+        "grid-template-columns": "auto 1fr auto",
+        "column-gap": "8px",
+        "row-gap": "3px",
+        "padding": "7px 10px 8px",
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)",
+        "font-family": "var(--kl-font)",
+        "font-size": "13px",
+        "line-height": "1.3",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-chart-tip-h": {
+        "grid-column": "1 / -1",
+        "padding-block-end": "4px",
+        "margin-block-end": "2px",
+        "border-block-end": "var(--kl-k1) solid color-mix(in oklab, var(--kl-on-inverse) 35%, transparent)",
+        "font": "500 11px/1.2 var(--kl-font-mono)"
+      },
+      ".kl-chart-tip-r": {
+        "display": "contents"
+      },
+      ".kl-chart-tip-n": {
+        "min-width": "0",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+      },
+      ".kl-chart-tip-v": {
+        "text-align": "end",
+        "font-weight": "var(--kl-weight-strong)",
+        "white-space": "nowrap"
+      },
+      ".kl-chart-unit": {
+        "font": "500 11px/1 var(--kl-font-mono)",
+        "opacity": "0.85"
+      },
+      ".kl-chart-tip .kl-chart-key": {
+        "align-self": "center",
+        "box-shadow": "0 0 0 1px var(--kl-on-inverse)"
+      },
+      ".kl-chart-key": {
+        "display": "inline-block",
+        "flex": "none",
+        "width": "10px",
+        "height": "10px"
+      },
+      ".kl-chart-legend": {
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "justify-content": "center",
+        "gap": "4px 16px",
+        "margin": "0",
+        "padding": "8px 0 0",
+        "list-style": "none",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-chart-legend li": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "6px"
+      },
+      ".kl-chart-fig": {
+        "display": "grid",
+        "gap": "12px",
+        "margin": "0",
+        "min-width": "0"
+      },
+      ".kl-chart-cap": {
+        "display": "flex",
+        "align-items": "flex-start",
+        "gap": "12px",
+        "flex-wrap": "wrap"
+      },
+      ".kl-chart-cap-t": {
+        "flex": "1 1 200px",
+        "min-width": "0",
+        "display": "grid",
+        "gap": "2px"
+      },
+      ".kl-chart-title": {
+        "font-size": "15px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25"
+      },
+      ".kl-chart-desc": {
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-chart-table": {
+        "overflow-x": "auto",
+        "border": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-chart-table .kl-table": {
+        "font-size": "13px"
+      },
+      ".kl-chart-table tbody tr:last-child > *": {
+        "border-block-end": "0"
+      },
+      ".kl-chart-rowh": {
+        "text-align": "start",
+        "font-weight": "400"
+      },
+      ".kl-chart-num": {
+        "text-align": "end",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-chart-table .kl-th .kl-chart-key": {
+        "margin-inline-end": "6px",
+        "vertical-align": "-1px"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-chart-tip": {
+          "border": "1px solid CanvasText"
+        },
+        ".kl-chart-key": {
+          "forced-color-adjust": "none",
+          "outline": "1px solid CanvasText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "Ink label docked to the focus ring of its trigger, with an optional shortcut cell. Never cut.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/tooltip.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\n/** Wrap a region once to share the open delay between neighbouring tooltips (optional). */\nconst TooltipProvider = TooltipPrimitive.Provider\n\ntype TooltipProps = {\n  /** The trigger. Must be a focusable element that accepts a ref (a Button, a link, an icon button). */\n  children: React.ReactElement\n  content: React.ReactNode\n  /** Shortcut shown in its own cell, e.g. \"⌘K\". */\n  shortcut?: React.ReactNode\n  side?: \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\"\n  delay?: number\n}\n\n/**\n * An ink label docked to the trigger's FOCUS RING, not its box: the gap equals the ring (2px + 2px offset),\n * so keyboard and pointer show the same geometry. Never cut, never a surface of its own. It names or\n * explains; it never holds the only copy of information needed to act.\n */\nfunction Tooltip({ children, content, shortcut, side = \"top\", delay = 500 }: TooltipProps) {\n  const [open, setOpen] = React.useState(false)\n  const [marker, scope] = useKeylineScope(open)\n  return (\n    <TooltipPrimitive.Root onOpenChange={setOpen}>\n      <TooltipPrimitive.Trigger delay={delay} render={children} />\n      {marker}\n      <TooltipPrimitive.Portal>\n        <TooltipPrimitive.Positioner side={side} sideOffset={4} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <TooltipPrimitive.Popup data-slot=\"tooltip\" className={cn(\"kl-tip\", shortcut != null && \"kl-cells\")}>\n            <span className=\"kl-tip-t\">{content}</span>\n            {shortcut != null ? <kbd className=\"kl-tip-k\">{shortcut}</kbd> : null}\n          </TooltipPrimitive.Popup>\n        </TooltipPrimitive.Positioner>\n      </TooltipPrimitive.Portal>\n    </TooltipPrimitive.Root>\n  )\n}\n\nexport { Tooltip, TooltipProvider }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/tooltip.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-tip": {
+        "display": "flex",
+        "align-items": "stretch",
+        "max-width": "min(320px, calc(100vw - 16px))",
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)",
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.3",
+        "transition": "opacity var(--kl-t-unfold) linear",
+        "opacity": "1"
+      },
+      ".kl-tip:is([data-starting-style], [data-ending-style])": {
+        "opacity": "0"
+      },
+      ".kl-tip[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)"
+      },
+      ".kl-tip[data-instant]": {
+        "transition": "none"
+      },
+      ".kl-tip.kl-cells > :not(:first-child)": {
+        "border-inline-start-color": "var(--kl-on-inverse)"
+      },
+      ".kl-tip-t": {
+        "padding": "6px 10px"
+      },
+      ".kl-tip-k": {
+        "display": "grid",
+        "place-items": "center",
+        "padding-inline": "8px",
+        "font": "500 11px/1 var(--kl-font-mono)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-tip": {
+          "border": "1px solid CanvasText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

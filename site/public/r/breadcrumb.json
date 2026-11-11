@@ -1,0 +1,131 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "title": "Breadcrumb",
+  "description": "Where a page sits: ancestor link cells and a cobalt cell for here; earlier levels fold into a menu by count or width.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/menu"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/breadcrumb.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Menu, MenuTrigger, MenuContent, MenuItem } from \"./menu\"\n\ntype Crumb = {\n  label: React.ReactNode\n  href?: string\n  /** A router link instead of <a>: render={<Link to=\"…\" />}. Props and refs merge (Base UI useRender). */\n  render?: React.ReactElement\n}\n\ntype BreadcrumbProps = Omit<React.ComponentProps<\"nav\">, \"children\"> & {\n  /** Ancestors first; the last item is the current page (not a link). */\n  items: Crumb[]\n  /** Above this many items the ones before the parent fold into a \"…\" cell with a menu. Default 4. */\n  maxItems?: number\n  /** control: its own 2px frame. cell: a row of an enclosing frame (a panel's or page header's top cell). */\n  layout?: \"control\" | \"cell\"\n  /** Name of the \"…\" menu trigger. */\n  moreLabel?: string\n}\n\nconst Chevron = () => (\n  <svg className=\"kl-crumb-sep\" viewBox=\"0 0 16 16\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n    <path d=\"m6 4 4 4-4 4\" />\n  </svg>\n)\n\nfunction CrumbLink({ crumb }: { crumb: Crumb }) {\n  return useRender({\n    render: crumb.render ?? <a href={crumb.href} />,\n    props: {\n      className: \"kl-cell kl-key kl-crumb-link\",\n      children: (\n        <>\n          <span className=\"kl-crumb-text\">{crumb.label}</span>\n          <Chevron />\n        </>\n      ),\n    },\n  })\n}\n\n/**\n * Where this page sits, as cells in one frame:\n *\n *   ┌─────────┬──────────┬───┬───────────┬━━━━━━━━━━━━━━━━━━━━┓\n *   │ Network ›│ Europe › │ … │ Rotterdam ›│ ECT Delta (here)  ┃   ancestors are link cells; here is cobalt\n *   └─────────┴──────────┴───┴───────────┴━━━━━━━━━━━━━━━━━━━━┛\n *\n * - The current page is the cobalt cell (location, as in Nav and Tabs), aria-current=\"page\", not a link.\n * - Each ancestor ends in a chevron that mirrors in RTL. Long labels truncate inside their cell; the\n *   current page keeps the most room.\n * - Folding: more than `maxItems`, or less than 480px of its own width, folds every ancestor before the\n *   parent into a \"…\" cell whose menu lists them in order. The parent and the page itself always show.\n */\nfunction Breadcrumb({ items, maxItems = 4, layout = \"control\", moreLabel = \"Earlier levels\", className, ...props }: BreadcrumbProps) {\n  const n = items.length\n  const current = items[n - 1]\n  const parentIndex = n - 2\n  const early = items.slice(0, Math.max(0, parentIndex))\n  const folded = n > maxItems\n  return (\n    <nav aria-label=\"Breadcrumb\" data-slot=\"breadcrumb\" data-kl-layout={layout} data-kl-folded={folded || undefined} className={cn(\"kl-crumbs\", className)} {...props}>\n      <ol data-kl-layout={layout} className=\"kl-ctl kl-cells kl-crumbs-list\">\n        {early.length ? (\n          <li className=\"kl-crumb kl-crumb-more\">\n            <Menu>\n              <MenuTrigger className=\"kl-cell kl-key kl-crumb-link\" aria-label={`${moreLabel} (${early.length})`}>\n                <span aria-hidden>…</span>\n                <Chevron />\n              </MenuTrigger>\n              <MenuContent attachWeight={layout === \"cell\" ? 1 : 2}>\n                {early.map((c, i) => (\n                  <MenuItem key={i} code={i + 1} render={c.render ?? <a href={c.href} />}>\n                    {c.label}\n                  </MenuItem>\n                ))}\n              </MenuContent>\n            </Menu>\n          </li>\n        ) : null}\n        {items.slice(0, -1).map((c, i) => (\n          <li key={i} className=\"kl-crumb\" data-kl-early={i < parentIndex || undefined}>\n            <CrumbLink crumb={c} />\n          </li>\n        ))}\n        {current ? (\n          <li className=\"kl-crumb kl-crumb-here\">\n            <span className=\"kl-cell kl-crumb-cur\" aria-current=\"page\">\n              <span className=\"kl-crumb-text\">{current.label}</span>\n            </span>\n          </li>\n        ) : null}\n      </ol>\n    </nav>\n  )\n}\n\nexport { Breadcrumb, type Crumb, type BreadcrumbProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/breadcrumb.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-crumbs": {
+        "container": "kl-crumbs / inline-size",
+        "min-width": "0"
+      },
+      ".kl-crumbs-list": {
+        "display": "inline-flex",
+        "max-width": "100%",
+        "box-sizing": "border-box",
+        "margin": "0",
+        "padding": "0",
+        "list-style": "none",
+        "min-height": "var(--kl-ctl)",
+        "background-color": "var(--kl-cell)",
+        "vertical-align": "top",
+        "padding-inline-start": "calc(var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-crumbs-list[data-kl-layout=\"cell\"]": {
+        "display": "flex",
+        "min-height": "var(--kl-row)"
+      },
+      ".kl-crumbs-list > .kl-crumb": {
+        "border-inline-start": "0"
+      },
+      ".kl-crumbs-list > .kl-crumb:not(:last-child)": {
+        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-crumb": {
+        "display": "flex",
+        "min-width": "0",
+        "flex": "0 3 auto"
+      },
+      ".kl-crumb-link": {
+        "gap": "6px",
+        "min-height": "0",
+        "color": "var(--kl-ink)",
+        "font-size": "14px",
+        "text-decoration": "none",
+        "max-width": "22ch"
+      },
+      ".kl-crumb-link:hover .kl-crumb-text": {
+        "text-decoration": "underline",
+        "text-underline-offset": "3px"
+      },
+      ".kl-crumb-text": {
+        "min-width": "0",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+      },
+      ".kl-crumb-sep": {
+        "flex": "none",
+        "color": "var(--kl-ink-3)"
+      },
+      ".kl-crumb-sep:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+        "scale": "-1 1"
+      },
+      ".kl-crumb-here": {
+        "flex": "0 1 auto"
+      },
+      ".kl-crumb-cur": {
+        "min-height": "0",
+        "font-size": "14px",
+        "font-weight": "var(--kl-weight-strong)",
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-crumb-more .kl-crumb-link": {
+        "max-width": "none",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-crumb-more .kl-crumb-link[data-popup-open]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-crumb-more .kl-crumb-link[data-popup-open] .kl-crumb-sep": {
+        "color": "inherit"
+      },
+      ".kl-crumb-more": {
+        "display": "none"
+      },
+      ".kl-crumbs[data-kl-folded] .kl-crumb-more": {
+        "display": "flex"
+      },
+      ".kl-crumbs[data-kl-folded] .kl-crumb[data-kl-early]": {
+        "display": "none"
+      },
+      "@container kl-crumbs (max-width: 480px)": {
+        ".kl-crumb-more": {
+          "display": "flex"
+        },
+        ".kl-crumb[data-kl-early]": {
+          "display": "none"
+        },
+        ".kl-crumb-link": {
+          "max-width": "14ch"
+        }
+      },
+      "@media (forced-colors: active)": {
+        ".kl-crumb-cur": {
+          "forced-color-adjust": "none",
+          "background": "Highlight",
+          "color": "HighlightText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

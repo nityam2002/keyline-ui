@@ -1,0 +1,83 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marker",
+  "title": "Marker",
+  "description": "A step in a conversation or activity timeline in the Code voice: a glyph cell and words, a separator between seams, or a keyline under the words; pending runs the pending segment and is a polite status.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/marker.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * A step in a conversation or activity timeline: \"Searched the web\", \"Assigned to DHL Freight\",\n * \"Yesterday\". Not a message: it sits between messages in the Code voice.\n *\n * - default: a glyph cell (MarkerIcon) then the words.\n * - `variant=\"separator\"`: the words between two seams (a day or \"New messages\" divider).\n * - `variant=\"border\"`: a keyline under the words (the head of a run of steps).\n * - `pending`: work in progress (\"Thinking…\"): the pending segment runs under the words, never a spinner, and\n *   the marker becomes a polite status so the change is announced. Drop `pending` when the step is done.\n */\nfunction Marker({ className, variant = \"default\", pending, children, ...props }: React.ComponentProps<\"div\"> & { variant?: \"default\" | \"separator\" | \"border\"; pending?: boolean }) {\n  return (\n    <div\n      data-slot=\"marker\"\n      data-variant={variant}\n      data-pending={pending || undefined}\n      role={variant === \"separator\" ? \"separator\" : pending ? \"status\" : undefined}\n      aria-busy={pending || undefined}\n      className={cn(\"kl-marker\", className)}\n      {...props}\n    >\n      {children}\n      {pending ? <span className=\"kl-pending kl-marker-run\" aria-hidden /> : null}\n    </div>\n  )\n}\n\n/** A 16px glyph cell (authored SVG or a Status glyph), hidden from assistive tech. */\nfunction MarkerIcon({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"marker-icon\" aria-hidden className={cn(\"kl-marker-ic\", className)} {...props} />\n}\n\nfunction MarkerContent({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"marker-content\" className={cn(\"kl-marker-t\", className)} {...props} />\n}\n\nexport { Marker, MarkerIcon, MarkerContent }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/marker.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-marker": {
+        "position": "relative",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "10px",
+        "min-width": "0",
+        "min-height": "24px",
+        "font-family": "var(--kl-font-mono)",
+        "font-size": "12px",
+        "line-height": "1.35",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-marker-ic": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "width": "24px",
+        "height": "24px",
+        "border": "var(--kl-k1) solid var(--kl-line-soft)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-marker-ic svg": {
+        "display": "block",
+        "width": "14px",
+        "height": "14px"
+      },
+      ".kl-marker-t": {
+        "min-width": "0",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-marker-t a": {
+        "color": "inherit",
+        "text-underline-offset": "3px"
+      },
+      ".kl-marker[data-variant=\"separator\"]::before, .kl-marker[data-variant=\"separator\"]::after": {
+        "content": "\"\"",
+        "flex": "1 1 0",
+        "min-width": "12px",
+        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-marker[data-variant=\"separator\"] .kl-marker-t": {
+        "flex": "none",
+        "max-width": "70%",
+        "text-align": "center"
+      },
+      ".kl-marker[data-variant=\"border\"]": {
+        "padding-block-end": "8px",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-marker[data-pending]": {
+        "padding-block-end": "4px"
+      },
+      ".kl-marker-run": {
+        "--kl-bw": "2px",
+        "inset-inline-start": "34px"
+      },
+      ".kl-marker:not(:has(.kl-marker-ic)) .kl-marker-run": {
+        "inset-inline-start": "0"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

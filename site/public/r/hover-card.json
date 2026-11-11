@@ -1,0 +1,220 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card",
+  "title": "Hover card",
+  "description": "A link that previews its destination (Base UI Preview Card): the underline draws along its keyline during the open delay; the card is a control frame of cells (media, title, code, facts on seams) one gutter from the link. Supplementary content only.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/hover-card.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { PreviewCard as PreviewCardPrimitive } from \"@base-ui/react/preview-card\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\n/* Root is Base UI's PreviewCard.Root: controlled or uncontrolled `open`, `onOpenChange`, `actionsRef`,\n   `handle` (one card for many triggers) and the payload render function all pass through untouched. */\nconst HoverCard = PreviewCardPrimitive.Root\n/** A handle shares one card between many triggers (a column of names): `HoverCard.createHandle()` in Base UI. */\nconst createHoverCardHandle = PreviewCardPrimitive.createHandle\n\ntype HoverCardTriggerProps = React.ComponentProps<typeof PreviewCardPrimitive.Trigger>\n\n/**\n * The link being previewed. It stays an ordinary link: a press goes to `href` (the place with everything\n * the card shows), keyboard focus also opens the card, and on touch the card never opens. While the open\n * delay runs, its underline draws along the keyline from the reading start, so the wait reads as \"a preview\n * is coming\", not as lag; leaving early retracts it. Open, the underline is a full ink 2px keyline.\n */\nfunction HoverCardTrigger({ className, delay = 600, closeDelay = 300, style, ...props }: HoverCardTriggerProps) {\n  return (\n    <PreviewCardPrimitive.Trigger\n      data-slot=\"hover-card-trigger\"\n      delay={delay}\n      closeDelay={closeDelay}\n      className={cn(\"kl-hc-trigger\", className as string)}\n      style={{ \"--kl-hc-delay\": `${delay}ms`, ...(style as React.CSSProperties) } as React.CSSProperties}\n      {...props}\n    />\n  )\n}\n\ntype HoverCardContentProps = React.ComponentProps<typeof PreviewCardPrimitive.Popup> & {\n  side?: React.ComponentProps<typeof PreviewCardPrimitive.Positioner>[\"side\"]\n  align?: React.ComponentProps<typeof PreviewCardPrimitive.Positioner>[\"align\"]\n  container?: React.ComponentProps<typeof PreviewCardPrimitive.Portal>[\"container\"]\n  positionerProps?: Omit<React.ComponentProps<typeof PreviewCardPrimitive.Positioner>, \"className\" | \"style\">\n}\n\n/**\n * The preview: a control frame one gutter from the link (a card about a word in running text is not docked\n * to it; a frame cannot share an edge with an underline). It unfolds from the side that faces the link,\n * carries the configuration of the place it is written, and lifts to the overlay surface.\n * Supplementary only: Base UI keeps it out of the keyboard and screen-reader order, so put nothing in it\n * that isn't also at the link's destination, and no controls.\n */\nfunction HoverCardContent({ className, side = \"bottom\", align = \"start\", container, positionerProps, ...props }: HoverCardContentProps) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  return (\n    <>\n      {marker}\n      <PreviewCardPrimitive.Portal container={container}>\n        {probe}\n        <PreviewCardPrimitive.Positioner side={side} align={align} sideOffset={8} collisionPadding={12} {...positionerProps} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <PreviewCardPrimitive.Popup data-slot=\"hover-card\" className={cn(\"kl-ctl kl-hc\", className as string)} {...props} />\n        </PreviewCardPrimitive.Positioner>\n      </PreviewCardPrimitive.Portal>\n    </>\n  )\n}\n\ntype HoverCardHeaderProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  /** A square leading cell: an Avatar with layout=\"cell\", a logo, a 16px glyph or a code. */\n  media?: React.ReactNode\n  title: React.ReactNode\n  /** One line under the title in the UI voice: a role, a place. */\n  description?: React.ReactNode\n  /** A trailing cell in the Code voice: the record's ID, a handle. */\n  code?: React.ReactNode\n}\n\n/** The card's top row of cells: media · title and description · code. Long titles wrap; the code cell keeps its width. */\nfunction HoverCardHeader({ media, title, description, code, className, ...props }: HoverCardHeaderProps) {\n  return (\n    <div data-slot=\"hover-card-header\" className={cn(\"kl-cells kl-hc-h\", className)} {...props}>\n      {media != null ? <span className=\"kl-hc-m\">{media}</span> : null}\n      <span className=\"kl-hc-t\">\n        <span className=\"kl-hc-title\">{title}</span>\n        {description != null ? <span className=\"kl-hc-desc\">{description}</span> : null}\n      </span>\n      {code != null ? <span className=\"kl-code kl-hc-code\">{code}</span> : null}\n    </div>\n  )\n}\n\ntype HoverCardFactsProps = Omit<React.ComponentProps<\"dl\">, \"children\"> & {\n  /** [term, value] pairs, two to a row on shared seams; an odd last fact spans the row. */\n  facts: ReadonlyArray<readonly [React.ReactNode, React.ReactNode]>\n}\n\n/** Key facts as a grid of cells (a description list): the term small, the value in the UI voice. */\nfunction HoverCardFacts({ facts, className, ...props }: HoverCardFactsProps) {\n  return (\n    <dl data-slot=\"hover-card-facts\" className={cn(\"kl-hc-facts\", className)} {...props}>\n      {facts.map(([k, v], i) => (\n        <div key={i} className=\"kl-hc-fact\">\n          <dt>{k}</dt>\n          <dd>{v}</dd>\n        </div>\n      ))}\n    </dl>\n  )\n}\n\n/** Free content (a sentence, a Status, a Meter) in its own cell row. */\nfunction HoverCardBody({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"hover-card-body\" className={cn(\"kl-hc-b\", className)} {...props} />\n}\n\nexport { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardHeader, HoverCardFacts, HoverCardBody, createHoverCardHandle }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/hover-card.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-hc-trigger": {
+        "color": "inherit",
+        "font-weight": "var(--kl-weight-strong)",
+        "text-decoration": "none",
+        "cursor": "pointer",
+        "background-image": "linear-gradient(currentColor, currentColor), linear-gradient(var(--kl-ink-3), var(--kl-ink-3))",
+        "background-repeat": "no-repeat",
+        "background-position": "0 100%, 0 100%",
+        "background-size": "0% 2px, 100% 1px",
+        "padding-block-end": "2px",
+        "box-decoration-break": "clone",
+        "-webkit-box-decoration-break": "clone",
+        "transition": "background-size var(--kl-t-fold) var(--kl-ease-in)"
+      },
+      ".kl-hc-trigger:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+        "background-position": "100% 100%, 100% 100%"
+      },
+      ".kl-hc-trigger:hover, .kl-hc-trigger:focus-visible": {
+        "background-size": "100% 2px, 100% 1px",
+        "transition": "background-size var(--kl-hc-delay, 600ms) linear"
+      },
+      ".kl-hc-trigger[data-popup-open]": {
+        "background-size": "100% 2px, 100% 1px",
+        "transition": "none"
+      },
+      ".kl-hc-trigger:focus-visible": {
+        "outline-offset": "2px"
+      },
+      "[data-kl-motion=\"reduce\"] .kl-hc-trigger": {
+        "transition": "none",
+        "background-size": "0% 2px, 100% 1px"
+      },
+      "[data-kl-motion=\"reduce\"] .kl-hc-trigger[data-popup-open]": {
+        "background-size": "100% 2px, 100% 1px"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".kl-hc-trigger, .kl-hc-trigger:is(:hover, :focus-visible)": {
+          "transition": "none",
+          "background-size": "0% 2px, 100% 1px"
+        },
+        ".kl-hc-trigger[data-popup-open]": {
+          "background-size": "100% 2px, 100% 1px"
+        }
+      },
+      ".kl-hc": {
+        "display": "flex",
+        "flex-direction": "column",
+        "box-sizing": "border-box",
+        "width": "min(320px, calc(100vw - 24px))",
+        "max-height": "var(--available-height)",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "overflow": "auto",
+        "font-family": "var(--kl-font)",
+        "font-size": "14px",
+        "container-type": "inline-size",
+        "transition": "opacity var(--kl-t-unfold) linear"
+      },
+      ".kl-hc > * + *": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-hc-h": {
+        "flex": "none",
+        "min-height": "56px"
+      },
+      ".kl-hc-h.kl-cells > :not(:first-child)": {
+        "border-inline-start-color": "var(--kl-seam)"
+      },
+      ".kl-hc-m": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "width": "56px",
+        "min-height": "56px",
+        "font": "var(--kl-weight-strong) 13px/1 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-hc-h > :first-child": {
+        "margin-inline-start": "calc(var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-hc-h > .kl-hc-m:first-child": {
+        "margin-inline-start": "0",
+        "width": "calc(56px + var(--kl-c, 0px) * 0.35)",
+        "padding-inline-start": "calc(var(--kl-c, 0px) * 0.35)",
+        "box-sizing": "border-box"
+      },
+      ".kl-hc-t": {
+        "flex": "1 1 auto",
+        "min-width": "0",
+        "display": "grid",
+        "align-content": "center",
+        "gap": "2px",
+        "padding": "8px var(--kl-inset)"
+      },
+      ".kl-hc-title": {
+        "font-size": "15px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-hc-desc": {
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)",
+        "line-height": "1.3",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-hc-code": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "padding-inline": "10px"
+      },
+      ".kl-hc-facts": {
+        "display": "grid",
+        "grid-template-columns": "repeat(2, minmax(0, 1fr))",
+        "margin": "0"
+      },
+      ".kl-hc-fact": {
+        "display": "grid",
+        "gap": "2px",
+        "align-content": "start",
+        "padding": "8px var(--kl-inset)",
+        "min-width": "0"
+      },
+      ".kl-hc-fact:nth-child(even)": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-hc-fact:nth-child(n + 3)": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-hc-fact:last-child:nth-child(odd)": {
+        "grid-column": "1 / -1"
+      },
+      ".kl-hc-fact dt": {
+        "font-size": "12px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-hc-fact dd": {
+        "margin": "0",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-variant-numeric": "tabular-nums",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-hc-b": {
+        "padding": "10px var(--kl-inset)",
+        "font-size": "13px",
+        "line-height": "1.45",
+        "color": "var(--kl-ink-2)"
+      },
+      "@container (max-width: 240px)": {
+        ".kl-hc-facts": {
+          "grid-template-columns": "minmax(0, 1fr)"
+        }
+      },
+      ".kl-hc:is([data-starting-style], [data-ending-style])": {
+        "opacity": "0"
+      },
+      ".kl-hc[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)",
+        "pointer-events": "none"
+      },
+      "@supports (corner-start-start-shape: bevel)": {
+        ".kl-hc": {
+          "opacity": "1",
+          "clip-path": "inset(-4px)",
+          "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)"
+        },
+        ".kl-hc:is([data-starting-style], [data-ending-style])": {
+          "opacity": "1"
+        },
+        ".kl-hc[data-ending-style]": {
+          "transition-timing-function": "var(--kl-ease-in)"
+        },
+        ".kl-hc:is([data-starting-style], [data-ending-style])[data-side=\"bottom\"]": {
+          "clip-path": "inset(0 0 100% 0)"
+        },
+        ".kl-hc:is([data-starting-style], [data-ending-style])[data-side=\"top\"]": {
+          "clip-path": "inset(100% 0 0 0)"
+        },
+        ".kl-hc:is([data-starting-style], [data-ending-style]):is([data-side=\"right\"], [data-side=\"inline-end\"])": {
+          "clip-path": "inset(0 100% 0 0)"
+        },
+        ".kl-hc:is([data-starting-style], [data-ending-style]):is([data-side=\"left\"], [data-side=\"inline-start\"])": {
+          "clip-path": "inset(0 0 0 100%)"
+        }
+      },
+      "@media (forced-colors: active)": {
+        ".kl-hc-trigger": {
+          "text-decoration": "underline",
+          "background": "none"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

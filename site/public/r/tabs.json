@@ -1,0 +1,125 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "title": "Tabs",
+  "description": "Tabs with a cobalt location band that stretches; optional count voice; panels.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/scroll-edges"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/tabs.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Tabs as TabsPrimitive } from \"@base-ui/react/tabs\"\n\nimport { cn } from \"@/lib/utils\"\nimport { useStretch } from \"../lib/keyline-motion\"\nimport { useScrollEdges } from \"../lib/scroll-edges\"\n\n/**\n * Tabs: location. The current tab sits under a cobalt band that STRETCHES between tabs (leading edge\n * first, zero bounce). Keyboard, roving focus, aria and panels come from Base UI Tabs; activation follows\n * focus by default, as in a view switcher. Works with or without panels (e.g. table views).\n */\nfunction Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {\n  return <TabsPrimitive.Root data-slot=\"tabs\" className={cn(\"kl-tabs\", className)} {...props} />\n}\n\n/** The tab row. `layout=\"cell\"` puts it inside an enclosing frame (no own border, no cut). */\nfunction TabsList({ className, children, layout = \"control\", activateOnFocus = true, ...props }: React.ComponentProps<typeof TabsPrimitive.List> & { layout?: \"control\" | \"cell\" }) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  const [active, setActive] = React.useState(-1)\n  // Base UI owns the value (controlled or not). Uncontrolled Tabs change selection without re-rendering\n  // this wrapper, so the active tab is read from the DOM on mount and whenever a tab's selection flips.\n  React.useLayoutEffect(() => {\n    const el = ref.current\n    if (!el) return\n    const read = () => {\n      const tabs = Array.from(el.querySelectorAll<HTMLElement>(\"[data-kl-item]\"))\n      const i = tabs.findIndex((t) => t.getAttribute(\"aria-selected\") === \"true\")\n      setActive((p) => (p === i ? p : i))\n    }\n    read()\n    const mo = new MutationObserver(read)\n    mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: [\"aria-selected\"] })\n    return () => mo.disconnect()\n  }, [])\n  useStretch(ref, active)\n  useScrollEdges(ref)\n  return (\n    <TabsPrimitive.List\n      ref={ref}\n      data-slot=\"tabs-list\"\n      data-kl-stretch=\"\"\n      data-kl-layout={layout}\n      activateOnFocus={activateOnFocus}\n      className={cn(\"kl-ctl kl-cells kl-tabs-list\", className)}\n      {...props}\n    >\n      <span data-kl-band=\"\" className=\"kl-tabs-band\" aria-hidden hidden />\n      {children}\n    </TabsPrimitive.List>\n  )\n}\n\n/** A tab. `count` adds the count voice under the label (e.g. records in a view). */\nfunction TabsTab({ className, children, count, ...props }: React.ComponentProps<typeof TabsPrimitive.Tab> & { count?: React.ReactNode }) {\n  return (\n    <TabsPrimitive.Tab data-slot=\"tabs-tab\" data-kl-item=\"\" data-has-count={count != null || undefined} className={cn(\"kl-key kl-tab\", className)} {...props}>\n      <span className=\"kl-tab-l\">{children}</span>\n      {count != null ? <span className=\"kl-tab-n\">{count}</span> : null}\n    </TabsPrimitive.Tab>\n  )\n}\n\nfunction TabsPanel({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Panel>) {\n  return <TabsPrimitive.Panel data-slot=\"tabs-panel\" className={cn(\"kl-tabs-panel\", className)} {...props} />\n}\n\nexport { Tabs, TabsList, TabsTab, TabsPanel }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/tabs.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-tabs": {
+        "display": "grid",
+        "gap": "var(--kl-gutter)",
+        "min-width": "0",
+        "align-content": "start"
+      },
+      ".kl-tabs-list": {
+        "position": "relative",
+        "isolation": "isolate",
+        "display": "flex",
+        "max-width": "100%",
+        "overflow-x": "auto",
+        "background-color": "var(--kl-cell)",
+        "min-height": "var(--kl-ctl)",
+        "justify-self": "start"
+      },
+      ".kl-tabs-list[data-kl-layout=\"cell\"]": {
+        "justify-self": "stretch"
+      },
+      ".kl-tabs-band": {
+        "position": "absolute",
+        "z-index": "-1",
+        "background-color": "var(--kl-cobalt)",
+        "pointer-events": "none"
+      },
+      ".kl-tab": {
+        "display": "flex",
+        "flex-direction": "column",
+        "justify-content": "center",
+        "align-items": "flex-start",
+        "gap": "3px",
+        "padding": "6px 16px",
+        "border": "0",
+        "background": "transparent",
+        "color": "var(--kl-ink)",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "cursor": "pointer",
+        "text-align": "start",
+        "white-space": "nowrap",
+        "transition": "color 0s linear var(--kl-t-flip)"
+      },
+      ".kl-tabs-list > .kl-tab:nth-child(2)": {
+        "border-inline-start": "0"
+      },
+      ".kl-tabs-list > .kl-tab:first-of-type": {
+        "padding-inline-start": "calc(16px + var(--kl-c-room, 0px))"
+      },
+      ".kl-tab-l": {
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "14px"
+      },
+      ".kl-tab[data-has-count]": {
+        "min-width": "104px"
+      },
+      ".kl-tab[data-has-count] .kl-tab-l": {
+        "font-size": "13px"
+      },
+      ".kl-tab-n": {
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "21px",
+        "line-height": "1",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-tab:hover:not([data-active]):not([data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-tab[data-kl-covered]": {
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-tab:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-tab[data-disabled]": {
+        "cursor": "not-allowed",
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)"
+      },
+      ".kl-tabs-panel": {
+        "min-width": "0",
+        "outline": "0"
+      },
+      ".kl-tabs-panel:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-out)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-tabs-band": {
+          "forced-color-adjust": "none",
+          "background": "Highlight"
+        },
+        ".kl-tab[data-kl-covered]": {
+          "forced-color-adjust": "none",
+          "color": "HighlightText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

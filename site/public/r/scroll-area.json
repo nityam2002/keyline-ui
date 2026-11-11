@@ -1,0 +1,249 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "title": "Scroll Area",
+  "description": "A native scroll container with Keyline scrollbars (Base UI Scroll Area): a bar is a cell on the region's edge, owning its seam; content is padded only while an axis overflows; corner cell for both bars; focusable viewport with an inset ring. The thumb reveals while its axis scrolls and when the pointer is on the bar, widens and darkens there, inks while held, then fades (overlay platforms; always shown where native bars take space, in forced colours and for more contrast).",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/scroll-area.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { ScrollArea as ScrollAreaPrimitive } from \"@base-ui/react/scroll-area\"\nimport { DirectionProvider } from \"@base-ui/react/direction-provider\"\n\nimport { cn } from \"@/lib/utils\"\nimport { useDomDirection } from \"../lib/keyline-scope\"\n\ntype ScrollbarVisibility = \"system\" | \"scroll\" | \"always\"\n\ntype ScrollAreaProps = Omit<React.ComponentProps<typeof ScrollAreaPrimitive.Root>, \"children\"> & {\n  children?: React.ReactNode\n  /** Which scrollbars to provide. Overflow on an axis without a scrollbar stays scrollable by wheel,\n   *  touch and keyboard, it just has no bar. Default: vertical. */\n  scrollbars?: \"vertical\" | \"horizontal\" | \"both\"\n  /**\n   * When a thumb shows (the bar's cell and seam are always there while its axis overflows).\n   * system (default): follow the platform. Where native scrollbars overlay content (macOS \"Automatically\",\n   * iOS, Android), the thumb shows while that axis scrolls, while the pointer is over the bar, and while\n   * it is held, then fades. Where native scrollbars take space (macOS \"Always\", Windows, a mouse on\n   * \"Automatically\"), it always shows.\n   * scroll: always behave like an overlay platform. always: always show.\n   * Forced colours and a request for more contrast always show it.\n   */\n  scrollbarVisibility?: ScrollbarVisibility\n  /**\n   * Names the scrollable region. The viewport is focusable whenever it overflows (Base UI), so keyboard\n   * users can scroll content that has no focusable children; a name tells them what they are in.\n   * Give it when the region is not already labelled by its surroundings.\n   */\n  label?: string\n  /**\n   * How a bar meets the region (declared, never inferred from ancestors).\n   * cell (default): the region is a frame or sits inside one; each bar is a cell on its edge with a 1px seam.\n   * rail: the region is not a frame (a page or a pane on the page background); a bar has no cell to belong\n   * to, so it is a 1px keyline rail with the solid thumb centred on it.\n   */\n  track?: \"cell\" | \"rail\"\n  viewportClassName?: string\n  contentClassName?: string\n}\n\n/* Whether the platform's own scrollbars take space (classic) or overlay content. The browser exposes the\n   user's choice only this way: an overflow:scroll box is narrower than its border box when bars are classic.\n   Measured once per page; a mouse plugged in later is picked up on the next load. */\nlet classicBars: boolean | undefined\nfunction nativeBarsTakeSpace() {\n  if (classicBars === undefined) {\n    const probe = document.createElement(\"div\")\n    probe.style.cssText = \"position:absolute;top:-200px;width:50px;height:50px;overflow:scroll;visibility:hidden;pointer-events:none\"\n    document.body.appendChild(probe)\n    classicBars = probe.offsetWidth - probe.clientWidth > 0\n    probe.remove()\n  }\n  return classicBars\n}\nconst noSubscribe = () => () => {}\n/** \"scroll\" (thumbs reveal and fade) or \"always\", resolved from the platform for \"system\". */\nfunction useScrollbarReveal(visibility: ScrollbarVisibility) {\n  const classic = React.useSyncExternalStore(noSubscribe, nativeBarsTakeSpace, () => false)\n  return visibility === \"system\" ? (classic ? \"always\" : \"scroll\") : visibility\n}\n\n/** The bars, thumbs and corner of a scroll area. Shared by ScrollArea and MessageScroller. */\nfunction ScrollAreaBars({ scrollbars = \"vertical\" }: { scrollbars?: ScrollAreaProps[\"scrollbars\"] }) {\n  const v = scrollbars !== \"horizontal\"\n  const h = scrollbars !== \"vertical\"\n  return (\n    <>\n      {v ? (\n        <ScrollAreaPrimitive.Scrollbar orientation=\"vertical\" className=\"kl-scrollbar\">\n          <ScrollAreaPrimitive.Thumb className=\"kl-scroll-thumb\" />\n        </ScrollAreaPrimitive.Scrollbar>\n      ) : null}\n      {h ? (\n        <ScrollAreaPrimitive.Scrollbar orientation=\"horizontal\" className=\"kl-scrollbar\">\n          <ScrollAreaPrimitive.Thumb className=\"kl-scroll-thumb\" />\n        </ScrollAreaPrimitive.Scrollbar>\n      ) : null}\n      {v && h ? <ScrollAreaPrimitive.Corner className=\"kl-scroll-corner\" /> : null}\n    </>\n  )\n}\n\n/** The root of a Keyline scroll area: direction, construction attributes and the resolved reveal mode. */\nfunction ScrollAreaRoot({\n  className,\n  scrollbars = \"vertical\",\n  track = \"cell\",\n  scrollbarVisibility = \"system\",\n  ref: outerRef,\n  ...props\n}: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & Pick<ScrollAreaProps, \"scrollbars\" | \"track\" | \"scrollbarVisibility\">) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  const [dir] = useDomDirection(ref)\n  const reveal = useScrollbarReveal(scrollbarVisibility)\n  const setRef = React.useCallback(\n    (el: HTMLDivElement | null) => {\n      ref.current = el\n      if (typeof outerRef === \"function\") outerRef(el)\n      else if (outerRef) outerRef.current = el\n    },\n    [outerRef],\n  )\n  return (\n    <DirectionProvider direction={dir}>\n      <ScrollAreaPrimitive.Root ref={setRef} data-kl-bars={scrollbars} data-kl-track={track} data-kl-reveal={reveal} className={cn(\"kl-scroll\", className)} {...props} />\n    </DirectionProvider>\n  )\n}\n\n/**\n * A native scroll container with Keyline scrollbars (Base UI Scroll Area). Scrolling itself is the\n * browser's: wheel, trackpad, touch momentum, keyboard and find-in-page all behave natively; Base UI\n * hides the native bar and drives the thumb from the real scroll position.\n *\n * Construction: a scrollbar is a cell on the region's inline-end (or block-end) edge. It owns the 1px\n * seam that divides it from the content; its thumb is a solid block inset 2px. Content is padded by\n * the bar's width only while that axis overflows, so the bar never covers text. With both bars, the\n * corner cell closes the L-junction. Bars render only while their axis overflows.\n *\n * Behaviour (after macOS overlay scrollbars): the cell stays, the thumb reveals inside it.\n * Scrolling an axis shows its thumb slim at once; the pointer on the bar widens it to the cell and darkens\n * it; holding it inks it. A short idle after the last of these, it fades; new input brings it back from\n * wherever the fade is. Pressing the track lands the thumb under the pointer and keeps dragging.\n */\nfunction ScrollArea({ className, children, scrollbars = \"vertical\", track = \"cell\", scrollbarVisibility = \"system\", label, viewportClassName, contentClassName, ...props }: ScrollAreaProps) {\n  return (\n    <ScrollAreaRoot data-slot=\"scroll-area\" scrollbars={scrollbars} track={track} scrollbarVisibility={scrollbarVisibility} className={className} {...props}>\n      <ScrollAreaPrimitive.Viewport className={cn(\"kl-scroll-vp\", viewportClassName)} role={label ? \"region\" : undefined} aria-label={label}>\n        <ScrollAreaPrimitive.Content className={cn(\"kl-scroll-content\", contentClassName)}>{children}</ScrollAreaPrimitive.Content>\n      </ScrollAreaPrimitive.Viewport>\n      <ScrollAreaBars scrollbars={scrollbars} />\n    </ScrollAreaRoot>\n  )\n}\n\nexport { ScrollArea, ScrollAreaRoot, ScrollAreaBars, type ScrollAreaProps, type ScrollbarVisibility }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/scroll-area.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-scroll": {
+        "--kl-sb": "12px",
+        "--kl-t-reveal": "90ms",
+        "--kl-t-conceal": "300ms",
+        "--kl-reveal-hold": "400ms",
+        "--kl-t-grip": "120ms",
+        "position": "relative",
+        "isolation": "isolate",
+        "display": "flex",
+        "flex-direction": "column",
+        "min-width": "0",
+        "min-height": "0",
+        "overflow": "hidden"
+      },
+      "[data-kl-motion=\"reduce\"] .kl-scroll, .kl-scroll[data-kl-motion=\"reduce\"]": {
+        "--kl-t-reveal": "0ms",
+        "--kl-t-conceal": "0ms",
+        "--kl-t-grip": "0ms"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".kl-scroll": {
+          "--kl-t-reveal": "0ms",
+          "--kl-t-conceal": "0ms",
+          "--kl-t-grip": "0ms"
+        }
+      },
+      ".kl-scroll-vp": {
+        "flex": "1 1 auto",
+        "min-height": "0",
+        "min-width": "0",
+        "outline": "0"
+      },
+      ".kl-scroll[data-has-overflow-y]:not([data-kl-bars=\"horizontal\"]) > .kl-scroll-vp": {
+        "padding-inline-end": "var(--kl-sb)"
+      },
+      ".kl-scroll[data-has-overflow-x]:not([data-kl-bars=\"vertical\"]) > .kl-scroll-vp": {
+        "padding-block-end": "var(--kl-sb)"
+      },
+      ".kl-scrollbar": {
+        "z-index": "1",
+        "box-sizing": "border-box",
+        "display": "flex",
+        "padding": "2px",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-scrollbar[data-orientation=\"vertical\"]": {
+        "width": "var(--kl-sb)",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-scrollbar[data-orientation=\"horizontal\"]": {
+        "flex-direction": "column",
+        "height": "var(--kl-sb)",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"vertical\"]": {
+        "padding-block": "0",
+        "margin-block": "2px"
+      },
+      ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"horizontal\"]": {
+        "padding-inline": "0",
+        "margin-inline": "2px"
+      },
+      ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "z-index": "-1",
+        "background-color": "var(--kl-cell)",
+        "border": "0 solid var(--kl-seam)"
+      },
+      ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"vertical\"]::after": {
+        "inset-block": "-2px",
+        "inset-inline": "calc(-1 * var(--kl-k1)) 0",
+        "border-inline-start-width": "var(--kl-k1)"
+      },
+      ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"horizontal\"]::after": {
+        "inset-inline": "-2px",
+        "inset-block": "calc(-1 * var(--kl-k1)) 0",
+        "border-block-start-width": "var(--kl-k1)"
+      },
+      ".kl-scroll-thumb": {
+        "position": "relative",
+        "flex": "1 1 auto",
+        "background-color": "var(--kl-ink-3)",
+        "transform-origin": "center",
+        "transition": "opacity var(--kl-t-conceal) linear var(--kl-reveal-hold), scale var(--kl-t-grip) var(--kl-ease-out), background-color var(--kl-t-grip) linear"
+      },
+      ".kl-scroll-thumb::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset": "-6px -2px"
+      },
+      ".kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb::after": {
+        "inset": "-2px -6px"
+      },
+      ".kl-scrollbar:hover > .kl-scroll-thumb": {
+        "background-color": "var(--kl-ink-2)"
+      },
+      ".kl-scrollbar:active > .kl-scroll-thumb": {
+        "background-color": "var(--kl-ink)"
+      },
+      ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar > .kl-scroll-thumb": {
+        "opacity": "0",
+        "scale": "calc(4 / 7) 1"
+      },
+      ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
+        "scale": "1 calc(4 / 7)"
+      },
+      ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:is([data-scrolling], :active) > .kl-scroll-thumb, .kl-scroll[data-kl-reveal=\"scroll\"][data-kl-travel] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
+        "opacity": "1",
+        "transition-duration": "var(--kl-t-reveal), var(--kl-t-grip), var(--kl-t-grip)",
+        "transition-delay": "0s"
+      },
+      ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:active > .kl-scroll-thumb": {
+        "scale": "1"
+      },
+      "@media (hover: hover)": {
+        ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:hover > .kl-scroll-thumb": {
+          "opacity": "1",
+          "scale": "1",
+          "transition-duration": "var(--kl-t-reveal), var(--kl-t-grip), var(--kl-t-grip)",
+          "transition-delay": "0s"
+        },
+        ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar:hover > .kl-scroll-thumb": {
+          "scale": "1"
+        }
+      },
+      "@media (prefers-contrast: more)": {
+        ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar > .kl-scroll-thumb": {
+          "opacity": "1 !important",
+          "scale": "none !important",
+          "transition": "background-color var(--kl-t-grip) linear"
+        }
+      },
+      ".kl-scroll-corner": {
+        "z-index": "1",
+        "box-sizing": "border-box",
+        "background-color": "var(--kl-cell)",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar": {
+        "background-color": "transparent",
+        "border": "0",
+        "padding": "0",
+        "justify-content": "center",
+        "align-items": "flex-start"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar::before": {
+        "content": "\"\"",
+        "position": "absolute",
+        "z-index": "-1",
+        "background-color": "var(--kl-line-soft)"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"vertical\"]::before": {
+        "inset-block": "0",
+        "inset-inline-start": "calc(50% - var(--kl-k1) / 2)",
+        "width": "var(--kl-k1)"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"]::before": {
+        "inset-inline": "0",
+        "inset-block-start": "calc(50% - var(--kl-k1) / 2)",
+        "height": "var(--kl-k1)"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
+        "flex": "none",
+        "width": "6px",
+        "transform-origin": "center"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
+        "flex": "none",
+        "height": "6px",
+        "transform-origin": "center"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar > .kl-scroll-thumb::after": {
+        "inset": "-6px -3px"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb::after": {
+        "inset": "-3px -6px"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
+        "scale": "0.5 1"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
+        "scale": "1 0.5"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar:active > .kl-scroll-thumb": {
+        "scale": "1"
+      },
+      ".kl-scroll[data-kl-track=\"rail\"] > .kl-scroll-corner": {
+        "background-color": "transparent",
+        "border": "0"
+      },
+      ".kl-scroll:has(> .kl-scroll-vp:focus-visible)::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset": "0",
+        "z-index": "2",
+        "pointer-events": "none",
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-scrollbar, .kl-scrollbar::after, .kl-scroll-corner": {
+          "border-color": "CanvasText"
+        },
+        ".kl-scroll-thumb, .kl-scroll[data-kl-reveal] > .kl-scrollbar > .kl-scroll-thumb": {
+          "forced-color-adjust": "none",
+          "background": "CanvasText",
+          "opacity": "1 !important",
+          "scale": "none !important",
+          "transition": "none"
+        },
+        ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar::before": {
+          "forced-color-adjust": "none",
+          "background": "GrayText"
+        },
+        ".kl-scroll:has(> .kl-scroll-vp:focus-visible)::after": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "docs": "Size the root (height or max-height) with your own class: <ScrollArea className=\"h-64\" label=\"Activity\">…</ScrollArea>. scrollbars=\"vertical\" (default), \"horizontal\" or \"both\". Scrolling stays native (wheel, trackpad, touch, keyboard). Give label when nothing else names the region; the viewport is focusable while it overflows. Do not wrap Select or Multiselect lists in it: they keep their own native scroller, styled to match.",
+  "type": "registry:ui"
+}

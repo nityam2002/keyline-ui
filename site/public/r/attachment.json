@@ -1,0 +1,275 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "attachment",
+  "title": "Attachment",
+  "description": "A file as a frame of cells that never change: media, name (the extension stays in view) and detail, one action. Uploading fills the bottom keyline; processing runs the pending segment; error stops the bar in red and floods the media cell with !; an upload that lands floods it yellow with a tick for 900ms. layout=\"cell\" makes it a cell of a Bubble.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/attachment.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\n\n/* A file as a frame of cells: media (an icon or a thumbnail), the name and its detail (size, progress, or the\n   reason it failed), and an action cell (cancel, retry, open). Every state is the same object; the\n   cells never change, only what is in them, so the name and the action stay put from upload to done.\n   - idle: picked, not sent; the frame is line-soft until it goes;\n   - uploading: the bottom keyline fills from the start with the working colour (a progressbar), the percentage\n     in the detail;\n   - processing: the pending segment runs along the bottom keyline (busy);\n   - error: the bar stops where the upload stopped and turns red; the media cell floods red from that keyline\n     with a ! (the reason in the detail, announced); a retry resumes the same bar;\n   - done: arriving from an upload, the media cell floods yellow with a tick for 900ms (Signal: done), then the\n     file's glyph returns.\n   layout=\"cell\" makes it a cell of a Bubble (a file sent in a message); the default draws its own control\n   frame (a composer tray, a list of files). An AttachmentTrigger makes the whole frame open the file. */\n\ntype State = \"idle\" | \"uploading\" | \"processing\" | \"error\" | \"done\"\ntype Mark = \"error\" | \"done\" | null\n\nconst AttachmentContext = React.createContext<{ state: State; progress?: number; titleId: string; mark: Mark }>({ state: \"done\", titleId: \"\", mark: null })\n\ntype AttachmentProps = React.ComponentProps<\"div\"> & {\n  state?: State\n  /** 0–100 while uploading; on error, where it stopped. */\n  progress?: number\n  /** default: one row. compact: a smaller row for a composer. tile: media above the name (thumbnails). */\n  size?: \"default\" | \"compact\" | \"tile\"\n  /** control (default): its own frame. cell: a cell of the Bubble it sits in. */\n  layout?: \"control\" | \"cell\"\n}\n\nconst DONE_MS = 900\n\nfunction Attachment({ state = \"done\", progress, size = \"default\", layout = \"control\", className, children, ...props }: AttachmentProps) {\n  const titleId = React.useId()\n  // The done flash plays only when an upload lands, never for a file that was already there.\n  const prev = React.useRef(state)\n  const [flash, setFlash] = React.useState(false)\n  React.useEffect(() => {\n    const was = prev.current\n    prev.current = state\n    if (state === \"done\" && (was === \"uploading\" || was === \"processing\")) {\n      setFlash(true)\n      const t = setTimeout(() => setFlash(false), DONE_MS)\n      return () => clearTimeout(t)\n    }\n    setFlash(false)\n  }, [state])\n  const mark: Mark = state === \"error\" ? \"error\" : flash ? \"done\" : null\n  const pct = Math.max(0, Math.min(100, progress ?? 0))\n  const bar = state === \"uploading\" || state === \"error\" || flash\n  return (\n    <AttachmentContext.Provider value={{ state, progress, titleId, mark }}>\n      <div\n        data-slot=\"attachment\"\n        data-state={state}\n        data-size={size}\n        data-kl-layout={layout}\n        data-mark={mark ?? undefined}\n        aria-busy={state === \"uploading\" || state === \"processing\" || undefined}\n        className={cn(\"kl-ctl kl-att\", className)}\n        {...props}\n      >\n        {children}\n        {bar ? (\n          <span\n            className=\"kl-att-bar\"\n            role={state === \"uploading\" ? \"progressbar\" : undefined}\n            aria-labelledby={state === \"uploading\" ? titleId : undefined}\n            aria-valuemin={state === \"uploading\" ? 0 : undefined}\n            aria-valuemax={state === \"uploading\" ? 100 : undefined}\n            aria-valuenow={state === \"uploading\" && progress != null ? Math.round(pct) : undefined}\n            aria-hidden={state === \"uploading\" ? undefined : true}\n          >\n            <span style={{ transform: `scaleX(${flash ? 1 : pct / 100})` }} />\n          </span>\n        ) : null}\n        {state === \"processing\" ? <span className=\"kl-pending\" aria-hidden /> : null}\n      </div>\n    </AttachmentContext.Provider>\n  )\n}\n\n/** The media cell: a 16px glyph, or an <img> (a thumbnail; give it alt=\"\" when the name says what it is). It is also\n *  where the outcome lands: it floods red with ! on failure, and yellow with a tick when an upload completes. */\nfunction AttachmentMedia({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  const { mark } = React.useContext(AttachmentContext)\n  // keep the last mark's glyph while the flood retracts\n  const last = React.useRef<Exclude<Mark, null>>(\"done\")\n  if (mark) last.current = mark\n  return (\n    <div data-slot=\"attachment-media\" className={cn(\"kl-att-media\", className)} {...props}>\n      {children}\n      <span className=\"kl-att-mark\" data-kind={last.current} aria-hidden>\n        {last.current === \"error\" ? (\n          \"!\"\n        ) : (\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2.25\" strokeLinecap=\"square\">\n            <path d=\"m3.5 8.5 3 3 6-7\" />\n          </svg>\n        )}\n      </span>\n    </div>\n  )\n}\n\nfunction AttachmentContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"attachment-content\" className={cn(\"kl-att-body\", className)} {...props} />\n}\n\n/** The file name; a long name keeps its extension in view (end-truncation would hide it). Its direction\n *  follows its own text (a Latin name stays \"CMR.pdf\" in an RTL page). */\nfunction AttachmentTitle({ className, children, ...props }: React.ComponentProps<\"span\">) {\n  const { titleId } = React.useContext(AttachmentContext)\n  const text = typeof children === \"string\" ? children : null\n  const dot = text ? text.lastIndexOf(\".\") : -1\n  return (\n    <span id={titleId} dir=\"auto\" data-slot=\"attachment-title\" className={cn(\"kl-att-title\", className)} title={text ?? undefined} {...props}>\n      {text && dot > 0 && text.length - dot <= 6 ? (\n        <>\n          <span className=\"kl-att-stem\">{text.slice(0, dot)}</span>\n          <span className=\"kl-att-ext\">{text.slice(dot)}</span>\n        </>\n      ) : (\n        <span className=\"kl-att-stem\">{children}</span>\n      )}\n    </span>\n  )\n}\n\n/** Size and type in the Code voice; while uploading it adds the percentage, on error it is the reason (announced).\n *  It never widens the frame: the name sets the width, and a long reason wraps. */\nfunction AttachmentDescription({ className, children, ...props }: React.ComponentProps<\"span\">) {\n  const { state, progress } = React.useContext(AttachmentContext)\n  return (\n    <span data-slot=\"attachment-description\" role={state === \"error\" ? \"alert\" : undefined} className={cn(\"kl-att-desc\", className)} {...props}>\n      {/* the words take their own direction; the line keeps the row's, so it starts on the row's start edge */}\n      <bdi>\n        {children}\n        {state === \"uploading\" && progress != null ? <span className=\"kl-att-pct\"> · {Math.round(progress)}%</span> : null}\n        {state === \"processing\" ? <span className=\"kl-att-pct\"> · Processing</span> : null}\n      </bdi>\n    </span>\n  )\n}\n\n/** The action cell(s), each a square key on a seam (cancel, retry, open, remove). Name each button. Keep one\n *  action in every state of a sent file, so the frame keeps its width while the action changes. */\nfunction AttachmentActions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"attachment-actions\" className={cn(\"kl-cells kl-att-actions\", className)} {...props} />\n}\n\nfunction AttachmentAction({ className, type = \"button\", ...props }: React.ComponentProps<\"button\"> & { \"aria-label\": string }) {\n  return <button type={type} data-slot=\"attachment-action\" className={cn(\"kl-key kl-att-action\", className)} {...props} />\n}\n\n/** Makes the whole frame open the file: an overlay button or link (render={<a href=…/>}) under the actions. Name it. */\nfunction AttachmentTrigger({ className, render, type, ...props }: useRender.ComponentProps<\"button\">) {\n  return useRender({\n    defaultTagName: \"button\",\n    render,\n    props: mergeProps<\"button\">({ type: render ? type : (type ?? \"button\"), className: cn(\"kl-att-trigger\", className) }, props),\n  })\n}\n\nconst Glyph = {\n  file: \"M4 1.5h5.5L12.5 4.5v10h-8.5zM9.5 1.5v3h3\",\n  image: \"M2 3h12v10H2zM2 11l3.5-3.5 3 3 2-2L14 12M10.5 6.5h.01\",\n  close: \"M4 4l8 8M12 4l-8 8\",\n  retry: \"M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3\",\n  download: \"M8 2v8.5M4.5 7l3.5 3.5L11.5 7M2.5 13.5h11\",\n}\nfunction AttachmentGlyph({ name }: { name: keyof typeof Glyph }) {\n  return (\n    <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n      <path d={Glyph[name]} />\n    </svg>\n  )\n}\n\nexport { Attachment, AttachmentMedia, AttachmentContent, AttachmentTitle, AttachmentDescription, AttachmentActions, AttachmentAction, AttachmentTrigger, AttachmentGlyph }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/attachment.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-att": {
+        "--kl-att-x": "var(--kl-msg-x, var(--kl-inset))",
+        "display": "flex",
+        "align-items": "stretch",
+        "min-width": "0",
+        "width": "fit-content",
+        "max-width": "100%",
+        "min-height": "48px",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-att > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger))": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-att[data-state=\"idle\"]": {
+        "border-color": "var(--kl-line-soft)"
+      },
+      ".kl-att[data-state=\"idle\"] > *": {
+        "border-color": "var(--kl-line-soft)"
+      },
+      ".kl-att[data-state=\"error\"]": {
+        "border-color": "var(--kl-red)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"]": {
+        "width": "auto",
+        "align-self": "stretch",
+        "background-color": "transparent"
+      },
+      ".kl-att[data-kl-layout=\"cell\"][data-state=\"error\"]": {
+        "border-color": "var(--kl-seam)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger))": {
+        "border-inline-start-color": "var(--kl-seam)"
+      },
+      ".kl-att-media": {
+        "position": "relative",
+        "display": "grid",
+        "place-items": "center",
+        "flex": "none",
+        "width": "44px",
+        "overflow": "hidden",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] .kl-att-media": {
+        "width": "calc(2 * var(--kl-att-x) + 10px)",
+        "justify-items": "start",
+        "padding-inline-start": "calc(var(--kl-att-x) - 3px)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] .kl-att-media > img": {
+        "justify-self": "stretch",
+        "margin-inline-start": "calc(3px - var(--kl-att-x))"
+      },
+      ".kl-att-media > img": {
+        "display": "block",
+        "width": "100%",
+        "height": "100%",
+        "object-fit": "cover"
+      },
+      ".kl-att[data-state=\"uploading\"] .kl-att-media > img, .kl-att[data-state=\"processing\"] .kl-att-media > img": {
+        "opacity": "0.6"
+      },
+      ".kl-att-mark": {
+        "position": "absolute",
+        "inset": "0",
+        "display": "grid",
+        "place-items": "center",
+        "pointer-events": "none",
+        "font-weight": "var(--kl-weight-display, 800)",
+        "font-size": "15px",
+        "background-color": "var(--kl-yellow)",
+        "color": "var(--kl-on-yellow)",
+        "clip-path": "circle(0px at 50% 100%)",
+        "transition": "clip-path var(--kl-t-unflood) var(--kl-ease-in)"
+      },
+      ".kl-att-mark[data-kind=\"error\"]": {
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)"
+      },
+      ".kl-att[data-mark] .kl-att-mark": {
+        "clip-path": "circle(150% at 50% 100%)",
+        "transition": "clip-path var(--kl-t-flood) var(--kl-ease-out)"
+      },
+      ".kl-att-body": {
+        "display": "grid",
+        "align-content": "center",
+        "justify-items": "start",
+        "gap": "2px",
+        "min-width": "0",
+        "padding": "6px calc(var(--kl-inset) + 2px) 7px var(--kl-inset)",
+        "min-inline-size": "20ch"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] .kl-att-body": {
+        "flex": "1 1 auto"
+      },
+      ".kl-att-title": {
+        "display": "flex",
+        "min-width": "0",
+        "max-width": "min(100%, 32ch)",
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25"
+      },
+      ".kl-att-stem": {
+        "min-width": "0",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+      },
+      ".kl-att-ext": {
+        "flex": "none",
+        "white-space": "nowrap"
+      },
+      ".kl-att-desc": {
+        "contain": "inline-size",
+        "justify-self": "stretch",
+        "min-width": "0",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap",
+        "font": "500 11px/1.25 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)",
+        "font-variant-numeric": "tabular-nums",
+        "text-align": "start"
+      },
+      ".kl-att[data-state=\"error\"] .kl-att-desc": {
+        "color": "var(--kl-red-text)",
+        "white-space": "normal"
+      },
+      ".kl-att-actions": {
+        "flex": "none",
+        "position": "relative",
+        "z-index": "2"
+      },
+      ".kl-att-action": {
+        "all": "unset",
+        "box-sizing": "border-box",
+        "display": "grid",
+        "place-items": "center",
+        "width": "40px",
+        "color": "var(--kl-ink-2)",
+        "cursor": "pointer"
+      },
+      ".kl-att-action:hover": {
+        "background-color": "var(--kl-tint)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] .kl-att-action:hover": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-att-action:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "calc(var(--kl-ring) * -1)"
+      },
+      ".kl-att-trigger": {
+        "all": "unset",
+        "position": "absolute",
+        "inset": "0",
+        "z-index": "1",
+        "cursor": "pointer"
+      },
+      ".kl-att-trigger:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-out)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"] > .kl-att-trigger:focus-visible": {
+        "outline-offset": "calc(var(--kl-ring) * -1)"
+      },
+      ".kl-att:has(> .kl-att-trigger:hover)": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-att[data-kl-layout=\"cell\"]:has(> .kl-att-trigger:hover)": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-att:has(> .kl-att-trigger:active)": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-att-bar": {
+        "position": "absolute",
+        "inset-inline": "0",
+        "inset-block-end": "0",
+        "z-index": "1",
+        "height": "3px",
+        "overflow": "hidden",
+        "pointer-events": "none"
+      },
+      ".kl-att > .kl-pending": {
+        "--kl-bw": "3px",
+        "inset-block-end": "0"
+      },
+      ".kl-att-bar > span": {
+        "display": "block",
+        "height": "100%",
+        "background-color": "var(--kl-yellow)",
+        "transform-origin": "left",
+        "transition": "transform var(--kl-t-unfold) var(--kl-ease-out), background-color var(--kl-t-flood) linear"
+      },
+      ".kl-att-bar:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) > span": {
+        "transform-origin": "right"
+      },
+      ".kl-att[data-state=\"error\"] .kl-att-bar > span": {
+        "background-color": "var(--kl-red)"
+      },
+      ".kl-att[data-size=\"compact\"]": {
+        "min-height": "36px"
+      },
+      ".kl-att[data-size=\"compact\"] .kl-att-media": {
+        "width": "34px"
+      },
+      ".kl-att[data-size=\"compact\"] .kl-att-body": {
+        "padding-block": "3px 4px"
+      },
+      ".kl-att[data-size=\"compact\"] .kl-att-action": {
+        "width": "32px"
+      },
+      ".kl-att[data-size=\"tile\"]": {
+        "flex-direction": "column",
+        "width": "136px"
+      },
+      ".kl-att[data-size=\"tile\"] > :not(:first-child, .kl-att-bar, .kl-pending, .kl-att-trigger, .kl-att-actions)": {
+        "border-inline-start": "0",
+        "border-block-start": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-att[data-size=\"tile\"] .kl-att-media": {
+        "width": "100%",
+        "aspect-ratio": "4 / 3"
+      },
+      ".kl-att[data-size=\"tile\"] .kl-att-actions": {
+        "position": "absolute",
+        "inset-block-start": "0",
+        "inset-inline-end": "0",
+        "border": "0",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-line)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-raised)"
+      },
+      ".kl-att[data-size=\"tile\"] .kl-att-action": {
+        "height": "28px",
+        "width": "28px"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-att-bar > span": {
+          "background-color": "Highlight"
+        },
+        ".kl-att-mark": {
+          "forced-color-adjust": "none",
+          "background-color": "Mark",
+          "color": "MarkText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

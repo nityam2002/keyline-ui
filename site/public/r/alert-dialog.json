@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-dialog",
+  "title": "Alert dialog",
+  "description": "Installs the dialog item, which exports AlertDialog, AlertDialogTrigger and AlertDialogContent (focus on the safe action, destructive or primary tone) beside Dialog. Import from dialog.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/dialog"
+  ],
+  "files": [],
+  "type": "registry:ui"
+}

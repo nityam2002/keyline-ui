@@ -1,0 +1,222 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar",
+  "title": "Avatar",
+  "description": "A person or organisation as a square cell (Base UI Avatar): the photo rises in from the bottom keyline, initials hold the cell while it loads or after it fails, status as its floor keyline (a line shape per kind, never over the face); AvatarGroup joins avatars on shared seams with a +N count cell.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/avatar.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Avatar as AvatarPrimitive } from \"@base-ui/react/avatar\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype AvatarSize = \"sm\" | \"md\" | \"lg\" | \"xl\"\ntype AvatarStatus = \"normal\" | \"waiting\" | \"attention\" | \"done\" | \"none\"\n\n/**\n * Initials for a name: the first grapheme of the first word and of the last word (\"Nora van der Berg\" →\n * \"NB\"), one grapheme for a single word or a script without word spaces (\"李小龍\" → \"李\"). Grapheme-aware,\n * so \"Ægir Øster\" → \"ÆØ\" and combining marks stay whole. Emails and handles use the part before \"@\".\n */\nfunction avatarInitials(name: string | null | undefined): string {\n  const clean = (name ?? \"\").split(\"@\")[0].replace(/[_.\\-+]+/g, \" \").replace(/[^\\p{L}\\p{N}\\p{M}\\s]/gu, \"\").trim()\n  if (!clean) return \"\"\n  const words = clean.split(/\\s+/u)\n  const seg = typeof Intl !== \"undefined\" && \"Segmenter\" in Intl ? new Intl.Segmenter(undefined, { granularity: \"grapheme\" }) : null\n  const first = (w: string) => (seg ? (seg.segment(w)[Symbol.iterator]().next().value?.segment ?? \"\") : Array.from(w)[0] ?? \"\")\n  // a script written without spaces (Han, Kana, Hangul, Thai…) gives one grapheme: two would be two words' worth\n  if (words.length === 1 || /^[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}\\p{Script=Hangul}\\p{Script=Thai}]/u.test(clean)) return first(words[0]).toLocaleUpperCase()\n  return (first(words[0]) + first(words[words.length - 1])).toLocaleUpperCase()\n}\n\nconst STATUS_TEXT: Record<AvatarStatus, string> = { normal: \"active\", waiting: \"away\", attention: \"needs attention\", done: \"done\", none: \"offline\" }\n\ntype AvatarProps = Omit<React.ComponentProps<typeof AvatarPrimitive.Root>, \"children\"> & {\n  /** The person or organisation. Names the avatar (role=\"img\") and gives the initials. */\n  name: string\n  /** Photo or logo. While it loads, and if it fails, the initials show: never a broken image. */\n  src?: string\n  /** Overrides the initials, e.g. a two-letter org code or a 16px glyph. */\n  fallback?: React.ReactNode\n  /** sm 24 · md 32 (default; a list row) · lg 40 · xl 56 (a profile header). Ignored with layout=\"cell\". */\n  size?: AvatarSize\n  /** control: its own 1px keyline. cell: a square filling the width of a square-ish cell of an enclosing\n   *  frame (a hover card's header); it draws no edge. In a list row use a control avatar in the media cell. */\n  layout?: \"control\" | \"cell\"\n  /** Status on the avatar's floor: its bottom keyline becomes a signal line, never drawn over the face.\n   *  Each kind has its own line shape (active solid, away dashed, attention red with a red frame, done\n   *  double, offline none and a grayscale photo), so it survives grayscale and forced colours. Its words\n   *  join the accessible name. */\n  status?: AvatarStatus\n  /** Words for the status (default by kind: active, away, needs attention, done, offline). */\n  statusLabel?: string\n  /** The name is already printed beside the avatar (a list row, a header): hide it from assistive\n   *  technology so the name isn't read twice. */\n  decorative?: boolean\n  /** Base UI: wait this long before showing the initials, so a fast image never flashes them. Default 0. */\n  fallbackDelay?: number\n  imageProps?: Omit<React.ComponentProps<typeof AvatarPrimitive.Image>, \"src\">\n}\n\n/**\n * A person or organisation as a square cell (Base UI Avatar). The photo fills the cell; while it loads or\n * after it fails, the initials hold the cell in the UI voice. There is no radius in the language, so an\n * avatar is never a circle; with the cut off or on it is the same square (an avatar is a cell, never cut).\n */\nfunction Avatar({ name, src, fallback, size = \"md\", layout = \"control\", status, statusLabel, decorative, fallbackDelay, imageProps, className, ...props }: AvatarProps) {\n  const label = status ? `${name}, ${statusLabel ?? STATUS_TEXT[status]}` : name\n  return (\n    <AvatarPrimitive.Root\n      data-slot=\"avatar\"\n      data-size={layout === \"cell\" ? undefined : size}\n      data-kl-layout={layout}\n      data-status={status}\n      role={decorative ? undefined : \"img\"}\n      aria-label={decorative ? undefined : label}\n      aria-hidden={decorative || undefined}\n      className={cn(\"kl-avatar\", className)}\n      {...props}\n    >\n      {src ? <AvatarPrimitive.Image src={src} alt=\"\" {...imageProps} className={cn(\"kl-avatar-img\", imageProps?.className as string)} /> : null}\n      <AvatarPrimitive.Fallback delay={src ? fallbackDelay : undefined} className=\"kl-avatar-fb\" aria-hidden>\n        {fallback ?? avatarInitials(name)}\n      </AvatarPrimitive.Fallback>\n    </AvatarPrimitive.Root>\n  )\n}\n\ntype AvatarGroupProps = React.ComponentProps<\"div\"> & {\n  /** Names the group, e.g. \"Assignees\". The visible names and the hidden count are read after it. */\n  label: string\n  /** Show at most this many cells; the rest fold into a count cell (+N) that takes the last place. */\n  max?: number\n  /** Everyone in the group, when more exist than the children passed (a server count). */\n  total?: number\n  size?: AvatarSize\n  /** Words for the count cell. Default (n) => `${n} more`. */\n  countLabel?: (hidden: number) => string\n}\n\n/**\n * Several avatars as cells of one keyline frame, sharing seams (C1: related parts touch). Not a stack of\n * overlapping circles: every face stays whole. With `max`, the overflow becomes one count cell. For a\n * count that opens the full list, leave out `max` and compose AvatarGroupCount with a PopoverTrigger.\n */\nfunction AvatarGroup({ label, max, total, size = \"md\", countLabel = (n) => `${n} more`, className, children, ...props }: AvatarGroupProps) {\n  const all = React.Children.toArray(children).filter(React.isValidElement)\n  const count = Math.max(total ?? all.length, all.length)\n  const fits = max == null || count <= max\n  const shown = fits ? all : all.slice(0, Math.max(0, max - 1))\n  const hidden = count - shown.length\n  return (\n    <div role=\"group\" aria-label={label} data-slot=\"avatar-group\" data-size={size} className={cn(\"kl-avatar-group\", className)} {...props}>\n      {shown}\n      {hidden > 0 ? <AvatarGroupCount count={hidden} label={countLabel(hidden)} /> : null}\n    </div>\n  )\n}\n\ntype AvatarGroupCountProps = useRender.ComponentProps<\"span\"> & { /** How many are not shown. */ count: number; label?: string }\n\n/** The overflow cell (+N), tabular. Pass `render={<button type=\"button\" />}` (or put it in a trigger's\n *  `render`) when pressing it should show everyone. */\nfunction AvatarGroupCount({ count, label, render, className, ref, ...props }: AvatarGroupCountProps) {\n  return useRender({\n    defaultTagName: \"span\",\n    render,\n    ref,\n    props: {\n      \"data-slot\": \"avatar-group-count\",\n      role: render ? undefined : \"img\",\n      \"aria-label\": label ?? `${count} more`,\n      className: cn(\"kl-avatar-count\", render && \"kl-key\", className),\n      children: <span aria-hidden>+{count}</span>,\n      ...props,\n    },\n  })\n}\n\nexport { Avatar, AvatarGroup, AvatarGroupCount, avatarInitials, type AvatarProps, type AvatarSize, type AvatarStatus }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/avatar.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-avatar": {
+        "--kl-av": "32px",
+        "--kl-av-fs": "13px",
+        "--kl-av-st": "3px",
+        "position": "relative",
+        "flex": "none",
+        "display": "inline-grid",
+        "box-sizing": "border-box",
+        "overflow": "hidden",
+        "width": "var(--kl-av)",
+        "height": "var(--kl-av)",
+        "vertical-align": "middle",
+        "border": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-tint)",
+        "color": "var(--kl-ink)",
+        "font-family": "var(--kl-font)",
+        "user-select": "none"
+      },
+      ".kl-avatar > *": {
+        "grid-area": "1 / 1"
+      },
+      ".kl-avatar[data-size=\"sm\"]": {
+        "--kl-av": "24px",
+        "--kl-av-fs": "10px"
+      },
+      ".kl-avatar[data-size=\"lg\"]": {
+        "--kl-av": "40px",
+        "--kl-av-fs": "15px"
+      },
+      ".kl-avatar[data-size=\"xl\"]": {
+        "--kl-av": "56px",
+        "--kl-av-fs": "20px",
+        "--kl-av-st": "4px"
+      },
+      ".kl-avatar[data-kl-layout=\"cell\"]": {
+        "width": "100%",
+        "height": "auto",
+        "aspect-ratio": "1",
+        "align-self": "center",
+        "border": "0",
+        "--kl-av-fs": "18px"
+      },
+      ".kl-avatar-img": {
+        "width": "100%",
+        "height": "100%",
+        "object-fit": "cover",
+        "object-position": "50% 30%",
+        "display": "block",
+        "clip-path": "inset(0)",
+        "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out), filter var(--kl-t-unflood) linear"
+      },
+      ".kl-avatar-img[data-starting-style]": {
+        "clip-path": "inset(100% 0 0 0)"
+      },
+      ".kl-avatar-fb": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "100%",
+        "height": "100%",
+        "min-width": "0",
+        "font-size": "var(--kl-av-fs)",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1",
+        "letter-spacing": "0.02em",
+        "font-variant-numeric": "tabular-nums",
+        "white-space": "nowrap",
+        "text-box": "trim-both cap alphabetic"
+      },
+      ".kl-avatar-fb svg": {
+        "width": "calc(var(--kl-av-fs) + 4px)",
+        "height": "calc(var(--kl-av-fs) + 4px)"
+      },
+      ".kl-avatar-group": {
+        "--kl-av": "32px",
+        "--kl-av-fs": "13px",
+        "display": "inline-flex",
+        "align-items": "stretch",
+        "width": "fit-content",
+        "max-width": "100%",
+        "vertical-align": "middle",
+        "border": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-avatar-group[data-size=\"sm\"]": {
+        "--kl-av": "24px",
+        "--kl-av-fs": "10px"
+      },
+      ".kl-avatar-group[data-size=\"lg\"]": {
+        "--kl-av": "40px",
+        "--kl-av-fs": "15px"
+      },
+      ".kl-avatar-group[data-size=\"xl\"]": {
+        "--kl-av": "56px",
+        "--kl-av-fs": "20px"
+      },
+      ".kl-avatar-group > .kl-avatar[data-size]": {
+        "--kl-av": "inherit",
+        "--kl-av-fs": "inherit"
+      },
+      ".kl-avatar-group > .kl-avatar": {
+        "border": "0",
+        "width": "calc(var(--kl-av) - 2 * var(--kl-k1))",
+        "height": "calc(var(--kl-av) - 2 * var(--kl-k1))"
+      },
+      ".kl-avatar-group > :not(:first-child)": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-avatar-count": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "box-sizing": "border-box",
+        "min-width": "calc(var(--kl-av) - 2 * var(--kl-k1))",
+        "padding-inline": "6px",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "font": "var(--kl-weight-strong) var(--kl-av-fs, 13px) / 1 var(--kl-font)",
+        "font-variant-numeric": "tabular-nums",
+        "white-space": "nowrap",
+        "direction": "ltr",
+        "unicode-bidi": "isolate"
+      },
+      ":where(button).kl-avatar-count": {
+        "border-block": "0",
+        "border-inline-end": "0",
+        "margin": "0",
+        "cursor": "pointer"
+      },
+      ":where(button).kl-avatar-count:hover": {
+        "background-color": "var(--kl-tint)"
+      },
+      ":where(button).kl-avatar-count:active": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-avatar-count:focus-visible": {
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-avatar-count[data-popup-open]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-avatar[data-status]": {
+        "border-block-end": "var(--kl-av-st) solid var(--kl-line)"
+      },
+      ".kl-avatar[data-status=\"normal\"]": {
+        "border-block-end-color": "var(--kl-cobalt)"
+      },
+      ".kl-avatar[data-status=\"waiting\"]": {
+        "border-block-end-style": "dashed",
+        "border-block-end-color": "var(--kl-ink-2)"
+      },
+      ".kl-avatar[data-status=\"done\"]": {
+        "border-block-end-style": "double",
+        "border-block-end-color": "var(--kl-ink)",
+        "border-block-end-width": "max(var(--kl-av-st), 3px)"
+      },
+      ".kl-avatar[data-status=\"attention\"]": {
+        "border-block-end-color": "var(--kl-red)"
+      },
+      ".kl-avatar[data-status=\"attention\"]:not([data-kl-layout=\"cell\"])": {
+        "border-color": "var(--kl-red)"
+      },
+      ".kl-avatar-group > .kl-avatar[data-status=\"attention\"]::after, .kl-avatar[data-kl-layout=\"cell\"][data-status=\"attention\"]::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset": "0",
+        "border": "var(--kl-k1) solid var(--kl-red)",
+        "pointer-events": "none"
+      },
+      ".kl-avatar[data-status=\"none\"]": {
+        "border-block-end-width": "var(--kl-k1)"
+      },
+      ".kl-avatar[data-status=\"none\"] .kl-avatar-img": {
+        "filter": "grayscale(1) contrast(0.9)"
+      },
+      ".kl-avatar[data-status=\"none\"] .kl-avatar-fb": {
+        "color": "var(--kl-ink-3)"
+      },
+      ".kl-avatar-group > .kl-avatar[data-status=\"none\"], .kl-avatar[data-kl-layout=\"cell\"][data-status=\"none\"]": {
+        "border-block-end": "0"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-avatar, .kl-avatar-group": {
+          "border-color": "CanvasText"
+        },
+        ".kl-avatar[data-status]": {
+          "border-block-end-color": "CanvasText"
+        },
+        ".kl-avatar[data-status=\"attention\"]": {
+          "border-width": "2px",
+          "border-block-end-width": "var(--kl-av-st)"
+        },
+        ".kl-avatar[data-status=\"attention\"]::after": {
+          "border-color": "CanvasText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,33 @@
+@layer components {
+  /* TIME FIELD: a field frame that hugs two spin-button cells. The parts are exactly two tabular digits
+     wide, so the frame never changes width while the time steps or is typed. */
+  .kl-time { justify-items: start; }
+  /* as a cell it hugs its two parts, so a neighbouring cell (a date) takes the room */
+  .kl-field.kl-time[data-kl-layout="cell"] { justify-items: stretch; flex: none; }
+  .kl-time-frame { width: max-content; max-width: 100%; }
+  .kl-time-frame[data-kl-layout="cell"] { width: auto; }
+  /* hours : minutes as one cell, always LTR; the frame's seams see it as the cell after the ! */
+  .kl-time-value { flex: none; display: flex; align-items: stretch; }
+  .kl-time-frame .kl-time-part {
+    flex: none; width: calc(2ch + 2 * 10px); box-sizing: border-box; padding-inline: 10px;
+    text-align: center; font-variant-numeric: tabular-nums; caret-color: var(--kl-ink);
+  }
+  .kl-time-frame .kl-time-part::placeholder { color: var(--kl-ink-3); }
+  /* the join is part of the value, not a seam: no keylines either side of it */
+  .kl-time-value > * { border: 0; }
+  .kl-time-join { flex: none; display: grid; place-items: center; padding-inline: 1px; font-size: 15px; font-weight: var(--kl-weight-strong); color: var(--kl-ink-2); }
+  /* 12-hour: the day period is a third part, as wide as the longer of the locale's two names (the input
+     and a hidden sizer per name share one grid cell), so the frame never changes width */
+  .kl-time-period { flex: none; display: grid; }
+  .kl-time-period > * { grid-area: 1 / 1; }
+  .kl-time-frame .kl-time-pm { box-sizing: border-box; padding-inline: 8px; }
+  /* the input takes the column the sizers make (its own default width would set the column instead) */
+  .kl-time-frame input.kl-time-pm { width: 0; min-width: 100%; text-align: center; }
+  .kl-time-sizer { visibility: hidden; font-weight: var(--kl-weight-strong); white-space: nowrap; }
+  /* a zone keeps its own order in RTL ("°C" would otherwise read "C°") */
+  .kl-time-zone bdi { unicode-bidi: isolate; }
+  .kl-time-zone { border-inline-start: var(--kl-k1) solid var(--kl-line-soft) !important; }
+  /* the part being edited takes the cursor tint, so it is clear which of the two the arrows will move */
+  .kl-time-part:focus { background-color: var(--kl-tint); }
+  .kl-field[data-disabled] :is(.kl-time-join, .kl-time-zone) { color: var(--kl-dis); }
+}

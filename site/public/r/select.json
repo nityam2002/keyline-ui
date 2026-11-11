@@ -1,0 +1,172 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select",
+  "title": "Select",
+  "description": "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts (SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectSeparator).",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/options",
+    "@keyline-ui/field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/select.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Select as SelectPrimitive } from \"@base-ui/react/select\"\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\nimport { dockGeometry, scopeProps, useKeylineScope, type DockLayout, type KeylineScope } from \"../lib/keyline-scope\"\nimport { groupBy, hasGroups } from \"../lib/options\"\nimport { FieldMessages, type FieldParticipantProps } from \"./field\"\n\ntype Option = {\n  value: string\n  label: React.ReactNode\n  description?: React.ReactNode\n  code?: React.ReactNode\n  /** Options sharing a group are listed under one heading, in first-appearance order. */\n  group?: string\n  disabled?: boolean\n}\n\n/* ------------------------------------------------------------------ *\n * PARTS\n * SelectRoot · SelectLabel · SelectTrigger · SelectContent · SelectItem · SelectGroup · SelectGroupLabel\n * · SelectSeparator. The root shares the layout (dock geometry) and the portal scope with its parts, so\n * a composed select docks and carries configuration exactly like the options form below, which is\n * itself built from these parts.\n * ------------------------------------------------------------------ */\ntype Ctx = { layout: DockLayout; scope: KeylineScope }\nconst SelectContext = React.createContext<Ctx>({ layout: \"control\", scope: {} })\n\ntype SelectRootProps<V> = Omit<React.ComponentProps<typeof SelectPrimitive.Root<V>>, \"children\"> & {\n  children?: React.ReactNode\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (SelectLabel is then visually hidden). */\n  layout?: DockLayout\n  /** Class for the field wrapper (label + trigger). */\n  className?: string\n} & Omit<FieldParticipantProps, \"error\" | \"description\">\n\n/**\n * Behaviour, keyboard, typeahead, form participation (`name`, `required`) and controlled/uncontrolled\n * state are Base UI Select's. Pass `items` (an array of `{ value, label }` or a value→label map) so the\n * trigger prints the chosen label rather than the raw value; or give SelectTrigger a render function.\n *\n * The wrapper is a Base UI Field.Root: a Form collects the value under `name`, the Form's\n * `errors` and a `validate` function reach it, and FieldDescription / FieldError placed among the\n * children describe the trigger.\n */\nfunction SelectRoot<V>({ layout = \"control\", className, children, onOpenChange, invalid, validate, validationMode, orientation, ...props }: SelectRootProps<V>) {\n  const [open, setOpen] = React.useState(false)\n  const [marker, scope] = useKeylineScope(open)\n  const ctx = React.useMemo(() => ({ layout, scope }), [layout, scope])\n  return (\n    <FieldPrimitive.Root\n      data-slot=\"select\"\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={props.name}\n      disabled={props.disabled}\n      invalid={invalid}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field kl-select\", className)}\n    >\n      <SelectPrimitive.Root<V>\n        {...props}\n        onOpenChange={(o, d) => {\n          setOpen(o)\n          onOpenChange?.(o, d)\n        }}\n      >\n        <SelectContext.Provider value={ctx}>\n          {marker}\n          {children}\n        </SelectContext.Provider>\n      </SelectPrimitive.Root>\n    </FieldPrimitive.Root>\n  )\n}\n\nfunction SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>) {\n  const { layout } = React.useContext(SelectContext)\n  return <SelectPrimitive.Label data-slot=\"select-label\" className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\", className)} {...props} />\n}\n\ntype SelectTriggerProps = Omit<React.ComponentProps<typeof SelectPrimitive.Trigger>, \"children\"> & {\n  placeholder?: React.ReactNode\n  /** Formats the chosen value (receives the raw value). Without it, the root's `items` give the label. */\n  children?: React.ComponentProps<typeof SelectPrimitive.Value>[\"children\"]\n}\n\n/**\n * The trigger is a field frame: value cell (truncates on one line) + caret cell (fixed 36px). Its own\n * edge takes keyboard focus (.kl-edge); open is the inverse caret cell, never a ring.\n */\nfunction SelectTrigger({ placeholder = \"Choose…\", children, className, ...props }: SelectTriggerProps) {\n  const { layout } = React.useContext(SelectContext)\n  return (\n    <SelectPrimitive.Trigger data-slot=\"select-trigger\" data-kl-layout={layout} className={cn(\"kl-ctl kl-cells kl-field-frame kl-edge kl-select-trigger\", className)} {...props}>\n      {/* the attention cell a Field inserts when invalid (Select is a Field participant) */}\n      <span className=\"kl-slot kl-field-bang\" aria-hidden>\n        <span>\n          <span>!</span>\n        </span>\n      </span>\n      <SelectPrimitive.Value className=\"kl-select-value\" placeholder={<span className=\"kl-select-ph\">{placeholder}</span>}>\n        {children}\n      </SelectPrimitive.Value>\n      <SelectPrimitive.Icon className=\"kl-select-caret\">\n        <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n          <path d=\"m4 6 4 4 4-4\" />\n        </svg>\n      </SelectPrimitive.Icon>\n    </SelectPrimitive.Trigger>\n  )\n}\n\ntype SelectContentProps = React.ComponentProps<typeof SelectPrimitive.List> & {\n  container?: React.ComponentProps<typeof SelectPrimitive.Portal>[\"container\"]\n  /** Class for the docked panel (e.g. a different max-height). */\n  panelClassName?: string\n}\n\n/** The docked list: dock geometry from keyline-scope, owner weight on the shared edge, no cut, unfolds from the edge. */\nfunction SelectContent({ container, className, panelClassName, ...props }: SelectContentProps) {\n  const { layout, scope } = React.useContext(SelectContext)\n  const dock = dockGeometry(layout)\n  return (\n    <SelectPrimitive.Portal container={container}>\n      <SelectPrimitive.Positioner sideOffset={dock.sideOffset} alignOffset={dock.alignOffset} align=\"start\" alignItemWithTrigger={false} collisionPadding={12} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n        <SelectPrimitive.Popup className={cn(\"kl-attached kl-dock kl-dock-min kl-select-panel\", panelClassName)} style={dock.style}>\n          <SelectPrimitive.List data-slot=\"select-content\" className={cn(\"kl-select-list\", className)} {...props} />\n        </SelectPrimitive.Popup>\n      </SelectPrimitive.Positioner>\n    </SelectPrimitive.Portal>\n  )\n}\n\ntype SelectItemProps = React.ComponentProps<typeof SelectPrimitive.Item> & {\n  description?: React.ReactNode\n  /** Trailing code cell: ≤ 4 mono characters (an ID, a key). */\n  code?: React.ReactNode\n}\n\n/**\n * An option row: mark cell · label (wraps) · optional code cell. Two cues never confused: the chosen\n * option carries the exclusive-choice mark (RadioGroup's square-and-dot); the cursor is the inverse row.\n * Disabled options stay reachable (they can be read) but can't be chosen.\n */\nfunction SelectItem({ className, description, code, children, ...props }: SelectItemProps) {\n  return (\n    <SelectPrimitive.Item data-slot=\"select-item\" className={cn(\"kl-select-opt\", className)} {...props}>\n      <span className=\"kl-select-mark\" aria-hidden>\n        {/* Base UI renders a \"✔️\" glyph when the indicator has no children; ours is the mark itself */}\n        <SelectPrimitive.ItemIndicator className=\"kl-select-ind\" keepMounted>\n          <span className=\"kl-select-dot\" />\n        </SelectPrimitive.ItemIndicator>\n      </span>\n      <span className=\"kl-select-label\">\n        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>\n        {description ? <small>{description}</small> : null}\n      </span>\n      {code != null ? <span className=\"kl-code kl-select-code\">{code}</span> : null}\n    </SelectPrimitive.Item>\n  )\n}\n\n/** A run of options under one heading. Groups are divided by a seam; the heading is in the Code voice. */\nfunction SelectGroup({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Group>) {\n  return <SelectPrimitive.Group data-slot=\"select-group\" className={cn(\"kl-select-group\", className)} {...props} />\n}\n\nfunction SelectGroupLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.GroupLabel>) {\n  return <SelectPrimitive.GroupLabel data-slot=\"select-group-label\" className={cn(\"kl-select-group-label\", className)} {...props} />\n}\n\nfunction SelectSeparator({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Separator>) {\n  return <SelectPrimitive.Separator data-slot=\"select-separator\" className={cn(\"kl-select-sep\", className)} {...props} />\n}\n\n/* ------------------------------------------------------------------ *\n * OPTIONS FORM: the common case in one element. Built from the parts above.\n * ------------------------------------------------------------------ */\ntype SelectProps<V extends string> = Omit<React.ComponentProps<typeof SelectPrimitive.Root<V>>, \"children\" | \"items\"> & {\n  label: React.ReactNode\n  options: Option[]\n  placeholder?: React.ReactNode\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (label is visually hidden). */\n  layout?: \"control\" | \"cell\"\n  container?: React.ComponentProps<typeof SelectPrimitive.Portal>[\"container\"]\n  className?: string\n} & FieldParticipantProps\n\nconst renderOption = (o: Option) => (\n  <SelectItem key={o.value} value={o.value} disabled={o.disabled} description={o.description} code={o.code}>\n    {o.label}\n  </SelectItem>\n)\n\n/**\n * Single select from an options list. Options with a `group` are listed under headings. For custom rows,\n * separators or groups you build yourself, compose the parts (SelectRoot …) instead.\n * The trigger's accessible name always carries the full value; option labels wrap in the list.\n */\nfunction Select<V extends string>({ label, options, placeholder = \"Choose…\", layout = \"control\", container, className, description, error, ...props }: SelectProps<V>) {\n  const items = React.useMemo(() => Object.fromEntries(options.map((o) => [o.value, o.label])), [options])\n  const groups = React.useMemo(() => (hasGroups(options) ? groupBy(options) : null), [options])\n  return (\n    <SelectRoot<V> items={items} layout={layout} className={className} {...props}>\n      <SelectLabel>{label}</SelectLabel>\n      <SelectTrigger placeholder={placeholder} />\n      <SelectContent container={container}>\n        {groups\n          ? groups.map((g) =>\n              g.group ? (\n                <SelectGroup key={g.group}>\n                  <SelectGroupLabel>{g.group}</SelectGroupLabel>\n                  {g.items.map(renderOption)}\n                </SelectGroup>\n              ) : (\n                <SelectGroup key=\"\">{g.items.map(renderOption)}</SelectGroup>\n              ),\n            )\n          : options.map(renderOption)}\n      </SelectContent>\n      <FieldMessages description={description} error={error} invalid={props.invalid} layout={layout} />\n    </SelectRoot>\n  )\n}\n\nexport { Select, SelectRoot, SelectLabel, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGroupLabel, SelectSeparator, type Option as SelectOption }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/select.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-select-trigger": {
+        "width": "100%",
+        "padding": "0",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "color": "inherit",
+        "text-align": "start",
+        "cursor": "pointer"
+      },
+      ".kl-select-value": {
+        "flex": "1 1 0",
+        "min-width": "0",
+        "align-self": "center",
+        "display": "block",
+        "padding-inline": "var(--kl-inset)",
+        "font-size": "15px",
+        "line-height": "1.3",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+      },
+      ".kl-field[data-invalid] .kl-select-trigger > .kl-field-bang + .kl-select-value.kl-select-value": {
+        "border-inline-start": "0"
+      },
+      ".kl-select-ph": {
+        "color": "var(--kl-ink-3)"
+      },
+      ".kl-select-caret": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "width": "36px",
+        "align-self": "stretch"
+      },
+      ".kl-select-trigger[data-popup-open] .kl-select-caret": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-select[data-disabled] .kl-select-trigger, .kl-select-trigger[data-disabled]": {
+        "cursor": "not-allowed",
+        "background-image": "var(--kl-hatch)",
+        "border-color": "var(--kl-dis-line)",
+        "color": "var(--kl-dis)"
+      },
+      ".kl-select-panel": {
+        "--kl-dock-w": "15rem",
+        "max-height": "min(var(--available-height), 360px)",
+        "overflow": "auto",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "overscroll-behavior": "contain",
+        "scroll-padding-block": "4px"
+      },
+      ".kl-select-opt": {
+        "display": "grid",
+        "grid-template-columns": "36px minmax(0, 1fr) auto",
+        "align-items": "stretch",
+        "min-height": "var(--kl-row)",
+        "cursor": "default",
+        "outline": "0",
+        "user-select": "none"
+      },
+      ".kl-select-opt + .kl-select-opt": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-select-mark": {
+        "display": "grid",
+        "place-items": "center",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-select-ind": {
+        "width": "16px",
+        "height": "16px",
+        "display": "grid",
+        "place-items": "center",
+        "border": "2px solid currentColor"
+      },
+      ".kl-select-dot": {
+        "width": "6px",
+        "height": "6px",
+        "background-color": "currentColor"
+      },
+      ".kl-select-ind:not([data-selected])": {
+        "visibility": "hidden"
+      },
+      ".kl-select-label": {
+        "display": "grid",
+        "align-content": "center",
+        "gap": "1px",
+        "padding": "8px var(--kl-inset)",
+        "min-width": "0",
+        "overflow-wrap": "anywhere",
+        "line-height": "1.3"
+      },
+      ".kl-select-label small": {
+        "font-size": "12px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-select-code": {
+        "display": "flex",
+        "align-items": "center",
+        "padding-inline": "var(--kl-inset)",
+        "white-space": "nowrap"
+      },
+      ".kl-select-opt[data-highlighted]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-select-opt[data-highlighted] :is(small, .kl-code)": {
+        "color": "inherit"
+      },
+      ".kl-select-opt[data-highlighted] .kl-select-mark": {
+        "border-color": "var(--kl-on-inverse)"
+      },
+      ".kl-select-opt[data-disabled]": {
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-select-group + .kl-select-group": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-select-group-label": {
+        "display": "block",
+        "padding": "10px var(--kl-inset) 4px",
+        "font": "500 11px/1.2 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)",
+        "cursor": "default"
+      },
+      ".kl-select-sep": {
+        "height": "0",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ":is(.kl-select-group-label, .kl-select-sep) + .kl-select-opt, .kl-select-sep + .kl-select-group": {
+        "border-block-start": "0"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-select-opt[data-highlighted]": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

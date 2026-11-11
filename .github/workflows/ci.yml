@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Types, tests and builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run test:format
+      - name: Registry is up to date
+        run: |
+          npm run registry:build
+          if [ -n "$(git status --porcelain -- site/public/r)" ]; then
+            git status --short -- site/public/r
+            echo "::error::site/public/r is out of date. Run npm run registry:build and commit the result."
+            exit 1
+          fi
+      - run: npm run build
+      - run: npm run site:build
+      - run: npx playwright install --with-deps chrome webkit
+      - run: npm run test:browser
+      - run: npm run test:css-order
+      - name: Upload test report and traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright
+          path: .artifacts/playwright*
+          retention-days: 7
+
+  consumer:
+    name: Consumer installs
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chrome webkit
+      - run: npm run test:consumer
+      - name: Upload consumer logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer
+          path: .artifacts/consumer
+          retention-days: 7

@@ -1,0 +1,118 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "title": "Pagination",
+  "description": "Page numbers as cells with a cobalt current page; constant width while paging; folds to \"5 / 20\" when narrow; buttons or links.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/collection"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/pagination.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\nimport { pageWindow } from \"../lib/collection\"\n\ntype PaginationProps = Omit<React.ComponentProps<\"nav\">, \"children\" | \"onChange\"> & {\n  /** The current page, 1-based (the number printed). */\n  page: number\n  /** How many pages. null while unknown: the numbers show \"–\" and every cell is out of service. */\n  pageCount: number | null\n  onPageChange?: (page: number) => void\n  /** Links instead of buttons: the page's URL. Each number is then an <a>, so pages open in new tabs. */\n  getHref?: (page: number) => string\n  /** Pages shown on each side of the current one (default 1). */\n  siblings?: number\n  /** control: its own 2px frame. cell: a row of an enclosing frame (a panel's or table's footer). */\n  layout?: \"control\" | \"cell\"\n  /** Name of the navigation landmark. */\n  label?: string\n  /** Text read for a page number (default \"Page 4\"). */\n  pageLabel?: (page: number) => string\n}\n\nconst Arrow = ({ d }: { d: string }) => (\n  <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n    <path d={d} />\n  </svg>\n)\n\n/**\n * Page numbers as cells in one frame:\n *\n *   ┌───┬───┬───┬───┬━━━┳───┬───┬────┬───┐\n *   │ ‹ │ 1 │ … │ 4 │ 5 ┃ 6 │ … │ 20 │ › │      the current page is the cobalt cell\n *   └───┴───┴───┴───┴━━━┻───┴───┴────┴───┘\n *\n * - The window keeps a constant number of cells (first, last, the current page and its siblings, and\n *   gaps), and number cells are as wide as the largest page number: the frame never changes width while\n *   you page, so Previous and Next stay under the pointer.\n * - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing.\n * - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next.\n * - Previous and Next mirror in RTL; they are out of service (hatched) at the ends.\n * - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).\n */\nfunction Pagination({ page, pageCount, onPageChange, getHref, siblings = 1, layout = \"control\", label = \"Pagination\", pageLabel = (p) => `Page ${p}`, className, style, ...props }: PaginationProps) {\n  const known = pageCount != null && pageCount > 0\n  const slots = known ? pageWindow(page, pageCount, siblings) : []\n  const digits = String(pageCount ?? 0).length\n\n  const cell = (target: number | null, content: React.ReactNode, extra: { className: string; label?: string; current?: boolean }) => {\n    const disabled = target == null || !known\n    const common = {\n      className: cn(\"kl-cell kl-key\", extra.className),\n      \"aria-label\": extra.label,\n      \"aria-current\": extra.current ? (\"page\" as const) : undefined,\n    }\n    if (getHref) {\n      if (disabled) return <span {...common} aria-disabled=\"true\" data-disabled=\"\">{content}</span>\n      return (\n        <a {...common} href={getHref(target)} onClick={onPageChange ? (e) => (e.preventDefault(), onPageChange(target)) : undefined}>\n          {content}\n        </a>\n      )\n    }\n    return (\n      <button type=\"button\" {...common} disabled={disabled} onClick={() => !extra.current && target != null && onPageChange?.(target)}>\n        {content}\n      </button>\n    )\n  }\n\n  return (\n    <nav aria-label={label} data-slot=\"pagination\" data-kl-layout={layout} className={cn(\"kl-pg\", className)} style={{ \"--kl-pg-ch\": digits, ...style } as React.CSSProperties} {...props}>\n      <div data-kl-layout={layout} className=\"kl-ctl kl-cells kl-pg-frame\">\n        {cell(known && page > 1 ? page - 1 : null, <Arrow d=\"m10 4-4 4 4 4\" />, { className: \"kl-pg-step\", label: \"Previous page\" })}\n        {slots.map((s) =>\n          typeof s === \"number\" ? (\n            <React.Fragment key={s}>{cell(s, <span>{s}</span>, { className: \"kl-pg-n\", label: pageLabel(s), current: s === page })}</React.Fragment>\n          ) : (\n            <span key={s} className=\"kl-cell kl-pg-gap\" aria-hidden>\n              …\n            </span>\n          ),\n        )}\n        <span className=\"kl-cell kl-code kl-pg-of\" aria-live=\"polite\">\n          {known ? (\n            <bdi>\n              {page} / {pageCount}\n            </bdi>\n          ) : (\n            \"–\"\n          )}\n        </span>\n        {cell(known && page < pageCount ? page + 1 : null, <Arrow d=\"m6 4 4 4-4 4\" />, { className: \"kl-pg-step\", label: \"Next page\" })}\n      </div>\n    </nav>\n  )\n}\n\nexport { Pagination, type PaginationProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/pagination.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-pg": {
+        "container": "kl-pg / inline-size",
+        "min-width": "0"
+      },
+      ".kl-pg-frame": {
+        "display": "inline-flex",
+        "max-width": "100%",
+        "box-sizing": "border-box",
+        "min-height": "var(--kl-ctl)",
+        "background-color": "var(--kl-cell)",
+        "vertical-align": "top",
+        "--kl-pg-sw": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 0px))"
+      },
+      ".kl-pg-frame[data-kl-layout=\"cell\"]": {
+        "display": "flex",
+        "min-height": "var(--kl-row)",
+        "--kl-pg-sw": "var(--kl-row)"
+      },
+      ".kl-pg-frame[data-kl-layout=\"cell\"]::after": {
+        "content": "\"\"",
+        "flex": "1 1 0",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-pg-frame > .kl-cell": {
+        "min-height": "0",
+        "justify-content": "center",
+        "font-variant-numeric": "tabular-nums",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-pg-n": {
+        "min-width": "calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset))",
+        "padding-inline": "var(--kl-inset)",
+        "box-sizing": "border-box"
+      },
+      ".kl-pg-step": {
+        "width": "var(--kl-pg-sw)",
+        "padding": "0",
+        "flex": "none"
+      },
+      ".kl-pg-step:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) svg": {
+        "scale": "-1 1"
+      },
+      ".kl-pg-frame > .kl-pg-step:first-child": {
+        "width": "calc(var(--kl-pg-sw) + var(--kl-c, 0px) * 0.35)",
+        "padding-inline-start": "calc(var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-pg-gap": {
+        "min-width": "calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset))",
+        "box-sizing": "border-box",
+        "padding-inline": "4px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-pg-n[aria-current=\"page\"]": {
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)",
+        "cursor": "default"
+      },
+      ".kl-pg-n[aria-current=\"page\"]:focus-visible": {
+        "outline-color": "currentColor"
+      },
+      ".kl-pg-step:is(:disabled, [data-disabled])": {
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-pg-of": {
+        "display": "none",
+        "min-width": "calc(var(--kl-pg-ch, 2) * 2ch + 3ch + 2 * var(--kl-inset))",
+        "font-size": "13px",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-pg-frame:not(:has(.kl-pg-n)) .kl-pg-of": {
+        "display": "flex"
+      },
+      "@container kl-pg (max-width: 360px)": {
+        ".kl-pg-n, .kl-pg-gap": {
+          "display": "none"
+        },
+        ".kl-pg-of": {
+          "display": "flex",
+          "flex": "1"
+        },
+        ".kl-pg-frame": {
+          "display": "flex"
+        }
+      },
+      "@media (forced-colors: active)": {
+        ".kl-pg-n[aria-current=\"page\"]": {
+          "forced-color-adjust": "none",
+          "background": "Highlight",
+          "color": "HighlightText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

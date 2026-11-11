@@ -1,0 +1,77 @@
+"use client"
+
+import * as React from "react"
+import { TableFrame, TableScroll, Table, TableHead, TableBody, TableRow, TableHeaderCell, TableCell } from "@/components/keyline/ui/table"
+
+/** A union wraps between members, never inside one: `"horizontal" |` then `"vertical"`. */
+function unionParts(type: string) {
+  const parts = type.split(" | ")
+  return parts.map((t, i) => (
+    <React.Fragment key={i}>
+      <span className="whitespace-nowrap">{i < parts.length - 1 ? `${t} |` : t}</span>
+      {i < parts.length - 1 ? " " : null}
+    </React.Fragment>
+  ))
+}
+
+export type Prop = {
+  name: string
+  /** the type as written in TypeScript, e.g. "scroll" | "menu" */
+  type: string
+  default: string
+  description: React.ReactNode
+}
+
+// Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes a
+// block: name and default on one line, the type under them, the description below.
+const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:py-1"
+const CODE = "bg-transparent p-0 font-kl-mono"
+
+/** Props set in Keyline's own Table: one row per prop, the code columns in the Code voice. */
+export function PropsReference({ label, props }: { label: string; props: Prop[] }) {
+  return (
+    <div className="mt-4 [&+.s-small]:mb-16">
+      <TableFrame aria-label={label}>
+        <TableScroll>
+          <Table className="max-[721px]:w-full">
+            <TableHead className="max-[721px]:hidden">
+              <tr>
+                <TableHeaderCell>Prop</TableHeaderCell>
+                <TableHeaderCell>Type</TableHeaderCell>
+                <TableHeaderCell>Default</TableHeaderCell>
+                <TableHeaderCell>Description</TableHeaderCell>
+              </tr>
+            </TableHead>
+            <TableBody>
+              {props.map((p) => (
+                <TableRow
+                  key={p.name}
+                  id={`prop-${p.name}`}
+                  className="max-[721px]:grid max-[721px]:grid-cols-[minmax(0,1fr)_auto] max-[721px]:border-b max-[721px]:border-kl-seam max-[721px]:last:border-b-0"
+                >
+                  <TableCell className={`${CELL} max-[721px]:row-start-1 max-[721px]:pt-3`}>
+                    <code className={`${CODE} text-[14px] font-medium whitespace-nowrap text-kl-ink`}>{p.name}</code>
+                  </TableCell>
+                  <TableCell className={`${CELL} max-[721px]:col-span-full`}>
+                    <code className={`${CODE} text-[13px] text-kl-ink-2`}>{unionParts(p.type)}</code>
+                  </TableCell>
+                  <TableCell className={`${CELL} max-[721px]:col-start-2 max-[721px]:row-start-1 max-[721px]:pt-3 max-[721px]:text-end`}>
+                    <span className="hidden text-[12px] text-kl-ink-3 max-[721px]:inline" aria-hidden="true">
+                      Default{" "}
+                    </span>
+                    <code className={`${CODE} text-[13px] whitespace-nowrap text-kl-ink-2`}>{p.default}</code>
+                  </TableCell>
+                  <TableCell
+                    className={`${CELL} min-w-60 text-[14px]/[1.55] text-kl-ink-2 max-[721px]:col-span-full max-[721px]:min-w-0 max-[721px]:pb-3 [&_code]:bg-kl-paper [&_code]:px-1 [&_code]:py-0 [&_code]:text-[12.5px] [&_code]:text-kl-ink`}
+                  >
+                    {p.description}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableScroll>
+      </TableFrame>
+    </div>
+  )
+}

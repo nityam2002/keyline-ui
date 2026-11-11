@@ -1,0 +1,121 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "title": "Popover",
+  "description": "Arbitrary content docked to its trigger (or detached by one gutter), with optional header, body and footer cells.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/popover.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Popover as PopoverPrimitive } from \"@base-ui/react/popover\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\n/* Root, Trigger and Close are Base UI's own parts: every prop, the `render` composition model, controlled\n   and uncontrolled state and event details pass through untouched. */\nconst Popover = PopoverPrimitive.Root\nconst PopoverTrigger = PopoverPrimitive.Trigger\nconst PopoverClose = PopoverPrimitive.Close\n\ntype PopoverContentProps = React.ComponentProps<typeof PopoverPrimitive.Popup> & {\n  side?: React.ComponentProps<typeof PopoverPrimitive.Positioner>[\"side\"]\n  align?: React.ComponentProps<typeof PopoverPrimitive.Positioner>[\"align\"]\n  /** Element to dock to (defaults to the trigger). */\n  anchor?: React.ComponentProps<typeof PopoverPrimitive.Positioner>[\"anchor\"]\n  /** Keyline weight of the owner's shared edge: 2 for a standalone control, 1 for a cell (layout=\"cell\"). */\n  attachWeight?: 1 | 2 | 3\n  /** Detached: sits one gutter from the trigger as a control-weight frame, for content not about the trigger itself. */\n  detached?: boolean\n  container?: React.ComponentProps<typeof PopoverPrimitive.Portal>[\"container\"]\n  positionerProps?: Omit<React.ComponentProps<typeof PopoverPrimitive.Positioner>, \"className\" | \"style\">\n}\n\n/**\n * Arbitrary content docked to its trigger: the shared edge sits on the trigger's keyline, it unfolds from\n * that edge, it has no cut (an attached surface continues its owner). It carries the configuration of the\n * place it is written. For lists of commands use Menu; for a single choice use Select.\n */\nfunction PopoverContent({ className, side = \"bottom\", align = \"start\", anchor, attachWeight = 2, detached, container, positionerProps, style, ...props }: PopoverContentProps) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  return (\n    <>\n      {marker}\n      <PopoverPrimitive.Portal container={container}>\n        {probe}\n        <PopoverPrimitive.Positioner side={side} align={align} anchor={anchor} sideOffset={detached ? 8 : attachWeight === 1 ? 0 : -attachWeight} collisionPadding={12} {...positionerProps} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <PopoverPrimitive.Popup\n            data-slot=\"popover\"\n            data-detached={detached ? \"\" : undefined}\n            className={cn(\"kl-popover\", detached ? \"kl-ctl kl-popover-float\" : \"kl-dock kl-attached kl-dock-min\", className)}\n            style={(state) => ({ \"--kl-attach\": `${attachWeight}px`, ...(typeof style === \"function\" ? style(state) : style) }) as React.CSSProperties}\n            {...props}\n          />\n        </PopoverPrimitive.Positioner>\n      </PopoverPrimitive.Portal>\n    </>\n  )\n}\n\n/** Optional header row: title, description and a close cell, on the popover's own keyline. */\nfunction PopoverHeader({ title, description, close = true, closeLabel = \"Close\", className }: { title: React.ReactNode; description?: React.ReactNode; close?: boolean; closeLabel?: string; className?: string }) {\n  return (\n    <div data-slot=\"popover-header\" className={cn(\"kl-cells kl-popover-h\", className)}>\n      <div className=\"kl-popover-t\">\n        <PopoverPrimitive.Title className=\"kl-popover-title\">{title}</PopoverPrimitive.Title>\n        {description ? <PopoverPrimitive.Description className=\"kl-popover-desc\">{description}</PopoverPrimitive.Description> : null}\n      </div>\n      {close ? (\n        <PopoverPrimitive.Close className=\"kl-cell kl-key kl-popover-x\" aria-label={closeLabel}>\n          <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4 4 8 8M12 4l-8 8\" />\n          </svg>\n        </PopoverPrimitive.Close>\n      ) : null}\n    </div>\n  )\n}\n\nfunction PopoverBody({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"popover-body\" className={cn(\"kl-popover-b\", className)} {...props} />\n}\n\n/** A row of cells on the bottom keyline (Button layout=\"cell\"). */\nfunction PopoverFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"popover-footer\" className={cn(\"kl-cells kl-popover-f\", className)} {...props} />\n}\n\nexport { Popover, PopoverTrigger, PopoverClose, PopoverContent, PopoverHeader, PopoverBody, PopoverFooter }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/popover.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-popover": {
+        "display": "flex",
+        "flex-direction": "column",
+        "--kl-dock-w": "280px",
+        "max-height": "var(--available-height)",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "overflow": "auto"
+      },
+      ".kl-popover[data-detached]": {
+        "--kl-cut-size": "var(--kl-cut-control)",
+        "width": "max(280px, var(--anchor-width))",
+        "max-width": "calc(100vw - 24px)"
+      },
+      ".kl-popover-float": {
+        "transition": "opacity var(--kl-t-unfold) linear"
+      },
+      ".kl-popover-float:is([data-starting-style], [data-ending-style])": {
+        "opacity": "0"
+      },
+      ".kl-popover-float[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)",
+        "pointer-events": "none"
+      },
+      "@supports (corner-start-start-shape: bevel)": {
+        ".kl-popover-float": {
+          "opacity": "1",
+          "clip-path": "inset(-8px)",
+          "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)"
+        },
+        ".kl-popover-float:is([data-starting-style], [data-ending-style])": {
+          "opacity": "1"
+        },
+        ".kl-popover-float[data-ending-style]": {
+          "transition-timing-function": "var(--kl-ease-in)"
+        },
+        ".kl-popover-float:is([data-starting-style], [data-ending-style])[data-side=\"bottom\"]": {
+          "clip-path": "inset(0 0 100% 0)"
+        },
+        ".kl-popover-float:is([data-starting-style], [data-ending-style])[data-side=\"top\"]": {
+          "clip-path": "inset(100% 0 0 0)"
+        },
+        ".kl-popover-float:is([data-starting-style], [data-ending-style]):is([data-side=\"right\"], [data-side=\"inline-end\"])": {
+          "clip-path": "inset(0 100% 0 0)"
+        },
+        ".kl-popover-float:is([data-starting-style], [data-ending-style]):is([data-side=\"left\"], [data-side=\"inline-start\"])": {
+          "clip-path": "inset(0 0 0 100%)"
+        }
+      },
+      ".kl-popover-h": {
+        "flex": "none",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-popover-t": {
+        "flex": "1",
+        "min-width": "0",
+        "display": "grid",
+        "gap": "2px",
+        "align-content": "center",
+        "padding": "10px var(--kl-inset) 10px calc(var(--kl-inset) + var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-popover-title": {
+        "margin": "0",
+        "font-size": "15px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25"
+      },
+      ".kl-popover-desc": {
+        "margin": "0",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-popover-x": {
+        "flex": "none",
+        "justify-content": "center",
+        "width": "var(--kl-row)",
+        "padding": "0"
+      },
+      ".kl-popover-b": {
+        "display": "grid",
+        "gap": "var(--kl-gutter)",
+        "align-content": "start",
+        "padding": "var(--kl-inset)",
+        "min-height": "0"
+      },
+      ".kl-popover-f": {
+        "flex": "none",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-popover-f > *": {
+        "flex": "1 1 0",
+        "min-width": "0"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

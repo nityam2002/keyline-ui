@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "incremental": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/components/keyline/ui/*": [
+        "../src/registry/keyline/ui/*"
+      ],
+      "@/components/keyline/lib/*": [
+        "../src/registry/keyline/lib/*"
+      ],
+      "@/components/keyline/blocks/*": [
+        "../src/registry/keyline/blocks/*"
+      ],
+      "@/lib/*": [
+        "../src/lib/*"
+      ],
+      "@site/*": [
+        "./*"
+      ]
+    },
+    "allowJs": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next/types/validator.ts",
+    ".next/dev/types/validator.ts"
+  ]
+}

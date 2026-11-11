@@ -1,0 +1,123 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat",
+  "title": "Stat",
+  "description": "Count voice with label, unit, delta signal and an optional meter.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/stat.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Meter as MeterPrimitive } from \"@base-ui/react/meter\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Delta = { value: React.ReactNode; /** up/down is direction; tone says whether that is good. */ direction: \"up\" | \"down\" | \"flat\"; tone?: \"good\" | \"bad\" | \"neutral\"; label?: string }\n\n/**\n * A metric: label, the Count voice, unit as code, and an optional delta and meter.\n * The delta is a shape + text, coloured only when it needs attention (tone=\"bad\" → red).\n */\nfunction Stat({ label, value, unit, delta, meter, className, ...props }: Omit<React.ComponentProps<\"div\">, \"children\"> & { label: React.ReactNode; value: React.ReactNode; unit?: React.ReactNode; delta?: Delta; meter?: { value: number; max?: number; label?: string } }) {\n  return (\n    <div data-slot=\"stat\" className={cn(\"kl-stat\", className)} {...props}>\n      <span className=\"kl-stat-l\">{label}</span>\n      <span className=\"kl-stat-v\">\n        <span className=\"kl-count\">{value}</span>\n        {unit != null ? <span className=\"kl-code\">{unit}</span> : null}\n      </span>\n      {delta ? (\n        <span className=\"kl-stat-d\" data-tone={delta.tone ?? \"neutral\"}>\n          <span className=\"kl-stat-arrow\" data-dir={delta.direction} aria-hidden />\n          {/* a label on a plain span is prohibited ARIA and was not read; the words are text, the figure is shown */}\n          {delta.label ? <span aria-hidden>{delta.value}</span> : delta.value}\n          {delta.label ? <span className=\"kl-sr\">{delta.label}</span> : null}\n        </span>\n      ) : null}\n      {meter ? <Meter value={meter.value} max={meter.max} label={meter.label ?? (typeof label === \"string\" ? label : \"Progress\")} hideLabel /> : null}\n    </div>\n  )\n}\n\n/** A measured quantity in a 1px frame. Ink fill; red when over `high`. Value is announced by Base UI Meter. */\nfunction Meter({ value, max = 100, high, label, hideLabel, className }: { value: number; max?: number; high?: number; label: string; /** The label and value are visible by default; hide them only when the surrounding text already says both (e.g. inside Stat). */ hideLabel?: boolean; className?: string }) {\n  const over = high != null && value > high\n  return (\n    <MeterPrimitive.Root value={value} max={max} aria-label={hideLabel ? label : undefined} className={cn(\"kl-meter\", className)} data-over={over || undefined}>\n      {hideLabel ? null : (\n        <span className=\"kl-meter-head\">\n          <MeterPrimitive.Label className=\"kl-meter-l\">{label}</MeterPrimitive.Label>\n          <span className=\"kl-code kl-meter-v\" aria-hidden>\n            {value}/{max}\n          </span>\n        </span>\n      )}\n      <MeterPrimitive.Track className=\"kl-meter-track\">\n        <MeterPrimitive.Indicator className=\"kl-meter-fill\" />\n      </MeterPrimitive.Track>\n    </MeterPrimitive.Root>\n  )\n}\n\nexport { Stat, Meter }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/stat.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-stat": {
+        "container-type": "inline-size",
+        "display": "grid",
+        "gap": "6px",
+        "align-content": "start",
+        "min-width": "0",
+        "padding": "calc(var(--kl-inset) + 2px) calc(var(--kl-inset) + 4px)",
+        "flex": "1 1 0"
+      },
+      ".kl-stat-l": {
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-stat-v": {
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "align-items": "baseline",
+        "gap": "6px",
+        "min-width": "0"
+      },
+      ".kl-stat-v .kl-count": {
+        "font-size": "clamp(18px, 13cqi, 32px)",
+        "white-space": "nowrap"
+      },
+      ".kl-stat-d": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "6px",
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-variant-numeric": "tabular-nums",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-stat-d[data-tone=\"bad\"]": {
+        "color": "var(--kl-red-text)"
+      },
+      ".kl-stat-d[data-tone=\"good\"]": {
+        "color": "var(--kl-ink)"
+      },
+      ".kl-stat-arrow": {
+        "width": "0",
+        "height": "0",
+        "border-inline": "5px solid transparent"
+      },
+      ".kl-stat-arrow[data-dir=\"up\"]": {
+        "border-block-end": "8px solid currentColor"
+      },
+      ".kl-stat-arrow[data-dir=\"down\"]": {
+        "border-block-start": "8px solid currentColor"
+      },
+      ".kl-stat-arrow[data-dir=\"flat\"]": {
+        "width": "10px",
+        "border": "0",
+        "border-block-start": "2px solid currentColor"
+      },
+      ".kl-meter": {
+        "display": "block",
+        "min-width": "0"
+      },
+      ".kl-meter-head": {
+        "display": "flex",
+        "align-items": "baseline",
+        "justify-content": "space-between",
+        "gap": "12px",
+        "margin-block-end": "4px"
+      },
+      ".kl-meter-l": {
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-meter[data-over] .kl-meter-v": {
+        "color": "var(--kl-red-text)"
+      },
+      ".kl-meter-track": {
+        "display": "block",
+        "position": "relative",
+        "height": "10px",
+        "border": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-cell)",
+        "overflow": "hidden"
+      },
+      ".kl-meter-fill": {
+        "display": "block",
+        "height": "100%",
+        "background-color": "var(--kl-inverse)",
+        "transition": "width var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-meter[data-over] .kl-meter-fill": {
+        "background-color": "var(--kl-red)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-meter-fill": {
+          "forced-color-adjust": "none",
+          "background": "CanvasText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

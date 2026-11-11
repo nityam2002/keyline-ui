@@ -1,0 +1,119 @@
+/* Opt-in: make the whole app Keyline, including stock shadcn components.
+   Maps shadcn's semantic tokens, radius, fonts and the page body to Keyline tokens.
+   Source of truth for the `keyline-shadcn` registry item. Requires the `keyline` item. */
+
+:root, .light {
+  --background: var(--kl-paper);
+  --foreground: var(--kl-ink);
+  --card: var(--kl-cell);
+  --card-foreground: var(--kl-ink);
+  --popover: var(--kl-raised);
+  --popover-foreground: var(--kl-ink);
+  --primary: var(--kl-cobalt);
+  --primary-foreground: var(--kl-on-cobalt);
+  --secondary: var(--kl-tint);
+  --secondary-foreground: var(--kl-ink);
+  --muted: var(--kl-tint);
+  --muted-foreground: var(--kl-ink-2);
+  --accent: var(--kl-yellow);
+  --accent-foreground: var(--kl-on-yellow);
+  --destructive: var(--kl-red);
+  --border: var(--kl-seam);
+  --input: var(--kl-line);
+  --ring: var(--kl-focus);
+  --sidebar: var(--kl-cell);
+  --sidebar-foreground: var(--kl-ink);
+  --sidebar-primary: var(--kl-cobalt);
+  --sidebar-primary-foreground: var(--kl-on-cobalt);
+  --sidebar-accent: var(--kl-yellow);
+  --sidebar-accent-foreground: var(--kl-on-yellow);
+  --sidebar-border: var(--kl-seam);
+  --sidebar-ring: var(--kl-focus);
+  /* here, not in a layer: the CLI writes this block into the app's own :root, replacing shadcn's 0.625rem */
+  --radius: 0px;
+}
+
+/* the same mapping in dark (replaces shadcn's own .dark values) and in configuration scopes, where
+   var() must resolve against the scope's own Keyline tokens */
+.dark {
+  --background: var(--kl-paper);
+  --foreground: var(--kl-ink);
+  --card: var(--kl-cell);
+  --card-foreground: var(--kl-ink);
+  --popover: var(--kl-raised);
+  --popover-foreground: var(--kl-ink);
+  --primary: var(--kl-cobalt);
+  --primary-foreground: var(--kl-on-cobalt);
+  --secondary: var(--kl-tint);
+  --secondary-foreground: var(--kl-ink);
+  --muted: var(--kl-tint);
+  --muted-foreground: var(--kl-ink-2);
+  --accent: var(--kl-yellow);
+  --accent-foreground: var(--kl-on-yellow);
+  --destructive: var(--kl-red);
+  --border: var(--kl-seam);
+  --input: var(--kl-line);
+  --ring: var(--kl-focus);
+  --sidebar: var(--kl-cell);
+  --sidebar-foreground: var(--kl-ink);
+  --sidebar-primary: var(--kl-cobalt);
+  --sidebar-primary-foreground: var(--kl-on-cobalt);
+  --sidebar-accent: var(--kl-yellow);
+  --sidebar-accent-foreground: var(--kl-on-yellow);
+  --sidebar-border: var(--kl-seam);
+  --sidebar-ring: var(--kl-focus);
+}
+
+[data-kl-config] {
+  --background: var(--kl-paper);
+  --foreground: var(--kl-ink);
+  --card: var(--kl-cell);
+  --card-foreground: var(--kl-ink);
+  --popover: var(--kl-raised);
+  --popover-foreground: var(--kl-ink);
+  --primary: var(--kl-cobalt);
+  --primary-foreground: var(--kl-on-cobalt);
+  --secondary: var(--kl-tint);
+  --secondary-foreground: var(--kl-ink);
+  --muted: var(--kl-tint);
+  --muted-foreground: var(--kl-ink-2);
+  --accent: var(--kl-yellow);
+  --accent-foreground: var(--kl-on-yellow);
+  --destructive: var(--kl-red);
+  --border: var(--kl-seam);
+  --input: var(--kl-line);
+  --ring: var(--kl-focus);
+  --sidebar: var(--kl-cell);
+  --sidebar-foreground: var(--kl-ink);
+  --sidebar-primary: var(--kl-cobalt);
+  --sidebar-primary-foreground: var(--kl-on-cobalt);
+  --sidebar-accent: var(--kl-yellow);
+  --sidebar-accent-foreground: var(--kl-on-yellow);
+  --sidebar-border: var(--kl-seam);
+  --sidebar-ring: var(--kl-focus);
+}
+
+/* --chart-* is left to the app: Keyline's data colours are roles (--kl-data-1…3, mark, alert), not a series */
+
+@theme inline {
+  --font-sans: var(--kl-font);
+  --font-mono: var(--kl-font-mono);
+  /* Tailwind's own `--radius: 0.25rem` is inline, so the bare `rounded` utility needs this too, not only :root */
+  --radius: 0px;
+}
+
+@layer base {
+  /* native controls and scrollbars follow the theme; layered, so an app's own color-scheme still wins */
+  :root, .light { color-scheme: light; }
+  .dark { color-scheme: dark; }
+  body {
+    background-color: var(--kl-paper);
+    color: var(--kl-ink);
+    font-family: var(--kl-font);
+    font-size: var(--kl-fs);
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--kl-focus); outline-offset: 2px; }
+}

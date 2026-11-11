@@ -1,0 +1,17 @@
+# dependencies
+node_modules/
+
+# build output
+site/.next/
+site/next-env.d.ts
+*.tsbuildinfo
+
+# test, capture and consumer-check output
+.artifacts/
+
+# local environment and editor state
+.env*
+.DS_Store
+*.log
+.vscode/
+.idea/

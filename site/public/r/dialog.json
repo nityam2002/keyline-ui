@@ -1,0 +1,172 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog",
+  "title": "Dialog",
+  "description": "Dialog (header, scrolling body, footer cells) and AlertDialog (an attention cell; focus lands on the safe action): region-framed modals on Base UI. Also installable as @keyline-ui/alert-dialog.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/scroll-area",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/dialog.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\"\nimport { AlertDialog as AlertPrimitive } from \"@base-ui/react/alert-dialog\"\n\nimport { cn } from \"@/lib/utils\"\nimport { ScrollArea } from \"./scroll-area\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\n/* Modal surfaces are region frames: 3px, region cut. They are the only overlays that carry a cut,\n   because they are not attached to an owner. */\n\nconst Dialog = DialogPrimitive.Root\nconst DialogTrigger = DialogPrimitive.Trigger\nconst DialogClose = DialogPrimitive.Close\n\nfunction DialogContent({ className, container, children, ...props }: React.ComponentProps<typeof DialogPrimitive.Popup> & { container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"] }) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        {probe}\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n          <DialogPrimitive.Popup data-slot=\"dialog\" className={cn(\"kl-frame kl-dialog\", className)} {...props}>\n            {children}\n          </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </>\n  )\n}\n\n/** Header cell row of a dialog: title, description, optional close. Reserves the cut's room. */\nfunction DialogHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"dialog-header\" className={cn(\"kl-dialog-h\", className)} {...props} />\n}\n/** Body: padded, scrolls when the dialog hits its max height. Fields and groups go here, standalone (2px). */\n/** The dialog's scrolling body: a Keyline Scroll Area; `className` lays out the content. */\nfunction DialogBody({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <ScrollArea data-slot=\"dialog-body\" className=\"kl-dialog-scroll\" contentClassName={cn(\"kl-dialog-b\", className)} {...(props as object)}>\n      {children}\n    </ScrollArea>\n  )\n}\n/** Footer: a row of cells (use Button layout=\"cell\") sharing the dialog's bottom keyline. */\nfunction DialogFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"dialog-footer\" className={cn(\"kl-cells kl-dialog-f\", className)} {...props} />\n}\nfunction DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {\n  return <DialogPrimitive.Title className={cn(\"kl-dialog-title\", className)} {...props} />\n}\nfunction DialogDescription({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>) {\n  return <DialogPrimitive.Description className={cn(\"kl-dialog-desc\", className)} {...props} />\n}\n\n/* ---------- confirmation (alert) dialog ---------- */\n\nconst AlertDialog = AlertPrimitive.Root\nconst AlertDialogTrigger = AlertPrimitive.Trigger\n\ntype AlertContentProps = React.ComponentProps<typeof AlertPrimitive.Popup> & {\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** The safe action receives initial focus. */\n  cancelLabel: string\n  confirmLabel: string\n  onConfirm: () => void\n  tone?: \"destructive\" | \"primary\"\n  container?: React.ComponentProps<typeof AlertPrimitive.Portal>[\"container\"]\n}\n\nfunction AlertDialogContent({ title, description, cancelLabel, confirmLabel, onConfirm, tone = \"destructive\", children, className, container, ...props }: AlertContentProps) {\n  const safe = React.useRef<HTMLButtonElement>(null)\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  return (\n    <>\n    {marker}\n    <AlertPrimitive.Portal container={container}>\n      {probe}\n      <AlertPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n      <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n      <AlertPrimitive.Popup data-slot=\"alert-dialog\" data-tone={tone} initialFocus={safe} className={cn(\"kl-frame kl-rows kl-dialog kl-alert\", className)} {...props}>\n        <div className=\"kl-cells kl-alert-head\">\n          <span className=\"kl-alert-sig\" aria-hidden>\n            {tone === \"destructive\" ? \"!\" : \"?\"}\n          </span>\n          <div className=\"kl-alert-t\">\n            <AlertPrimitive.Title className=\"kl-dialog-title\">{title}</AlertPrimitive.Title>\n            {description ? <AlertPrimitive.Description className=\"kl-dialog-desc\">{description}</AlertPrimitive.Description> : null}\n          </div>\n        </div>\n        {children ? <div className=\"kl-alert-body\">{children}</div> : null}\n        <div className=\"kl-cells kl-alert-foot\">\n          <AlertPrimitive.Close ref={safe} className=\"kl-cell kl-key kl-alert-btn\">\n            <span>{cancelLabel}</span>\n          </AlertPrimitive.Close>\n          <AlertPrimitive.Close className={cn(\"kl-cell kl-key kl-alert-btn\", tone === \"destructive\" ? \"kl-alert-danger\" : \"kl-alert-primary\")} onClick={onConfirm}>\n            <span>{confirmLabel}</span>\n          </AlertPrimitive.Close>\n        </div>\n      </AlertPrimitive.Popup>\n      </div>\n    </AlertPrimitive.Portal>\n    </>\n  )\n}\n\nexport { Dialog, DialogTrigger, DialogClose, DialogContent, DialogHeader, DialogBody, DialogFooter, DialogTitle, DialogDescription, AlertDialog, AlertDialogTrigger, AlertDialogContent }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/dialog.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-scrim": {
+        "position": "fixed",
+        "inset": "0",
+        "z-index": "var(--kl-z-overlay)",
+        "background-color": "var(--kl-scrim)",
+        "transition": "opacity var(--kl-t-unfold) linear"
+      },
+      ".kl-scrim:is([data-starting-style], [data-ending-style])": {
+        "opacity": "0"
+      },
+      ".kl-scrim[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)"
+      },
+      ".kl-dialog": {
+        "--kl-cell": "var(--kl-raised)",
+        "position": "fixed",
+        "z-index": "var(--kl-z-overlay)",
+        "inset-inline": "0",
+        "inset-block-start": "14vh",
+        "margin-inline": "auto",
+        "width": "min(480px, calc(100vw - 32px))",
+        "max-height": "calc(100vh - 20vh)",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)",
+        "clip-path": "inset(-8px)"
+      },
+      ".kl-dialog:is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(0 0 100% 0)"
+      },
+      ".kl-dialog[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)",
+        "transition-timing-function": "var(--kl-ease-in)",
+        "pointer-events": "none"
+      },
+      ".kl-dialog-scope": {
+        "display": "contents"
+      },
+      ".kl-dialog:not(.kl-alert):not(.kl-cmd)": {
+        "display": "flex",
+        "flex-direction": "column",
+        "width": "min(560px, calc(100vw - 32px))"
+      },
+      ".kl-dialog-h": {
+        "flex": "none",
+        "display": "grid",
+        "gap": "4px",
+        "padding": "16px 18px 14px calc(18px + var(--kl-c-room, 0px))",
+        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
+      },
+      ".kl-dialog-scroll": {
+        "flex": "1 1 auto",
+        "min-height": "0"
+      },
+      ".kl-dialog-scroll > .kl-scroll-vp": {
+        "overscroll-behavior": "contain"
+      },
+      ".kl-dialog-b": {
+        "display": "grid",
+        "gap": "16px",
+        "align-content": "start",
+        "padding": "18px"
+      },
+      ".kl-dialog-f": {
+        "flex": "none",
+        "border-block-start": "var(--kl-k3) solid var(--kl-line)"
+      },
+      ".kl-dialog-f > *": {
+        "flex": "1 1 0",
+        "min-width": "0"
+      },
+      ".kl-dialog-title": {
+        "margin": "0",
+        "font-size": "20px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.2"
+      },
+      ".kl-dialog-desc": {
+        "margin": "0",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-alert-head": {
+        "min-height": "80px"
+      },
+      ".kl-alert-sig": {
+        "display": "grid",
+        "place-items": "center",
+        "flex": "none",
+        "width": "60px",
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)",
+        "font-weight": "var(--kl-weight-display)",
+        "font-size": "26px"
+      },
+      ".kl-alert[data-tone=\"primary\"] .kl-alert-sig": {
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-alert-t": {
+        "flex": "1",
+        "display": "grid",
+        "gap": "6px",
+        "align-content": "center",
+        "padding": "14px 18px"
+      },
+      ".kl-alert-body": {
+        "padding": "16px 18px",
+        "display": "grid",
+        "gap": "10px"
+      },
+      ".kl-alert-foot": {
+        "border-block-start-width": "var(--kl-k3) !important"
+      },
+      ".kl-alert-btn": {
+        "flex": "1",
+        "justify-content": "center",
+        "min-height": "52px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "15px"
+      },
+      ".kl-alert-danger": {
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)"
+      },
+      ".kl-alert-danger:hover": {
+        "background-color": "var(--kl-red-hi)"
+      },
+      ".kl-alert-primary": {
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-alert-primary:hover": {
+        "background-color": "var(--kl-cobalt-hi)"
+      },
+      ":is(.kl-alert-danger, .kl-alert-primary):focus-visible": {
+        "outline-color": "currentColor"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-alert-sig, .kl-alert-danger": {
+          "forced-color-adjust": "none",
+          "background": "Mark",
+          "color": "MarkText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

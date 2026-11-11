@@ -1,0 +1,124 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress",
+  "title": "Progress",
+  "description": "Task progress: the pending signal made determinate (yellow fill, ink leading edge), indeterminate, complete and failed states.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/progress.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Progress as ProgressPrimitive } from \"@base-ui/react/progress\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype ProgressProps = Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, \"children\"> & {\n  /** What is in progress (\"Uploading manifest.pdf\"). Visible unless `hideLabel`. */\n  label: React.ReactNode\n  /** A line under the rail: amounts, time left, the failure's reason and what to do. */\n  detail?: React.ReactNode\n  /** The task stopped. The fill turns attention-red and the readout says so; `value` keeps how far it got. */\n  failed?: boolean\n  /** Readout text when failed. Default \"Failed\". */\n  failedText?: string\n  /** Hide the label and readout when the surrounding text already says both (a table cell, a toast). */\n  hideLabel?: boolean\n}\n\n/**\n * Task progress: how far a job has got, not a measurement (that is Meter). It is the pending signal\n * made determinate. Pending runs a yellow segment along a keyline; Progress fills the rail with the\n * same yellow, and draws the fill's leading end as a keyline so the boundary reads in every theme.\n *\n *   Uploading manifest.pdf                 64%\n *   [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓|                    ]     k1 rail · yellow fill · ink leading edge\n *   3.2 of 5 MB · about 12 s left\n *\n * - `value={null}`: indeterminate. The pending segment runs inside the rail (hatched and still under\n *   reduced motion).\n * - Complete: the readout gains the done glyph.\n * - `failed`: the fill turns red where it stopped and the readout says \"Failed\" with the attention glyph;\n *   say why and what to do in `detail`.\n *\n * Semantics (role=\"progressbar\", value text, status attributes) and number formatting are Base UI Progress's.\n */\nfunction Progress({ label, detail, failed, failedText = \"Failed\", hideLabel, className, getAriaValueText, ...props }: ProgressProps) {\n  const detailId = React.useId()\n  return (\n    <ProgressPrimitive.Root\n      data-slot=\"progress\"\n      data-failed={failed || undefined}\n      aria-describedby={detail ? detailId : undefined}\n      aria-label={hideLabel && typeof label === \"string\" ? label : undefined}\n      getAriaValueText={failed ? (formatted) => `${failedText}${formatted ? ` at ${formatted}` : \"\"}` : getAriaValueText}\n      className={cn(\"kl-progress\", className)}\n      {...props}\n    >\n      {hideLabel ? null : (\n        <span className=\"kl-progress-head\">\n          <ProgressPrimitive.Label className=\"kl-progress-l\">{label}</ProgressPrimitive.Label>\n          {failed ? (\n            <span className=\"kl-progress-v\" data-tone=\"failed\">\n              <span className=\"kl-glyph\" data-kind=\"attention\" aria-hidden />\n              {failedText}\n            </span>\n          ) : (\n            <ProgressPrimitive.Value className=\"kl-progress-v\">\n              {(formatted, value) =>\n                value == null ? null : (\n                  <>\n                    {value >= (props.max ?? 100) ? <span className=\"kl-glyph\" data-kind=\"done\" aria-hidden /> : null}\n                    <bdi>{formatted}</bdi>\n                  </>\n                )\n              }\n            </ProgressPrimitive.Value>\n          )}\n        </span>\n      )}\n      <ProgressPrimitive.Track className=\"kl-progress-rail\">\n        <ProgressPrimitive.Indicator className=\"kl-progress-fill\" />\n      </ProgressPrimitive.Track>\n      {detail ? (\n        <span id={detailId} className=\"kl-progress-detail\">\n          {detail}\n        </span>\n      ) : null}\n    </ProgressPrimitive.Root>\n  )\n}\n\nexport { Progress, type ProgressProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/progress.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-progress": {
+        "display": "grid",
+        "gap": "4px",
+        "min-width": "0"
+      },
+      ".kl-progress-head": {
+        "display": "flex",
+        "align-items": "baseline",
+        "justify-content": "space-between",
+        "gap": "12px",
+        "min-width": "0"
+      },
+      ".kl-progress-l": {
+        "min-width": "0",
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-progress-v": {
+        "flex": "none",
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "6px",
+        "font-size": "13px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-variant-numeric": "tabular-nums",
+        "white-space": "nowrap"
+      },
+      ".kl-progress-v[data-tone=\"failed\"]": {
+        "color": "var(--kl-red-text)"
+      },
+      ".kl-progress-v .kl-glyph[data-kind=\"done\"]": {
+        "translate": "0 -1px"
+      },
+      ".kl-progress-rail": {
+        "position": "relative",
+        "display": "block",
+        "height": "10px",
+        "box-sizing": "border-box",
+        "border": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-cell)",
+        "overflow": "hidden"
+      },
+      ".kl-progress-fill": {
+        "display": "block",
+        "height": "100%",
+        "box-sizing": "border-box",
+        "background-color": "var(--kl-yellow)",
+        "transition": "width var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-progress[data-progressing] .kl-progress-fill": {
+        "border-inline-end": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-progress[data-failed] .kl-progress-fill": {
+        "background-color": "var(--kl-red)",
+        "border-inline-end-color": "var(--kl-red)"
+      },
+      ".kl-progress[data-indeterminate] .kl-progress-fill": {
+        "position": "absolute",
+        "inset-block": "0",
+        "left": "0",
+        "width": "34%",
+        "border-inline": "var(--kl-k1) solid var(--kl-line)",
+        "animation": "kl-run 1100ms linear infinite var(--kl-run-dir, normal)"
+      },
+      "[data-kl-motion=\"reduce\"] .kl-progress[data-indeterminate] .kl-progress-fill": {
+        "animation": "none",
+        "inset-inline-start": "0",
+        "width": "100%",
+        "border": "0",
+        "background": "var(--kl-hatch), var(--kl-yellow)"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".kl-progress[data-indeterminate] .kl-progress-fill": {
+          "animation": "none",
+          "inset-inline-start": "0",
+          "width": "100%",
+          "border": "0",
+          "background": "var(--kl-hatch), var(--kl-yellow)"
+        }
+      },
+      ".kl-progress-detail": {
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-progress[data-failed] .kl-progress-detail": {
+        "color": "var(--kl-ink)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-progress-fill": {
+          "forced-color-adjust": "none",
+          "background": "Highlight"
+        },
+        ".kl-progress[data-failed] .kl-progress-fill": {
+          "background": "CanvasText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

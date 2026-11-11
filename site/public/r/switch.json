@@ -1,0 +1,134 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "title": "Switch",
+  "description": "Binary setting: a two-cell frame whose block stretches to the on side.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/checkbox"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/switch.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Switch as SwitchPrimitive } from \"@base-ui/react/switch\"\nimport { Field } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * A binary setting. The thumb STRETCHES between the two halves of the frame (the edge on the travel\n * side leads, the other follows: pure CSS, same timings as the stretch springs). On and off differ in\n * position, form (hollow / solid thumb) and glyph (the \"on\" bar), never by colour alone. Semantics,\n * keyboard, form value and controlled/uncontrolled state are Base UI Switch's.\n */\nfunction Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {\n  return (\n    <SwitchPrimitive.Root data-slot=\"switch\" className={cn(\"kl-switch\", className)} {...props}>\n      <SwitchPrimitive.Thumb className=\"kl-switch-thumb\" />\n    </SwitchPrimitive.Root>\n  )\n}\n\n/** Label + description + switch on one row; the row is the hit target. */\nfunction SwitchField({ label, description, className, disabled, layout = \"control\", ...props }: React.ComponentProps<typeof SwitchPrimitive.Root> & { label: React.ReactNode; description?: React.ReactNode; /** control (default): aligns to a form column. cell: a row inside an enclosing frame (40px box cell, inset text). */ layout?: \"control\" | \"cell\" }) {\n  return (\n    <Field.Root data-slot=\"switch-field\" data-kl-layout={layout} disabled={disabled} className={cn(\"kl-choice kl-switch-field\", className)}>\n      <Field.Label className=\"kl-choice-row\">\n        <span className=\"kl-choice-text\">\n          <span className=\"kl-choice-label\">{label}</span>\n          {description ? <Field.Description className=\"kl-choice-desc\">{description}</Field.Description> : null}\n        </span>\n        <span className=\"kl-switch-cell\">\n          <Switch disabled={disabled} {...props} />\n        </span>\n      </Field.Label>\n    </Field.Root>\n  )\n}\n\nexport { Switch, SwitchField }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/switch.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-switch": {
+        "--kl-sw": "22px",
+        "--kl-sw-gap": "2px",
+        "position": "relative",
+        "flex": "none",
+        "display": "inline-block",
+        "box-sizing": "content-box",
+        "width": "calc(var(--kl-sw) * 2)",
+        "height": "var(--kl-sw)",
+        "padding": "0",
+        "margin": "0",
+        "border": "var(--kl-k2) solid var(--kl-line)",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "cursor": "pointer"
+      },
+      ".kl-switch-thumb": {
+        "position": "absolute",
+        "inset-block": "var(--kl-sw-gap)",
+        "inset-inline-start": "var(--kl-sw-gap)",
+        "inset-inline-end": "calc(50% + var(--kl-sw-gap) / 2)",
+        "box-sizing": "border-box",
+        "background-color": "transparent",
+        "border": "2px solid var(--kl-inverse)",
+        "transition": "inset-inline-start calc(var(--kl-stretch-trail) * 1ms) var(--kl-ease-out), inset-inline-end calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), background-color 0s linear calc(var(--kl-stretch-lead) * 0.35ms)"
+      },
+      ".kl-switch[data-checked] .kl-switch-thumb": {
+        "inset-inline-start": "calc(50% + var(--kl-sw-gap) / 2)",
+        "inset-inline-end": "var(--kl-sw-gap)",
+        "background-color": "var(--kl-inverse)",
+        "transition": "inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), inset-inline-end calc(var(--kl-stretch-trail) * 1ms) var(--kl-ease-out), background-color 0s linear calc(var(--kl-stretch-lead) * 0.35ms)"
+      },
+      ".kl-switch::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset-block-start": "calc(50% - var(--kl-sw) * 0.25)",
+        "height": "calc(var(--kl-sw) * 0.5)",
+        "width": "2px",
+        "inset-inline-start": "calc(25% - 1px)",
+        "background-color": "currentColor",
+        "opacity": "0",
+        "transition": "opacity 0s linear 0s"
+      },
+      ".kl-switch[data-checked]::after": {
+        "opacity": "1",
+        "transition-delay": "calc(var(--kl-stretch-trail) * 0.6ms)"
+      },
+      ".kl-switch:hover:not([data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-switch:active:not([data-disabled]) .kl-switch-thumb": {
+        "translate": "0 1px"
+      },
+      ".kl-switch[data-disabled]": {
+        "cursor": "not-allowed",
+        "border-color": "var(--kl-dis-line)",
+        "background-image": "var(--kl-hatch)",
+        "color": "var(--kl-dis)"
+      },
+      ".kl-switch[data-disabled] .kl-switch-thumb": {
+        "border-color": "var(--kl-dis)"
+      },
+      ".kl-switch[data-disabled][data-checked] .kl-switch-thumb": {
+        "background-color": "var(--kl-dis)"
+      },
+      "[data-kl-density=\"compact\"] .kl-switch": {
+        "--kl-sw": "16px"
+      },
+      ".kl-choice.kl-switch-field .kl-choice-text": {
+        "padding-inline": "var(--kl-inset) 0"
+      },
+      ".kl-choice.kl-switch-field[data-kl-layout=\"control\"] .kl-choice-text": {
+        "padding-inline": "0 var(--kl-inset)"
+      },
+      ".kl-switch-field[data-kl-layout=\"control\"] .kl-switch-cell": {
+        "padding-inline": "0"
+      },
+      ".kl-switch-cell": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "padding-inline": "var(--kl-inset)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-switch-thumb": {
+          "forced-color-adjust": "none",
+          "background": "Canvas",
+          "border-color": "CanvasText"
+        },
+        ".kl-switch[data-checked] .kl-switch-thumb": {
+          "background": "Highlight",
+          "border-color": "Highlight"
+        },
+        ".kl-switch::after": {
+          "forced-color-adjust": "none",
+          "background": "CanvasText"
+        },
+        ".kl-switch[data-disabled] .kl-switch-thumb": {
+          "border-color": "GrayText"
+        },
+        ".kl-switch[data-disabled][data-checked] .kl-switch-thumb": {
+          "background": "GrayText"
+        },
+        ".kl-switch[data-disabled]::after": {
+          "background": "GrayText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

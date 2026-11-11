@@ -1,0 +1,217 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu",
+  "title": "Menu",
+  "description": "Docked menu with code cells, shortcut cells, ink cursor, destructive rows, checkbox and radio items, and submenus.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/menu.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Menu as MenuPrimitive } from \"@base-ui/react/menu\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\nconst Menu = MenuPrimitive.Root\nconst MenuTrigger = MenuPrimitive.Trigger\n\ntype MenuContentProps = React.ComponentProps<typeof MenuPrimitive.Popup> & {\n  /** Element the menu docks to (defaults to the trigger). */\n  anchor?: React.ComponentProps<typeof MenuPrimitive.Positioner>[\"anchor\"]\n  side?: \"bottom\" | \"top\"\n  align?: \"start\" | \"end\"\n  /** Keyline weight of the owner's shared edge: 2 for a standalone control, 1 for a cell (layout=\"cell\"). */\n  attachWeight?: 1 | 2 | 3\n  container?: React.ComponentProps<typeof MenuPrimitive.Portal>[\"container\"]\n}\n\n/**\n * A menu written inside a ButtonGroup docks to the group's frame, not to its trigger cell: the cell sits\n * inside the frame's k2 border, so docking to the cell would leave the menu's edges a border-width inside the\n * frame's. The anchor is the trigger cell with every edge that touches the frame moved onto the frame's\n * outer edge (in a row: the top and bottom always, the start/end for the first/last cell).\n */\nfunction useFrameDock() {\n  const ref = React.useRef<HTMLSpanElement>(null)\n  const [frame, setFrame] = React.useState<HTMLElement | null>(null)\n  React.useLayoutEffect(() => {\n    const next = ref.current?.closest<HTMLElement>('[data-slot=\"button-group\"]') ?? null\n    setFrame((prev) => (prev === next ? prev : next))\n  })\n  const anchor = React.useMemo(() => {\n    if (!frame) return undefined\n    return {\n      contextElement: frame,\n      getBoundingClientRect() {\n        const f = frame.getBoundingClientRect()\n        const trigger = Array.from(frame.querySelectorAll<HTMLElement>('[aria-expanded=\"true\"]')).find((el) => el.closest('[data-slot=\"button-group\"]') === frame)\n        if (!trigger) return f\n        const t = trigger.getBoundingClientRect()\n        const cs = getComputedStyle(frame)\n        const near = (gap: number, border: string) => gap <= parseFloat(border) + 0.5\n        const left = near(t.left - f.left, cs.borderLeftWidth) ? f.left : t.left\n        const right = near(f.right - t.right, cs.borderRightWidth) ? f.right : t.right\n        const top = near(t.top - f.top, cs.borderTopWidth) ? f.top : t.top\n        const bottom = near(f.bottom - t.bottom, cs.borderBottomWidth) ? f.bottom : t.bottom\n        return new DOMRect(left, top, right - left, bottom - top)\n      },\n    }\n  }, [frame])\n  return { marker: <span ref={ref} hidden data-kl-dock-probe=\"\" />, anchor }\n}\n\n/**\n * A docked surface: its shared edge sits on the owner's keyline, it unfolds from that edge, it has no cut.\n * It carries the configuration (cut, density, motion, theme, dir) of the place it is written, not of <body>.\n */\nfunction MenuContent({ className, anchor, side = \"bottom\", align = \"start\", attachWeight = 2, container, style, ...props }: MenuContentProps) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  const frameDock = useFrameDock()\n  return (\n    <>\n      {marker}\n      {frameDock.marker}\n      <MenuPrimitive.Portal container={container}>\n        {probe}\n        <MenuPrimitive.Positioner anchor={anchor ?? frameDock.anchor} side={side} align={align} sideOffset={attachWeight === 1 ? 0 : -attachWeight} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <MenuPrimitive.Popup\n            data-slot=\"menu\"\n            className={cn(\"kl-attached kl-dock kl-menu\", className)}\n            style={(state) => ({ \"--kl-attach\": `${attachWeight}px`, ...(typeof style === \"function\" ? style(state) : style) }) as React.CSSProperties}\n            {...props}\n          />\n        </MenuPrimitive.Positioner>\n      </MenuPrimitive.Portal>\n    </>\n  )\n}\n\ntype MenuItemProps = React.ComponentProps<typeof MenuPrimitive.Item> & {\n  /** Index code shown in the leading cell; only when a key or a reference uses it. */\n  code?: React.ReactNode\n  shortcut?: React.ReactNode\n  description?: React.ReactNode\n  variant?: \"default\" | \"destructive\"\n}\n\nfunction MenuItem({ className, code, shortcut, description, variant = \"default\", children, ...props }: MenuItemProps) {\n  return (\n    <MenuPrimitive.Item data-slot=\"menu-item\" data-variant={variant} className={cn(\"kl-menu-item\", className)} {...props}>\n      <span className=\"kl-menu-code\" aria-hidden={code == null || undefined}>{code}</span>\n      <span className=\"kl-menu-label\">\n        <span>{children}</span>\n        {description ? <small>{description}</small> : null}\n      </span>\n      {shortcut ? <kbd className=\"kl-menu-key\">{shortcut}</kbd> : <span />}\n    </MenuPrimitive.Item>\n  )\n}\n\n/* ------------------------------------------------------------------ *\n * CHECKBOX AND RADIO ITEMS\n * The leading code cell becomes the indicator cell. A checkbox item's box takes a tick; a radio item's\n * box takes a filled square: two shapes, so the kind reads without colour. The box is drawn in the\n * row's text colour, so it inverts with the cursor. Checking an item keeps the menu open (Base UI's\n * default for these items); pass closeOnClick to close it.\n * ------------------------------------------------------------------ */\ntype MenuCheckboxItemProps = React.ComponentProps<typeof MenuPrimitive.CheckboxItem> & { shortcut?: React.ReactNode; description?: React.ReactNode }\n\nfunction MenuCheckboxItem({ className, shortcut, description, children, ...props }: MenuCheckboxItemProps) {\n  return (\n    <MenuPrimitive.CheckboxItem data-slot=\"menu-checkbox-item\" className={cn(\"kl-menu-item kl-menu-choice\", className)} {...props}>\n      <span className=\"kl-menu-code kl-menu-ind\" aria-hidden>\n        <span className=\"kl-menu-box\" data-kind=\"checkbox\">\n          <MenuPrimitive.CheckboxItemIndicator className=\"kl-menu-mark\">\n            <svg viewBox=\"0 0 10 10\" width=\"10\" height=\"10\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n              <path d=\"m2 5.25 2 2 4-4.5\" />\n            </svg>\n          </MenuPrimitive.CheckboxItemIndicator>\n        </span>\n      </span>\n      <span className=\"kl-menu-label\">\n        <span>{children}</span>\n        {description ? <small>{description}</small> : null}\n      </span>\n      {shortcut ? <kbd className=\"kl-menu-key\">{shortcut}</kbd> : <span />}\n    </MenuPrimitive.CheckboxItem>\n  )\n}\n\n/** One exclusive choice among MenuRadioItems; controlled (value, onValueChange) or uncontrolled (defaultValue). */\nfunction MenuRadioGroup(props: React.ComponentProps<typeof MenuPrimitive.RadioGroup>) {\n  return <MenuPrimitive.RadioGroup data-slot=\"menu-radio-group\" {...props} />\n}\n\nfunction MenuRadioItem({ className, shortcut, description, children, ...props }: React.ComponentProps<typeof MenuPrimitive.RadioItem> & { shortcut?: React.ReactNode; description?: React.ReactNode }) {\n  return (\n    <MenuPrimitive.RadioItem data-slot=\"menu-radio-item\" className={cn(\"kl-menu-item kl-menu-choice\", className)} {...props}>\n      <span className=\"kl-menu-code kl-menu-ind\" aria-hidden>\n        <span className=\"kl-menu-box\" data-kind=\"radio\">\n          <MenuPrimitive.RadioItemIndicator className=\"kl-menu-mark kl-menu-dot\" />\n        </span>\n      </span>\n      <span className=\"kl-menu-label\">\n        <span>{children}</span>\n        {description ? <small>{description}</small> : null}\n      </span>\n      {shortcut ? <kbd className=\"kl-menu-key\">{shortcut}</kbd> : <span />}\n    </MenuPrimitive.RadioItem>\n  )\n}\n\n/* ------------------------------------------------------------------ *\n * SUBMENUS\n * The trigger is an ordinary row whose trailing cell is a › that mirrors in RTL; while its submenu is\n * open it keeps the cursor (inverse). The submenu docks beside the parent: its start border lies on the\n * parent's end border (one 2px line), its first row level with the trigger row, and it unfolds from\n * that shared edge. Hover intent, Arrow Right/Left, Escape and focus return are Base UI's.\n * ------------------------------------------------------------------ */\nconst MenuSubmenu = MenuPrimitive.SubmenuRoot\n\ntype MenuSubmenuTriggerProps = React.ComponentProps<typeof MenuPrimitive.SubmenuTrigger> & {\n  code?: React.ReactNode\n  description?: React.ReactNode\n}\n\nfunction MenuSubmenuTrigger({ className, code, description, children, ...props }: MenuSubmenuTriggerProps) {\n  return (\n    <MenuPrimitive.SubmenuTrigger data-slot=\"menu-submenu-trigger\" className={cn(\"kl-menu-item kl-menu-sub\", className)} {...props}>\n      <span className=\"kl-menu-code\" aria-hidden={code == null || undefined}>{code}</span>\n      <span className=\"kl-menu-label\">\n        <span>{children}</span>\n        {description ? <small>{description}</small> : null}\n      </span>\n      <span className=\"kl-menu-more\" aria-hidden>\n        <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n          <path d=\"m6 4 4 4-4 4\" />\n        </svg>\n      </span>\n    </MenuPrimitive.SubmenuTrigger>\n  )\n}\n\n/* Base UI resolves `inline-end` from its DirectionProvider, which the page may not set; the submenu\n   reads the direction its parent menu carries (scope.dir) and picks the physical side itself. */\nfunction MenuSubmenuContent({ className, container, style, ...props }: React.ComponentProps<typeof MenuPrimitive.Popup> & { container?: React.ComponentProps<typeof MenuPrimitive.Portal>[\"container\"] }) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  return (\n    <>\n      {marker}\n      <MenuPrimitive.Portal container={container}>\n        {probe}\n        <MenuPrimitive.Positioner side={scope.dir === \"rtl\" ? \"left\" : \"right\"} align=\"start\" sideOffset={0} alignOffset={-2} collisionPadding={8} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <MenuPrimitive.Popup data-slot=\"menu-submenu\" className={cn(\"kl-attached kl-dock kl-menu kl-menu-subpanel\", className)} style={style} {...props} />\n        </MenuPrimitive.Positioner>\n      </MenuPrimitive.Portal>\n    </>\n  )\n}\n\nfunction MenuSeparator({ className, ...props }: React.ComponentProps<typeof MenuPrimitive.Separator>) {\n  return <MenuPrimitive.Separator className={cn(\"kl-menu-sep\", className)} {...props} />\n}\n\nfunction MenuGroup(props: React.ComponentProps<typeof MenuPrimitive.Group>) {\n  return <MenuPrimitive.Group {...props} />\n}\n\nfunction MenuGroupLabel({ className, ...props }: React.ComponentProps<typeof MenuPrimitive.GroupLabel>) {\n  return <MenuPrimitive.GroupLabel className={cn(\"kl-menu-group\", className)} {...props} />\n}\n\nexport { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/menu.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-menu": {
+        "min-width": "max(240px, var(--anchor-width))",
+        "max-height": "var(--available-height)",
+        "overflow": "auto",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "font-size": "14px",
+        "display": "grid",
+        "grid-template-columns": "minmax(32px, max-content) minmax(0, 1fr) auto",
+        "align-content": "start"
+      },
+      ".kl-menu > *, .kl-menu :is([role=\"group\"], [role=\"radiogroup\"]) > *": {
+        "grid-column": "1 / -1"
+      },
+      ".kl-menu :is([role=\"group\"], [role=\"radiogroup\"])": {
+        "display": "grid",
+        "grid-template-columns": "subgrid"
+      },
+      ".kl-menu-item": {
+        "display": "grid",
+        "grid-template-columns": "32px minmax(0, 1fr) auto",
+        "align-items": "stretch",
+        "min-height": "var(--kl-row)",
+        "cursor": "default",
+        "outline": "0",
+        "user-select": "none"
+      },
+      ".kl-menu .kl-menu-item": {
+        "grid-template-columns": "subgrid"
+      },
+      ".kl-menu-item + .kl-menu-item": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-menu-code": {
+        "display": "grid",
+        "place-items": "center",
+        "padding-inline": "8px",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
+        "font-family": "var(--kl-font-mono)",
+        "font-size": "11px",
+        "white-space": "nowrap",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-menu-code:empty, .kl-menu-ind": {
+        "padding-inline": "0"
+      },
+      ".kl-menu:not(:has(.kl-menu-code:not(:empty)))": {
+        "grid-template-columns": "0 minmax(0, 1fr) auto"
+      },
+      ".kl-menu:not(:has(.kl-menu-code:not(:empty))) .kl-menu-code": {
+        "border-inline-end": "0"
+      },
+      ".kl-menu-label": {
+        "display": "grid",
+        "align-content": "center",
+        "gap": "1px",
+        "padding": "6px 12px"
+      },
+      ".kl-menu-label small": {
+        "font-size": "12px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-menu-key": {
+        "align-self": "center",
+        "margin-inline-end": "10px",
+        "font": "500 11px/1 var(--kl-font-mono)",
+        "min-width": "22px",
+        "height": "22px",
+        "display": "inline-grid",
+        "place-items": "center",
+        "padding-inline": "5px",
+        "border": "var(--kl-k1) solid currentColor"
+      },
+      ".kl-menu-item[data-highlighted]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-menu-item[data-highlighted] :is(.kl-menu-code, small)": {
+        "color": "inherit",
+        "border-color": "var(--kl-on-inverse)"
+      },
+      ".kl-menu-item[data-variant=\"destructive\"]": {
+        "color": "var(--kl-red-text)",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-menu-item[data-variant=\"destructive\"][data-highlighted]": {
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)"
+      },
+      ".kl-menu-item[data-disabled]": {
+        "cursor": "not-allowed",
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)"
+      },
+      ".kl-menu-item[data-disabled] small": {
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-menu-sep": {
+        "height": "0",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-menu-sep + .kl-menu-item": {
+        "border-block-start": "0"
+      },
+      ".kl-menu-group": {
+        "display": "block",
+        "padding": "8px 12px 4px",
+        "font": "500 11px/1.2 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-menu-item.kl-menu-sub[data-popup-open]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-menu-item.kl-menu-sub[data-popup-open] :is(.kl-menu-code, small)": {
+        "color": "inherit",
+        "border-color": "var(--kl-on-inverse)"
+      },
+      ".kl-menu-more": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "32px",
+        "align-self": "stretch"
+      },
+      ".kl-menu-more:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) svg": {
+        "scale": "-1 1"
+      },
+      ".kl-menu-subpanel": {
+        "min-width": "200px"
+      },
+      ".kl-menu-box": {
+        "display": "grid",
+        "place-items": "center",
+        "box-sizing": "border-box",
+        "width": "14px",
+        "height": "14px",
+        "border": "var(--kl-k2) solid currentColor",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-menu-item[data-highlighted] .kl-menu-box": {
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-menu-item[data-disabled] .kl-menu-box": {
+        "color": "var(--kl-dis)"
+      },
+      ".kl-menu-box[data-kind=\"checkbox\"]:has(.kl-menu-mark)": {
+        "background-color": "currentColor"
+      },
+      ".kl-menu-box[data-kind=\"checkbox\"] .kl-menu-mark": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "100%",
+        "height": "100%",
+        "color": "var(--kl-cell)"
+      },
+      ".kl-menu-mark svg": {
+        "display": "block"
+      },
+      ".kl-menu-item[data-highlighted] .kl-menu-box[data-kind=\"checkbox\"] .kl-menu-mark": {
+        "color": "var(--kl-inverse)"
+      },
+      ".kl-menu-dot": {
+        "width": "6px",
+        "height": "6px",
+        "background-color": "currentColor"
+      },
+      ".kl-menu-item[data-variant=\"destructive\"] .kl-menu-box": {
+        "color": "inherit"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-menu-box, .kl-menu-dot": {
+          "forced-color-adjust": "none",
+          "color": "CanvasText"
+        },
+        ".kl-menu-box[data-kind=\"checkbox\"] .kl-menu-mark": {
+          "color": "Canvas"
+        },
+        ".kl-menu-item[data-highlighted] :is(.kl-menu-box, .kl-menu-dot)": {
+          "color": "CanvasText"
+        },
+        ".kl-menu-item.kl-menu-sub[data-popup-open]": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        },
+        ".kl-menu-item[data-highlighted]": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

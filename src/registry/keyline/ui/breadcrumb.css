@@ -1,0 +1,39 @@
+@layer components {
+  /* BREADCRUMB: the frame hugs its crumbs (inline), up to the width it is given. Seams sit on each crumb's
+     end edge, so folding a crumb away never leaves a doubled edge. */
+  .kl-crumbs { container: kl-crumbs / inline-size; min-width: 0; }
+  .kl-crumbs-list {
+    display: inline-flex; max-width: 100%; box-sizing: border-box; margin: 0; padding: 0; list-style: none;
+    min-height: var(--kl-ctl); background-color: var(--kl-cell); vertical-align: top;
+    /* the cut's room, kept by the frame so it holds whichever crumb is first */
+    padding-inline-start: calc(var(--kl-c, 0px) * 0.35);
+  }
+  .kl-crumbs-list[data-kl-layout="cell"] { display: flex; min-height: var(--kl-row); }
+  .kl-crumbs-list > .kl-crumb { border-inline-start: 0; }
+  .kl-crumbs-list > .kl-crumb:not(:last-child) { border-inline-end: var(--kl-k1) solid var(--kl-seam); }
+  .kl-crumb { display: flex; min-width: 0; flex: 0 3 auto; }
+  .kl-crumb-link { gap: 6px; min-height: 0; color: var(--kl-ink); font-size: 14px; text-decoration: none; max-width: 22ch; }
+  .kl-crumb-link:hover .kl-crumb-text { text-decoration: underline; text-underline-offset: 3px; }
+  .kl-crumb-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .kl-crumb-sep { flex: none; color: var(--kl-ink-3); }
+  .kl-crumb-sep:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) { scale: -1 1; }
+  /* here: the location cell (cobalt, as Nav and Tabs mark where you are) */
+  .kl-crumb-here { flex: 0 1 auto; }
+  .kl-crumb-cur { min-height: 0; font-size: 14px; font-weight: var(--kl-weight-strong); background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); }
+  .kl-crumb-more .kl-crumb-link { max-width: none; font-weight: var(--kl-weight-strong); }
+  .kl-crumb-more .kl-crumb-link[data-popup-open] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
+  .kl-crumb-more .kl-crumb-link[data-popup-open] .kl-crumb-sep { color: inherit; }
+
+  /* folding: by count (data-kl-folded) or by width */
+  .kl-crumb-more { display: none; }
+  .kl-crumbs[data-kl-folded] .kl-crumb-more { display: flex; }
+  .kl-crumbs[data-kl-folded] .kl-crumb[data-kl-early] { display: none; }
+  @container kl-crumbs (max-width: 480px) {
+    .kl-crumb-more { display: flex; }
+    .kl-crumb[data-kl-early] { display: none; }
+    .kl-crumb-link { max-width: 14ch; }
+  }
+  @media (forced-colors: active) {
+    .kl-crumb-cur { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  }
+}

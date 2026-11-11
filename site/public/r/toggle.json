@@ -1,0 +1,113 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "title": "Toggle",
+  "description": "One on/off button (Base UI Toggle, aria-pressed): pressed floods yellow and fills the lamp; icon toggles show a floor keyline. Control or cell, alone or as a cell of a field frame. ToggleGroup composes its cells.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-motion"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/toggle.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Toggle as TogglePrimitive } from \"@base-ui/react/toggle\"\n\nimport { cn } from \"@/lib/utils\"\nimport { floodHandlers } from \"../lib/keyline-motion\"\n\n/** The inside of a toggle cell: the lamp (the state's shape), the label, an optional count. Shared with\n *  ToggleGroupItem so a toggle reads the same alone and in a group. */\nfunction ToggleLabel({ children, count, icon }: { children?: React.ReactNode; count?: React.ReactNode; icon?: boolean }) {\n  return (\n    <span className=\"kl-toggle-label\">\n      {icon ? null : <span className=\"kl-lamp\" aria-hidden />}\n      {children}\n      {count != null ? <span className=\"kl-toggle-count\">{count}</span> : null}\n    </span>\n  )\n}\n\ntype ToggleProps = React.ComponentProps<typeof TogglePrimitive> & {\n  /** control: its own frame. cell: a cell of an enclosing frame (a panel header, a field frame). */\n  layout?: \"control\" | \"cell\"\n  /** Icon only: a square cell; pass `aria-label`. Pressed shows a floor keyline instead of the lamp. */\n  icon?: boolean\n  count?: React.ReactNode\n}\n\n/**\n * Toggle: one on/off button on Base UI Toggle (`aria-pressed`). Pressed FLOODS yellow from the\n * press point (the working set) and fills the lamp, so the state has a shape as well as a colour; the\n * label never changes with the state. Controlled (`pressed` + `onPressedChange`) or uncontrolled\n * (`defaultPressed`). For several related toggles use ToggleGroup; for one of many use Segmented.\n */\nfunction Toggle({ className, layout = \"control\", icon, count, children, ...props }: ToggleProps) {\n  return (\n    <TogglePrimitive\n      data-slot=\"toggle\"\n      data-kl-layout={layout}\n      data-kl-icon={icon || undefined}\n      className={cn(layout === \"control\" && \"kl-ctl\", \"kl-flood kl-key kl-toggle kl-toggle-solo\", className)}\n      {...floodHandlers}\n      {...props}\n    >\n      <ToggleLabel icon={icon} count={count}>\n        {children}\n      </ToggleLabel>\n    </TogglePrimitive>\n  )\n}\n\nexport { Toggle, ToggleLabel, type ToggleProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/toggle.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-toggle": {
+        "display": "inline-flex",
+        "align-items": "stretch",
+        "padding": "0",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "14px",
+        "color": "var(--kl-ink)",
+        "cursor": "pointer",
+        "white-space": "nowrap",
+        "background": "transparent"
+      },
+      ".kl-toggle-label": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "8px",
+        "padding-inline": "12px"
+      },
+      ".kl-toggle-count": {
+        "font-weight": "500",
+        "font-variant-numeric": "tabular-nums",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-toggle[data-pressed] .kl-toggle-count": {
+        "color": "inherit"
+      },
+      ".kl-toggle[data-pressed] .kl-lamp": {
+        "border-width": "5px"
+      },
+      ".kl-toggle:hover:not([data-pressed]):not([data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-toggle:focus-visible": {
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-toggle[data-disabled]": {
+        "cursor": "not-allowed",
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)"
+      },
+      ".kl-toggle[data-disabled][data-pressed]": {
+        "--kl-fc": "var(--kl-press)",
+        "--kl-fg": "var(--kl-dis)"
+      },
+      ".kl-toggle-solo": {
+        "min-height": "var(--kl-ctl)",
+        "box-sizing": "border-box",
+        "vertical-align": "middle",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-toggle-solo[data-kl-layout=\"control\"] .kl-toggle-label": {
+        "padding-inline-start": "calc(12px + var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-toggle-solo[data-kl-layout=\"cell\"]": {
+        "min-height": "var(--kl-row)"
+      },
+      ".kl-toggle-solo[data-kl-layout=\"control\"][data-disabled]": {
+        "border-color": "var(--kl-dis-line)",
+        "--kl-cut-line": "var(--kl-dis-line)"
+      },
+      ".kl-toggle[data-kl-icon]": {
+        "min-width": "var(--kl-ctl)",
+        "justify-content": "center"
+      },
+      ".kl-toggle[data-kl-icon] .kl-toggle-label": {
+        "padding-inline": "0",
+        "justify-content": "center",
+        "flex": "1"
+      },
+      ".kl-toggle-solo[data-kl-icon][data-kl-layout=\"control\"] .kl-toggle-label": {
+        "padding-inline-start": "0"
+      },
+      ".kl-toggle[data-kl-icon] svg": {
+        "width": "16px",
+        "height": "16px",
+        "flex": "none"
+      },
+      ".kl-toggle[data-kl-icon][data-pressed]": {
+        "box-shadow": "inset 0 -3px 0 currentColor"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-toggle[data-kl-icon][data-pressed]": {
+          "box-shadow": "none",
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

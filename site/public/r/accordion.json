@@ -1,0 +1,153 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "title": "Accordion",
+  "description": "Stacked sections in one frame: header rows on shared keylines, panels unfold from the header's keyline; one or many open.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/accordion.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Accordion as AccordionPrimitive } from \"@base-ui/react/accordion\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype AccordionProps<V> = React.ComponentProps<typeof AccordionPrimitive.Root<V>> & {\n  /** control: its own 2px frame. cell: the rows sit directly in an enclosing frame (a panel body, an inspector). */\n  layout?: \"control\" | \"cell\"\n}\n\n/**\n * Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge,\n * one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the\n * header row never moves). Opening does not also flood: the caret turns, the panel arrives.\n *\n *   ┌─────────────────────────────────────────┬────┐\n *   │ Customs documents             3 files   │ ⌃  │   title (+ description) and meta · caret cell\n *   ├─────────────────────────────────────────┴────┤\n *   │ panel content                                │\n *   ├─────────────────────────────────────────┬────┤\n *   │ Billing                                 │ ⌄  │\n *   └─────────────────────────────────────────┴────┘\n *\n * The caret cell is the only divided column, so it runs straight down the frame whether or not a row\n * has meta (a column, once started, runs the full height). The caret turns on the unfold timing, as the\n * table's expand cell does.\n *\n * One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG\n * pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.\n */\nfunction Accordion<V>({ className, layout = \"control\", ...props }: AccordionProps<V>) {\n  return <AccordionPrimitive.Root<V> data-slot=\"accordion\" data-kl-layout={layout} className={cn(\"kl-ctl kl-accordion\", className)} {...props} />\n}\n\nfunction AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>) {\n  return <AccordionPrimitive.Item data-slot=\"accordion-item\" className={cn(\"kl-acc-item\", className)} {...props} />\n}\n\ntype AccordionTriggerProps = React.ComponentProps<typeof AccordionPrimitive.Trigger> & {\n  description?: React.ReactNode\n  /** Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does. */\n  meta?: React.ReactNode\n  /** Heading level of the header (default 3). */\n  level?: 2 | 3 | 4 | 5 | 6\n}\n\nfunction AccordionTrigger({ className, children, description, meta, level = 3, ...props }: AccordionTriggerProps) {\n  return (\n    <AccordionPrimitive.Header data-slot=\"accordion-header\" className=\"kl-acc-header\" render={React.createElement(`h${level}`)}>\n      <AccordionPrimitive.Trigger data-slot=\"accordion-trigger\" className={cn(\"kl-key kl-acc-trigger\", className)} {...props}>\n        <span className=\"kl-acc-title\">\n          <span>{children}</span>\n          {description ? <small>{description}</small> : null}\n        </span>\n        {meta != null ? <span className=\"kl-acc-meta\">{meta}</span> : null}\n        <span className=\"kl-acc-caret\" aria-hidden>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </AccordionPrimitive.Trigger>\n    </AccordionPrimitive.Header>\n  )\n}\n\ntype AccordionPanelProps = React.ComponentProps<typeof AccordionPrimitive.Panel> & {\n  /** Drop the panel's inset, for content that brings its own cells (an item list, a key/value grid). */\n  flush?: boolean\n}\n\nfunction AccordionPanel({ className, children, flush, ...props }: AccordionPanelProps) {\n  return (\n    <AccordionPrimitive.Panel data-slot=\"accordion-panel\" className=\"kl-acc-panel\" {...props}>\n      <div className={cn(\"kl-acc-body\", className)} data-flush={flush || undefined}>\n        {children}\n      </div>\n    </AccordionPrimitive.Panel>\n  )\n}\n\nexport { Accordion, AccordionItem, AccordionTrigger, AccordionPanel }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/accordion.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-accordion": {
+        "display": "flex",
+        "flex-direction": "column",
+        "min-width": "0",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-accordion[data-kl-layout=\"cell\"]": {
+        "background-color": "transparent"
+      },
+      ".kl-acc-item + .kl-acc-item": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-acc-header": {
+        "margin": "0",
+        "font": "inherit"
+      },
+      ".kl-acc-trigger": {
+        "display": "grid",
+        "grid-template-columns": "minmax(0, 1fr) auto 40px",
+        "align-items": "stretch",
+        "width": "100%",
+        "min-height": "var(--kl-row)",
+        "margin": "0",
+        "padding": "0",
+        "border": "0",
+        "background": "none",
+        "color": "inherit",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "text-align": "start",
+        "cursor": "pointer"
+      },
+      ".kl-acc-trigger:hover:not([data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-acc-trigger:active:not([data-disabled])": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-acc-trigger:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-acc-title": {
+        "display": "grid",
+        "align-content": "center",
+        "gap": "2px",
+        "min-width": "0",
+        "padding": "9px var(--kl-inset)",
+        "overflow-wrap": "anywhere",
+        "line-height": "1.3"
+      },
+      ".kl-acc-title > span": {
+        "font-size": "15px",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-acc-title small": {
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-acc-meta": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "8px",
+        "padding-inline-end": "var(--kl-inset)",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)",
+        "white-space": "nowrap",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-acc-caret": {
+        "grid-column": "3",
+        "display": "grid",
+        "place-items": "center",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-acc-caret svg": {
+        "transition": "rotate var(--kl-t-fold) var(--kl-ease-in)"
+      },
+      ".kl-acc-trigger[data-panel-open] .kl-acc-caret": {
+        "color": "var(--kl-ink)"
+      },
+      ".kl-acc-trigger[data-panel-open] .kl-acc-caret svg": {
+        "rotate": "180deg",
+        "transition": "rotate var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-acc-trigger[data-disabled]": {
+        "cursor": "not-allowed",
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)"
+      },
+      ".kl-acc-trigger[data-disabled] :is(small, .kl-acc-meta, .kl-acc-caret)": {
+        "color": "var(--kl-dis)"
+      },
+      ".kl-acc-panel": {
+        "height": "var(--accordion-panel-height)",
+        "overflow": "hidden",
+        "transition": "height var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-acc-panel:is([data-starting-style], [data-ending-style])": {
+        "height": "0"
+      },
+      ".kl-acc-panel[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)",
+        "transition-timing-function": "var(--kl-ease-in)"
+      },
+      ".kl-acc-body": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)",
+        "padding": "var(--kl-inset) var(--kl-inset) calc(var(--kl-inset) + 4px)",
+        "font-size": "14px",
+        "line-height": "1.5"
+      },
+      ".kl-acc-body[data-flush]": {
+        "padding": "0"
+      },
+      ".kl-acc-body > :first-child": {
+        "margin-block-start": "0"
+      },
+      ".kl-acc-body > :last-child": {
+        "margin-block-end": "0"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-acc-trigger:focus-visible": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

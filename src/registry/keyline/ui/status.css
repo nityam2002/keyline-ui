@@ -1,0 +1,10 @@
+@layer components {
+  /* text on the row's baseline whatever the glyph (centring moved labels 0.4–1.6px between rows) */
+  .kl-status { display: inline-flex; align-items: baseline; gap: 8px; }
+  .kl-status > .kl-glyph { align-self: center; }
+  .kl-status[data-kind="attention"] { color: var(--kl-red-text); font-weight: var(--kl-weight-display); }
+  .kl-status[data-kind="done"], .kl-status[data-kind="none"] { color: var(--kl-ink-2); }
+  .kl-badge { display: inline-flex; align-items: center; height: 20px; padding-inline: 6px; border: var(--kl-k1) solid currentColor; font: 500 11px/1 var(--kl-font-mono); white-space: nowrap; color: var(--kl-ink-2); vertical-align: middle; }
+  .kl-badge[data-tone="signal"] { background-color: var(--kl-yellow); color: var(--kl-on-yellow); border-color: var(--kl-on-yellow); }
+  .kl-badge[data-tone="attention"] { color: var(--kl-red-text); font-weight: var(--kl-weight-strong); }
+}

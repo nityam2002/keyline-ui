@@ -1,0 +1,337 @@
+/* Keyline UI site chrome. Built only from Keyline's public tokens (--kl-*), so the site is drawn in the
+   language it documents: role weights (3px region, 2px control, 1px cell), square corners, cobalt for
+   location and commitment, yellow only for the working set. Site classes use the s- prefix; kl- belongs
+   to the library. */
+
+@layer base {
+  html {
+    background: var(--kl-paper);
+    color: var(--kl-ink);
+    font-family: var(--kl-font);
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+  }
+  /* the document never scrolls: the page scrolls in Keyline's ScrollArea (PageScroll), so its bar is Keyline's */
+  html, body { height: 100%; overflow: hidden; }
+  /* native parts (form controls, the UA's own colours) follow the theme class lib/theme.ts sets */
+  html.light { color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body { margin: 0; background: var(--kl-paper); }
+  ::selection { background-color: var(--kl-yellow); color: var(--kl-on-yellow); }
+  html { caret-color: var(--kl-cobalt); accent-color: var(--kl-cobalt); }
+  :focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: 2px; }
+  a { color: inherit; }
+}
+
+@layer components {
+  /* the page's scroller fills the viewport; the document under it never scrolls */
+  .s-page { --s-pad: 28px; height: 100dvh; }
+  /* the rail lives in the sheet's own inset, which already keeps it clear of the frame: the page gives up no
+     width for it (ScrollArea's default reserves the bar's width; it has no prop to place the bar in a gutter
+     the content already leaves, so the site states it here). On a phone the inset is 8px, so is the bar. */
+  .s-page.s-page[data-has-overflow-y] > .s-page-vp { padding-inline-end: 0; }
+  @media (max-width: 720px) { .s-page.s-page { --kl-sb: var(--s-pad); } }
+  /* its rail runs between the sheet's crop lines (the frame's top and bottom edges), not viewport edge to edge.
+     Base UI pins the bar top: 0 inline; block margins inset it, and the thumb is sized from the shorter track */
+  .s-page > .kl-scrollbar[data-orientation="vertical"] { margin-block: var(--s-pad); }
+  /* on a docs sheet it runs level with the shell's columns (index, page, aside): they start below the sticky
+     header (the sheet's inset, the header's 46px, one gutter: AppShell's --kl-shell-cols-top) and end one inset up */
+  .s-page:has(.s-shell) > .kl-scrollbar[data-orientation="vertical"] { margin-block-start: calc(var(--s-pad) + 46px + var(--kl-gutter, 12px)); }
+
+  /* ---------- the sheet: a printed drawing ---------- */
+  /* one sheet per page: crop marks outside, the printer's 3px keyline as its frame */
+  .s-sheet { --s-pad: 28px; position: relative; padding: var(--s-pad); min-height: 100dvh; box-sizing: border-box; }
+  .s-frame { position: relative; border: var(--kl-k3) solid var(--kl-line); background: var(--kl-paper); min-height: calc(100dvh - 2 * var(--s-pad)); box-sizing: border-box; }
+  /* above a sticky header's backing strip, which would otherwise cover the top marks */
+  .s-crops { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+  .s-crops > span { position: absolute; width: 0; height: 0; }
+  .s-crops > span > i { position: absolute; display: block; background: var(--kl-ink); }
+  .s-crops > span > i:first-child { width: calc(var(--s-pad) - 8px); height: 1px; }
+  .s-crops > span > i:last-child { width: 1px; height: calc(var(--s-pad) - 8px); }
+  .s-crops [data-c^="t"] { top: var(--s-pad); }
+  .s-crops [data-c^="b"] { bottom: var(--s-pad); }
+  .s-crops [data-c$="l"] { left: var(--s-pad); }
+  .s-crops [data-c$="r"] { right: var(--s-pad); }
+  .s-crops [data-c$="l"] > i:first-child { right: 4px; }
+  .s-crops [data-c$="r"] > i:first-child { left: 4px; }
+  .s-crops [data-c^="t"] > i:last-child { bottom: 4px; }
+  .s-crops [data-c^="b"] > i:last-child { top: 4px; }
+  @media (max-width: 720px) {
+    .s-sheet, .s-page { --s-pad: 8px; }
+    .s-crops { display: none; }
+  }
+
+  .s-mark { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 800; font-size: 17px; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; }
+  /* the mark (Trap, drawn in components/land.tsx): only the plate moves, on the 45° line, in whole pixels; the keyline never
+     moves. Timings are the Stretch tokens, so both reduced-motion paths zero them (and the Slip's delay) too. */
+  .s-mark-glyph { display: block; flex: none; width: 22px; height: 22px; overflow: visible; }
+  .s-mark-frame { fill: var(--kl-line); }
+  .s-mark-plate { fill: var(--kl-cobalt); }
+  /* Slip: once, on the home sheet's first paint, the plate settles from register into its drift */
+  .s-home .s-mark-plate { animation: s-mark-slip calc(var(--kl-stretch-trail) * 1ms) steps(3, end) calc(var(--kl-stretch-trail) * 2ms) both; }
+  @keyframes s-mark-slip { from { transform: translate(3px, 3px); } to { transform: translate(0, 0); } }
+  /* Absorb: the layout under the mark changed (a plate turned); a 1px nudge the frame takes */
+  .s-home .s-mark-glyph[data-absorb] .s-mark-plate { animation: s-mark-absorb calc((var(--kl-stretch-lead) + var(--kl-stretch-trail)) * 1ms) var(--kl-ease-out); }
+  @keyframes s-mark-absorb { 0% { transform: translate(0, 0); } 31% { transform: translate(-1px, -1px); } 100% { transform: translate(0, 0); } }
+  @media (forced-colors: active) { .s-mark-frame { fill: CanvasText; } .s-mark-plate { fill: Highlight; } }
+
+  /* ---------- sheet 1: title, land, title block ---------- */
+  .s-home .s-frame { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+  /* the land lies under the heading and the specimen alike: one layer over both rows, from the frame's top inside
+     edge to the title block's rule, and clipped there */
+  /* the heading's measure, shared with the controls beside it so the two stay in line at every width */
+  .s-home .s-frame { --s-title-top: 36px; --s-title-x: 40px; --s-title-fs: clamp(40px, 5.7vw, 86px); }
+  .s-home .s-frame > .s-title { grid-row: 1; grid-column: 1; padding: var(--s-title-top) var(--s-title-x) 0; font-size: var(--s-title-fs); }
+  .s-home .s-frame > .s-map { grid-row: 2; grid-column: 1; }
+  .s-home .s-frame > .s-block { grid-row: 3; grid-column: 1; }
+  .s-backdrop {
+    grid-row: 1 / 3; grid-column: 1; position: relative; overflow: hidden; pointer-events: none;
+    /* faint behind the lettering, back to full contrast just below it (--s-title-end is measured; this is its guess) */
+    --s-title-end: calc(36px + 0.95 * clamp(40px, 5.7vw, 86px));
+    --s-fade: linear-gradient(to bottom,
+      rgb(0 0 0 / 0.3) 0, rgb(0 0 0 / 0.32) calc(var(--s-title-end) * 0.6),
+      rgb(0 0 0 / 0.55) var(--s-title-end), rgb(0 0 0 / 0.85) calc(var(--s-title-end) + 28px), #000 calc(var(--s-title-end) + 64px));
+    -webkit-mask-image: var(--s-fade); mask-image: var(--s-fade);
+  }
+  .s-title {
+    position: relative; z-index: 1; margin: 0; padding: 36px 40px 0;
+    font-weight: 800; font-size: clamp(40px, 5.7vw, 86px); line-height: 0.95; letter-spacing: -0.035em; text-wrap: balance;
+  }
+  /* Register: on the home sheet's first paint the heading's cobalt plate lies 6px out on the 45° line, under the
+     ink, and steps straight into register and is gone (a plate turn's registration, at the heading's scale). The
+     mark's Slip answers it two beats later, so the sheet registers, then the mark settles. The ink is down from the
+     first frame; only the plate moves, and it never holds still (held, it would read as a drop shadow). The Stretch
+     tokens time it, so both reduced-motion paths zero it. Below the heading's text (z -1 in its stacking context). */
+  .s-title[data-ghost]::after {
+    content: attr(data-ghost); content: attr(data-ghost) / "";
+    position: absolute; inset: 0; z-index: -1; padding: inherit; color: var(--kl-cobalt); pointer-events: none;
+    opacity: 0; animation: s-title-reg calc(var(--kl-stretch-trail) * 1ms) steps(3, end) both;
+  }
+  @keyframes s-title-reg { from { opacity: 0.55; translate: 6px 6px; } to { opacity: 0; translate: 0 0; } }
+  @media (prefers-reduced-motion: reduce), (forced-colors: active) { .s-title[data-ghost]::after { display: none; } }
+
+  .s-map { position: relative; display: grid; align-items: center; padding: 28px 40px 36px; overflow: hidden; min-height: 420px; }
+  .s-land, .s-land-live { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* while the land moves the canvas draws it (Backdrop); the SVG's paths step aside, its spot heights stay */
+  .s-backdrop[data-live="true"] .s-land > g { visibility: hidden; }
+  .s-backdrop[data-live="false"] .s-land-live { visibility: hidden; }
+  /* while the land moves, the canvas reads these strokes from the SVG paths (Backdrop), so they style both */
+  .s-contour { fill: none; stroke: var(--kl-line-soft); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  @media (max-width: 720px) { .s-elev { display: none; } }
+  .s-elev { font-family: var(--kl-font-mono); font-size: 11px; fill: var(--kl-ink-3); paint-order: stroke; stroke: var(--kl-paper); stroke-width: 6px; }
+  /* index contours: every fifth level in a lighter solid blue, so the hills read as counted heights */
+  .s-index { stroke: color-mix(in oklab, var(--kl-cobalt) 30%, transparent); stroke-width: 1.25; }
+  /* the keyline: one solid blue contour among the gray ones, moving with them */
+  .s-keyline { fill: none; stroke: color-mix(in oklab, var(--kl-cobalt) 55%, transparent); stroke-width: 2; vector-effect: non-scaling-stroke; transition: stroke 200ms ease-out; }
+  @media (prefers-reduced-motion: reduce) { .s-keyline { transition: none; } }
+
+  /* the land is alive (Backdrop): this pauses it, top right of the sheet, clear of the heading at every width */
+  /* the pause and the site controls: one row, its end on the heading's inset, centred on the heading's first line */
+  .s-home .s-frame > .s-motion, .s-home .s-frame > .s-site-ctl {
+    grid-row: 1; grid-column: 1; justify-self: end; align-self: start; position: relative; z-index: 2;
+    margin: calc(var(--s-title-top) + 0.95 * var(--s-title-fs) / 2 - var(--kl-ctl) / 2) var(--s-title-x) 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) { .s-home .s-frame > .s-motion { display: none; } }
+  /* search and theme (SiteControls): top end of the sheet, beside the pause; with no pause, in its place */
+  .s-home .s-frame > .s-site-ctl { margin-inline-end: calc(var(--s-title-x) + var(--kl-ctl) + 8px); }
+  @media (prefers-reduced-motion: reduce) { .s-home .s-frame > .s-site-ctl { margin-inline-end: var(--s-title-x); } }
+  /* below this the heading runs under the cluster: it starts beneath it instead (12px inset + the 36px cells + a gap) */
+  /* too narrow to share the line: the row sits above the heading, on its inset, and the heading starts one gap below */
+  @media (max-width: 1023px) {
+    .s-home .s-frame > .s-motion, .s-home .s-frame > .s-site-ctl { margin-top: 16px; }
+    .s-home .s-frame > .s-title { padding-top: calc(16px + var(--kl-ctl) + 16px); }
+  }
+  /* the title block: where a drawing keeps its name, its legend and its next step */
+  .s-block { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1.1fr); border-block-start: var(--kl-k3) solid var(--kl-line); background: var(--kl-cell); }
+  .s-block > * + * { border-inline-start: var(--kl-k1) solid var(--kl-seam); }
+  .s-tb-id { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; }
+  .s-tb-act { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 18px 20px; }
+  .s-tb-act .kl-button { min-height: 44px; font-size: 15px; padding-inline: 18px; text-decoration: none; justify-content: center; }
+
+  /* the legend: always in the title block, never moves */
+  .s-legend { margin: 0; padding: 0; list-style: none; display: grid; }
+  .s-legend > li { display: grid; grid-template-columns: 40px minmax(0, 1fr); }
+  .s-legend > li + li { border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  .s-legend-n { display: flex; align-items: center; justify-content: center; border-inline-end: var(--kl-k1) solid var(--kl-seam); font-family: var(--kl-font-mono); font-size: 13px; font-weight: 500; }
+
+  .s-legend-t { padding: 9px 14px; font-size: 14px; line-height: 1.4; color: var(--kl-ink-2); }
+  .s-legend-t b { color: var(--kl-ink); font-weight: 700; }
+
+  @media (max-width: 1080px) {
+    .s-block { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .s-block > .s-legend { grid-column: 1 / -1; grid-row: 2; border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  }
+  @media (max-width: 720px) {
+    .s-title { padding: 24px 16px 0; font-size: 40px; }
+    .s-home .s-frame { --s-title-top: 24px; --s-title-x: 16px; --s-title-fs: 40px; }
+    .s-map { padding: 20px 16px 24px; min-height: 0; }
+    .s-block { grid-template-columns: minmax(0, 1fr); }
+    .s-block > * + * { border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
+    .s-block > .s-legend { grid-row: auto; }
+    .s-tb-id, .s-tb-act { padding: 16px; }
+  }
+
+  /* ---------- the plates: a few components at a time, set on the land at the heading's left edge ---------- */
+  .s-plates { position: relative; z-index: 1; display: grid; gap: 14px; width: min(100%, 620px); align-self: start; margin-block-start: clamp(12px, 4vh, 48px); }
+  .s-plate { position: relative; }
+  /* turning a plate: the new one prints in register. Its ink comes up sharp from a soft first impression while a
+     cobalt plate, three pixels out on the 45° line, steps back into register and is gone (the mark's Slip, at the
+     plate's scale). One gesture, under 300ms; reduced motion turns at once. */
+  .s-plate > * { animation: s-plate-ink 220ms var(--kl-ease-out) both; }
+  .s-plate::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border: var(--kl-k3) solid var(--kl-cobalt);
+    opacity: 0; animation: s-plate-reg 240ms steps(3, end) both;
+  }
+  @keyframes s-plate-ink { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
+  @keyframes s-plate-reg { from { opacity: 0.9; translate: 6px 6px; } to { opacity: 0; translate: 0 0; } }
+
+  /* the pager: one quiet line over the plate. Ticks · Next · the plate's parts (each a docs
+     link), on 1px seams. Next comes before the caption, so it never moves under the pointer */
+  .s-pager {
+    display: flex; flex-wrap: wrap; align-items: center; width: fit-content; max-width: 100%;
+    font-size: 13px; line-height: 24px; color: var(--kl-ink-3);
+    background: var(--kl-paper); box-shadow: 0 0 0 6px var(--kl-paper);
+  }
+  .s-pager > * + * { margin-inline-start: 14px; padding-inline-start: 14px; border-inline-start: var(--kl-k1) solid var(--kl-seam); }
+  .s-tick { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .s-tick > i { display: block; width: 8px; height: 8px; border: var(--kl-k1) solid var(--kl-ink-3); transition: background-color 120ms ease-out, border-color 120ms ease-out; }
+  .s-tick:hover > i { border-color: var(--kl-ink); }
+  .s-tick[aria-current="true"] > i { background: var(--kl-cobalt); border-color: var(--kl-cobalt); }
+  .s-pager-cap a { color: var(--kl-ink-2); text-decoration: underline; text-decoration-color: var(--kl-line-soft); text-underline-offset: 4px; }
+  .s-pager-cap a:hover { color: var(--kl-ink); text-decoration-color: currentColor; }
+  .s-pager-next {
+    display: inline-flex; align-items: center; gap: 6px; padding-block: 0; padding-inline-end: 2px; border-block: 0; border-inline-end: 0;
+    background: none; font: inherit; font-weight: 700; color: var(--kl-ink); cursor: pointer;
+  }
+  .s-pager-next > svg { transition: translate 160ms var(--kl-ease-out); }
+  .s-pager-next:hover > svg { translate: 3px 0; }
+  .s-pager :is(.s-tick, a, .s-pager-next):focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .s-plate > *, .s-plate::after { animation: none; }
+    .s-tick > i, .s-pager-next > svg { transition: none; }
+  }
+  @media (forced-colors: active) {
+    .s-plate::after { display: none; }
+    .s-tick > i { border-color: CanvasText; }
+    .s-tick[aria-current="true"] > i { forced-color-adjust: none; background: Highlight; border-color: Highlight; }
+  }
+  @media (max-width: 720px) {
+    .s-plates { width: 100%; margin-block-start: 0; }
+    /* ticks and Next share the first line; the plate's parts take the second */
+    .s-pager-cap { flex-basis: 100%; margin-inline-start: 0; padding-inline-start: 0; border-inline-start: 0; }
+  }
+
+  /* ---------- sheet 2: Keyline's AppShell on the sheet. Header frame, the component index, the page, its own index ---------- */
+  .s-docs { --kl-gutter: 12px; }
+  /* the header holds where the shell starts (the sheet's inset), so nothing moves on the first scroll */
+  .s-shell { --kl-shell-top: var(--s-pad); --kl-shell-bg: var(--kl-paper); }
+  /* jumps (page index, skip link, a shared #link) land below the sticky header, not under it:
+     the sheet's inset (28px, 8px on a phone; --s-pad lives on the sheet, not the root), the header (46px),
+     one gutter (12px) and a little air (20px) */
+  .s-page-vp:has(.s-shell) { scroll-padding-top: 106px; }
+  @media (max-width: 720px) { .s-page-vp:has(.s-shell) { scroll-padding-top: 86px; } }
+  /* the page is a frame of its own, like the shell's other columns */
+  .s-docs .s-read { border: var(--kl-k3) solid var(--kl-line); background: var(--kl-paper); }
+  /* its top edge holds where the columns hold (one gutter below the header), so the page scrolls inside a
+     closed frame like the index and the aside, never cut open by the header's band. Pulled out over the
+     frame's own top border and side borders; the bottom margin gives back the room it takes. Above the
+     code blocks' Copy keys (z 2), which would otherwise paint over it. */
+  .s-docs .s-read::before {
+    content: ""; flex: none; position: sticky; z-index: 3; top: var(--kl-shell-cols-top);
+    height: 0; border-block-start: var(--kl-k3) solid var(--kl-line);
+    margin: calc(-1 * var(--s-read-pt) - var(--kl-k3)) calc(-1 * var(--s-read-px) - var(--kl-k3)) var(--s-read-pt);
+  }
+  /* the sheet's crop marks sit on the viewport's corners: the frame never moves, so neither do they. The
+     bottom-right one is left off: nothing on the docs sheet meets that corner, so it would hang loose */
+  .s-docsheet > .s-crops { position: fixed; }
+  .s-docsheet > .s-crops > [data-c="br"] { display: none; }
+  /* the index scrolls in a ScrollArea that fills the sidebar column; the Nav inside is one long list */
+  .s-docs .kl-shell-nav > .s-dnav, .kl-shell-sheet > .s-dnav { flex: 1 1 auto; min-height: 0; }
+  /* the page index sits at the top of its column; it does not stretch to the viewport */
+  .s-docs .kl-shell-aside > .s-toc { flex: none; }
+
+  /* a drafting rule along the top and the start edge of the stage */
+  .s-ruler-x { position: absolute; inset: 0 0 auto 0; height: 20px; border-block-end: var(--kl-k1) solid var(--kl-line-soft); background-color: var(--kl-paper);
+    background-image: repeating-linear-gradient(90deg, var(--kl-line-soft) 0 1px, transparent 1px 10px), repeating-linear-gradient(90deg, var(--kl-ink-3) 0 1px, transparent 1px 100px);
+    background-size: 100% 4px, 100% 8px; background-position: var(--s-origin) 100%, var(--s-origin) 100%; background-repeat: no-repeat; }
+  .s-ruler-x > span { position: absolute; top: 3px; margin-inline-start: calc(var(--s-origin) + 3px); font-family: var(--kl-font-mono); font-size: 9px; line-height: 1; color: var(--kl-ink-3); opacity: 0.7; }
+  .s-ruler-y { position: absolute; inset: 20px auto 0 0; width: 16px; border-inline-end: var(--kl-k1) solid var(--kl-line-soft); background-color: var(--kl-paper);
+    background-image: repeating-linear-gradient(180deg, var(--kl-line-soft) 0 1px, transparent 1px 10px), repeating-linear-gradient(180deg, var(--kl-ink-3) 0 1px, transparent 1px 100px);
+    background-size: 4px 100%, 8px 100%; background-position: 100% 0, 100% 0; background-repeat: no-repeat; }
+  /* the ruler marks the container's width: a cobalt band from zero */
+  /* no transition of its own: it is measured from the container every frame while the container moves (below),
+     so it already travels with it; a second ease would trail behind the box it marks */
+  .s-ruler-band { position: absolute; left: var(--s-origin); bottom: -1px; height: 2px; background: color-mix(in oklab, var(--kl-cobalt) 45%, transparent); }
+  /* Standard / Narrow: the container closes to its new width rather than jumping, so the reader watches the example
+     answer the narrower space (a toolbar's items flowing into More). On-screen movement: a strong ease-in-out.
+     Width, not a transform, is the point: the example reflows as it would in a real resize. */
+  .s-demo-stage [data-testid="preview-box"] { transition: width 280ms cubic-bezier(0.77, 0, 0.175, 1), padding 280ms cubic-bezier(0.77, 0, 0.175, 1); }
+  @media (prefers-reduced-motion: reduce) { .s-demo-stage [data-testid="preview-box"] { transition: none; } }
+  .s-box-crops > i {
+    position: absolute; width: 14px; height: 14px; pointer-events: none;
+    background: linear-gradient(var(--kl-line-soft), var(--kl-line-soft)) no-repeat, linear-gradient(var(--kl-line-soft), var(--kl-line-soft)) no-repeat;
+    background-size: 8px 1px, 1px 8px;
+  }
+  .s-box-crops > i:nth-child(1) { left: -14px; top: -14px; background-position: left bottom, right top; }
+  .s-box-crops > i:nth-child(2) { right: -14px; top: -14px; background-position: right bottom, left top; }
+  .s-box-crops > i:nth-child(3) { left: -14px; bottom: -14px; background-position: left top, right bottom; }
+  .s-box-crops > i:nth-child(4) { right: -14px; bottom: -14px; background-position: right top, left bottom; }
+
+  .s-read { display: flex; flex-direction: column; min-width: 0; min-height: calc(100dvh - 2 * var(--s-pad) - 72px); --s-read-pt: 48px; --s-read-px: 56px; padding: var(--s-read-pt) var(--s-read-px) 0; }
+  .s-read > * { max-width: 780px; }
+  /* prose rules reach only the page's own text, never an example's: a PanelHeader title is an h2, a FieldDescription a p */
+  .s-read > h1 { margin: 0; font-size: 64px; font-weight: 800; line-height: 1; letter-spacing: -0.035em; }
+  .s-read .s-doc-lede { margin: 16px 0 0; font-size: 19px; line-height: 1.55; color: var(--kl-ink-2); max-width: 58ch; }
+  .s-read > h2 { margin: 56px 0 0; padding-block-end: 10px; font-size: 24px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; border-block-end: var(--kl-k1) solid var(--kl-seam); }
+  .s-read > h3 { margin: 36px 0 0; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
+  .s-read > h2 + h3 { margin-top: 24px; }
+  .s-read > h3 + p { margin-top: 8px; }
+  .s-read > p { font-size: 16px; line-height: 1.65; max-width: 68ch; margin: 14px 0 0; }
+  .s-read :not(pre) > code:where(:not(.s-demo-stage *)) { font-family: var(--kl-font-mono); font-size: 0.86em; padding: 1px 4px; background: var(--kl-cell); color: var(--kl-ink); }
+  .s-read a:where(:not(.s-demo-stage *)) { color: var(--kl-cobalt-text); text-underline-offset: 3px; }
+  .s-read .s-small { font-size: 14px; line-height: 1.7; color: var(--kl-ink-3); }
+  .s-read .s-small code { padding: 0; background: none; color: var(--kl-ink-2); }
+  /* Turning a sheet: a new page's ink comes up sharp from a soft first impression (sheet 1's plate turn, without
+     its cobalt plate: reading is quiet). The page and its own index print; the frame, the component index and the
+     header never move. On a client navigation the page's nodes are new, so this runs once per sheet. */
+  .s-docs .s-read > *, .s-docs .s-toc { animation: s-plate-ink 200ms var(--kl-ease-out) both; }
+  /* Landed: a jump (the page index, a shared #link) draws a cobalt keyline along the section's seam from its start
+     edge, holds it while the eye arrives, and lifts it. Orientation, not decoration: it says where the page put you. */
+  .s-read > :is(h2, h3) { position: relative; }
+  .s-read > :is(h2, h3):target::after {
+    content: ""; position: absolute; inset-inline: 0; inset-block-end: calc(-1 * var(--kl-k1)); height: var(--kl-k2);
+    background: var(--kl-cobalt); transform-origin: 0 50%; pointer-events: none;
+    animation: s-landed 1600ms both;
+  }
+  /* an h3 has no seam of its own: the line runs under its words, not the whole measure */
+  .s-read > h3 { width: fit-content; }
+  .s-read > h3:target::after { inset-block-end: -5px; }
+  .s-read > :is(h2, h3):target:dir(rtl)::after { transform-origin: 100% 50%; }
+  @keyframes s-landed {
+    0% { scale: 0 1; opacity: 1; animation-timing-function: var(--kl-ease-out); }
+    20% { scale: 1 1; opacity: 1; animation-timing-function: linear; }
+    65% { opacity: 1; animation-timing-function: ease-out; }
+    100% { scale: 1 1; opacity: 0; }
+  }
+  /* reduced motion: nothing travels; the page arrives at once and the line is simply there, then fades */
+  @keyframes s-landed-still { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .s-docs .s-read > *, .s-docs .s-toc { animation: none; }
+    .s-read > :is(h2, h3):target::after { animation-name: s-landed-still; }
+  }
+  @media (forced-colors: active) { .s-read > :is(h2, h3):target::after { background: Highlight; } }
+
+  /* whatever a page ends with (a note, a paragraph, a table, a code block) stands clear of the title block at its foot */
+  .s-read > :not(footer):has(+ footer) { margin-block-end: 64px; }
+
+  @media (max-width: 960px) {
+    .s-read { --s-read-pt: 28px; --s-read-px: 16px; min-height: 0; }
+  }
+  @media (max-width: 720px) {
+    .s-read > h1 { font-size: 44px; }
+    .s-read .s-doc-lede { font-size: 17px; }
+    .s-read > h2 { margin-top: 44px; font-size: 22px; }
+  }
+
+  @keyframes s-after { from { opacity: 0; transform: translateY(-4px); } }
+}

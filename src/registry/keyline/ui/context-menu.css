@@ -1,0 +1,8 @@
+@layer components {
+  /* the object the open menu acts on: an inset ink keyline on its own edge (no fill: its content stays
+     readable, and a selected row keeps its yellow). The surface is Menu's (.kl-menu), detached. */
+  .kl-ctx-trigger[data-popup-open] { outline: var(--kl-k2) solid var(--kl-inverse); outline-offset: calc(-1 * var(--kl-k2)); }
+  /* not docked to an owner: control weight on every side, a minimum width of its own */
+  .kl-attached.kl-ctx-menu { --kl-attach: var(--kl-k2); min-width: 220px; }
+  @media (forced-colors: active) { .kl-ctx-trigger[data-popup-open] { outline-color: Highlight; } }
+}

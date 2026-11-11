@@ -1,0 +1,20 @@
+@layer components {
+  /* MENUBAR: a control frame of title cells. The open title is the inverse cell; its menu docks to the
+     frame's bottom keyline (Menu's surface, no cut). Narrow rows scroll and mark the hidden edge. */
+  .kl-mbar { display: flex; max-width: 100%; overflow-x: auto; min-height: var(--kl-ctl); background-color: var(--kl-cell); justify-self: start; width: max-content; }
+  .kl-mbar[data-kl-layout="cell"] { width: auto; min-height: var(--kl-row); }
+  .kl-mbar > .kl-mbar-trigger:first-child { padding-inline-start: calc(14px + var(--kl-c, 0px) * 0.35); }
+  .kl-mbar-trigger {
+    flex: none; display: flex; align-items: center; gap: 6px; padding-inline: 14px; border-block: 0; border-inline-end: 0;
+    background: none; color: var(--kl-ink); font: inherit; font-family: var(--kl-font); font-size: 14px; font-weight: var(--kl-weight-strong);
+    cursor: default; outline: 0; white-space: nowrap;
+  }
+  .kl-mbar-trigger:hover:not([data-popup-open]):not([data-disabled]) { background-color: var(--kl-tint); }
+  .kl-mbar-trigger[data-popup-open] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
+  .kl-mbar-trigger:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  .kl-mbar-trigger[data-disabled] { color: var(--kl-dis); background-image: var(--kl-hatch); cursor: not-allowed; }
+  .kl-mbar-menu { min-width: max(220px, var(--anchor-width)); }
+  @media (forced-colors: active) {
+    .kl-mbar-trigger[data-popup-open] { outline: 3px solid Highlight; outline-offset: -4px; }
+  }
+}

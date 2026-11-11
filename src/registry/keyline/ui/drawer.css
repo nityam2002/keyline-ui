@@ -1,0 +1,59 @@
+@layer components {
+  /* the scrim fades as the drawer is swiped away */
+  .kl-drawer-scrim { opacity: max(var(--kl-scrim-min, 0), calc(1 - var(--drawer-swipe-progress, 0))); transition: opacity calc(var(--kl-t-unfold) * 1.5) linear; }
+  .kl-drawer-scrim[data-swiping] { transition-duration: 0ms; }
+  /* with snap points a lower snap is a resting state, not a dismissal: the scrim keeps half its strength */
+  .kl-drawer-scrim[data-kl-snap] { --kl-scrim-min: 0.5; }
+  .kl-drawer-scrim[data-kl-snap]:is([data-starting-style], [data-ending-style]) { --kl-scrim-min: 0; opacity: 0; }
+  .kl-drawer-vp { position: fixed; inset: 0; z-index: var(--kl-z-overlay); pointer-events: none; }
+
+  /* the drawer: edge-attached, the page-facing edge at region weight (as Sheet); it follows the finger
+     (--drawer-swipe-movement-*) and slides from its side on the system's unfold timing */
+  .kl-drawer {
+    --kl-cell: var(--kl-raised);
+    /* a sheet-sized travel gets 1.25× the unfold (200ms), inside the 220ms everyday cap; it leaves on the fold */
+    --kl-move: calc(var(--kl-t-unfold) * 1.25);
+    position: fixed; display: flex; flex-direction: column; pointer-events: auto; outline: 0; border-width: 0;
+    color: var(--kl-ink); background-color: var(--kl-cell);
+    transition: transform var(--kl-move) var(--kl-ease-out);
+    will-change: transform;
+  }
+  .kl-drawer[data-swiping] { transition-duration: 0ms; user-select: none; }
+  .kl-drawer[data-ending-style] { --kl-move: calc(var(--kl-t-fold) * 1.25); transition-timing-function: var(--kl-ease-in); }
+  /* released by the hand: the curve starts at the release velocity (drawer.tsx, useReleaseFromHand) */
+  .kl-drawer[data-kl-released]:not([data-swiping]) { transition-timing-function: var(--kl-release-back, var(--kl-ease-out)); }
+  .kl-drawer[data-kl-released][data-ending-style] { transition-timing-function: var(--kl-release-out, var(--kl-ease-out)); }
+
+  /* bottom: full width, its top edge faces the page; the cut on its top-start corner */
+  .kl-drawer[data-swipe-direction="down"] {
+    inset-inline: 0; inset-block-end: 0;
+    max-height: calc(100dvh - 48px); height: var(--kl-drawer-size, auto);
+    border-block-start-width: var(--kl-k3); border-inline-start-width: 0;
+    transform: translateY(calc(var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y, 0px)));
+  }
+  .kl-drawer[data-swipe-direction="down"]:is([data-starting-style], [data-ending-style]) { transform: translateY(100%); }
+  /* end/start: full height; the page-facing edge is the inline one */
+  .kl-drawer:is([data-swipe-direction="right"], [data-swipe-direction="left"]) {
+    inset-block: 0; width: min(var(--kl-drawer-size, 400px), calc(100vw - 40px));
+    transform: translateX(var(--drawer-swipe-movement-x, 0px));
+    --kl-cut-size: 0px;
+  }
+  .kl-drawer[data-swipe-direction="right"] { right: 0; border-left-width: var(--kl-k3); }
+  .kl-drawer[data-swipe-direction="left"] { left: 0; border-right-width: var(--kl-k3); }
+  .kl-drawer[data-swipe-direction="right"]:is([data-starting-style], [data-ending-style]) { transform: translateX(100%); }
+  .kl-drawer[data-swipe-direction="left"]:is([data-starting-style], [data-ending-style]) { transform: translateX(-100%); }
+
+  /* the grip: a short ink bar on the page-facing edge (decorative: Escape and Close always work) */
+  .kl-drawer-grip { flex: none; display: grid; place-items: center; height: 18px; cursor: grab; touch-action: none; }
+  .kl-drawer-grip::before { content: ""; width: 40px; height: 3px; background-color: var(--kl-ink-3); }
+  .kl-drawer[data-swiping] .kl-drawer-grip { cursor: grabbing; }
+  .kl-drawer[data-swiping] .kl-drawer-grip::before { background-color: var(--kl-ink); }
+  .kl-drawer:is([data-swipe-direction="right"], [data-swipe-direction="left"]) > .kl-drawer-grip { position: absolute; inset-block: 0; width: 18px; height: auto; z-index: 1; }
+  .kl-drawer[data-swipe-direction="right"] > .kl-drawer-grip { left: 0; }
+  .kl-drawer[data-swipe-direction="left"] > .kl-drawer-grip { right: 0; }
+  .kl-drawer:is([data-swipe-direction="right"], [data-swipe-direction="left"]) > .kl-drawer-grip::before { width: 3px; height: 40px; }
+  .kl-drawer[data-swipe-direction="down"] > .kl-drawer-grip + .kl-dialog-h { padding-block-start: 4px; }
+
+  .kl-drawer-b { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 16px; align-content: start; padding: 18px; }
+  @media (forced-colors: active) { .kl-drawer-grip::before { background-color: CanvasText; } }
+}

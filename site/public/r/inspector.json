@@ -1,0 +1,119 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "inspector",
+  "title": "Inspector",
+  "description": "Non-modal contextual panel: header with the inspected object's code, key/value cells and a sticky action strip.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/scroll-area"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/inspector.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\nimport { ScrollArea } from \"./scroll-area\"\n\n/**\n * Non-modal contextual panel. Its header cites the inspected object's code (e.g. R3/12) so the object\n * and its detail share an address; the action strip is sticky and part of the frame.\n */\nfunction Inspector({ className, ...props }: React.ComponentProps<\"aside\">) {\n  return <aside data-slot=\"inspector\" className={cn(\"kl-frame kl-insp\", className)} {...props} />\n}\n\nfunction InspectorHeader({ code, title, status, onClose, closeLabel = \"Close inspector\" }: { code?: React.ReactNode; title: React.ReactNode; status?: React.ReactNode; onClose?: () => void; closeLabel?: string }) {\n  return (\n    <header className=\"kl-cells kl-insp-h\">\n      <div className=\"kl-insp-t\">\n        {code ? <span className=\"kl-code\">{code}</span> : null}\n        <h2>{title}</h2>\n        {status}\n      </div>\n      {onClose ? (\n        <button type=\"button\" className=\"kl-cell kl-insp-x\" onClick={onClose} aria-label={closeLabel}>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4.5 4.5 7 7m0-7-7 7\" />\n          </svg>\n        </button>\n      ) : null}\n    </header>\n  )\n}\n\n/** Key/value cells, two-up. */\nfunction InspectorFacts({ items }: { items: { label: string; value: React.ReactNode }[] }) {\n  return (\n    <dl className=\"kl-insp-kv\">\n      {items.map((it) => (\n        <div key={it.label}>\n          <dt className=\"kl-code\">{it.label}</dt>\n          <dd>{it.value}</dd>\n        </div>\n      ))}\n    </dl>\n  )\n}\n\n/** The inspector's scrolling body: a Keyline Scroll Area (bar on the inline-end edge, native scrolling). */\nfunction InspectorBody({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <ScrollArea data-slot=\"inspector-body\" className=\"kl-insp-scroll\" contentClassName={cn(\"kl-insp-b\", className)} {...(props as object)}>\n      {children}\n    </ScrollArea>\n  )\n}\n\n/** A labelled cell. `span` makes two short sections share a row. */\nfunction InspectorSection({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-insp-s\", className)} {...props} />\n}\nfunction InspectorRow({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-insp-row\", className)} {...props} />\n}\n\nfunction InspectorActions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-cells kl-insp-a\", className)} {...props} />\n}\n\nexport { Inspector, InspectorHeader, InspectorFacts, InspectorBody, InspectorSection, InspectorRow, InspectorActions }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/inspector.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-insp": {
+        "display": "flex",
+        "flex-direction": "column",
+        "min-height": "0",
+        "overflow": "clip"
+      },
+      ".kl-insp-h": {
+        "flex": "none",
+        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
+      },
+      ".kl-insp-t": {
+        "flex": "1",
+        "display": "grid",
+        "gap": "3px",
+        "padding": "10px 14px 12px calc(14px + var(--kl-c-room, 0px))",
+        "min-width": "0"
+      },
+      ".kl-insp-t h2": {
+        "margin": "0",
+        "font-family": "var(--kl-font-mono)",
+        "font-size": "24px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.1"
+      },
+      ".kl-insp-x": {
+        "flex": "none",
+        "width": "46px",
+        "justify-content": "center"
+      },
+      ".kl-insp-kv": {
+        "flex": "none",
+        "display": "grid",
+        "grid-template-columns": "1fr 1fr",
+        "margin": "0",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-kv > div": {
+        "display": "grid",
+        "gap": "2px",
+        "padding": "8px 14px",
+        "min-width": "0"
+      },
+      ".kl-insp-kv > div:nth-child(even)": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-kv > div:nth-child(n + 3)": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-kv dd": {
+        "margin": "0",
+        "font-weight": "var(--kl-weight-strong)",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-insp-scroll": {
+        "flex": "1 1 auto",
+        "min-height": "0"
+      },
+      ".kl-insp-scroll > .kl-scroll-vp": {
+        "overscroll-behavior": "contain"
+      },
+      ".kl-insp-s": {
+        "padding": "12px 14px 14px",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-row": {
+        "display": "grid",
+        "grid-template-columns": "minmax(0, 1fr) minmax(0, 1fr)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-row > .kl-insp-s": {
+        "border-block-end": "0"
+      },
+      ".kl-insp-row > .kl-insp-s + .kl-insp-s": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp > .kl-notice-fold": {
+        "flex": "none"
+      },
+      ".kl-insp > .kl-notice-fold[data-open]": {
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-insp-a": {
+        "flex": "none",
+        "border-block-start": "var(--kl-k3) solid var(--kl-line)",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-insp-a > *": {
+        "flex": "1"
+      },
+      ".kl-insp-a > button.kl-cell": {
+        "justify-content": "center",
+        "font-weight": "var(--kl-weight-strong)",
+        "min-height": "48px"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

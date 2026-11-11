@@ -1,0 +1,64 @@
+@layer components {
+  /* NAVIGATION MENU. A control frame of cells: section triggers (key cells with a caret) and
+     links. The open trigger is the inverse cell (Menubar's); the current page's link is the cobalt cell
+     (location). The panel docks to the frame's bottom keyline at the frame's weight; its links are cells on
+     shared seams. The panel never animates its size between sections. */
+  .kl-nmenu { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; min-width: 0; max-width: 100%; }
+  .kl-nmenu-list {
+    margin: 0; padding: 0; list-style: none; max-width: 100%; overflow-x: auto; width: max-content;
+    min-height: var(--kl-ctl); background-color: var(--kl-cell); position: relative; isolation: isolate;
+  }
+  /* Stretch: the open trigger's inverse cell is a band that travels between sections */
+  .kl-nmenu-band { list-style: none; position: absolute; z-index: -1; background-color: var(--kl-inverse); pointer-events: none; }
+  .kl-nmenu-list > .kl-nmenu-band + * { border-inline-start: 0; }
+  .kl-nmenu-item { display: flex; flex: none; }
+  :is(.kl-nmenu-trigger, .kl-nmenu-link) {
+    display: flex; align-items: center; gap: 6px; box-sizing: border-box; min-height: 100%; margin: 0; padding-inline: 14px;
+    border: 0; background: none; color: var(--kl-ink); text-decoration: none; white-space: nowrap;
+    font: inherit; font-family: var(--kl-font); font-size: 14px; font-weight: var(--kl-weight-strong); cursor: pointer; outline: 0;
+    transition: color 0s linear var(--kl-t-flip);
+  }
+  /* the first cell clears the frame's cut */
+  .kl-nmenu-list > .kl-nmenu-item:nth-child(1 of .kl-nmenu-item) > :is(.kl-nmenu-trigger, .kl-nmenu-link) { padding-inline-start: calc(14px + var(--kl-c, 0px) * 0.35); }
+  .kl-nmenu-trigger { padding-inline-end: 10px; }
+  :is(.kl-nmenu-trigger, .kl-nmenu-link):hover:not([data-popup-open], [data-kl-covered], [aria-current], [data-disabled]) { background-color: var(--kl-tint); }
+  .kl-nmenu-link:active:not([data-kl-covered], [aria-current], [data-disabled]) { background-color: var(--kl-press); }
+  :is(.kl-nmenu-trigger, .kl-nmenu-link):focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  /* the band paints the open cell; the label flips with the band's cover, so it is legible all the way across */
+  :is(.kl-nmenu-trigger, .kl-nmenu-link:not([aria-current]))[data-kl-covered] { color: var(--kl-on-inverse); }
+  .kl-nmenu-link[aria-current="page"] { background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); }
+  .kl-nmenu-link[aria-current="page"]:focus-visible { outline-color: var(--kl-on-cobalt); }
+  .kl-nmenu-trigger[data-disabled] { color: var(--kl-dis); background-image: var(--kl-hatch); cursor: not-allowed; }
+  .kl-nmenu-caret { display: flex; flex: none; }
+  .kl-nmenu-trigger[data-popup-open] .kl-nmenu-caret { rotate: 180deg; }
+
+  /* the panel: as wide as its content, never wider than the viewport; no size animation between sections */
+  .kl-nmenu-popup { box-sizing: border-box; width: var(--popup-width, auto); height: var(--popup-height, auto); max-height: none; overflow: visible; background-color: var(--kl-cell); }
+  .kl-nmenu-viewport { position: relative; width: 100%; height: 100%; overflow: hidden; }
+  .kl-nmenu-content { box-sizing: border-box; width: min(600px, calc(100vw - 24px - 4px)); container-type: inline-size; }
+  .kl-nmenu-content[data-ending-style] { opacity: 0; }
+
+  /* links as cells on shared seams: each cell draws its end and bottom keylines, the grid hides the last */
+  .kl-nmenu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0 0 -1px; margin-inline-end: -1px; padding: 0; list-style: none; }
+  @container (max-width: 420px) { .kl-nmenu-grid { grid-template-columns: minmax(0, 1fr); } }
+  .kl-nmenu-gi { display: flex; border-inline-end: var(--kl-k1) solid var(--kl-seam); border-block-end: var(--kl-k1) solid var(--kl-seam); }
+  .kl-nmenu-card {
+    flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; gap: 2px 12px;
+    min-height: 64px; padding: 10px var(--kl-inset) 12px; color: var(--kl-ink); text-decoration: none; outline: 0;
+  }
+  .kl-nmenu-card-t { font-size: 14px; font-weight: var(--kl-weight-strong); }
+  .kl-nmenu-card-code { font: 500 11px/1.6 var(--kl-font-mono); color: var(--kl-ink-2); }
+  .kl-nmenu-card-d { grid-column: 1 / -1; font-size: 13px; color: var(--kl-ink-2); line-height: 1.4; }
+  .kl-nmenu-card:hover:not([aria-current]) { background-color: var(--kl-tint); }
+  .kl-nmenu-card:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  .kl-nmenu-card[aria-current="page"] { background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); }
+  .kl-nmenu-card[aria-current="page"] :is(.kl-nmenu-card-d, .kl-nmenu-card-code) { color: inherit; }
+  .kl-nmenu-card[aria-current="page"]:focus-visible { outline-color: var(--kl-on-cobalt); }
+
+  @media (forced-colors: active) {
+    .kl-nmenu-band { display: none; }
+    :is(.kl-nmenu-trigger, .kl-nmenu-link)[data-kl-covered] { color: inherit; }
+    .kl-nmenu-trigger[data-popup-open] { outline: 3px solid Highlight; outline-offset: -4px; }
+    :is(.kl-nmenu-link, .kl-nmenu-card)[aria-current="page"] { forced-color-adjust: none; background-color: Highlight; color: HighlightText; }
+  }
+}

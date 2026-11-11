@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "options",
+  "title": "Option and value helpers",
+  "description": "Pure helpers: group options under headings in first-appearance order, and the longest value a numeric scale prints.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/registry/keyline/lib/options.ts",
+      "content": "/** Pure helpers shared by option lists (Select, Combobox) and value readouts (Slider). */\n\n/**\n * Bucket options by their `group`, keeping first-appearance order of the groups and of the options\n * inside each. Options without a group share one unnamed bucket (\"\") in the position it first appears.\n */\nexport function groupBy<T extends { group?: string }>(options: readonly T[]): { group: string; items: T[] }[] {\n  const order: string[] = []\n  const by = new Map<string, T[]>()\n  for (const o of options) {\n    const g = o.group ?? \"\"\n    let bucket = by.get(g)\n    if (!bucket) {\n      bucket = []\n      by.set(g, bucket)\n      order.push(g)\n    }\n    bucket.push(o)\n  }\n  return order.map((g) => ({ group: g, items: by.get(g)! }))\n}\n\n/** True when at least one option names a group (the list is then rendered with headings). */\nexport const hasGroups = (options: readonly { group?: string }[]) => options.some((o) => o.group)\n\n/**\n * The longest string a numeric scale prints: the ends, the steps beside them and the middle (the sign,\n * group separators and decimals vary between them). A readout sized for this never changes width.\n */\nexport function longestValue(min: number, max: number, step = 1, locale?: Intl.LocalesArgument, format?: Intl.NumberFormatOptions) {\n  const nf = new Intl.NumberFormat(locale, format)\n  return [min, max, min + step, max - step, (min + max) / 2].map((n) => nf.format(n)).reduce((a, b) => (b.length > a.length ? b : a))\n}\n",
+      "type": "registry:lib",
+      "target": "components/keyline/lib/options.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

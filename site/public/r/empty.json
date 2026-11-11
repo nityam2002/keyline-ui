@@ -1,0 +1,136 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty",
+  "title": "Empty",
+  "description": "Nothing here, said plainly: a count cell, the message and the way out, in one frame or as a cell. Empty, error and first-use kinds.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/empty.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype EmptyKind = \"empty\" | \"error\" | \"start\"\n\ntype EmptyProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  /**\n   * empty: a query or filter matched nothing (the count is 0) · error: the content could not be loaded\n   * (red count cell) · start: nothing has been made yet (first use; the count cell shows a + key line).\n   */\n  kind?: EmptyKind\n  /** The figure in the count cell. Defaults to 0 for empty, \"!\" for error; start shows a glyph. */\n  count?: React.ReactNode\n  /** The Code word under the figure. Defaults to RESULTS, ERROR or NEW. */\n  code?: React.ReactNode\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** Recovery or first actions: Buttons. The first is the way out (clear filters, retry, create). */\n  actions?: React.ReactNode\n  /** control: its own 2px region frame. cell: a cell of an enclosing frame (a panel body, a table). */\n  layout?: \"control\" | \"cell\"\n  /** Heading level of the title (default 3). */\n  headingLevel?: 2 | 3 | 4 | 5 | 6\n  /** Announce when it appears (status; alert for error). Use when it replaces content the user was looking at. */\n  live?: boolean\n}\n\nconst CODE: Record<EmptyKind, string> = { empty: \"RESULTS\", error: \"ERROR\", start: \"NEW\" }\n\n/**\n * A place with nothing in it, said plainly:\n *\n *   ┌────────┬──────────────────────────────────────┬──────────────┐\n *   │   0    │ No shipments match these filters     │ [Clear all]  │\n *   │RESULTS │ Status is Delayed · Carrier is DHL   │              │\n *   └────────┴──────────────────────────────────────┴──────────────┘\n *\n * One frame of three cells: the count (the Count voice: how many there are, which is the fact), the\n * message, and the way out. Below 520px of its own width the actions drop to a row of cells under the\n * message, and the count cell shrinks to a band. No illustration: the number is the picture.\n */\nfunction Empty({ kind = \"empty\", count, code, title, description, actions, layout = \"control\", headingLevel = 3, live, className, ...props }: EmptyProps) {\n  const H = `h${headingLevel}` as \"h3\"\n  const figure = count ?? (kind === \"empty\" ? 0 : kind === \"error\" ? \"!\" : null)\n  const role = live ? (kind === \"error\" ? \"alert\" : \"status\") : undefined\n  return (\n    <div data-slot=\"empty\" data-kind={kind} data-kl-layout={layout} role={role} className={cn(layout === \"control\" ? \"kl-frame\" : null, \"kl-empty\", className)} {...props}>\n      <div className=\"kl-empty-n\">\n        {figure != null ? (\n          <span className=\"kl-empty-fig\">{figure}</span>\n        ) : (\n          <svg className=\"kl-empty-fig\" viewBox=\"0 0 32 32\" width=\"40\" height=\"40\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"3\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"M16 6v20M6 16h20\" />\n          </svg>\n        )}\n        <span className=\"kl-code\">{code ?? CODE[kind]}</span>\n      </div>\n      <div className=\"kl-empty-t\">\n        <H className=\"kl-empty-title\">{title}</H>\n        {description ? <div className=\"kl-empty-desc\">{description}</div> : null}\n      </div>\n      {actions ? <div className=\"kl-empty-a\">{actions}</div> : null}\n    </div>\n  )\n}\n\nexport { Empty, type EmptyKind, type EmptyProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/empty.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-empty": {
+        "container": "kl-empty / inline-size",
+        "display": "grid",
+        "grid-template-columns": "auto minmax(0, 1fr) auto",
+        "align-items": "stretch",
+        "min-height": "200px",
+        "min-width": "0",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-empty[data-kl-layout=\"cell\"]": {
+        "min-height": "0"
+      },
+      ".kl-empty-n": {
+        "display": "grid",
+        "place-items": "center",
+        "align-content": "center",
+        "gap": "8px",
+        "min-width": "168px",
+        "padding": "24px 16px",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-line)",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "72px",
+        "line-height": "1",
+        "font-variant-numeric": "tabular-nums",
+        "padding-inline-start": "calc(16px + var(--kl-c, 0px) * 0.35)"
+      },
+      "[data-kl-density=\"compact\"] .kl-empty-n, .kl-empty[data-kl-density=\"compact\"] .kl-empty-n": {
+        "min-width": "128px",
+        "font-size": "56px",
+        "padding": "16px 12px"
+      },
+      ".kl-empty-n .kl-code": {
+        "color": "inherit",
+        "font-size": "11px"
+      },
+      ".kl-empty[data-kind=\"error\"] .kl-empty-n": {
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)"
+      },
+      ".kl-empty[data-kind=\"error\"]:not([data-kl-layout=\"cell\"])": {
+        "border-color": "var(--kl-red)",
+        "--kl-cut-line": "var(--kl-red)"
+      },
+      ".kl-empty[data-kind=\"start\"] .kl-empty-n": {
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-empty-t": {
+        "display": "grid",
+        "align-content": "center",
+        "gap": "6px",
+        "padding": "24px",
+        "min-width": "0"
+      },
+      ".kl-empty-title": {
+        "margin": "0",
+        "font-size": "20px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-empty-desc": {
+        "margin": "0",
+        "color": "var(--kl-ink-2)",
+        "max-width": "52ch",
+        "line-height": "1.45",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-empty-desc > :is(p, ul)": {
+        "margin": "0"
+      },
+      ".kl-empty-a": {
+        "display": "flex",
+        "flex-direction": "column",
+        "justify-content": "center",
+        "gap": "8px",
+        "padding": "24px",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      "@container kl-empty (max-width: 520px)": {
+        ".kl-empty-n": {
+          "grid-column": "1 / -1",
+          "grid-auto-flow": "column",
+          "justify-content": "start",
+          "align-items": "baseline",
+          "gap": "12px",
+          "min-width": "0",
+          "padding-block": "12px",
+          "border-inline-end": "0",
+          "border-block-end": "var(--kl-k1) solid var(--kl-line)",
+          "font-size": "40px"
+        },
+        ".kl-empty-t": {
+          "grid-column": "1 / -1",
+          "padding": "16px var(--kl-inset)"
+        },
+        ".kl-empty-a": {
+          "grid-column": "1 / -1",
+          "flex-direction": "row",
+          "flex-wrap": "wrap",
+          "justify-content": "start",
+          "padding": "0 var(--kl-inset) 16px",
+          "border-inline-start": "0"
+        }
+      },
+      "@media (forced-colors: active)": {
+        ".kl-empty[data-kind=\"error\"] .kl-empty-n": {
+          "forced-color-adjust": "none",
+          "background": "Mark",
+          "color": "MarkText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

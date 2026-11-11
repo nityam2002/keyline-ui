@@ -1,0 +1,221 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navigation-menu",
+  "title": "Navigation menu",
+  "description": "Site navigation (Base UI Navigation Menu): a control frame of section triggers and links, the open trigger inverse, the current page cobalt; each section's panel docks to the frame's keyline with link cells on shared seams (title, description, code).",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/scroll-edges",
+    "@keyline-ui/keyline-motion"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/navigation-menu.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { NavigationMenu as NavigationMenuPrimitive } from \"@base-ui/react/navigation-menu\"\nimport { DirectionProvider } from \"@base-ui/react/direction-provider\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useDomDirection, useKeylineScope, useMergedRef } from \"../lib/keyline-scope\"\nimport { useScrollEdges } from \"../lib/scroll-edges\"\nimport { useStretch } from \"../lib/keyline-motion\"\n\n/**\n * Navigation menu: site navigation whose sections open a panel of links (Base UI Navigation\n * Menu). For an application's own commands use Menubar; for an app's sections, Nav.\n *\n *   ┌──────────┬────────────┬─────────┬──────────┐\n *   │ Services▾│ Terminals ▾│ Pricing │ Contact  │   a control frame of cells: section triggers and links;\n *   └──────────┴────────────┼─────────┴──────────┘   the open trigger is the inverse cell, the current\n *   ┌───────────────────────┴──┬───────────────────┐  page's link is cobalt (location)\n *   │ Ocean freight     OCN    │ Customs     CUS   │   the panel docks to the frame's bottom keyline at its\n *   │ Door to door by sea      │ Filing, permits   │   weight, cells of links on shared seams (title, a\n *   ├──────────────────────────┼───────────────────┤   description, an optional code)\n *\n * - Behaviour is Base UI's: Tab moves between top-level items, Enter, Space or Down opens a section and\n *   moves into its panel; hover opens after a short delay; Escape closes and returns to the trigger.\n *   Left/Right follow the reading direction (the DOM `dir` is passed to Base UI).\n * - The panel never animates its size between sections (frames don't move); it unfolds from the frame's\n *   keyline when it opens (Unfold) and is instant under reduced motion. Moving from one open section to the\n *   next, the inverse cell stretches across to the new trigger (Stretch): the panel swaps in\n *   place, so the band is what says which section it now belongs to. Opening and closing do not stretch.\n * - Narrow: the frame scrolls sideways and marks its hidden edge; the panel is one column.\n */\n/** The list (the control frame) the panel docks to; set by NavigationMenuList. */\nconst FrameContext = React.createContext<React.Dispatch<React.SetStateAction<HTMLElement | null>> | null>(null)\n\nfunction NavigationMenu({ className, children, ref: refProp, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {\n  const ref = React.useRef<HTMLElement | null>(null)\n  const [frame, setFrame] = React.useState<HTMLElement | null>(null)\n  const [dir] = useDomDirection(ref)\n  const [marker, scope, probe] = useKeylineScope(false)\n  const setRef = useMergedRef(ref, refProp)\n  return (\n    <DirectionProvider direction={dir}>\n      <FrameContext.Provider value={setFrame}>\n      <NavigationMenuPrimitive.Root ref={setRef} data-slot=\"navigation-menu\" className={cn(\"kl-nmenu\", className)} {...props}>\n        {children}\n        {marker}\n        <NavigationMenuPrimitive.Portal>\n          {probe}\n          {/* docked to the frame, not the open trigger: the trigger sits inside the frame's k2 border, so a\n              trigger-anchored panel ran k2 inside the frame's edge. On the frame, the panel's top border lies on\n              the frame's bottom border (sideOffset -k2) and their outer start edges coincide; the panel stays put\n              between sections. */}\n          <NavigationMenuPrimitive.Positioner anchor={frame ?? undefined} side=\"bottom\" align=\"start\" sideOffset={-2} collisionPadding={12} {...scopeProps(scope, { className: \"kl-positioner kl-nmenu-positioner\" })}>\n            <NavigationMenuPrimitive.Popup data-slot=\"navigation-menu-popup\" className=\"kl-attached kl-dock kl-nmenu-popup\" style={{ \"--kl-attach\": \"2px\" } as React.CSSProperties}>\n              <NavigationMenuPrimitive.Viewport className=\"kl-nmenu-viewport\" />\n            </NavigationMenuPrimitive.Popup>\n          </NavigationMenuPrimitive.Positioner>\n        </NavigationMenuPrimitive.Portal>\n      </NavigationMenuPrimitive.Root>\n      </FrameContext.Provider>\n    </DirectionProvider>\n  )\n}\n\nfunction NavigationMenuList({ className, children, ref: refProp, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {\n  const ref = React.useRef<HTMLUListElement | null>(null)\n  useScrollEdges(ref as React.RefObject<HTMLElement | null>)\n  // the open trigger, as an index among the list's cells; Base UI owns the state, the band follows its attribute\n  const [open, setOpen] = React.useState(-1)\n  React.useLayoutEffect(() => {\n    const list = ref.current\n    if (!list) return\n    // moving between sections, Base UI may close the old one a few ms before opening the next (WebKit):\n    // a close is held briefly, so a section that opens within the grace makes the band travel instead of snap\n    let grace = 0\n    const read = () => {\n      const items = Array.from(list.querySelectorAll<HTMLElement>(\"[data-kl-item]\"))\n      const i = items.findIndex((el) => el.hasAttribute(\"data-popup-open\"))\n      clearTimeout(grace)\n      if (i >= 0) setOpen(i)\n      else grace = window.setTimeout(() => setOpen(-1), 80)\n    }\n    read()\n    const mo = new MutationObserver(read)\n    mo.observe(list, { subtree: true, childList: true, attributeFilter: [\"data-popup-open\"] })\n    return () => {\n      mo.disconnect()\n      clearTimeout(grace)\n    }\n  }, [])\n  useStretch(ref as React.RefObject<HTMLElement | null>, open)\n  const setFrame = React.useContext(FrameContext)\n  React.useLayoutEffect(() => {\n    if (!setFrame) return\n    setFrame(ref.current)\n    return () => setFrame(null)\n  }, [setFrame])\n  const setRef = useMergedRef(ref, refProp)\n  return (\n    <NavigationMenuPrimitive.List ref={setRef} data-slot=\"navigation-menu-list\" data-kl-stretch=\"\" className={cn(\"kl-ctl kl-cells kl-nmenu-list\", className)} {...props}>\n      {/* a presentational list item: a <ul> may only contain <li> */}\n      <li data-kl-band=\"\" role=\"presentation\" className=\"kl-nmenu-band\" aria-hidden hidden />\n      {children}\n    </NavigationMenuPrimitive.List>\n  )\n}\n\nfunction NavigationMenuItem({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {\n  return <NavigationMenuPrimitive.Item data-slot=\"navigation-menu-item\" className={cn(\"kl-nmenu-item\", className)} {...props} />\n}\n\nfunction NavigationMenuTrigger({ className, children, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {\n  return (\n    <NavigationMenuPrimitive.Trigger data-slot=\"navigation-menu-trigger\" data-kl-item=\"\" className={cn(\"kl-key kl-nmenu-trigger\", className)} {...props}>\n      <span className=\"kl-nmenu-tl\">{children}</span>\n      <NavigationMenuPrimitive.Icon className=\"kl-nmenu-caret\">\n        <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n          <path d=\"M4 6l4 4 4-4\" />\n        </svg>\n      </NavigationMenuPrimitive.Icon>\n    </NavigationMenuPrimitive.Trigger>\n  )\n}\n\n/** A top-level link cell (no panel). `active` marks the current page (aria-current=\"page\", cobalt). */\nfunction NavigationMenuLink({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {\n  return <NavigationMenuPrimitive.Link data-slot=\"navigation-menu-link\" data-kl-item=\"\" className={cn(\"kl-key kl-nmenu-link\", className)} {...props} />\n}\n\nfunction NavigationMenuContent({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {\n  return <NavigationMenuPrimitive.Content data-slot=\"navigation-menu-content\" className={cn(\"kl-nmenu-content\", className)} {...props} />\n}\n\n/** The panel's links as cells on shared seams: two columns where there is room, one where there is not. */\nfunction NavigationMenuGrid({ className, children, ...props }: React.ComponentProps<\"ul\">) {\n  return (\n    <ul data-slot=\"navigation-menu-grid\" className={cn(\"kl-nmenu-grid\", className)} {...props}>\n      {React.Children.map(children, (c) => (c == null || c === false ? null : <li className=\"kl-nmenu-gi\">{c}</li>))}\n    </ul>\n  )\n}\n\ntype CardProps = Omit<React.ComponentProps<typeof NavigationMenuPrimitive.Link>, \"title\"> & {\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** A Code-voice identifier at the cell's end (a service code, a terminal code). */\n  code?: React.ReactNode\n}\n\n/** A link cell in a panel: title, description, code. `active` marks the current page. */\nfunction NavigationMenuCard({ className, title, description, code, ...props }: CardProps) {\n  return (\n    <NavigationMenuPrimitive.Link data-slot=\"navigation-menu-card\" className={cn(\"kl-nmenu-card\", className)} {...props}>\n      <span className=\"kl-nmenu-card-t\">{title}</span>\n      {code != null ? <span className=\"kl-nmenu-card-code\">{code}</span> : null}\n      {description != null ? <span className=\"kl-nmenu-card-d\">{description}</span> : null}\n    </NavigationMenuPrimitive.Link>\n  )\n}\n\nexport { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuLink, NavigationMenuContent, NavigationMenuGrid, NavigationMenuCard }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/navigation-menu.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-nmenu": {
+        "display": "grid",
+        "grid-template-columns": "minmax(0, 1fr)",
+        "justify-items": "start",
+        "min-width": "0",
+        "max-width": "100%"
+      },
+      ".kl-nmenu-list": {
+        "margin": "0",
+        "padding": "0",
+        "list-style": "none",
+        "max-width": "100%",
+        "overflow-x": "auto",
+        "width": "max-content",
+        "min-height": "var(--kl-ctl)",
+        "background-color": "var(--kl-cell)",
+        "position": "relative",
+        "isolation": "isolate"
+      },
+      ".kl-nmenu-band": {
+        "list-style": "none",
+        "position": "absolute",
+        "z-index": "-1",
+        "background-color": "var(--kl-inverse)",
+        "pointer-events": "none"
+      },
+      ".kl-nmenu-list > .kl-nmenu-band + *": {
+        "border-inline-start": "0"
+      },
+      ".kl-nmenu-item": {
+        "display": "flex",
+        "flex": "none"
+      },
+      ":is(.kl-nmenu-trigger, .kl-nmenu-link)": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "box-sizing": "border-box",
+        "min-height": "100%",
+        "margin": "0",
+        "padding-inline": "14px",
+        "border": "0",
+        "background": "none",
+        "color": "var(--kl-ink)",
+        "text-decoration": "none",
+        "white-space": "nowrap",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "14px",
+        "font-weight": "var(--kl-weight-strong)",
+        "cursor": "pointer",
+        "outline": "0",
+        "transition": "color 0s linear var(--kl-t-flip)"
+      },
+      ".kl-nmenu-list > .kl-nmenu-item:nth-child(1 of .kl-nmenu-item) > :is(.kl-nmenu-trigger, .kl-nmenu-link)": {
+        "padding-inline-start": "calc(14px + var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-nmenu-trigger": {
+        "padding-inline-end": "10px"
+      },
+      ":is(.kl-nmenu-trigger, .kl-nmenu-link):hover:not([data-popup-open], [data-kl-covered], [aria-current], [data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-nmenu-link:active:not([data-kl-covered], [aria-current], [data-disabled])": {
+        "background-color": "var(--kl-press)"
+      },
+      ":is(.kl-nmenu-trigger, .kl-nmenu-link):focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ":is(.kl-nmenu-trigger, .kl-nmenu-link:not([aria-current]))[data-kl-covered]": {
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-nmenu-link[aria-current=\"page\"]": {
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-nmenu-link[aria-current=\"page\"]:focus-visible": {
+        "outline-color": "var(--kl-on-cobalt)"
+      },
+      ".kl-nmenu-trigger[data-disabled]": {
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-nmenu-caret": {
+        "display": "flex",
+        "flex": "none"
+      },
+      ".kl-nmenu-trigger[data-popup-open] .kl-nmenu-caret": {
+        "rotate": "180deg"
+      },
+      ".kl-nmenu-popup": {
+        "box-sizing": "border-box",
+        "width": "var(--popup-width, auto)",
+        "height": "var(--popup-height, auto)",
+        "max-height": "none",
+        "overflow": "visible",
+        "background-color": "var(--kl-cell)"
+      },
+      ".kl-nmenu-viewport": {
+        "position": "relative",
+        "width": "100%",
+        "height": "100%",
+        "overflow": "hidden"
+      },
+      ".kl-nmenu-content": {
+        "box-sizing": "border-box",
+        "width": "min(600px, calc(100vw - 24px - 4px))",
+        "container-type": "inline-size"
+      },
+      ".kl-nmenu-content[data-ending-style]": {
+        "opacity": "0"
+      },
+      ".kl-nmenu-grid": {
+        "display": "grid",
+        "grid-template-columns": "repeat(2, minmax(0, 1fr))",
+        "margin": "0 0 -1px",
+        "margin-inline-end": "-1px",
+        "padding": "0",
+        "list-style": "none"
+      },
+      "@container (max-width: 420px)": {
+        ".kl-nmenu-grid": {
+          "grid-template-columns": "minmax(0, 1fr)"
+        }
+      },
+      ".kl-nmenu-gi": {
+        "display": "flex",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-nmenu-card": {
+        "flex": "1",
+        "display": "grid",
+        "grid-template-columns": "minmax(0, 1fr) auto",
+        "align-content": "start",
+        "gap": "2px 12px",
+        "min-height": "64px",
+        "padding": "10px var(--kl-inset) 12px",
+        "color": "var(--kl-ink)",
+        "text-decoration": "none",
+        "outline": "0"
+      },
+      ".kl-nmenu-card-t": {
+        "font-size": "14px",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-nmenu-card-code": {
+        "font": "500 11px/1.6 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-nmenu-card-d": {
+        "grid-column": "1 / -1",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)",
+        "line-height": "1.4"
+      },
+      ".kl-nmenu-card:hover:not([aria-current])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-nmenu-card:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-nmenu-card[aria-current=\"page\"]": {
+        "background-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)"
+      },
+      ".kl-nmenu-card[aria-current=\"page\"] :is(.kl-nmenu-card-d, .kl-nmenu-card-code)": {
+        "color": "inherit"
+      },
+      ".kl-nmenu-card[aria-current=\"page\"]:focus-visible": {
+        "outline-color": "var(--kl-on-cobalt)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-nmenu-band": {
+          "display": "none"
+        },
+        ":is(.kl-nmenu-trigger, .kl-nmenu-link)[data-kl-covered]": {
+          "color": "inherit"
+        },
+        ".kl-nmenu-trigger[data-popup-open]": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        },
+        ":is(.kl-nmenu-link, .kl-nmenu-card)[aria-current=\"page\"]": {
+          "forced-color-adjust": "none",
+          "background-color": "Highlight",
+          "color": "HighlightText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

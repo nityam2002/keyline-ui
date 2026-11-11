@@ -1,0 +1,182 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bubble",
+  "title": "Bubble",
+  "description": "One message as a control-weight frame (2px, no radius) holding cells: the text, then files (Attachment layout=\"cell\"). Consecutive bubbles attach on a 1px seam. Tone by role: plain (theirs), tint (yours), attention (not sent: the attention frame and an inserted ! cell). pending runs the Signal segment on the bottom keyline while it sends. Reactions sit on the bottom keyline.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/bubble.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\n\n/* A bubble is one message: a control-weight frame (2px, no radius; the control cut only on the first of a run)\n   holding a column of cells, the text and then any files (Attachment layout=\"cell\").\n   - consecutive bubbles of a run are attached: the later one lies on the earlier's bottom keyline and the\n     shared edge is a 1px seam, so a run reads as one stack of messages, not a pile of boxes;\n   - an attachment-only message is a bubble holding only file cells; the file glyph sits on the text edge;\n   - tone by role, never decoration: plain (the other party, the cell surface), tint (the reader's own, one\n     step off it), attention (not sent: the attention frame, and a ! cell inserted before the text);\n   - pending: the message is on its way; the Signal segment runs inside the bottom keyline until it lands.\n   Reactions sit on the bottom keyline as a small frame of their own. */\n\ntype Tone = \"plain\" | \"tint\" | \"attention\"\n\nfunction BubbleGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"bubble-group\" className={cn(\"kl-bubble-group\", className)} {...props} />\n}\n\ntype BubbleProps = React.ComponentProps<\"div\"> & {\n  tone?: Tone\n  /** Sending: the pending segment runs along the bottom keyline (a static hatch under reduced motion). */\n  pending?: boolean\n}\n\nfunction Bubble({ tone = \"plain\", pending, className, children, ...props }: BubbleProps) {\n  return (\n    <div data-slot=\"bubble\" data-tone={tone} data-pending={pending ? \"\" : undefined} aria-busy={pending || undefined} className={cn(\"kl-ctl kl-bubble\", className)} {...props}>\n      {children}\n      {pending ? <span className=\"kl-pending kl-bubble-pend\" aria-hidden /> : null}\n    </div>\n  )\n}\n\n/** The text cell. Render it as a button or link (`render`) when the message itself acts (open a thread). */\nfunction BubbleContent({ className, render, children, ...props }: useRender.ComponentProps<\"div\">) {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    props: mergeProps<\"div\">(\n      {\n        className: cn(\"kl-bubble-c\", className),\n        children: (\n          <>\n            {/* the ! cell is inserted (0 → its width) when a message turns out not to be sent */}\n            <span className=\"kl-slot kl-bubble-bang\" aria-hidden>\n              <span>\n                <span>!</span>\n              </span>\n            </span>\n            {/* people write in their own language: the text takes its direction from its first strong letter */}\n            <span className=\"kl-bubble-t\" dir=\"auto\">\n              {children}\n            </span>\n          </>\n        ),\n      },\n      props,\n    ),\n  })\n}\n\n/** Reactions on the bubble's bottom keyline: a row of small cells (\"👍 2\"). Buttons inside are fine. */\nfunction BubbleReactions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"bubble-reactions\" className={cn(\"kl-cells kl-bubble-rx\", className)} {...props} />\n}\n\nexport { BubbleGroup, Bubble, BubbleContent, BubbleReactions }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/bubble.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-bubble-group": {
+        "display": "flex",
+        "flex-direction": "column",
+        "align-items": "inherit",
+        "min-width": "0",
+        "max-width": "100%"
+      },
+      ".kl-bubble": {
+        "--kl-bubble-x": "var(--kl-msg-x, var(--kl-inset))",
+        "display": "flex",
+        "flex-direction": "column",
+        "inline-size": "fit-content",
+        "min-inline-size": "3rem",
+        "max-inline-size": "100%",
+        "min-width": "0",
+        "background-color": "var(--kl-cell)",
+        "color": "var(--kl-ink)",
+        "overflow": "visible"
+      },
+      ".kl-bubble[data-tone=\"tint\"]": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-bubble[data-tone=\"attention\"]": {
+        "border-color": "var(--kl-red)",
+        "z-index": "1"
+      },
+      ".kl-bubble + .kl-bubble": {
+        "margin-block-start": "calc(-1 * var(--kl-k2))",
+        "--kl-cut-size": "0px"
+      },
+      ".kl-bubble:is([data-tone=\"attention\"], :has(> .kl-bubble-rx)) + .kl-bubble": {
+        "margin-block-start": "var(--kl-msg-gap, 6px)"
+      },
+      ".kl-bubble:has(> .kl-bubble-rx) + .kl-bubble": {
+        "margin-block-start": "14px"
+      },
+      ".kl-bubble-c": {
+        "display": "flex",
+        "align-items": "stretch",
+        "min-width": "0",
+        "color": "inherit",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "var(--kl-fs)",
+        "line-height": "1.45",
+        "text-align": "start"
+      },
+      ".kl-bubble-t": {
+        "display": "block",
+        "flex": "1 1 auto",
+        "min-width": "0",
+        "padding": "7px var(--kl-bubble-x) 8px",
+        "white-space": "pre-wrap",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-bubble-t a": {
+        "color": "var(--kl-cobalt-text)",
+        "text-decoration": "underline",
+        "text-underline-offset": "2px",
+        "overflow-wrap": "anywhere"
+      },
+      ".kl-bubble-t a:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "1px"
+      },
+      ".kl-bubble-bang > span": {
+        "display": "flex"
+      },
+      ".kl-bubble-bang > span > span": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "28px",
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)",
+        "font-weight": "var(--kl-weight-display, 800)"
+      },
+      ".kl-bubble[data-tone=\"attention\"] .kl-bubble-bang": {
+        "grid-template-columns": "1fr",
+        "transition": "grid-template-columns var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-bubble > .kl-att": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-bubble > .kl-att:first-child": {
+        "border-block-start": "0"
+      },
+      ".kl-bubble-pend": {
+        "--kl-bw": "3px"
+      },
+      ":is(button, a).kl-bubble-c": {
+        "cursor": "pointer",
+        "text-decoration": "none"
+      },
+      ":is(button, a).kl-bubble-c:hover": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-bubble[data-tone=\"plain\"] > :is(button, a).kl-bubble-c:hover": {
+        "background-color": "var(--kl-tint)"
+      },
+      ":is(button, a).kl-bubble-c:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "calc(var(--kl-ring) * -1)"
+      },
+      ":is(button, a).kl-bubble-c:active > .kl-bubble-t": {
+        "translate": "0 1px"
+      },
+      ".kl-bubble-rx": {
+        "position": "absolute",
+        "inset-block-end": "-12px",
+        "inset-inline-end": "10px",
+        "z-index": "1",
+        "height": "22px",
+        "border": "var(--kl-k1) solid var(--kl-line)",
+        "background-color": "var(--kl-raised)",
+        "font-size": "12px",
+        "line-height": "1"
+      },
+      ".kl-bubble:has(> .kl-bubble-rx)": {
+        "margin-block-end": "12px"
+      },
+      ".kl-bubble-rx > *": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "4px",
+        "padding-inline": "6px"
+      },
+      ".kl-bubble-rx > button": {
+        "all": "unset",
+        "box-sizing": "border-box",
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "4px",
+        "padding-inline": "6px",
+        "cursor": "pointer"
+      },
+      ".kl-bubble-rx > button:hover": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-bubble-rx > button[aria-pressed=\"true\"]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-bubble-rx > button:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "calc(var(--kl-ring) * -1)"
+      },
+      ".kl-bubble-rx .kl-code": {
+        "color": "inherit"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-bubble-bang > span > span": {
+          "forced-color-adjust": "none",
+          "background-color": "Mark",
+          "color": "MarkText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

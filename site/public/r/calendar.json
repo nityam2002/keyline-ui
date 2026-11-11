@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar",
+  "title": "Calendar logic",
+  "description": "Pure range helpers: ordering, available-day count and locale-aware range formatting. The grid and keyboard are react-day-picker's.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/registry/keyline/lib/calendar.ts",
+      "content": "/* ------------------------------------------------------------------ *\n * CALENDAR LOGIC (pure, no React): range ordering, available-day count, range formatting. The grid,\n * keyboard and month navigation are react-day-picker's (ui/date-range.tsx). Unit-tested in tests/calendar.test.ts.\n * Dates are local calendar days (time is always midnight).\n * ------------------------------------------------------------------ */\n\nexport type DateRange = { from: Date; to: Date }\nexport type Unavailable = (d: Date) => string | boolean | undefined\n\nexport const sod = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())\nexport const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)\nexport const sameDay = (a?: Date | null, b?: Date | null) => !!a && !!b && sod(a).getTime() === sod(b).getTime()\nexport const between = (d: Date, a: Date, b: Date) => d >= (a < b ? a : b) && d <= (a < b ? b : a)\nexport const order = (a: Date, b: Date): DateRange => (a <= b ? { from: a, to: b } : { from: b, to: a })\nexport function countAvailable(r: DateRange | null, isUnavailable?: Unavailable) {\n  if (!r) return 0\n  let n = 0\n  for (let d = sod(r.from); d <= r.to; d = addDays(d, 1)) if (!isUnavailable?.(d)) n++\n  return n\n}\n\n/**\n * \"5–9 Nov\", \"28 Nov – 3 Dec\", \"28 Dec 2026 – 3 Jan 2027\". Locale-aware (Intl formatRange);\n * the year appears only when the endpoints fall in different years.\n */\nexport function formatRange(r: DateRange | null, locale = \"en-GB\") {\n  if (!r) return \"\"\n  const crossYear = r.from.getFullYear() !== r.to.getFullYear()\n  const f = new Intl.DateTimeFormat(locale, { day: \"numeric\", month: \"short\", ...(crossYear ? { year: \"numeric\" as const } : null) })\n  return sameDay(r.from, r.to) ? f.format(r.from) : f.formatRange(r.from, r.to)\n}\n",
+      "type": "registry:lib",
+      "target": "components/keyline/lib/calendar.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

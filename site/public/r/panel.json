@@ -1,0 +1,126 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "panel",
+  "title": "Panel",
+  "description": "Region frame with header, body and footer cells; PanelGrid joins panels into one frame with shared keylines.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/panel.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * A region: 3px frame, region cut. Header, body and footer are cells stacked on shared keylines.\n * Standalone panels sit one gutter apart. Inside a PanelGrid they become cells of ONE frame.\n */\nfunction Panel({ className, layout = \"control\", ...props }: React.ComponentProps<\"section\"> & { /** cell: a cell of a PanelGrid (or any frame); no own border or cut. */ layout?: \"control\" | \"cell\" }) {\n  return <section data-slot=\"panel\" data-kl-layout={layout} className={cn(\"kl-frame kl-panel\", className)} {...props} />\n}\n\n/** Title (+ optional code and actions). The first header of a cut frame reserves the cut's room. */\nfunction PanelHeader({ title, code, description, actions, className, headingLevel = 2 }: { title: React.ReactNode; code?: React.ReactNode; description?: React.ReactNode; actions?: React.ReactNode; className?: string; headingLevel?: 2 | 3 | 4 }) {\n  const H = `h${headingLevel}` as \"h2\"\n  return (\n    <header data-slot=\"panel-header\" className={cn(\"kl-cells kl-panel-h\", className)}>\n      <div className=\"kl-panel-t\">\n        {code != null ? <span className=\"kl-code\">{code}</span> : null}\n        <H>{title}</H>\n        {description ? <p>{description}</p> : null}\n      </div>\n      {actions ? <div className=\"kl-panel-x\">{actions}</div> : null}\n    </header>\n  )\n}\n\n/** Padded content. Standalone controls (2px) live here, one gutter apart. */\nfunction PanelBody({ className, flush, ...props }: React.ComponentProps<\"div\"> & { /** No padding: for rows, lists or tables that bring their own keylines. */ flush?: boolean }) {\n  return <div data-slot=\"panel-body\" data-flush={flush || undefined} className={cn(\"kl-panel-b\", className)} {...props} />\n}\n\n/** A row of cells on the bottom keyline: use Button layout=\"cell\" for actions, or text cells for status. */\nfunction PanelFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"panel-footer\" className={cn(\"kl-cells kl-panel-f\", className)} {...props} />\n}\n\n/**\n * Joins panels into one region frame: children are separated by 1px keylines that stay correct at any\n * wrap (the frame's line shows through a 1px gap), so a dashboard reads as one instrument, not a pile of cards.\n * Children should be <Panel layout=\"cell\"> (or any element with a background).\n */\nfunction PanelGrid({ className, min = 240, style, ...props }: React.ComponentProps<\"div\"> & { /** Minimum cell width in px before the grid wraps. */ min?: number }) {\n  return <div data-slot=\"panel-grid\" className={cn(\"kl-frame kl-panel-grid\", className)} style={{ \"--kl-pg-min\": `${min}px`, ...style } as React.CSSProperties} {...props} />\n}\n\nexport { Panel, PanelHeader, PanelBody, PanelFooter, PanelGrid }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/panel.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-panel": {
+        "display": "flex",
+        "flex-direction": "column",
+        "min-width": "0",
+        "min-height": "0"
+      },
+      ".kl-panel > *": {
+        "flex": "none"
+      },
+      ".kl-panel-h": {
+        "border-block-end": "var(--kl-k3) solid var(--kl-line)",
+        "min-height": "52px"
+      },
+      ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-h": {
+        "border-block-end-width": "var(--kl-k1)"
+      },
+      ".kl-panel-t": {
+        "flex": "1",
+        "min-width": "0",
+        "display": "grid",
+        "align-content": "center",
+        "gap": "2px",
+        "padding": "10px var(--kl-inset) 10px calc(var(--kl-inset) + 2px + var(--kl-c-room, 0px))"
+      },
+      ".kl-panel-t h2, .kl-panel-t h3, .kl-panel-t h4": {
+        "margin": "0",
+        "font-size": "16px",
+        "font-weight": "var(--kl-weight-strong)",
+        "line-height": "1.25"
+      },
+      ".kl-panel-t p": {
+        "margin": "0",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-panel-x": {
+        "flex": "none",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "var(--kl-gutter)",
+        "padding-inline": "var(--kl-inset)"
+      },
+      ".kl-panel-x:has(> [data-kl-layout=\"cell\"])": {
+        "padding": "0",
+        "gap": "0",
+        "align-items": "stretch"
+      },
+      ".kl-panel-x > [data-kl-layout=\"cell\"] + [data-kl-layout=\"cell\"]": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-panel-b": {
+        "flex": "1 1 auto",
+        "min-height": "0",
+        "display": "grid",
+        "gap": "var(--kl-gutter)",
+        "align-content": "start",
+        "padding": "calc(var(--kl-inset) + 4px)"
+      },
+      ".kl-panel-b[data-flush]": {
+        "padding": "0",
+        "gap": "0"
+      },
+      ".kl-panel > [data-kl-layout=\"cell\"] + :is(.kl-panel-b, [data-kl-layout=\"cell\"])": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-line)"
+      },
+      ".kl-panel-f": {
+        "border-block-start": "var(--kl-k3) solid var(--kl-line)",
+        "margin-block-start": "auto"
+      },
+      ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-f": {
+        "border-block-start-width": "var(--kl-k1)"
+      },
+      ".kl-panel-f > *": {
+        "flex": "1 1 0",
+        "min-width": "0"
+      },
+      ".kl-panel-f > .kl-cell": {
+        "flex": "1 1 auto",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-panel-grid": {
+        "display": "grid",
+        "grid-template-columns": "repeat(auto-fit, minmax(min(var(--kl-pg-min, 240px), 100%), 1fr))",
+        "gap": "var(--kl-k1)"
+      },
+      ".kl-panel-grid > *": {
+        "background-color": "var(--kl-cell)",
+        "min-width": "0",
+        "box-shadow": "0 0 0 var(--kl-k1) var(--kl-seam)"
+      },
+      ".kl-panel-grid > [data-span=\"2\"]": {
+        "grid-column": "span 2"
+      },
+      "@media (max-width: 640px)": {
+        ".kl-panel-grid > [data-span]": {
+          "grid-column": "auto"
+        }
+      },
+      ".kl-panel-grid > :first-child": {
+        "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

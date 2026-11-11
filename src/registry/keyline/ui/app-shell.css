@@ -1,0 +1,109 @@
+@layer components {
+  /* APP SHELL: header frame across the top; sidebar, page and aside one gutter apart (C1). The page
+     scrolls; the sidebar and aside are sticky one gutter from the top and scroll inside themselves. */
+  /* the width sentinel: spans the shell, no height, takes no grid cell */
+  .kl-shell-w { position: absolute; inset-inline: 0; inset-block-start: 0; height: 0; visibility: hidden; pointer-events: none; }
+  .kl-shell {
+    --kl-shell-nav: 15rem; --kl-shell-aside: 22rem;
+    position: relative; display: grid; gap: var(--kl-gutter); align-items: start; min-width: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "head head head" "nav main aside";
+  }
+  /* a column that holds nothing takes no track and no gutter, so the page's end edge lies on the header's
+     (an empty aside track still cost one gutter: the page stopped 12px short of the header frame).
+     Zero specificity beyond .kl-shell, so the narrow layout below still wins. */
+  .kl-shell:where(:not(:has(> .kl-shell-aside:not([hidden])))) { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "head head" "nav main"; }
+  .kl-shell:where(:not(:has(> .kl-shell-nav:not([hidden])))) { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head head" "main aside"; }
+  .kl-shell:where(:not(:has(> .kl-shell-nav:not([hidden]))):not(:has(> .kl-shell-aside:not([hidden])))) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "main"; }
+  .kl-shell > * { min-width: 0; }
+
+  /* header: one region frame of cells; the toggle is a square key cell, the crumbs take the rest */
+  .kl-shell-h { grid-area: head; min-height: calc(var(--kl-ctl) + 2 * var(--kl-k3)); }
+  .kl-shell-toggle {
+    flex: none; justify-content: center; width: calc(var(--kl-ctl) + 4px); padding: 0;
+    /* the cut's corner room, so the glyph clears the bevel */
+    padding-inline-start: calc(var(--kl-c, 0px) * 0.35);
+    border: 0; background: none; color: var(--kl-ink); cursor: pointer;
+  }
+  .kl-shell-toggle:hover { background-color: var(--kl-tint); }
+  .kl-shell-toggle[aria-expanded="true"] { color: var(--kl-ink); }
+  .kl-shell-toggle:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  .kl-shell-crumbs { flex: 1 1 auto; min-width: 0; display: flex; align-items: stretch; }
+  .kl-shell-crumbs > * { flex: 1 1 auto; min-width: 0; }
+  /* a Breadcrumb in the header is a run of cells the full height of the frame, not a strip along its top */
+  .kl-shell-crumbs > .kl-crumbs { display: flex; }
+  .kl-shell-crumbs .kl-crumbs-list { flex: 1 1 auto; min-height: 0; }
+  .kl-shell-actions { flex: none; align-items: stretch; }
+  /* a Toolbar as the actions: the crumbs give up room first, down to their minimum, then the
+     toolbar moves its last items into More. The crumbs' basis is 0, so the toolbar keeps its natural width
+     while there is room; it shrinks only once the crumbs are at their minimum. */
+  .kl-shell-h:has(> .kl-shell-actions > .kl-tb) > .kl-shell-crumbs { flex: 1 1 0; min-width: min(14rem, 45%); }
+  .kl-shell-actions:has(> .kl-tb) { flex: 0 1 auto; min-width: calc(var(--kl-ctl) + 4px); }
+  .kl-shell-actions > .kl-tb.kl-tb { flex: 1 1 auto; min-width: 0; }
+
+  /* sidebar: a region frame holding the Nav as a cell */
+  /* The sidebar is a column, not a box: it reaches the viewport's bottom (height measured by AppShell from
+     where it starts), the Nav fills it, its list scrolls inside and its footer stays at the bottom. */
+  .kl-shell-nav {
+    grid-area: nav; width: var(--kl-shell-nav); position: sticky; top: var(--kl-gutter);
+    /* stretched to the row (main sets it: size containment keeps the nav out of the row's sizing), capped
+       at the viewport from where it starts, so it ends with main or the viewport, whichever is first (
+       nothing observes main) */
+    align-self: stretch; contain: size; max-height: var(--kl-shell-nav-h, calc(100dvh - 2 * var(--kl-gutter))); display: flex; flex-direction: column; overscroll-behavior: contain;
+  }
+  .kl-shell-nav > .kl-nav { flex: 1 1 auto; min-height: 0; }
+  :is(.kl-shell-nav, .kl-shell-sheet) > .kl-nav > .kl-nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  /* the key column's seam runs the full height of the column, through the group labels and the empty end */
+  :is(.kl-shell-nav, .kl-shell-sheet) > .kl-nav[data-kl-icons]:not([data-kl-rail]) > .kl-nav-list {
+    background: linear-gradient(to right, transparent calc(44px - var(--kl-k1)), var(--kl-seam) 0 44px, transparent 0) no-repeat;
+  }
+  :is(.kl-shell-nav, .kl-shell-sheet) > .kl-nav[data-kl-icons]:not([data-kl-rail]):is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) > .kl-nav-list {
+    background: linear-gradient(to left, transparent calc(44px - var(--kl-k1)), var(--kl-seam) 0 44px, transparent 0) no-repeat;
+  }
+  /* rail: the key cells' width; the toggle animates nothing (a layout change that moves the page is immediate) */
+  .kl-shell-nav[data-kl-rail] { width: var(--kl-shell-rail, 56px); }
+  .kl-shell-nav[hidden] { display: none; }
+  .kl-shell-main { grid-area: main; min-width: 0; }
+  .kl-shell-aside { grid-area: aside; width: var(--kl-shell-aside); position: sticky; top: var(--kl-gutter); max-height: calc(100dvh - 2 * var(--kl-gutter)); display: flex; flex-direction: column; }
+  .kl-shell-aside > * { flex: 1 1 auto; min-height: 0; }
+
+  /* STICKY HEADER (stickyHeader): the header holds at --kl-shell-top and the columns hold one gutter below
+     it, so the frame never moves while the page scrolls past it. The page scrolls under the header; the
+     strips above it and between it and the columns are painted in the page background (--kl-shell-bg) so
+     scrolled content never shows through them, and all three columns keep the same gutter below the
+     header. A page given a frame of its own needs a top edge that holds at that line too (see
+     --kl-shell-cols-top), or the band cuts it open. */
+  .kl-shell { --kl-shell-top: var(--kl-gutter); }
+  .kl-shell[data-kl-sticky-head] {
+    /* where the columns hold while the page scrolls: below the header and one gutter */
+    --kl-shell-cols-top: calc(var(--kl-shell-top) + var(--kl-shell-head-h, 0px) + var(--kl-gutter));
+  }
+  .kl-shell[data-kl-sticky-head] > .kl-shell-h {
+    position: sticky; top: var(--kl-shell-top); z-index: 3;
+    box-shadow: 0 calc(-1 * var(--kl-shell-top)) 0 var(--kl-shell-bg, var(--kl-paper)), 0 var(--kl-gutter) 0 var(--kl-shell-bg, var(--kl-paper));
+  }
+  .kl-shell[data-kl-sticky-head] > :is(.kl-shell-nav, .kl-shell-aside) { top: var(--kl-shell-cols-top); }
+  .kl-shell[data-kl-sticky-head] > .kl-shell-aside { max-height: calc(100dvh - 2 * var(--kl-shell-top) - var(--kl-shell-head-h, 0px) - var(--kl-gutter)); }
+
+  /* narrow: the page is the only column; the sheet is the frame, so a framed child (Inspector, a Nav
+     left at layout="control") gives up its own border and cut and fills it */
+  .kl-shell[data-kl-shell="narrow"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "main"; }
+
+  /* THE LAYOUT BEFORE ANY SCRIPT: the shell is a container, and its columns answer its width in CSS, so the
+     server's HTML is laid out for the shell it lands in. AppShell's own measurement (data-kl-shell) then only
+     decides what becomes a sheet; nothing moves when it arrives. Below narrowAt the sidebar and aside take no
+     room and the page spans the row; below asideInlineAt the aside takes none. These are the default
+     breakpoints (data-kl-at="narrowAt-asideInlineAt"); other values bring the same rules in a <style> of their own,
+     because a container condition cannot read a custom property. */
+  .kl-shell { container: kl-shell / inline-size; }
+  @container kl-shell (width < 960px) {
+    .kl-shell[data-kl-at="960-1400"] > :is(.kl-shell-nav, .kl-shell-aside) { display: none; }
+    .kl-shell[data-kl-at="960-1400"] > .kl-shell-main { grid-column: 1 / -1; }
+  }
+  @container kl-shell (960px <= width < 1400px) {
+    .kl-shell[data-kl-at="960-1400"] > .kl-shell-aside { display: none; }
+    .kl-shell[data-kl-at="960-1400"] > .kl-shell-main { grid-column-end: -1; }
+  }
+  .kl-shell-sheet > :is(.kl-frame, .kl-ctl) { --kl-bw: 0px; --kl-cut-size: 0px; flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .kl-shell-sheet > .kl-nav { display: flex; flex-direction: column; }
+}

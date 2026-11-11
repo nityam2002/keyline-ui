@@ -1,0 +1,537 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table",
+  "title": "Table",
+  "description": "Table frame parts: tabs, toolbar, bulk bar, index column, sortable headers, expanded detail, empty/error rows, pager.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/scroll-area",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/checkbox",
+    "@keyline-ui/tabs",
+    "@keyline-ui/status",
+    "@keyline-ui/empty",
+    "@keyline-ui/toolbar",
+    "@keyline-ui/collection"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/table.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\nimport { ScrollArea } from \"./scroll-area\"\nimport { floodHandlers, tokenMs, usePresence } from \"../lib/keyline-motion\"\nimport { Checkbox } from \"./checkbox\"\nimport { Tabs, TabsList, TabsTab } from \"./tabs\"\nimport { Status } from \"./status\"\nimport { Empty } from \"./empty\"\nimport { ToolbarButton, ToolbarGroup, useInToolbar } from \"./toolbar\"\nimport { nextSort, sortOf, compareValues, nextSortList, sortLevel, compareBy, type Sort, type SortList, type SortDirection } from \"../lib/collection\"\n\n/* ---------------- frame ---------------- */\n\n/** The table is one region frame. Tabs, toolbar, bulk bar, grid and pager are cells stacked inside it. */\nfunction TableFrame({ className, ...props }: React.ComponentProps<\"section\">) {\n  return <section data-slot=\"table-frame\" className={cn(\"kl-frame kl-rows kl-tf\", className)} {...props} />\n}\n\n/* ---------------- view tabs: location → cobalt band that stretches ---------------- */\n\ntype View = { value: string; label: React.ReactNode; count?: React.ReactNode }\n/** The table's view tabs (built on Tabs, so keyboard and aria come from Base UI) plus an end slot. */\nfunction TableViews({ views, value, onValueChange, label = \"Views\", className, children }: { views: View[]; value: string; onValueChange: (v: string) => void; label?: string; className?: string; children?: React.ReactNode }) {\n  return (\n    <div className={cn(\"kl-cells kl-tf-views\", className)}>\n      <Tabs value={value} onValueChange={(v) => onValueChange(v as string)} className=\"kl-tf-tabs-root\">\n        <TabsList layout=\"cell\" aria-label={label} className=\"kl-tf-tabs\">\n          {views.map((v) => (\n            <TabsTab key={v.value} value={v.value} count={v.count}>\n              {v.label}\n            </TabsTab>\n          ))}\n        </TabsList>\n      </Tabs>\n      {children ? <div className=\"kl-tf-views-end\">{children}</div> : null}\n    </div>\n  )\n}\n\n/* ---------------- toolbar ---------------- */\n\n/**\n * The filter row: search and pickers (Multiselect, DateRangePicker) side by side as cells. It is a named\n * group, not a Toolbar, on purpose: a combobox and a picker own their arrow keys (to move in the text, to\n * open and walk the list), so they cannot be items of a one-Tab-stop toolbar. Rows of plain commands and\n * toggles are: the views row's end, the status row and the bulk bar's actions take a cell Toolbar\n *, and a FilterToken inside a Toolbar becomes a pair of toolbar items.\n */\nfunction TableToolbar({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div role=\"group\" data-slot=\"table-toolbar\" className={cn(\"kl-cells kl-tf-tools\", className)} {...props} />\n}\n\nfunction TableSearch({ className, label = \"Search\", ...props }: React.ComponentProps<\"input\"> & { label?: string }) {\n  return (\n    <label className={cn(\"kl-cell kl-edge kl-tf-search\", className)}>\n      <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n        <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n        <path d=\"m10.5 10.5 3.5 3.5\" />\n      </svg>\n      <span className=\"kl-sr\">{label}</span>\n      <input type=\"search\" {...props} />\n    </label>\n  )\n}\n\nfunction FilterToken({ field, op, value, onRemove, onEdit, className }: { field: string; op: string; value: React.ReactNode; onRemove?: () => void; onEdit?: () => void; className?: string }) {\n  const inToolbar = useInToolbar()\n  const editLabel = `Edit filter: ${field} ${op} ${typeof value === \"string\" ? value : \"\"}`.trim()\n  if (inToolbar) {\n    // in a Toolbar the token is a group of two items in the row's arrow-key order (one Tab stop)\n    return (\n      <ToolbarGroup aria-label={`${field} filter`} className={cn(\"kl-tf-token kl-tf-token-tb\", className)}>\n        <ToolbarButton onClick={onEdit} aria-label={editLabel}>\n          <span className=\"kl-code\">{field}</span>\n          <i>{op}</i>\n          <b>{value}</b>\n        </ToolbarButton>\n        {onRemove ? (\n          <ToolbarButton icon className=\"kl-tf-token-x\" onClick={onRemove} aria-label={`Remove ${field} filter`}>\n            <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"square\" aria-hidden>\n              <path d=\"m4.5 4.5 7 7m0-7-7 7\" />\n            </svg>\n          </ToolbarButton>\n        ) : null}\n      </ToolbarGroup>\n    )\n  }\n  return (\n    <div className={cn(\"kl-cells kl-tf-token\", className)}>\n      <button type=\"button\" className=\"kl-cell kl-key\" onClick={onEdit} aria-label={`Edit filter: ${field} ${op} ${typeof value === \"string\" ? value : \"\"}`}>\n        <span className=\"kl-code\">{field}</span>\n        <i>{op}</i>\n        <b>{value}</b>\n      </button>\n      {onRemove ? (\n        <button type=\"button\" className=\"kl-cell kl-tf-token-x\" onClick={onRemove} aria-label={`Remove ${field} filter`}>\n          <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4.5 4.5 7 7m0-7-7 7\" />\n          </svg>\n        </button>\n      ) : null}\n    </div>\n  )\n}\n\n/* ---------------- bulk bar: the working set ---------------- */\n\nfunction TableBulkBar({ count, scope, children, className }: { count: number; scope?: React.ReactNode; children?: React.ReactNode; className?: string }) {\n  return (\n    <div data-slot=\"table-bulk\" data-empty={count === 0 || undefined} className={cn(\"kl-cells kl-tf-bulk\", className)} aria-live=\"polite\">\n      <div className=\"kl-cell kl-flood kl-tf-bulk-n\" data-kl-on={count > 0 ? \"\" : undefined}>\n        <span className=\"kl-count\">{count}</span>\n        <span className=\"kl-code\">SELECTED</span>\n      </div>\n      <div className=\"kl-cell kl-tf-scope\">{scope}</div>\n      {children}\n    </div>\n  )\n}\n\n/* ---------------- grid ---------------- */\n\n/** The grid's scroller: a Keyline Scroll Area with both bars (wide tables scroll sideways inside their\n *  frame, never the page); the sticky header sticks to its viewport. */\nfunction TableScroll({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <ScrollArea data-slot=\"table-scroll\" scrollbars=\"both\" className={cn(\"kl-tf-scroll\", className)} {...(props as object)}>\n      {children}\n    </ScrollArea>\n  )\n}\nfunction Table({ className, ...props }: React.ComponentProps<\"table\">) {\n  return <table data-slot=\"table\" className={cn(\"kl-table\", className)} {...props} />\n}\nfunction TableHead(props: React.ComponentProps<\"thead\">) {\n  return <thead {...props} />\n}\nfunction TableBody(props: React.ComponentProps<\"tbody\">) {\n  return <tbody {...props} />\n}\nfunction TableRow({ className, selected, expanded, ...props }: React.ComponentProps<\"tr\"> & { selected?: boolean; expanded?: boolean }) {\n  return <tr data-selected={selected || undefined} data-expanded={expanded || undefined} className={cn(\"kl-tr\", className)} {...props} />\n}\nfunction TableHeaderCell({ className, align, ...props }: Omit<React.ComponentProps<\"th\">, \"align\"> & { align?: \"end\" }) {\n  return <th data-align={align} className={cn(\"kl-th\", className)} {...props} />\n}\n/**\n * A sortable column header. The whole header cell is the button; aria-sort sits on the <th>.\n * The direction is a shape (▲ ascending, ▼ descending, an open ↕ when unsorted), and the sorted column's\n * header carries an ink band on its bottom keyline: the table's current order, a chosen state. End-aligned\n * (numeric) columns put the mark before the label, so the label stays on the numbers' edge. Use\n * nextSort/sortOf from the collection lib for the cycle (ascending → descending → none).\n *\n * Several columns: pass `priority` (1-based) and `levels` (how many columns sort). Each sorted\n * header prints its index; `onSort` gets `{ additive }`, true when Shift was held, for nextSortList.\n * ARIA allows aria-sort on one header at a time, so only the first level carries it; every sorted header's\n * button also says its place (\"sort 2 of 2, descending\") in text for assistive technology.\n */\nfunction TableSortHeader({\n  className, align, sort, onSort, priority, levels, children, ...props\n}: Omit<React.ComponentProps<\"th\">, \"align\" | \"onClick\"> & { align?: \"end\"; sort: SortDirection | null; onSort: (event: { additive: boolean }) => void; priority?: number; levels?: number }) {\n  const multi = sort != null && priority != null && (levels ?? 2) > 1\n  const ariaSort = sort == null ? \"none\" : multi && priority !== 1 ? undefined : sort\n  return (\n    <th data-align={align} data-sort={sort ?? undefined} data-kl-level={multi ? priority : undefined} aria-sort={ariaSort} className={cn(\"kl-th kl-th-sort\", className)} {...props}>\n      <button type=\"button\" className=\"kl-th-btn\" onClick={(e) => onSort({ additive: e.shiftKey })}>\n        <span className=\"kl-th-label\">{children}</span>\n        <span className=\"kl-sort\" data-dir={sort ?? \"none\"} aria-hidden>\n          <svg viewBox=\"0 0 12 16\" width=\"10\" height=\"14\">\n            <path className=\"kl-sort-up\" d=\"M6 1.5 10.5 7h-9z\" />\n            <path className=\"kl-sort-down\" d=\"M6 14.5 1.5 9h9z\" />\n          </svg>\n        </span>\n        {multi ? (\n          <>\n            <span className=\"kl-code kl-sort-n\" aria-hidden>{priority}</span>\n            <span className=\"kl-sr\">, sort {priority} of {levels ?? priority}, {sort}</span>\n          </>\n        ) : null}\n      </button>\n    </th>\n  )\n}\n\nfunction TableCell({ className, align, ...props }: Omit<React.ComponentProps<\"td\">, \"align\"> & { align?: \"end\" }) {\n  return <td data-align={align} className={cn(\"kl-td\", className)} {...props} />\n}\n\n/** Index cell: selection checkbox + row code. Floods yellow from the press point when the row is selected. */\nfunction TableIndexCell({ checked, indeterminate, onCheckedChange, code, label, header, rowSpan, className }: { checked: boolean; indeterminate?: boolean; onCheckedChange: (v: boolean) => void; code?: React.ReactNode; label: string; header?: boolean; rowSpan?: number; className?: string }) {\n  const Tag = header ? \"th\" : \"td\"\n  return (\n    <Tag rowSpan={rowSpan} className={cn(\"kl-ix kl-flood\", className)} data-kl-on={checked && !header ? \"\" : undefined} {...floodHandlers}>\n      <label className=\"kl-ix-in\" onClick={(e) => e.stopPropagation()}>\n        <Checkbox checked={checked} indeterminate={indeterminate} onCheckedChange={(v) => onCheckedChange(!!v)} aria-label={label} />\n        {code != null ? <span className=\"kl-code\">{code}</span> : null}\n      </label>\n    </Tag>\n  )\n}\n\n/** The expand toggle column. `header` renders the column's header cell (labelled, empty). */\nfunction TableExpandCell(props: { header: true; label?: string } | { header?: false; expanded: boolean; onToggle: () => void; label: string }) {\n  if (props.header) return <th className=\"kl-xp\" aria-label={props.label ?? \"Expand\"} />\n  const { expanded, onToggle, label } = props\n  return (\n    <td className=\"kl-xp\">\n      <button type=\"button\" aria-expanded={expanded} aria-label={label} onClick={(e) => (e.stopPropagation(), onToggle())}>\n        <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n          <path d=\"m6 4 4 4-4 4\" />\n        </svg>\n      </button>\n    </td>\n  )\n}\n\n/**\n * Expanded detail. UNFOLDS from the row's bottom keyline; the row never moves.\n * The parent row's index cell spans this row (rowSpan=2), so object and detail share one index cell.\n */\nfunction TableDetail({ open, presence, colSpan, children, id }: { open: boolean; presence?: { mounted: boolean; shown: boolean }; colSpan: number; children: React.ReactNode; id?: string }) {\n  const ref = React.useRef<HTMLTableRowElement>(null)\n  const own = usePresence(open, ref)\n  // Pass `presence` (from useDetailPresence) when the parent row must know the detail is still mounted, e.g. to keep rowSpan=2 while it folds back.\n  const { mounted, shown } = presence ?? own\n  if (!mounted) return null\n  return (\n    <tr ref={ref} className=\"kl-tr-detail\" id={id}>\n      <td colSpan={colSpan}>\n        <div className=\"kl-unfold\" data-open={shown ? \"\" : undefined}>\n          <div>{children}</div>\n        </div>\n      </td>\n    </tr>\n  )\n}\n\n/**\n * ROWS THAT LEAVE OR COME BACK. Put `ref` on TableBody and call `arm()` just before a change that\n * removes rows or puts them back (a cancellation, its Undo). On the next commit only:\n *   - the rows that stayed slide from where they were, so the gap a removal leaves closes (fold timing) and\n *     the room a returning row needs opens (unfold timing);\n *   - a returning row unfolds from the keyline above it, in step with the rows below it making room;\n *   - rows arriving at the end (from the next page) come up with the rows above them.\n * Nothing else moves: filtering, sorting and paging stay instant, because arm() is never called for them.\n * Rows move inside the table's scroller; the frame, header and pager never move. Reduced motion: instant.\n */\nfunction useRowMotion() {\n  const ref = React.useRef<HTMLTableSectionElement>(null)\n  const armed = React.useRef<Map<Element, number> | null>(null)\n  const arm = React.useCallback(() => {\n    const body = ref.current\n    if (!body) return\n    const tops = new Map<Element, number>()\n    for (const tr of Array.from(body.children)) tops.set(tr, tr.getBoundingClientRect().top)\n    armed.current = tops\n  }, [])\n  React.useLayoutEffect(() => {\n    const before = armed.current\n    const body = ref.current\n    if (!before || !body) return\n    armed.current = null\n    const open = tokenMs(body, \"--kl-t-unfold\", 160)\n    const close = tokenMs(body, \"--kl-t-fold\", 120)\n    if (!open) return\n    const ease = getComputedStyle(body).getPropertyValue(\"--kl-ease-out\").trim() || \"ease-out\"\n    const rows = Array.from(body.children) as HTMLElement[]\n    const boxes = rows.map((r) => r.getBoundingClientRect())\n    const slide = (r: HTMLElement, dy: number) =>\n      Math.abs(dy) > 0.5 && r.animate([{ transform: `translateY(${dy}px)` }, { transform: \"none\" }], { duration: dy > 0 ? close : open, easing: ease })\n    let carry = 0 // where the nearest row above that stayed was, relative to where it is now\n    for (let i = 0; i < rows.length; ) {\n      const was = before.get(rows[i])\n      if (was != null) {\n        carry = was - boxes[i].top\n        slide(rows[i], carry)\n        i++\n        continue\n      }\n      // a run of rows that were not there: the room for the whole run opens as one, from the keyline above it\n      let j = i\n      while (j < rows.length && !before.has(rows[j])) j++\n      if (j < rows.length) {\n        const top = boxes[i].top\n        const H = boxes[j - 1].bottom - top\n        for (let k = i; k < j; k++) {\n          const h = boxes[k].height\n          const o = Math.min(1, (boxes[k].top - top) / H)\n          const e = Math.min(1, (boxes[k].bottom - top) / H)\n          // carried with the row above; clipped where the opening has reached (top-anchored, like a fold)\n          const at = (t: number, inset: number) => ({ offset: t, transform: `translateY(${carry * (1 - t)}px)`, clipPath: `inset(0 0 ${inset}px 0)` })\n          rows[k].animate([at(0, h), at(o, h), at(e, 0), at(1, 0)], { duration: open, easing: ease })\n        }\n        // the opening's leading edge is a keyline: the row below the run carries one on its top while it travels\n        const next = rows[j]\n        next.setAttribute(\"data-kl-opening\", \"\")\n        setTimeout(() => next.removeAttribute(\"data-kl-opening\"), open)\n      } else for (let k = i; k < j; k++) slide(rows[k], carry) // arrived at the end (from the next page): up with the rows above\n      i = j\n    }\n  })\n  return { ref, arm }\n}\n\n/** Presence for a row's detail, so the row can keep its merged index cell (rowSpan) until the fold finishes. */\nconst useDetailPresence = (open: boolean) => usePresence(open)\n\n/* ---------------- states ---------------- */\n\n/** The table's empty or error row: an Empty (layout=\"cell\") spanning the grid. Errors are announced. */\nfunction TableState({ kind, count, title, body, action, colSpan }: { kind: \"empty\" | \"error\"; count: React.ReactNode; title: React.ReactNode; body?: React.ReactNode; action?: React.ReactNode; colSpan: number }) {\n  return (\n    <tr className=\"kl-tr-state\">\n      <td colSpan={colSpan}>\n        <Empty layout=\"cell\" kind={kind} count={count} title={title} description={body} actions={action} live={kind === \"error\"} className=\"kl-tf-state\" />\n      </td>\n    </tr>\n  )\n}\n\nfunction TableLoadingRows({ rows = 8, cols }: { rows?: number; cols: number }) {\n  return (\n    <>\n      {Array.from({ length: rows }, (_, r) => (\n        <tr key={r} className=\"kl-tr kl-tr-skel\" aria-hidden>\n          {Array.from({ length: cols }, (_, c) => (\n            <td key={c} className={c === 0 ? \"kl-ix\" : \"kl-td\"}>\n              {c === 0 ? <span className=\"kl-code\">{String(r + 1).padStart(2, \"0\")}</span> : <span className=\"kl-skel\" style={{ width: `${40 + ((r * 7 + c * 13) % 45)}%` }} />}\n            </td>\n          ))}\n        </tr>\n      ))}\n    </>\n  )\n}\n\n/* ---------------- pager ---------------- */\n\nfunction TablePager({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"table-pager\" className={cn(\"kl-cells kl-tf-pager\", className)} {...props} />\n}\n\n/**\n * Range + previous / page / next as cells of the pager. `page` is 0-based. While data is not ready, pass\n * `total={null}`: the range and page count show \"–\" and the buttons are disabled (no stale numbers).\n */\nfunction TablePagination({ page, pageSize, total, onPageChange, noun = \"rows\", children, className }: { page: number; pageSize: number; total: number | null; onPageChange: (page: number) => void; noun?: string; /** Fills the cell between the range and the buttons, e.g. <ToastDock />. */ children?: React.ReactNode; className?: string }) {\n  const pages = total == null ? 0 : Math.max(1, Math.ceil(total / pageSize))\n  const from = total ? page * pageSize + 1 : 0\n  const to = total == null ? 0 : Math.min(total, (page + 1) * pageSize)\n  return (\n    <TablePager className={className}>\n      <span className=\"kl-cell kl-tf-range\">\n        {total == null ? \"–\" : (\n          <>\n            <bdi>{from}–{to}</bdi>&nbsp;of&nbsp;<b>{total.toLocaleString()}</b>&nbsp;{noun}\n          </>\n        )}\n      </span>\n      {children ? <div className=\"kl-cell kl-tf-dock\">{children}</div> : <span className=\"kl-tf-gap\" />}\n      <button type=\"button\" className=\"kl-cell kl-key kl-tf-pg\" disabled={total == null || page === 0} onClick={() => onPageChange(page - 1)} aria-label=\"Previous page\">\n        <span aria-hidden>‹</span>\n      </button>\n      <span className=\"kl-cell kl-code kl-tf-pgn\" aria-live=\"polite\">{total == null ? \"–\" : `${page + 1}/${pages}`}</span>\n      <button type=\"button\" className=\"kl-cell kl-key kl-tf-pg\" disabled={total == null || page >= pages - 1} onClick={() => onPageChange(page + 1)} aria-label=\"Next page\">\n        <span aria-hidden>›</span>\n      </button>\n    </TablePager>\n  )\n}\n\nexport {\n  TableFrame,\n  TableViews,\n  TableToolbar,\n  TableSearch,\n  FilterToken,\n  TableBulkBar,\n  TableScroll,\n  Table,\n  TableHead,\n  TableBody,\n  TableRow,\n  TableHeaderCell,\n  TableSortHeader,\n  TableCell,\n  TableIndexCell,\n  useRowMotion,\n  TableExpandCell,\n  TableDetail,\n  useDetailPresence,\n  TableState,\n  TableLoadingRows,\n  TablePager,\n  TablePagination,\n  Status,\n  nextSort,\n  sortOf,\n  compareValues,\n  nextSortList,\n  sortLevel,\n  compareBy,\n  type Sort,\n  type SortList,\n  type SortDirection,\n}\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/table.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-tf": {
+        "display": "flex",
+        "flex-direction": "column",
+        "min-height": "0",
+        "min-width": "0",
+        "container": "kl-tf / inline-size"
+      },
+      "@container kl-tf (max-width: 560px)": {
+        ".kl-tf .kl-tf-tools": {
+          "flex-wrap": "wrap"
+        },
+        ".kl-tf .kl-tf-tools > *": {
+          "flex": "1 1 100%",
+          "max-width": "none",
+          "border-inline-start": "0"
+        },
+        ".kl-tf .kl-tf-tools > * + *": {
+          "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+        },
+        ".kl-tf .kl-tf-bulk": {
+          "flex-wrap": "wrap"
+        },
+        ".kl-tf .kl-tf-bulk > .kl-tf-scope": {
+          "flex": "1 1 calc(100% - 120px)",
+          "white-space": "normal",
+          "padding-block": "6px"
+        },
+        ".kl-tf .kl-tf-bulk > .kl-tf-scope ~ :not([hidden])": {
+          "flex": "1 1 auto",
+          "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+        },
+        ".kl-tf .kl-tf-bulk > .kl-tf-scope + :not([hidden]), .kl-tf .kl-tf-bulk > .kl-tf-scope + [hidden] + *": {
+          "border-inline-start": "0"
+        }
+      },
+      ".kl-tf > *": {
+        "flex": "none"
+      },
+      ".kl-tf-views": {
+        "min-height": "58px"
+      },
+      ".kl-tabs.kl-tf-tabs-root": {
+        "display": "flex",
+        "gap": "0",
+        "flex": "none"
+      },
+      ".kl-tf-tabs": {
+        "background": "transparent"
+      },
+      ".kl-tf-tabs .kl-tab": {
+        "min-width": "112px"
+      },
+      ".kl-frame > .kl-tf-views:first-child, .kl-frame > :first-child": {
+        "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
+      },
+      ".kl-tf-views-end": {
+        "margin-inline-start": "auto",
+        "display": "flex",
+        "align-items": "center",
+        "gap": "10px",
+        "padding-inline": "var(--kl-inset)"
+      },
+      ".kl-tf-views-end:has(> .kl-tb)": {
+        "align-self": "stretch",
+        "flex": "0 1 auto",
+        "min-width": "calc(var(--kl-row) + var(--kl-k1))",
+        "padding-inline": "0",
+        "gap": "0",
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tabs.kl-tf-tabs-root": {
+        "flex": "0 1 auto",
+        "min-width": "0"
+      },
+      ".kl-tf > .kl-tb.kl-tb": {
+        "flex": "none"
+      },
+      ".kl-tf-views-end > .kl-tb, .kl-tf-bulk > .kl-tb": {
+        "align-self": "stretch",
+        "min-height": "0"
+      },
+      ".kl-tf-bulk > .kl-tb.kl-tb": {
+        "flex-grow": "0"
+      },
+      ".kl-tf-bulk > .kl-tb.kl-tb:last-child": {
+        "justify-content": "flex-end"
+      },
+      ".kl-tf-bulk > .kl-tb.kl-tb.kl-tb:last-child::after": {
+        "content": "none"
+      },
+      ".kl-tf-token-tb .kl-tb-label": {
+        "gap": "6px"
+      },
+      ".kl-tf-token-tb .kl-tb-item:not(.kl-tf-token-x)": {
+        "font-weight": "400"
+      },
+      ".kl-tf-tools": {
+        "min-height": "var(--kl-row)"
+      },
+      ".kl-tf-search": {
+        "flex": "1 1 200px",
+        "cursor": "text"
+      },
+      ".kl-tf-search input": {
+        "flex": "1",
+        "min-width": "0",
+        "height": "100%",
+        "border": "0",
+        "background": "none",
+        "outline": "0",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "15px",
+        "color": "inherit"
+      },
+      ".kl-tf-search input::placeholder": {
+        "color": "var(--kl-ink-3)",
+        "opacity": "1"
+      },
+      ".kl-tf-search input::-webkit-search-cancel-button": {
+        "display": "none"
+      },
+      ".kl-tf-token > .kl-cell:first-child": {
+        "gap": "6px",
+        "white-space": "nowrap"
+      },
+      ".kl-tf-token i": {
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-tf-token b": {
+        "font-weight": "var(--kl-weight-display)"
+      },
+      ".kl-tf-token-x": {
+        "padding-inline": "10px"
+      },
+      ".kl-tf-tools > .kl-tf-token": {
+        "flex": "none"
+      },
+      ".kl-tf-bulk": {
+        "min-height": "48px"
+      },
+      ".kl-tf-bulk-n": {
+        "gap": "10px",
+        "min-width": "104px",
+        "padding-inline": "calc(var(--kl-inset) + 2px)"
+      },
+      ".kl-tf-bulk-n .kl-count": {
+        "font-size": "26px"
+      },
+      ".kl-tf-bulk[data-empty] .kl-tf-bulk-n": {
+        "color": "var(--kl-ink-3)"
+      },
+      ".kl-tf-scope": {
+        "flex": "1",
+        "gap": "6px",
+        "font-size": "13px",
+        "flex-wrap": "wrap",
+        "row-gap": "0"
+      },
+      ".kl-tf-scope button": {
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-weight": "var(--kl-weight-strong)",
+        "color": "var(--kl-cobalt-text)",
+        "text-decoration": "underline 1.5px",
+        "text-underline-offset": "3px",
+        "background": "none",
+        "border": "0",
+        "padding": "0",
+        "cursor": "pointer"
+      },
+      ".kl-tf-bulk > .kl-cell, .kl-tf-bulk > button.kl-cell": {
+        "font-weight": "var(--kl-weight-strong)",
+        "white-space": "nowrap"
+      },
+      ".kl-tf-bulk > button.kl-cell:disabled, .kl-tf-bulk > [data-disabled]": {
+        "color": "var(--kl-dis)",
+        "cursor": "not-allowed"
+      },
+      ".kl-tf-scroll": {
+        "flex": "1 1 auto",
+        "min-height": "0"
+      },
+      ".kl-tf-scroll > .kl-scroll-vp": {
+        "overscroll-behavior": "contain"
+      },
+      ".kl-table": {
+        "width": "100%",
+        "border-collapse": "separate",
+        "border-spacing": "0",
+        "font-size": "14px"
+      },
+      ".kl-th": {
+        "position": "sticky",
+        "top": "0",
+        "z-index": "2",
+        "height": "34px",
+        "padding": "0 var(--kl-inset)",
+        "background-color": "var(--kl-cell)",
+        "text-align": "start",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "12px",
+        "color": "var(--kl-ink-2)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line)",
+        "white-space": "nowrap"
+      },
+      ".kl-th .kl-code": {
+        "margin-inline-start": "4px"
+      },
+      ".kl-th + .kl-th, .kl-td + .kl-td, .kl-td + .kl-xp, .kl-ix + .kl-td": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-ix + .kl-td, .kl-ix + .kl-th": {
+        "border-inline-start": "0"
+      },
+      ".kl-td": {
+        "height": "var(--kl-row)",
+        "padding": "0 var(--kl-inset)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)",
+        "white-space": "nowrap"
+      },
+      ":is(.kl-td, .kl-th)[data-align=\"end\"]": {
+        "text-align": "end",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-td.kl-id": {
+        "font-family": "var(--kl-font-mono)",
+        "font-size": "13px"
+      },
+      ".kl-tr": {
+        "cursor": "default"
+      },
+      ".kl-tr:hover > :is(.kl-td, .kl-xp)": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-tr[data-selected] > .kl-td": {
+        "background-color": "var(--kl-yellow-row)"
+      },
+      ".kl-tr[data-selected]:hover > :is(.kl-td, .kl-xp)": {
+        "background-color": "color-mix(in oklab, var(--kl-yellow-row), var(--kl-ink) 6%)"
+      },
+      ".kl-tr:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-tr[data-expanded] > :is(.kl-td, .kl-xp)": {
+        "border-block-end-color": "var(--kl-line)"
+      },
+      ".kl-ix": {
+        "width": "72px",
+        "padding": "0",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-line)",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)",
+        "background-color": "var(--kl-cell)",
+        "vertical-align": "top"
+      },
+      "th.kl-ix": {
+        "position": "sticky",
+        "top": "0",
+        "z-index": "3",
+        "border-block-end-color": "var(--kl-line)",
+        "vertical-align": "middle"
+      },
+      ".kl-ix-in": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "10px",
+        "height": "var(--kl-row)",
+        "min-height": "34px",
+        "padding-inline": "12px",
+        "cursor": "pointer"
+      },
+      "th.kl-ix .kl-ix-in": {
+        "height": "34px"
+      },
+      ".kl-ix[data-kl-on] .kl-code": {
+        "color": "inherit",
+        "font-weight": "var(--kl-weight-strong)"
+      },
+      ".kl-xp": {
+        "width": "44px",
+        "padding": "0",
+        "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-xp button": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "100%",
+        "min-inline-size": "44px",
+        "height": "var(--kl-row)",
+        "background": "none",
+        "border": "0",
+        "color": "var(--kl-ink-2)",
+        "cursor": "pointer"
+      },
+      ".kl-xp button:hover": {
+        "background-color": "var(--kl-tint)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-xp button:active": {
+        "background-color": "var(--kl-press)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-xp button:active svg": {
+        "translate": "0 1px"
+      },
+      ":is(.kl-xp button, .kl-td .kl-button):focus-visible": {
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-xp svg": {
+        "transition": "rotate var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-xp [aria-expanded=\"true\"]": {
+        "color": "var(--kl-ink)"
+      },
+      ".kl-xp [aria-expanded=\"true\"] svg": {
+        "rotate": "90deg"
+      },
+      ":is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) .kl-xp svg": {
+        "scale": "-1 1"
+      },
+      ":is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) .kl-xp [aria-expanded=\"true\"] svg": {
+        "rotate": "-90deg"
+      },
+      ".kl-tr[data-selected] > .kl-xp": {
+        "background-color": "var(--kl-yellow-row)"
+      },
+      ".kl-tr[data-kl-opening] > *": {
+        "box-shadow": "inset 0 var(--kl-k1) var(--kl-line-soft)"
+      },
+      ".kl-tr-detail > td": {
+        "padding": "0",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)",
+        "background-color": "var(--kl-paper)",
+        "white-space": "normal"
+      },
+      ".kl-tr-state > td": {
+        "padding": "0"
+      },
+      ".kl-tr-state .kl-empty.kl-tf-state": {
+        "min-height": "240px",
+        "white-space": "normal"
+      },
+      ".kl-skel": {
+        "display": "block",
+        "height": "10px",
+        "border": "var(--kl-k1) solid var(--kl-line-soft)",
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-tr-skel .kl-ix": {
+        "padding-inline": "12px",
+        "vertical-align": "middle"
+      },
+      ".kl-tr-skel:first-child .kl-skel": {
+        "position": "relative",
+        "overflow": "hidden"
+      },
+      ".kl-tr-skel .kl-skel": {
+        "position": "relative",
+        "overflow": "hidden"
+      },
+      ".kl-tr-skel .kl-skel::after": {
+        "content": "\"\"",
+        "position": "absolute",
+        "inset-block": "0",
+        "left": "0",
+        "width": "30%",
+        "background-color": "var(--kl-line-soft)",
+        "animation": "kl-run-30 1100ms linear infinite var(--kl-run-dir, normal)"
+      },
+      "[data-kl-motion=\"reduce\"] .kl-tr-skel .kl-skel::after": {
+        "animation": "none",
+        "display": "none"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".kl-tr-skel .kl-skel::after": {
+          "animation": "none",
+          "display": "none"
+        }
+      },
+      ".kl-tf-pager": {
+        "min-height": "48px"
+      },
+      ".kl-tf-pager .kl-count": {
+        "font-size": "20px"
+      },
+      ".kl-tf-range": {
+        "flex": "none",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-tf-pg": {
+        "flex": "none",
+        "width": "44px",
+        "justify-content": "center",
+        "font-size": "20px"
+      },
+      ".kl-tf-pg > span": {
+        "display": "inline-block"
+      },
+      ".kl-tf-pg:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) > span": {
+        "scale": "-1 1"
+      },
+      ".kl-tf-pgn": {
+        "flex": "none"
+      },
+      ".kl-tf-gap, .kl-tf-dock": {
+        "flex": "1",
+        "min-width": "0",
+        "padding": "0"
+      },
+      ".kl-tf-dock": {
+        "display": "flex",
+        "align-items": "stretch"
+      },
+      ".kl-tf-dock > *": {
+        "flex": "1"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-tr[data-selected] > .kl-td:nth-child(2)": {
+          "text-decoration": "underline 2px"
+        },
+        ".kl-th-sort[data-sort]": {
+          "box-shadow": "none",
+          "border-block-end-color": "CanvasText",
+          "text-decoration": "underline 2px"
+        },
+        ".kl-sort path": {
+          "forced-color-adjust": "none",
+          "stroke": "CanvasText"
+        },
+        ".kl-sort[data-dir=\"ascending\"] .kl-sort-up, .kl-sort[data-dir=\"descending\"] .kl-sort-down": {
+          "fill": "CanvasText"
+        }
+      },
+      ".kl-th.kl-th-sort": {
+        "padding": "0"
+      },
+      ".kl-th-btn": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "width": "100%",
+        "height": "100%",
+        "min-height": "34px",
+        "box-sizing": "border-box",
+        "padding": "0 var(--kl-inset)",
+        "border": "0",
+        "margin": "0",
+        "background": "none",
+        "color": "inherit",
+        "font": "inherit",
+        "text-align": "inherit",
+        "cursor": "pointer"
+      },
+      ".kl-th-btn:hover": {
+        "background-color": "var(--kl-tint)",
+        "color": "var(--kl-ink)"
+      },
+      ".kl-th-btn:active > *": {
+        "translate": "0 1px"
+      },
+      ".kl-th-btn:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-th-sort[data-align=\"end\"] .kl-th-btn": {
+        "flex-direction": "row-reverse",
+        "justify-content": "flex-start"
+      },
+      ".kl-th-label": {
+        "min-width": "0",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis"
+      },
+      ".kl-th-sort[data-sort]": {
+        "color": "var(--kl-ink)",
+        "border-block-end-color": "var(--kl-inverse)",
+        "box-shadow": "inset 0 calc(var(--kl-k1) - var(--kl-k2)) 0 var(--kl-inverse)"
+      },
+      ".kl-sort": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center"
+      },
+      ".kl-sort path": {
+        "fill": "none",
+        "stroke": "currentColor",
+        "stroke-width": "1.25",
+        "stroke-linejoin": "miter"
+      },
+      ".kl-sort[data-dir=\"none\"]": {
+        "color": "var(--kl-ink-3)"
+      },
+      ".kl-sort[data-dir=\"ascending\"] .kl-sort-up, .kl-sort[data-dir=\"descending\"] .kl-sort-down": {
+        "fill": "currentColor"
+      },
+      ".kl-sort[data-dir=\"ascending\"] .kl-sort-down, .kl-sort[data-dir=\"descending\"] .kl-sort-up": {
+        "stroke": "var(--kl-ink-3)"
+      },
+      ".kl-sort-n": {
+        "margin-inline-start": "-2px"
+      },
+      ".kl-th-sort[data-kl-level]:not([data-kl-level=\"1\"])": {
+        "box-shadow": "none"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

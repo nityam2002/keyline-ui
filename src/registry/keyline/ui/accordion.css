@@ -1,0 +1,41 @@
+@layer components {
+  /* ACCORDION: rows on shared keylines in one frame. Header rows are cells; a panel unfolds from its
+     header's bottom keyline. Only the caret column is divided, so it runs the full height. */
+  .kl-accordion { display: flex; flex-direction: column; min-width: 0; background-color: var(--kl-cell); }
+  .kl-accordion[data-kl-layout="cell"] { background-color: transparent; }
+  .kl-acc-item + .kl-acc-item { border-block-start: var(--kl-k1) solid var(--kl-seam); }
+  .kl-acc-header { margin: 0; font: inherit; }
+  .kl-acc-trigger {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto 40px; align-items: stretch; width: 100%; min-height: var(--kl-row);
+    margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-family: var(--kl-font); text-align: start; cursor: pointer;
+  }
+  .kl-acc-trigger:hover:not([data-disabled]) { background-color: var(--kl-tint); }
+  .kl-acc-trigger:active:not([data-disabled]) { background-color: var(--kl-press); }
+  /* the header row is a cell: its ring sits inside, clear of the keylines */
+  .kl-acc-trigger:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  .kl-acc-title { display: grid; align-content: center; gap: 2px; min-width: 0; padding: 9px var(--kl-inset); overflow-wrap: anywhere; line-height: 1.3; }
+  .kl-acc-title > span { font-size: 15px; font-weight: var(--kl-weight-strong); }
+  .kl-acc-title small { font-size: 13px; color: var(--kl-ink-2); }
+  .kl-acc-meta { display: flex; align-items: center; gap: 8px; padding-inline-end: var(--kl-inset); font-size: 13px; color: var(--kl-ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .kl-acc-caret { grid-column: 3; display: grid; place-items: center; border-inline-start: var(--kl-k1) solid var(--kl-seam); color: var(--kl-ink-2); }
+  .kl-acc-caret svg { transition: rotate var(--kl-t-fold) var(--kl-ease-in); }
+  .kl-acc-trigger[data-panel-open] .kl-acc-caret { color: var(--kl-ink); }
+  .kl-acc-trigger[data-panel-open] .kl-acc-caret svg { rotate: 180deg; transition: rotate var(--kl-t-unfold) var(--kl-ease-out); }
+  .kl-acc-trigger[data-disabled] { cursor: not-allowed; color: var(--kl-dis); background-image: var(--kl-hatch); }
+  .kl-acc-trigger[data-disabled] :is(small, .kl-acc-meta, .kl-acc-caret) { color: var(--kl-dis); }
+
+  /* UNFOLD from the header's keyline: Base UI measures the panel (--accordion-panel-height) and marks
+     the start and end of the transition; reduced motion makes both durations 0. The seam lives on the
+     body, inside the clip, so it folds away with the content and never doubles the next row's rule. */
+  .kl-acc-panel { height: var(--accordion-panel-height); overflow: hidden; transition: height var(--kl-t-unfold) var(--kl-ease-out); }
+  .kl-acc-panel:is([data-starting-style], [data-ending-style]) { height: 0; }
+  .kl-acc-panel[data-ending-style] { transition-duration: var(--kl-t-fold); transition-timing-function: var(--kl-ease-in); }
+  .kl-acc-body { border-block-start: var(--kl-k1) solid var(--kl-seam); padding: var(--kl-inset) var(--kl-inset) calc(var(--kl-inset) + 4px); font-size: 14px; line-height: 1.5; }
+  .kl-acc-body[data-flush] { padding: 0; }
+  .kl-acc-body > :first-child { margin-block-start: 0; }
+  .kl-acc-body > :last-child { margin-block-end: 0; }
+
+  @media (forced-colors: active) {
+    .kl-acc-trigger:focus-visible { outline: 3px solid Highlight; outline-offset: -4px; }
+  }
+}

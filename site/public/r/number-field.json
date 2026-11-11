@@ -1,0 +1,133 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-field",
+  "title": "Number field",
+  "description": "A number in a field frame with stepper key cells and a unit cell: Base UI NumberField (locale parsing, hold-to-repeat, min/max) inside a Field.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/number-field.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { NumberField as NumberFieldPrimitive } from \"@base-ui/react/number-field\"\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\nimport { FieldMessages, type FieldParticipantProps } from \"./field\"\n\ntype NumberFieldProps = Omit<React.ComponentProps<typeof NumberFieldPrimitive.Root>, \"children\" | \"className\" | \"render\"> & {\n  /** Visible label (visually hidden with layout=\"cell\"). */\n  label: React.ReactNode\n  /** Unit printed in an affix cell after the number, in the Code voice (\"kg\", \"%\", \"pallets\"). */\n  unit?: React.ReactNode\n  /** Stepper cells (− and +). Off for a field where stepping makes no sense (an order number, a postcode is not a number field at all). */\n  steppers?: boolean\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */\n  layout?: \"control\" | \"cell\"\n  placeholder?: string\n  decrementLabel?: string\n  incrementLabel?: string\n  className?: string\n} & FieldParticipantProps\n\nconst Minus = () => (\n  <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"square\" aria-hidden>\n    <path d=\"M3.5 8h9\" />\n  </svg>\n)\nconst Plus = () => (\n  <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"square\" aria-hidden>\n    <path d=\"M3.5 8h9M8 3.5v9\" />\n  </svg>\n)\n\n/**\n * A number in a field frame, with stepper cells:\n *\n *   Pallets\n *   ┌────┬──────────────────────┬─────┬────┐\n *   │ −  │                   24 │ PLT │ +  │   decrement · input (end-aligned, tabular) · unit · increment\n *   └────┴──────────────────────┴─────┴────┘\n *\n * - It is a Field: the same frame, focus edge, inserted ! cell when invalid, hatch when disabled.\n * - The steppers are key cells (contents travel 1px on press). Base UI repeats while held, and disables\n *   the step that would leave [min, max]: that cell is hatched, the other stays live.\n * - Arrow Up/Down step, Shift+Arrow takes `largeStep`, Alt+Arrow `smallStep`, Page Up/Down the large step,\n *   Home/End jump to min/max. Typing is parsed in the field's locale; the value commits on blur or Enter.\n * - The steppers are not in the Tab order (Base UI): the input is the one stop, the keys do the stepping.\n * - A cell narrower than 176px folds its steppers into one stacked end cell (+ over −), so neighbouring\n *   cells never collide.\n * - Formatting (`format`, `locale`) is Base UI's Intl.NumberFormat; the unit cell is a label, not part of\n *   the value.\n */\nfunction NumberField({ label, unit, description, error, invalid, steppers = true, layout = \"control\", placeholder, decrementLabel = \"Decrease\", incrementLabel = \"Increase\", orientation, validate, validationMode, className, name, disabled, ...props }: NumberFieldProps) {\n  return (\n    <FieldPrimitive.Root\n      data-slot=\"number-field\"\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={name}\n      invalid={invalid}\n      disabled={disabled}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field kl-number\", className)}\n    >\n      <FieldPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>{label}</FieldPrimitive.Label>\n      <NumberFieldPrimitive.Root name={name} disabled={disabled} {...props}>\n        <NumberFieldPrimitive.Group data-kl-layout={layout} className=\"kl-ctl kl-cells kl-field-frame kl-edge kl-number-frame\">\n          <span className=\"kl-slot kl-field-bang\" aria-hidden>\n            <span>\n              <span>!</span>\n            </span>\n          </span>\n          {steppers ? (\n            <NumberFieldPrimitive.Decrement aria-label={decrementLabel} className=\"kl-cell kl-key kl-number-step\">\n              <Minus />\n            </NumberFieldPrimitive.Decrement>\n          ) : null}\n          <NumberFieldPrimitive.Input placeholder={placeholder} data-align=\"end\" className=\"kl-field-input kl-number-input\" />\n          {unit != null ? (\n            <span className=\"kl-field-affix kl-number-unit\">\n              {/* isolated, so a unit led by a neutral character (\"°C\") keeps its order in RTL */}\n              <bdi>{unit}</bdi>\n            </span>\n          ) : null}\n          {steppers ? (\n            <NumberFieldPrimitive.Increment aria-label={incrementLabel} className=\"kl-cell kl-key kl-number-step\">\n              <Plus />\n            </NumberFieldPrimitive.Increment>\n          ) : null}\n        </NumberFieldPrimitive.Group>\n      </NumberFieldPrimitive.Root>\n      <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n    </FieldPrimitive.Root>\n  )\n}\n\nexport { NumberField, type NumberFieldProps }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/number-field.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-number-step": {
+        "flex": "none",
+        "justify-content": "center",
+        "padding": "0",
+        "width": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 0px))",
+        "min-height": "0",
+        "color": "var(--kl-ink)",
+        "cursor": "pointer"
+      },
+      ".kl-number-frame[data-kl-layout=\"cell\"] .kl-number-step": {
+        "width": "var(--kl-row)"
+      },
+      ".kl-number-step:active:not(:disabled):not([data-disabled])": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-number-step:is(:disabled, [data-disabled])": {
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-number-step:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-number-frame": {
+        "--kl-number-pad": "var(--kl-inset)"
+      },
+      ".kl-number-frame[data-kl-layout=\"cell\"]": {
+        "--kl-number-pad": "8px"
+      },
+      ".kl-number-frame .kl-number-input": {
+        "font-variant-numeric": "tabular-nums",
+        "padding-inline": "var(--kl-number-pad)",
+        "min-width": "calc(4ch + 2 * var(--kl-number-pad))",
+        "box-sizing": "border-box"
+      },
+      ".kl-number-unit": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-seam) !important"
+      },
+      ".kl-number-input + .kl-number-unit": {
+        "border-inline-start-color": "var(--kl-line-soft) !important"
+      },
+      ".kl-field[data-disabled] .kl-number-step": {
+        "color": "var(--kl-dis)",
+        "cursor": "not-allowed",
+        "background-image": "none"
+      },
+      ".kl-field[data-disabled] .kl-number-unit": {
+        "color": "var(--kl-dis)"
+      },
+      ".kl-field[data-invalid] .kl-number-frame": {
+        "border-color": "var(--kl-red)"
+      },
+      ".kl-field.kl-number[data-kl-layout=\"cell\"]": {
+        "container": "kl-nf / inline-size",
+        "min-width": "0"
+      },
+      "@container kl-nf (max-width: 176px)": {
+        ".kl-number-frame[data-kl-layout=\"cell\"]": {
+          "display": "grid",
+          "grid-template-columns": "auto minmax(0, 1fr) auto var(--kl-row)",
+          "grid-template-rows": "1fr 1fr"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > *": {
+          "grid-row": "1 / span 2"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-field-bang": {
+          "grid-column": "1"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-input": {
+          "grid-column": "2",
+          "width": "100%",
+          "min-width": "0",
+          "border-inline-start": "0"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-unit": {
+          "grid-column": "3"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step.kl-number-step": {
+          "grid-column": "4",
+          "width": "auto",
+          "border-inline-start": "var(--kl-k1) solid var(--kl-line)"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step:last-child": {
+          "grid-row": "1"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step:not(:last-child)": {
+          "grid-row": "2",
+          "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+        },
+        ".kl-number-frame[data-kl-layout=\"cell\"] .kl-number-step svg": {
+          "width": "12px",
+          "height": "12px"
+        }
+      },
+      "@media (forced-colors: active)": {
+        ".kl-number-step:is(:disabled, [data-disabled])": {
+          "color": "GrayText"
+        }
+      },
+      ".kl-number-unit bdi": {
+        "unicode-bidi": "isolate"
+      },
+      ".kl-number-input": {
+        "unicode-bidi": "plaintext"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

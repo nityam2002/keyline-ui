@@ -1,0 +1,186 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command",
+  "title": "Command menu",
+  "description": "⌘K command menu: digit cells run by index, grouped results, empty state.",
+  "dependencies": [
+    "@base-ui/react",
+    "cmdk"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/kbd",
+    "@keyline-ui/dialog"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/command.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Command as Cmdk } from \"cmdk\"\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\nimport { Kbd } from \"./kbd\"\n\n/**\n * ⌘K command menu. Results are numbered by a CSS counter, so the digit cell always matches the visible\n * order after filtering; ⌥1–⌥9 runs that result. Activation floods the row, then runs immediately.\n */\nfunction CommandDialog({ open, onOpenChange, children, label = \"Command menu\", container, finalFocus }: { open: boolean; onOpenChange: (o: boolean) => void; children: React.ReactNode; label?: string; container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"]; /** Return false when a command hands focus to another surface (e.g. opens a dialog). */ finalFocus?: React.ComponentProps<typeof DialogPrimitive.Popup>[\"finalFocus\"] }) {\n  const [marker, scope] = useKeylineScope(open, container)\n  return (\n    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n        <DialogPrimitive.Popup aria-label={label} className=\"kl-frame kl-dialog kl-cmd\" finalFocus={finalFocus}>\n          <Cmdk\n            label={label}\n            loop\n            onKeyDown={(e) => {\n              if (!e.altKey || !/^Digit[1-9]$/.test(e.code)) return\n              const items = e.currentTarget.querySelectorAll<HTMLElement>(\"[cmdk-item]:not([aria-disabled=true])\")\n              const el = items[Number(e.code.slice(5)) - 1]\n              if (el) {\n                e.preventDefault()\n                el.click()\n              }\n            }}\n          >\n            {children}\n          </Cmdk>\n        </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </DialogPrimitive.Root>\n  )\n}\n\nfunction CommandInput({ className, ...props }: React.ComponentProps<typeof Cmdk.Input>) {\n  return (\n    <div className=\"kl-cells kl-cmd-q\">\n      <span className=\"kl-cell\" aria-hidden>\n        <svg viewBox=\"0 0 16 16\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n          <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n          <path d=\"m10.5 10.5 3.5 3.5\" />\n        </svg>\n      </span>\n      <Cmdk.Input className={cn(\"kl-cmd-input\", className)} {...props} />\n      <span className=\"kl-cell\" aria-hidden>\n        <Kbd>esc</Kbd>\n      </span>\n    </div>\n  )\n}\n\nfunction CommandList({ className, ...props }: React.ComponentProps<typeof Cmdk.List>) {\n  return <Cmdk.List className={cn(\"kl-cmd-list\", className)} {...props} />\n}\n\nfunction CommandEmpty({ children, query }: { children?: React.ReactNode; query?: string }) {\n  return (\n    <Cmdk.Empty className=\"kl-cells kl-cmd-empty\">\n      <span className=\"kl-count\">0</span>\n      <span>\n        <b>No commands match “{query}”.</b>\n        {children ? <small>{children}</small> : null}\n      </span>\n    </Cmdk.Empty>\n  )\n}\n\nfunction CommandGroup({ className, code, heading, ...props }: React.ComponentProps<typeof Cmdk.Group> & { code?: string }) {\n  return (\n    <Cmdk.Group\n      className={cn(\"kl-cmd-g\", className)}\n      heading={\n        <>\n          {code ? <span className=\"kl-code kl-cmd-gc\">{code}</span> : null}\n          {heading}\n        </>\n      }\n      {...props}\n    />\n  )\n}\n\nfunction CommandItem({ className, meta, shortcut, onSelect, children, ...props }: React.ComponentProps<typeof Cmdk.Item> & { meta?: React.ReactNode; shortcut?: React.ReactNode }) {\n  const [fired, setFired] = React.useState(false)\n  return (\n    <Cmdk.Item\n      className={cn(\"kl-cmd-item kl-flood\", className)}\n      data-kl-flood=\"manual\"\n      data-kl-on={fired ? \"\" : undefined}\n      onSelect={(v) => {\n        setFired(true)\n        onSelect?.(v)\n      }}\n      {...props}\n    >\n      <span className=\"kl-cmd-ix\" aria-hidden />\n      <span className=\"kl-cmd-l\">{children}</span>\n      <span className=\"kl-cmd-m\">\n        {meta}\n        {shortcut ? <Kbd>{shortcut}</Kbd> : null}\n      </span>\n    </Cmdk.Item>\n  )\n}\n\nfunction CommandFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-cmd-foot\", className)} {...props} />\n}\n\nexport { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandFooter }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/command.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-cmd": {
+        "width": "min(600px, calc(100vw - 32px))",
+        "padding": "0"
+      },
+      ".kl-cmd [cmdk-root]": {
+        "display": "flex",
+        "flex-direction": "column",
+        "max-height": "inherit"
+      },
+      ".kl-cmd-q": {
+        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
+      },
+      ".kl-cmd-q > .kl-cell:first-child": {
+        "padding-inline": "calc(14px + var(--kl-c, 0px) * 0.35) 14px"
+      },
+      ".kl-cmd-input": {
+        "flex": "1",
+        "min-width": "0",
+        "border": "0",
+        "background": "none",
+        "outline": "0",
+        "min-height": "54px",
+        "padding": "0 14px",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "18px",
+        "font-weight": "500",
+        "color": "inherit"
+      },
+      ".kl-cmd-input::placeholder": {
+        "color": "var(--kl-ink-3)",
+        "opacity": "1"
+      },
+      ".kl-cmd-list": {
+        "max-height": "min(380px, 52vh)",
+        "overflow": "auto",
+        "counter-reset": "kl-cmd",
+        "overscroll-behavior": "contain"
+      },
+      ".kl-cmd-g [cmdk-group-heading]": {
+        "display": "flex",
+        "gap": "8px",
+        "align-items": "baseline",
+        "padding": "8px 14px 6px",
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)",
+        "background-color": "var(--kl-paper)",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "12px"
+      },
+      ".kl-cmd-g + .kl-cmd-g": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-cmd-item": {
+        "display": "grid",
+        "grid-template-columns": "44px 1fr auto",
+        "align-items": "stretch",
+        "min-height": "44px",
+        "cursor": "pointer",
+        "counter-increment": "kl-cmd",
+        "--kl-fc": "var(--kl-yellow)"
+      },
+      ".kl-cmd-item + .kl-cmd-item": {
+        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
+      },
+      ".kl-cmd-ix": {
+        "display": "grid",
+        "place-items": "center",
+        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
+        "font": "700 15px/1 var(--kl-font-mono)"
+      },
+      ".kl-cmd-ix::before": {
+        "content": "counter(kl-cmd)"
+      },
+      ".kl-cmd-item:nth-child(n + 10 of .kl-cmd-item) .kl-cmd-ix::before": {
+        "content": "\"·\""
+      },
+      ".kl-cmd-l": {
+        "display": "flex",
+        "align-items": "center",
+        "padding-inline": "14px",
+        "font-size": "15px",
+        "min-width": "0"
+      },
+      ".kl-cmd-m": {
+        "display": "flex",
+        "align-items": "center",
+        "gap": "6px",
+        "padding-inline": "14px",
+        "font-size": "13px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on])": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on]) :is(.kl-cmd-m)": {
+        "color": "inherit"
+      },
+      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on]) .kl-cmd-ix": {
+        "border-color": "var(--kl-on-inverse)"
+      },
+      ".kl-cmd-item[data-kl-on] .kl-cmd-m": {
+        "color": "inherit"
+      },
+      ".kl-cmd-item[data-kl-on] .kl-cmd-ix": {
+        "border-color": "var(--kl-on-yellow)"
+      },
+      ".kl-cmd-item[aria-disabled=\"true\"]": {
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-cmd-empty": {
+        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
+      },
+      ".kl-cmd-empty .kl-count": {
+        "display": "grid",
+        "place-items": "center",
+        "min-width": "96px",
+        "font-size": "48px",
+        "padding": "14px 0"
+      },
+      ".kl-cmd-empty > span:last-child": {
+        "display": "grid",
+        "gap": "4px",
+        "align-content": "center",
+        "padding": "14px"
+      },
+      ".kl-cmd-empty small": {
+        "color": "var(--kl-ink-2)",
+        "font-size": "13px"
+      },
+      ".kl-cmd-foot": {
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "gap": "4px 14px",
+        "align-items": "center",
+        "padding": "8px 14px",
+        "border-block-start": "var(--kl-k1) solid var(--kl-seam)",
+        "font-size": "12px",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-cmd-foot > span": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "5px"
+      },
+      ".kl-cmd-foot .kl-kbd": {
+        "color": "var(--kl-ink)"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-cmd-item[data-selected=\"true\"]": {
+          "outline": "3px solid Highlight",
+          "outline-offset": "-4px"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

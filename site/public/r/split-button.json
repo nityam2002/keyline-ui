@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "split-button",
+  "title": "Split button",
+  "description": "One control frame, two cells: the action and its menu. The menu docks to the frame.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/menu"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/split-button.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Menu as MenuPrimitive } from \"@base-ui/react/menu\"\n\nimport { cn } from \"@/lib/utils\"\nimport { MenuContent } from \"./menu\"\n\ntype Ctx = { frame: React.RefObject<HTMLDivElement | null>; variant: \"primary\" | \"secondary\"; layout: \"control\" | \"cell\" }\nconst SplitCtx = React.createContext<Ctx | null>(null)\n\n/** One control frame, two cells: the action and its menu. The menu docks to the whole frame. */\nfunction SplitButton({ className, variant = \"secondary\", layout = \"control\", children, ...props }: React.ComponentProps<\"div\"> & { variant?: \"primary\" | \"secondary\"; /** cell: a cell of an enclosing frame (e.g. a bulk bar). */ layout?: \"control\" | \"cell\" }) {\n  const frame = React.useRef<HTMLDivElement>(null)\n  return (\n    <SplitCtx.Provider value={{ frame, variant, layout }}>\n      <div ref={frame} role=\"group\" data-slot=\"split-button\" data-variant={variant} data-kl-layout={layout} className={cn(\"kl-ctl kl-cells kl-split\", className)} {...props}>\n        {children}\n      </div>\n    </SplitCtx.Provider>\n  )\n}\n\nfunction SplitButtonAction({ className, children, ...props }: React.ComponentProps<\"button\">) {\n  return (\n    <button type=\"button\" data-slot=\"split-button-action\" className={cn(\"kl-key kl-split-cell kl-split-action\", className)} {...props}>\n      <span>{children}</span>\n    </button>\n  )\n}\n\nfunction SplitButtonMenu({ label, children, contentClassName, finalFocus }: { label: string; children: React.ReactNode; contentClassName?: string; finalFocus?: React.ComponentProps<typeof MenuContent>[\"finalFocus\"] }) {\n  const ctx = React.useContext(SplitCtx)\n  return (\n    <MenuPrimitive.Root>\n      <MenuPrimitive.Trigger aria-label={label} data-slot=\"split-button-trigger\" className=\"kl-key kl-split-cell kl-split-caret\">\n        <span>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </MenuPrimitive.Trigger>\n      <MenuContent anchor={ctx?.frame} attachWeight={ctx?.layout === \"cell\" ? 1 : 2} className={contentClassName} finalFocus={finalFocus}>\n        {children}\n      </MenuContent>\n    </MenuPrimitive.Root>\n  )\n}\n\nexport { SplitButton, SplitButtonAction, SplitButtonMenu }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/split-button.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-split": {
+        "display": "inline-flex",
+        "background-color": "var(--kl-cell)",
+        "min-height": "var(--kl-ctl)"
+      },
+      ".kl-split-cell": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "padding-inline": "14px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "14px",
+        "white-space": "nowrap",
+        "cursor": "pointer",
+        "background": "transparent",
+        "color": "inherit",
+        "border": "0"
+      },
+      ".kl-split-cell > span": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "gap": "8px"
+      },
+      ".kl-split-caret": {
+        "padding-inline": "9px"
+      },
+      ".kl-split-cell:hover": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-split-cell:active": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-split-cell:focus-visible": {
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-split-caret[data-popup-open]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-split-cell:disabled": {
+        "color": "var(--kl-dis)",
+        "background-color": "var(--kl-cell)",
+        "background-image": "var(--kl-hatch)",
+        "cursor": "not-allowed"
+      },
+      ".kl-split[data-variant=\"primary\"]": {
+        "background-color": "var(--kl-cobalt)",
+        "border-color": "var(--kl-cobalt)",
+        "color": "var(--kl-on-cobalt)",
+        "--kl-cut-line": "var(--kl-cobalt)"
+      },
+      ".kl-split[data-variant=\"primary\"] > :not(:first-child)": {
+        "border-inline-start-color": "var(--kl-on-cobalt)"
+      },
+      ".kl-split[data-variant=\"primary\"] .kl-split-cell:hover": {
+        "background-color": "var(--kl-cobalt-hi)"
+      },
+      ".kl-split[data-variant=\"primary\"] .kl-split-cell:active:not([data-popup-open])": {
+        "background-color": "var(--kl-cobalt-lo)"
+      },
+      ".kl-split[data-variant=\"primary\"] .kl-split-caret[data-popup-open]": {
+        "background-color": "var(--kl-inverse)",
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-split[data-variant=\"primary\"] .kl-split-cell:focus-visible": {
+        "outline-color": "currentColor"
+      },
+      ".kl-split:has(.kl-split-caret[data-popup-open])": {
+        "border-color": "var(--kl-line)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

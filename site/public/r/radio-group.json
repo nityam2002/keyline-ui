@@ -1,0 +1,119 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "title": "Radio group",
+  "description": "Exclusive choice as framed rows; the ink band stretches to the chosen row.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/checkbox"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/radio-group.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { RadioGroup as RadioGroupPrimitive } from \"@base-ui/react/radio-group\"\nimport { Radio } from \"@base-ui/react/radio\"\n\nimport { cn } from \"@/lib/utils\"\nimport { useStretch } from \"../lib/keyline-motion\"\n\ntype RadioGroupProps = Omit<React.ComponentProps<typeof RadioGroupPrimitive>, \"value\" | \"defaultValue\" | \"onValueChange\"> & {\n  value?: string\n  defaultValue?: string\n  onValueChange?: (value: string) => void\n  /** control: its own 2px frame. cell: rows sit directly in an enclosing frame (e.g. a panel body). */\n  layout?: \"control\" | \"cell\"\n}\n\n/**\n * Exclusive choice as framed rows. The chosen row is ink: one band that STRETCHES between rows\n * (leading edge first, zero bounce), the same behaviour as the segmented control turned vertical.\n * Arrow keys move and select (radio semantics from Base UI); the group participates in forms via `name`.\n */\nfunction RadioGroup({ value, defaultValue, onValueChange, layout = \"control\", className, children, ...props }: RadioGroupProps) {\n  const [inner, setInner] = React.useState(defaultValue)\n  const current = value ?? inner\n  const ref = React.useRef<HTMLDivElement>(null)\n  const values = React.Children.toArray(children)\n    .filter(React.isValidElement)\n    .map((c) => (c.props as { value?: string }).value)\n  useStretch(ref, values.indexOf(current), { axis: \"y\" })\n  return (\n    <RadioGroupPrimitive\n      ref={ref}\n      data-slot=\"radio-group\"\n      data-kl-stretch=\"\"\n      data-kl-layout={layout}\n      value={current}\n      onValueChange={(v) => {\n        setInner(v as string)\n        onValueChange?.(v as string)\n      }}\n      className={cn(\"kl-ctl kl-rows kl-radio-group\", className)}\n      {...props}\n    >\n      <span data-kl-band=\"\" className=\"kl-radio-band\" aria-hidden hidden />\n      {children}\n    </RadioGroupPrimitive>\n  )\n}\n\nfunction RadioGroupItem({ className, label, description, meta, ...props }: React.ComponentProps<typeof Radio.Root> & { value: string; label: React.ReactNode; description?: React.ReactNode; /** Trailing cell: price, count, code. */ meta?: React.ReactNode }) {\n  const id = React.useId()\n  return (\n    <Radio.Root data-slot=\"radio-group-item\" data-kl-item=\"\" aria-labelledby={`${id}-l`} aria-describedby={description ? `${id}-d` : undefined} className={cn(\"kl-key kl-radio-row\", className)} {...props}>\n      <span className=\"kl-choice-box\" aria-hidden>\n        <span className=\"kl-radio\">\n          <Radio.Indicator className=\"kl-radio-dot\" keepMounted />\n        </span>\n      </span>\n      <span className=\"kl-choice-text\">\n        <span id={`${id}-l`} className=\"kl-choice-label\">{label}</span>\n        {description ? <span id={`${id}-d`} className=\"kl-choice-desc\">{description}</span> : null}\n      </span>\n      {meta != null ? <span className=\"kl-radio-meta\">{meta}</span> : null}\n    </Radio.Root>\n  )\n}\n\nexport { RadioGroup, RadioGroupItem }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/radio-group.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-radio-group": {
+        "position": "relative",
+        "isolation": "isolate",
+        "display": "flex",
+        "flex-direction": "column",
+        "background-color": "var(--kl-cell)",
+        "min-width": "0"
+      },
+      ".kl-radio-band": {
+        "position": "absolute",
+        "z-index": "-1",
+        "background-color": "var(--kl-inverse)",
+        "pointer-events": "none"
+      },
+      ".kl-radio-row": {
+        "all": "unset",
+        "box-sizing": "border-box",
+        "display": "flex",
+        "align-items": "stretch",
+        "min-height": "var(--kl-row)",
+        "cursor": "pointer",
+        "color": "var(--kl-ink)",
+        "transition": "color 0s linear var(--kl-t-flip)"
+      },
+      ".kl-radio-group.kl-rows > .kl-radio-row:nth-child(2)": {
+        "border-block-start": "0"
+      },
+      ".kl-radio-row:hover:not([data-checked]):not([data-disabled])": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-radio-row:focus-visible": {
+        "outline": "var(--kl-ring) solid var(--kl-focus)",
+        "outline-offset": "var(--kl-ring-in)"
+      },
+      ".kl-radio-row[data-kl-covered]": {
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-radio-row[data-kl-covered] .kl-choice-desc, .kl-radio-row[data-kl-covered] .kl-radio-meta": {
+        "color": "inherit"
+      },
+      ".kl-radio-row[data-disabled]": {
+        "cursor": "not-allowed",
+        "color": "var(--kl-dis)",
+        "background-image": "var(--kl-hatch)"
+      },
+      ".kl-radio-row[data-disabled][data-kl-covered]": {
+        "color": "var(--kl-on-inverse)"
+      },
+      ".kl-radio": {
+        "width": "18px",
+        "height": "18px",
+        "display": "grid",
+        "place-items": "center",
+        "border": "2px solid currentColor"
+      },
+      ".kl-radio-dot": {
+        "width": "8px",
+        "height": "8px",
+        "background-color": "currentColor"
+      },
+      ".kl-radio-dot[data-unchecked]": {
+        "visibility": "hidden"
+      },
+      ".kl-radio-meta": {
+        "flex": "none",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "flex-end",
+        "min-width": "var(--kl-radio-meta, 64px)",
+        "padding-inline": "var(--kl-inset)",
+        "border-inline-start": "var(--kl-k1) solid currentColor",
+        "font-variant-numeric": "tabular-nums",
+        "font-weight": "var(--kl-weight-strong)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-radio-group:has(.kl-radio-meta) .kl-radio-row:not(:has(.kl-radio-meta))::after": {
+        "content": "\"\"",
+        "flex": "none",
+        "min-width": "var(--kl-radio-meta, 64px)",
+        "border-inline-start": "var(--kl-k1) solid currentColor"
+      },
+      "@media (forced-colors: active)": {
+        ".kl-radio-band": {
+          "forced-color-adjust": "none",
+          "background": "Highlight"
+        },
+        ".kl-radio-row[data-kl-covered]": {
+          "forced-color-adjust": "none",
+          "color": "HighlightText"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

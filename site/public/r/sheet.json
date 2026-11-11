@@ -1,0 +1,86 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sheet",
+  "title": "Sheet",
+  "description": "A region docked to a viewport edge (end, start, bottom): Base UI Dialog behaviour, unfolds from its edge, cut on the inner corner.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/dialog"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/sheet.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\nimport { DialogBody, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from \"./dialog\"\n\n/* A sheet is a region docked to an edge of the viewport. Behaviour is Base UI Dialog (focus trap, return\n   focus, Escape, scroll lock, modal or not); the parts below only add construction and motion. */\nconst Sheet = DialogPrimitive.Root\nconst SheetTrigger = DialogPrimitive.Trigger\nconst SheetClose = DialogPrimitive.Close\n\ntype SheetContentProps = React.ComponentProps<typeof DialogPrimitive.Popup> & {\n  /** end: the inline-end edge (mirrors in RTL) · start · bottom. */\n  side?: \"end\" | \"start\" | \"bottom\"\n  /** Width (end/start) or height (bottom) in px or any CSS length. */\n  size?: number | string\n  container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"]\n}\n\n/**\n * The frame draws only the edge that faces the page (3px, region weight); the edges against the viewport\n * are the screen's. The cut, when on, sits on the inner top corner, the one corner that is not against\n * the viewport. It unfolds from the docked edge and folds back to it.\n */\nfunction SheetContent({ side = \"end\", size, className, container, style, children, ...props }: SheetContentProps) {\n  const [marker, scope, probe] = useKeylineScope(false, container)\n  const len = typeof size === \"number\" ? `${size}px` : size\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        {probe}\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n          <DialogPrimitive.Popup\n            data-slot=\"sheet\"\n            data-side={side}\n            className={cn(\"kl-frame kl-sheet\", className)}\n            style={(state) => ({ ...(len ? { \"--kl-sheet-size\": len } : null), ...(typeof style === \"function\" ? style(state) : style) }) as React.CSSProperties}\n            {...props}\n          >\n            {children}\n          </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </>\n  )\n}\n\nconst SheetHeader = DialogHeader\nconst SheetBody = DialogBody\nconst SheetFooter = DialogFooter\nconst SheetTitle = DialogTitle\nconst SheetDescription = DialogDescription\n\nexport { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetBody, SheetFooter, SheetTitle, SheetDescription }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/sheet.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-sheet": {
+        "--kl-cell": "var(--kl-raised)",
+        "position": "fixed",
+        "z-index": "var(--kl-z-overlay)",
+        "display": "flex",
+        "flex-direction": "column",
+        "color": "var(--kl-ink)",
+        "outline": "0",
+        "border-width": "0",
+        "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)",
+        "clip-path": "inset(0)"
+      },
+      ".kl-sheet[data-ending-style]": {
+        "transition-duration": "var(--kl-t-fold)",
+        "transition-timing-function": "var(--kl-ease-in)",
+        "pointer-events": "none"
+      },
+      ".kl-sheet:is([data-side=\"end\"], [data-side=\"start\"])": {
+        "inset-block": "0",
+        "width": "min(var(--kl-sheet-size, 440px), calc(100vw - 40px))"
+      },
+      ".kl-sheet[data-side=\"end\"]": {
+        "inset-inline-end": "0",
+        "border-inline-start-width": "var(--kl-k3)",
+        "border-block-start-width": "var(--kl-k3)"
+      },
+      ".kl-sheet[data-side=\"start\"]": {
+        "inset-inline-start": "0",
+        "border-inline-end-width": "var(--kl-k3)",
+        "--kl-cut-size": "0px"
+      },
+      ".kl-sheet[data-side=\"bottom\"]": {
+        "inset-inline": "0",
+        "inset-block-end": "0",
+        "max-height": "min(var(--kl-sheet-size, 70vh), calc(100vh - 40px))",
+        "border-block-start-width": "var(--kl-k3)",
+        "border-inline-start-width": "var(--kl-k3)"
+      },
+      ".kl-sheet[data-side=\"end\"]:is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(0 0 0 100%)"
+      },
+      ".kl-sheet[data-side=\"end\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)):is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(0 100% 0 0)"
+      },
+      ".kl-sheet[data-side=\"start\"]:is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(0 100% 0 0)"
+      },
+      ".kl-sheet[data-side=\"start\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)):is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(0 0 0 100%)"
+      },
+      ".kl-sheet[data-side=\"bottom\"]:is([data-starting-style], [data-ending-style])": {
+        "clip-path": "inset(100% 0 0 0)"
+      },
+      "@supports not (corner-start-start-shape: bevel)": {
+        ".kl-sheet": {
+          "clip-path": "none"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,31 @@
+@layer components {
+  .kl-sheet {
+    --kl-cell: var(--kl-raised);
+    position: fixed; z-index: var(--kl-z-overlay); display: flex; flex-direction: column;
+    color: var(--kl-ink); outline: 0; border-width: 0;
+    transition: clip-path var(--kl-t-unfold) var(--kl-ease-out);
+    clip-path: inset(0);
+  }
+  .kl-sheet[data-ending-style] { transition-duration: var(--kl-t-fold); transition-timing-function: var(--kl-ease-in); pointer-events: none; }
+  /* end / start: full height, the page-facing edge is the region keyline */
+  .kl-sheet:is([data-side="end"], [data-side="start"]) { inset-block: 0; width: min(var(--kl-sheet-size, 440px), calc(100vw - 40px)); }
+  /* The cut sits on the top-start corner, and a cut is an L-junction of two keylines (C3): the bevel strokes
+     the transition between the two edges it joins, so with one of them at 0px its diagonal tapers to nothing.
+     Each side therefore draws both keylines that meet at that corner, at region weight:
+     - end: the page-facing start edge and the top edge (the region's top, against the top of the screen);
+     - bottom: the page-facing top edge and the start edge;
+     - start: the corner is the screen's own corner, so this side keeps no cut. */
+  .kl-sheet[data-side="end"] { inset-inline-end: 0; border-inline-start-width: var(--kl-k3); border-block-start-width: var(--kl-k3); }
+  .kl-sheet[data-side="start"] { inset-inline-start: 0; border-inline-end-width: var(--kl-k3); --kl-cut-size: 0px; }
+  .kl-sheet[data-side="bottom"] { inset-inline: 0; inset-block-end: 0; max-height: min(var(--kl-sheet-size, 70vh), calc(100vh - 40px)); border-block-start-width: var(--kl-k3); border-inline-start-width: var(--kl-k3); }
+  /* unfold from the docked edge (logical: mirrors in RTL through the side, so use physical insets per dir) */
+  .kl-sheet[data-side="end"]:is([data-starting-style], [data-ending-style]) { clip-path: inset(0 0 0 100%); }
+  .kl-sheet[data-side="end"]:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)):is([data-starting-style], [data-ending-style]) { clip-path: inset(0 100% 0 0); }
+  .kl-sheet[data-side="start"]:is([data-starting-style], [data-ending-style]) { clip-path: inset(0 100% 0 0); }
+  .kl-sheet[data-side="start"]:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)):is([data-starting-style], [data-ending-style]) { clip-path: inset(0 0 0 100%); }
+  .kl-sheet[data-side="bottom"]:is([data-starting-style], [data-ending-style]) { clip-path: inset(100% 0 0 0); }
+  /* the clip-path fallback cut needs room past the frame edge; a sheet is never clipped there anyway */
+  @supports not (corner-start-start-shape: bevel) {
+    .kl-sheet { clip-path: none; }
+  }
+}

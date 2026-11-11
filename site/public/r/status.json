@@ -1,0 +1,59 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status",
+  "title": "Status and badge",
+  "description": "Status glyph + text (shape survives forced colours); square code badge.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/ui/status.tsx",
+      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype StatusKind = \"normal\" | \"waiting\" | \"attention\" | \"done\" | \"none\"\n\n/** Status = glyph shape + text. The shape carries meaning in grayscale and forced colours; only attention is red. */\nfunction Status({ kind, className, children, ...props }: React.ComponentProps<\"span\"> & { kind: StatusKind }) {\n  return (\n    <span data-slot=\"status\" className={cn(\"kl-status\", className)} data-kind={kind} {...props}>\n      <span className=\"kl-glyph\" data-kind={kind} aria-hidden />\n      {children}\n    </span>\n  )\n}\n\n/** A square code badge: mono text in a 1px frame. Never cut, never a pill. `tone=\"signal\"` is the only filled form. */\nfunction Badge({ className, tone = \"plain\", ...props }: React.ComponentProps<\"span\"> & { tone?: \"plain\" | \"signal\" | \"attention\" }) {\n  return <span data-slot=\"badge\" data-tone={tone} className={cn(\"kl-badge\", className)} {...props} />\n}\n\nexport { Status, Badge, type StatusKind }\n",
+      "type": "registry:ui",
+      "target": "components/keyline/ui/status.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".kl-status": {
+        "display": "inline-flex",
+        "align-items": "baseline",
+        "gap": "8px"
+      },
+      ".kl-status > .kl-glyph": {
+        "align-self": "center"
+      },
+      ".kl-status[data-kind=\"attention\"]": {
+        "color": "var(--kl-red-text)",
+        "font-weight": "var(--kl-weight-display)"
+      },
+      ".kl-status[data-kind=\"done\"], .kl-status[data-kind=\"none\"]": {
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-badge": {
+        "display": "inline-flex",
+        "align-items": "center",
+        "height": "20px",
+        "padding-inline": "6px",
+        "border": "var(--kl-k1) solid currentColor",
+        "font": "500 11px/1 var(--kl-font-mono)",
+        "white-space": "nowrap",
+        "color": "var(--kl-ink-2)",
+        "vertical-align": "middle"
+      },
+      ".kl-badge[data-tone=\"signal\"]": {
+        "background-color": "var(--kl-yellow)",
+        "color": "var(--kl-on-yellow)",
+        "border-color": "var(--kl-on-yellow)"
+      },
+      ".kl-badge[data-tone=\"attention\"]": {
+        "color": "var(--kl-red-text)",
+        "font-weight": "var(--kl-weight-strong)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}
