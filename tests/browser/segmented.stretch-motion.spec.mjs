@@ -5,13 +5,13 @@ const Q = "theme=light&cut=on&density=default&motion=normal&dir=ltr"
 const sample = (page, action) =>
   page.evaluate(async (action) => {
     const host = document.querySelector("[data-testid=motion-lab] .kl-segmented")
-    const band = host.querySelector("[data-kl-band]")
+    const band = host.querySelector(":scope > [data-kl-band]")
     const items = [...host.querySelectorAll("[data-kl-item]")]
     const hr = host.getBoundingClientRect()
     const frames = []
     const t0 = performance.now()
     const grab = () => {
-      const b = band.getBoundingClientRect()
+      const b = window.__klBand(band)
       frames.push({ t: Math.round(performance.now() - t0), l: +(b.left - hr.left).toFixed(1), r: +(b.right - hr.left).toFixed(1) })
     }
     if (action === "fwd") items[3].click()

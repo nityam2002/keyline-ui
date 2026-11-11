@@ -27,10 +27,11 @@
   .kl-carousel-tick::before { content: ""; width: 8px; height: 8px; border: var(--kl-k1) solid var(--kl-line); background-color: transparent; }
   .kl-carousel-tick:hover:not([aria-current])::before { background-color: var(--kl-tint); }
   .kl-carousel-tick:active:not([aria-current])::before { background-color: var(--kl-press); border-color: var(--kl-ink); }
-  /* the current position is the band (Stretch), not the tick: one ink mark 16x8, centred on its 24px tick; the tick
-     under it gives up its outline so the band reads as one solid mark at rest */
+  /* the current position is the band (Stretch), not the tick: one ink mark 16x8, centred on its 24px tick (the band
+     is inset 4px from the tick's box, so the mark is the band's full length); the tick under it gives up its outline
+     so the band reads as one solid mark at rest */
   .kl-carousel-band { position: absolute; z-index: -1; pointer-events: none; }
-  .kl-carousel-band::before { content: ""; position: absolute; inset-inline: 4px; inset-block-start: 50%; height: 8px; translate: 0 -50%; background-color: var(--kl-ink); }
+  .kl-carousel-band::before { content: ""; position: absolute; inset-inline: 0; inset-block-start: 50%; height: 8px; translate: 0 -50%; background-color: var(--kl-ink); }
   .kl-carousel-tick[aria-current]::before { border-color: transparent; }
   .kl-carousel-tick:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: calc(var(--kl-ring) * -1); }
   /* many slides: the ticks give way to the count alone */

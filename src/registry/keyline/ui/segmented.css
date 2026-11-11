@@ -4,7 +4,7 @@
   .kl-segmented-item {
     display: inline-flex; align-items: center; justify-content: center;
     padding-inline: 14px; font-weight: var(--kl-weight-strong); font-size: 14px; white-space: nowrap; cursor: pointer;
-    color: var(--kl-ink); background: transparent; transition: color 0s linear var(--kl-t-flip);
+    color: var(--kl-ink); background: transparent;
   }
   .kl-segmented-item:hover:not([data-checked]):not([data-disabled]) { background-color: var(--kl-tint); }
   .kl-segmented-item[data-kl-covered] { color: var(--kl-on-inverse); }

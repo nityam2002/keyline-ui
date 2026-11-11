@@ -16,7 +16,6 @@
     display: flex; align-items: center; gap: 6px; box-sizing: border-box; min-height: 100%; margin: 0; padding-inline: 14px;
     border: 0; background: none; color: var(--kl-ink); text-decoration: none; white-space: nowrap;
     font: inherit; font-family: var(--kl-font); font-size: 14px; font-weight: var(--kl-weight-strong); cursor: pointer; outline: 0;
-    transition: color 0s linear var(--kl-t-flip);
   }
   /* the first cell clears the frame's cut */
   .kl-nmenu-list > .kl-nmenu-item:nth-child(1 of .kl-nmenu-item) > :is(.kl-nmenu-trigger, .kl-nmenu-link) { padding-inline-start: calc(14px + var(--kl-c, 0px) * 0.35); }

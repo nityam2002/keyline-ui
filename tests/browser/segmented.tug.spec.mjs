@@ -72,13 +72,13 @@ for (const q of ["", "?dir=rtl", "?theme=dark&cut=on", "?cut=quiet&density=compa
     await idle(p)
     const k = await seg.evaluate(async (s) => {
       const it = [...s.querySelectorAll("[data-kl-item]")]
-      const band = s.querySelector("[data-kl-band]")
+      const band = s.querySelector(":scope > [data-kl-band]")
       s.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }))
       document.activeElement.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }))
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
       const sr = s.getBoundingClientRect()
       const target = it[2].getBoundingClientRect().left - sr.left
-      return { lead: parseFloat(band.style.left), target, chk: it.map((e) => (e.hasAttribute("data-checked") ? 1 : 0)).join("") }
+      return { lead: window.__klBand(band).left - sr.left - s.clientLeft, target, chk: it.map((e) => (e.hasAttribute("data-checked") ? 1 : 0)).join("") }
     })
     ok("keyboard: an arrow move lands the leading edge at once", k.chk === "0010" && Math.abs(k.lead - k.target) < 2.5, k)
     ok("tug: no page errors", !p.errs.length, p.errs)

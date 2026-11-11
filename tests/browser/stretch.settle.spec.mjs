@@ -21,7 +21,7 @@ test("stretch: settle time and a resize mid-move", { tag: "@timing" }, async ({ 
     const go = () => {
       const t0 = performance.now()
       const loop = () => {
-        const r = band.getBoundingClientRect()
+        const r = window.__klBand(band)
         window.__f.push([performance.now() - t0, r.left, r.right])
         if (performance.now() - t0 < 700) requestAnimationFrame(loop)
         else window.__fdone = true
@@ -49,7 +49,7 @@ test("stretch: settle time and a resize mid-move", { tag: "@timing" }, async ({ 
   await seg.evaluate((s) => s.querySelectorAll("[data-kl-item]").forEach((el) => (el.style.paddingInline = "24px")))
   await p.waitForTimeout(800) // timing: kept, the settle window after a mid-move resize (r25's measurement window)
   const geo = await seg.evaluate((s) => {
-    const band = s.querySelector(":scope > [data-kl-band]").getBoundingClientRect()
+    const band = window.__klBand(s.querySelector(":scope > [data-kl-band]"))
     const act = s.querySelector("[data-kl-covered]")?.getBoundingClientRect()
     return act && [band.left - act.left, band.right - act.right].map((v) => Math.round(v * 10) / 10)
   })

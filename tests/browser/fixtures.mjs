@@ -64,6 +64,46 @@ export const stable = (loc, frames = 3, timeout = 5000) =>
     [frames, timeout],
   )
 
+/** Installed in every page: window.__klBand(band) is the box of a stretch band as drawn. At rest that is the band's
+ * own box; during a move (data-kl-flight) the band is a static window over the whole travel and the visible part
+ * is where it, its moving clip and the fill inside the clip overlap (keyline-motion.ts, the compositor flight). */
+const BAND = () => {
+  window.__klBand = (b) => {
+    const r = b.getBoundingClientRect()
+    let { left, top, right, bottom } = r
+    if (b.hasAttribute("data-kl-flight"))
+      for (const sel of ["[data-kl-band-clip]", "[data-kl-band-fill]"]) {
+        const e = b.querySelector(sel)
+        if (!e) continue
+        const q = e.getBoundingClientRect()
+        left = Math.max(left, q.left), top = Math.max(top, q.top), right = Math.min(right, q.right), bottom = Math.min(bottom, q.bottom)
+      }
+    right = Math.max(left, right), bottom = Math.max(top, bottom)
+    return { left, top, right, bottom, x: left, y: top, width: right - left, height: bottom - top }
+  }
+}
+
+/** Waits until a stretch band has landed (no flight in progress) and its drawn box holds for `frames` frames. */
+export const landed = (loc, frames = 3, timeout = 5000) =>
+  loc.evaluate(
+    (b, [frames, timeout]) =>
+      new Promise((res, rej) => {
+        let last = "", same = 0
+        const t0 = performance.now()
+        const tick = () => {
+          const r = window.__klBand(b)
+          const k = b.hasAttribute("data-kl-flight") ? "flight" : [r.x, r.y, r.width, r.height].map((v) => v.toFixed(2)).join()
+          same = k !== "flight" && k === last ? same + 1 : 0
+          last = k
+          if (same >= frames) return res(true)
+          if (performance.now() - t0 > timeout) return rej(new Error("landed: band still moving after " + timeout + "ms"))
+          requestAnimationFrame(tick)
+        }
+        tick()
+      }),
+    [frames, timeout],
+  )
+
 export const test = base.extend({
   eng: async ({ browserName }, use) => use(browserName),
 
@@ -83,6 +123,7 @@ export const test = base.extend({
       const t0 = Date.now()
       const c = await browser.newContext({ viewport: { width, height }, ...ctx })
       contexts.push(c)
+      await c.addInitScript(BAND)
       if (init) await c.addInitScript(init)
       const p = await c.newPage()
       // setup(page): network routes and the like, installed before the first navigation

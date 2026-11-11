@@ -43,8 +43,7 @@
         "align-items": "stretch",
         "min-height": "var(--kl-row)",
         "cursor": "pointer",
-        "color": "var(--kl-ink)",
-        "transition": "color 0s linear var(--kl-t-flip)"
+        "color": "var(--kl-ink)"
       },
       ".kl-radio-group.kl-rows > .kl-radio-row:nth-child(2)": {
         "border-block-start": "0"

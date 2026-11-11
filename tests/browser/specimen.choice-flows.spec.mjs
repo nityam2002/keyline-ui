@@ -1,7 +1,7 @@
 // Choice controls on the specimen with real input: select, date range picker,
 // async multiselect, radio, switch, tabs. Every flow opens a fresh page and checks its errors (page errors, console
 // errors, HTTP >= 400).
-import { test, idle, stable } from "./fixtures.mjs"
+import { test, idle, landed } from "./fixtures.mjs"
 import { until, trackHttp, same, specimen } from "./lib/flow.mjs"
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["select","choices","location","async","async-race"] })
@@ -100,9 +100,9 @@ test("tabs: arrows activate, band follows", async ({ open, ok }) => {
   await list.locator('[role=tab][aria-selected="true"]').focus()
   await p.keyboard.press("ArrowRight")
   await idle(p).catch(() => {})
-  await stable(list.locator("[data-kl-band]")).catch(() => {})
+  await landed(list.locator(":scope > [data-kl-band]")).catch(() => {})
   const tab = await list.locator('[role=tab][aria-selected="true"]').boundingBox()
-  const b = await list.locator("[data-kl-band]").boundingBox()
+  const b = await list.locator(":scope > [data-kl-band]").evaluate((e) => window.__klBand(e))
   ok("ArrowRight activates the next tab", (await sel()) !== before, { before })
   ok("band settles on the active tab", !!b && !!tab && Math.abs(b.x - tab.x) < 1.5 && Math.abs(b.width - tab.width) < 1.5, { band: b, tab })
   noErrors(ok, s)

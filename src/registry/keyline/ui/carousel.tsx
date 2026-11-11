@@ -190,7 +190,8 @@ function CarouselNext({ className, children, ...props }: React.ComponentProps<ty
 function CarouselPosition({ className }: { className?: string }) {
   const { index, count, api } = useCarousel()
   const ticks = React.useRef<HTMLSpanElement>(null)
-  useStretch(ticks, count ? index : -1, { press: false })
+  // inset 4: the band is the 16x8 mark itself (its ::before spans it), so a move clips it exactly at both ends
+  useStretch(ticks, count ? index : -1, { press: false, inset: 4 })
   return (
     <div className={cn("kl-cell kl-carousel-pos", className)}>
       <span className="kl-code kl-carousel-n" dir="ltr" aria-hidden>

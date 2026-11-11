@@ -8,7 +8,7 @@
      not a border, so it takes no room: a 1px taller list toggled the shell's scroller (a WebKit RO loop) */
   .kl-nav-list > li:last-child:not(.kl-nav-band, .kl-more-fade) { box-shadow: 0 var(--kl-k1) 0 var(--kl-line); }
   .kl-nav-band { list-style: none; position: absolute; z-index: -1; background-color: var(--kl-cobalt); pointer-events: none; }
-  .kl-nav-i { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding-inline: 14px; border: 0; background: none; color: inherit; font: inherit; font-family: var(--kl-font); font-weight: var(--kl-weight-strong); font-size: 14px; text-decoration: none; text-align: start; cursor: pointer; transition: color 0s linear var(--kl-t-flip); }
+  .kl-nav-i { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding-inline: 14px; border: 0; background: none; color: inherit; font: inherit; font-family: var(--kl-font); font-weight: var(--kl-weight-strong); font-size: 14px; text-decoration: none; text-align: start; cursor: pointer; }
   /* hover tints only rows the band is NOT on: a closed parent holding the current link carries the band
      (on-cobalt text) without aria-current, and an opaque tint there hid the band under white text */
   .kl-nav-i:hover:not([aria-current], [data-kl-covered], [data-kl-holds]):not(:disabled) { background-color: var(--kl-tint); }
@@ -31,7 +31,7 @@
   .kl-nav[data-kl-icons] .kl-nav-gl { padding-inline-start: 56px; }
   .kl-nav-ic {
     flex: none; align-self: stretch; display: grid; place-items: center; width: 44px; margin-inline-end: 12px;
-    border-inline-end: var(--kl-k1) solid var(--kl-seam); transition: background-color 0s linear var(--kl-t-flip), color 0s linear var(--kl-t-flip);
+    border-inline-end: var(--kl-k1) solid var(--kl-seam);
   }
   .kl-nav-ic svg { display: block; }
   .kl-nav-l { flex: 1 1 auto; min-width: 0; }

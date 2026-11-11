@@ -6,7 +6,6 @@
   .kl-tab {
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 3px;
     padding: 6px 16px; border: 0; background: transparent; color: var(--kl-ink); font: inherit; font-family: var(--kl-font); cursor: pointer; text-align: start; white-space: nowrap;
-    transition: color 0s linear var(--kl-t-flip);
   }
   .kl-tabs-list > .kl-tab:nth-child(2) { border-inline-start: 0; }
   .kl-tabs-list > .kl-tab:first-of-type { padding-inline-start: calc(16px + var(--kl-c-room, 0px)); }

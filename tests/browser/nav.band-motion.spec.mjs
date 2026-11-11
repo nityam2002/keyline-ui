@@ -21,12 +21,12 @@ test("nav link: lean held through release, band leaves at the commit", { tag: "@
     new MutationObserver(() => (at.page ??= performance.now() - t0)).observe(document.querySelector("[data-route]"), { attributes: true, attributeFilter: ["data-route"] })
     let n = 0
     const tick = () => {
-      T.push([performance.now() - t0, parseFloat(band.style.left) + parseFloat(band.style.width), getComputedStyle(h.querySelectorAll("[data-kl-item]")[3]).backgroundColor])
+      T.push([performance.now() - t0, window.__klBand(band).right, getComputedStyle(h.querySelectorAll("[data-kl-item]")[3]).backgroundColor])
       if (n++ < 40) requestAnimationFrame(tick)
     }
     requestAnimationFrame(tick)
   })
-  const rest = await host.evaluate((h) => { const b = h.querySelector(":scope > [data-kl-band]"); return parseFloat(b.style.left) + parseFloat(b.style.width) })
+  const rest = await host.evaluate((h) => { const b = h.querySelector(":scope > [data-kl-band]"); return window.__klBand(b).right })
   await p.mouse.up()
   // the 41-frame sample has finished and the route has changed
   await until(() => p.evaluate(() => window.__nav.length >= 41 && document.querySelector("[data-route]")?.getAttribute("data-route") === "playground"))
@@ -49,8 +49,9 @@ for (const q of ["?motion=slow", "?motion=slow&dir=rtl"]) {
     await list.locator("[data-kl-item]", { hasText: "Carriers" }).first().click()
     await p.waitForTimeout(300) // timing: samples the band mid-travel under motion=slow
     const mid = await list.evaluate((h) => {
+      // in flight the band's paint rides in its fill (keyline-motion.ts), which carries the band's classes
       const b = h.querySelector(":scope > [data-kl-band]")
-      const cs = getComputedStyle(b)
+      const cs = getComputedStyle(b.querySelector("[data-kl-band-fill]") ?? b)
       return { ink: parseFloat(cs.backgroundSize), pos: cs.backgroundPositionX, cells: [...h.querySelectorAll(".kl-nav-ic")].map((c) => getComputedStyle(c).backgroundColor).filter((x) => x !== "rgba(0, 0, 0, 0)") }
     })
     ok(`nav ${q}: the ink key column is the band's own (44px of it), no cell fills on its own`, mid.ink === 44 && mid.cells.length === 0 && (q.includes("rtl") ? mid.pos === "100%" : mid.pos === "0%"), mid)

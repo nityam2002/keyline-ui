@@ -74,8 +74,7 @@
         "font-size": "14px",
         "font-weight": "var(--kl-weight-strong)",
         "cursor": "pointer",
-        "outline": "0",
-        "transition": "color 0s linear var(--kl-t-flip)"
+        "outline": "0"
       },
       ".kl-nmenu-list > .kl-nmenu-item:nth-child(1 of .kl-nmenu-item) > :is(.kl-nmenu-trigger, .kl-nmenu-link)": {
         "padding-inline-start": "calc(14px + var(--kl-c, 0px) * 0.35)"

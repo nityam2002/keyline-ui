@@ -100,7 +100,6 @@
         "--kl-stretch-trail": "220",
         "--kl-stretch-tug": "12",
         "--kl-flood-seed": "7px",
-        "--kl-t-flip": "40ms",
         "--kl-z-overlay": "60",
         "--kl-z-toast": "70"
       },
@@ -195,8 +194,7 @@
         "--kl-t-tick": "0ms",
         "--kl-stretch-lead": "0",
         "--kl-stretch-trail": "0",
-        "--kl-stretch-tug": "0",
-        "--kl-t-flip": "0ms"
+        "--kl-stretch-tug": "0"
       },
       "@media (prefers-reduced-motion: reduce)": {
         ":root": {
@@ -207,8 +205,7 @@
           "--kl-t-tick": "0ms",
           "--kl-stretch-lead": "0",
           "--kl-stretch-trail": "0",
-          "--kl-stretch-tug": "0",
-          "--kl-t-flip": "0ms"
+          "--kl-stretch-tug": "0"
         }
       },
       ":is([class^=\"kl-\"], [class*=\" kl-\"]):not(:where([class^=\"kl-\"], [class*=\" kl-\"]) *)": {
@@ -555,6 +552,16 @@
       },
       "[data-kl-tug] [data-kl-item]:is(:hover, :active)": {
         "background-color": "transparent !important"
+      },
+      "[data-kl-band][data-kl-flight]": {
+        "background": "none !important",
+        "overflow": "hidden"
+      },
+      "[data-kl-band][data-kl-flight]::before, [data-kl-band][data-kl-flight]::after": {
+        "content": "none !important"
+      },
+      "[data-kl-band][data-kl-flight=\"travel\"]": {
+        "z-index": "2 !important"
       },
       ".kl-flood": {
         "position": "relative",

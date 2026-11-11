@@ -1,5 +1,5 @@
 // Motion tokens: square is the default; the Stretch tokens are settle times; reduced motion zeroes every timing
-// token, the flip included.
+// token.
 import { test } from "./fixtures.mjs"
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["split"] })
@@ -8,7 +8,7 @@ test("motion tokens: square default and the Stretch settle times", async ({ open
   const p = await open({ route: "specimen", width: 1440, height: 900, ready: "[data-kl-stretch]" })
   const t = await p.evaluate(() => {
     const cs = getComputedStyle(document.documentElement)
-    return { cut: cs.getPropertyValue("--kl-cut").trim(), lead: cs.getPropertyValue("--kl-stretch-lead").trim(), trail: cs.getPropertyValue("--kl-stretch-trail").trim(), flip: cs.getPropertyValue("--kl-t-flip").trim() }
+    return { cut: cs.getPropertyValue("--kl-cut").trim(), lead: cs.getPropertyValue("--kl-stretch-lead").trim(), trail: cs.getPropertyValue("--kl-stretch-trail").trim() }
   })
   ok("default: --kl-cut is 0 (square)", t.cut === "0", t)
   ok("stretch tokens are settle times: lead 100, trail 220 (inside the 220ms everyday cap)", t.lead === "100" && t.trail === "220", t)
@@ -18,7 +18,7 @@ test("motion tokens: reduced motion zeroes every timing token", async ({ open, o
   const r = await open({ route: "specimen", q: "motion=reduce", width: 1440, height: 900, ready: "[data-kl-stretch]" })
   const z = await r.evaluate(() => {
     const cs = getComputedStyle(document.querySelector("[data-kl-stretch]") ?? document.documentElement)
-    return ["--kl-t-flood", "--kl-t-unflood", "--kl-t-unfold", "--kl-t-fold", "--kl-t-flip", "--kl-stretch-lead", "--kl-stretch-trail"].map((k) => [k, cs.getPropertyValue(k).trim()])
+    return ["--kl-t-flood", "--kl-t-unflood", "--kl-t-unfold", "--kl-t-fold", "--kl-stretch-lead", "--kl-stretch-trail"].map((k) => [k, cs.getPropertyValue(k).trim()])
   })
   ok("reduced motion: every timing token is zero", z.every(([, v]) => parseFloat(v) === 0), z)
 })
@@ -33,14 +33,14 @@ for (const [form, lead, trail] of [["ms", "100ms", "220ms"], ["s (minified)", ".
     const items = host.locator("[data-kl-item]")
     // the item farthest from the band, so the travel is long enough to watch
     const target = await host.evaluate((el) => {
-      const b = el.querySelector(":scope > [data-kl-band]").getBoundingClientRect()
+      const b = window.__klBand(el.querySelector(":scope > [data-kl-band]"))
       const its = [...el.querySelectorAll("[data-kl-item]")].filter((i) => i.closest("[data-kl-stretch]") === el)
       let best = 0, far = -1
       its.forEach((i, k) => { const d = Math.abs(i.getBoundingClientRect().left - b.left) + Math.abs(i.getBoundingClientRect().top - b.top); if (d > far) { far = d; best = k } })
       return best
     })
     const landed = () => host.evaluate((el, k) => {
-      const b = el.querySelector(":scope > [data-kl-band]").getBoundingClientRect()
+      const b = window.__klBand(el.querySelector(":scope > [data-kl-band]"))
       const it = [...el.querySelectorAll("[data-kl-item]")].filter((i) => i.closest("[data-kl-stretch]") === el)[k].getBoundingClientRect()
       return Math.abs(b.left - it.left) <= 2 && Math.abs(b.right - it.right) <= 2 && Math.abs(b.top - it.top) <= 2 && Math.abs(b.bottom - it.bottom) <= 2
     }, target)
