@@ -276,7 +276,7 @@ const PLAN_MAX_S = 4
 
 /** Attributes a copy of the host must not keep: ids and form names duplicate the real ones; roles, slots and the
  * stretch hooks would make the copy's rows look like the real ones to the engine, to selectors and to the TUG rule (no
- * component styles by role; the state attributes styles read, such as aria-current or data-checked, stay). */
+ * component styles by role; ARIA goes too, see ghostOf; the data- states styles read, such as data-checked, stay). */
 const GHOST_DROP = ["id", "role", "name", "form", "for", "data-testid", "data-slot", "data-kl-item", "data-kl-stretch", "data-kl-tug", "data-kl-more", "autofocus", "tabindex"]
 
 /** The host, every item covered: the labels as they read on the band. */
@@ -299,7 +299,12 @@ function ghostOf(host: HTMLElement, items: HTMLElement[]) {
     band.hidden = true
   }
   root.querySelectorAll(".kl-more-fade").forEach((el) => el.remove())
-  for (const el of [root, ...Array.from(root.querySelectorAll("*"))]) for (const a of GHOST_DROP) el.removeAttribute(a)
+  for (const el of [root, ...Array.from(root.querySelectorAll("*"))]) {
+    for (const a of GHOST_DROP) el.removeAttribute(a)
+    // no ARIA at all: the copy is hidden from assistive tech, and a second aria-current or aria-selected would answer
+    // every [aria-current] lookup twice (the copy reads covered through data-kl-covered, not its ARIA state)
+    for (const a of Array.from(el.attributes)) if (a.name.startsWith("aria-")) el.removeAttribute(a.name)
+  }
   root.setAttribute("aria-hidden", "true")
   root.setAttribute("data-kl-ghost", "")
   root.inert = true

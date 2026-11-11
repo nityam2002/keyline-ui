@@ -26,6 +26,7 @@ test("stretch: a move is compositor transforms, survives a long task, and lands 
       inert: ghost.inert,
       ids: ghost.querySelectorAll("[id]").length + (ghost.id ? 1 : 0),
       roles: ghost.querySelectorAll("[role]").length + (ghost.hasAttribute("role") ? 1 : 0),
+      aria: [ghost, ...ghost.querySelectorAll("*")].flatMap((e) => [...e.attributes].map((x) => x.name)).filter((n) => n.startsWith("aria-") && n !== "aria-hidden").length,
       hooks: ghost.querySelectorAll("[data-kl-item], [data-kl-band], [data-kl-stretch], [data-slot], [data-testid], [tabindex]").length,
       covered: ghost.querySelectorAll("[data-kl-covered]").length,
     }
@@ -33,7 +34,7 @@ test("stretch: a move is compositor transforms, survives a long task, and lands 
   })
   ok("stretch: a move runs as WAAPI animations of transform only (what the compositor runs off the main thread)", r.n >= 2 && r.props.length === 1 && r.props[0] === "transform", r)
   ok("stretch: a choice travels with the covered copy riding in the band", r.flight === "travel" && !!r.g, r)
-  ok("stretch: the copy is aria-hidden and inert, and carries no ids, roles, slots or hooks", r.g?.hidden && r.g.inert && r.g.ids === 0 && r.g.roles === 0 && r.g.hooks === 0, r.g)
+  ok("stretch: the copy is aria-hidden and inert, and carries no ids, roles, ARIA state, slots or hooks", r.g?.hidden && r.g.inert && r.g.ids === 0 && r.g.roles === 0 && r.g.aria === 0 && r.g.hooks === 0, r.g)
   ok("stretch: every label in the copy reads covered", r.g?.covered === r.items, r.g)
   // a long task once the move is under way: the stall a route commit or a lazy mount makes. (Whether the compositor
   // kept drawing through it is visible only in pixels; what a spec can hold is that nothing on the main thread had

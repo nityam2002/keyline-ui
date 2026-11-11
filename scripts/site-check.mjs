@@ -463,8 +463,8 @@ for (const width of run("docs") ? [1440, 390] : []) {
     await p.waitForTimeout(300)
     // the index's band never freezes mid-stretch. The next page's render is one long task (its JS, style and
     // layout); a band driven from the main thread stood still several rows tall for as long as that took (130-200ms on
-    // a 6x slower CPU). The band follows the URL, so the render mostly comes first, and its move is transform
-    // animations the compositor runs (keyline-motion.ts), so a lazy example mounting mid-move cannot freeze it either.
+    // a 6x slower CPU). The band sets off on the press, and its move is transform animations the
+    // compositor runs (keyline-motion.ts), so the render (or a lazy example mounting) landing mid-move cannot freeze it.
     // Measured: every frame that shows the band stretched is owned by a running transform-only animation on it, the
     // kind the compositor plays through a long task. (Whether the compositor drew through the stall is only visible in
     // pixels; a stretched frame with no such animation behind it is exactly the old freeze.)
@@ -505,6 +505,36 @@ for (const width of run("docs") ? [1440, 390] : []) {
       const stretched = frames.filter(([, h]) => h > row * 1.5)
       const owned = stretched.filter(([, , c]) => c).length
       ok(stretched.length > 0 && owned === stretched.length, `${tag}: the index band's stretch is played by the compositor, so a long task cannot freeze it (${owned}/${stretched.length} stretched frames on transform animations, 6x CPU)`)
+      await q.context().close()
+    }
+    // the band answers the press, not the server: with the next page held back 1.5s (a slow link), the band is on
+    // its way within 150ms of the click. (It once followed the URL and sat still for the whole round trip.)
+    {
+      const q = await page(width)
+      await q.goto(`${BASE}/docs/components/toggle`, { waitUntil: "networkidle" })
+      await q.waitForTimeout(500)
+      await q.route(/\/docs\/components\/tooltip/, async (r) => { await new Promise((res) => setTimeout(res, 1500)); await r.continue() })
+      await q.evaluate(() => {
+        const band = document.querySelector('nav[aria-label="Components"] [data-kl-band]')
+        window.__go = null
+        document.addEventListener("click", () => {
+          const t0 = performance.now()
+          const tick = () => {
+            if (band.getAttribute("data-kl-flight") === "travel") return (window.__go = performance.now() - t0)
+            if (performance.now() - t0 < 3000) requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+        }, { capture: true, once: true })
+      })
+      await q.getByRole("navigation", { name: "Components" }).getByRole("link", { name: "Tooltip", exact: true }).click()
+      await q.waitForTimeout(400)
+      const go = await q.evaluate(() => window.__go)
+      ok(go !== null && go <= 150, `${tag}: the index band sets off on the press, not after the next page arrives (${go === null ? "not within 400ms" : Math.round(go) + "ms"}, page held 1.5s)`)
+      await q.waitForURL("**/docs/components/tooltip", { timeout: 10000 })
+      // landed: no move in flight, so the covered label is a real one (in flight the covered copy rides in the band)
+      await q.waitForFunction(() => !document.querySelector('nav[aria-label="Components"] [data-kl-flight]'), null, { timeout: 5000 }).catch(() => {})
+      const cur = await q.evaluate(() => document.querySelector('nav[aria-label="Components"] [data-kl-covered]:not([data-kl-ghost] *)')?.textContent)
+      ok(cur === "Tooltip", `${tag}: once the page lands the band rests on it (${cur})`)
       await q.context().close()
     }
   } else {
