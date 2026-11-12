@@ -18,7 +18,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldAffix,
   FieldDescription,
   FieldError,
@@ -812,7 +812,7 @@ function Specimen() {
           <Field>
             <FieldLabel>Gross weight</FieldLabel>
             <FieldFrame>
-              <FieldInput defaultValue="12,004.0" align="end" />
+              <FieldControl defaultValue="12,004.0" align="end" />
               <FieldAffix className="kl-code">kg</FieldAffix>
             </FieldFrame>
             <FieldDescription>22 pallets · max 24,000 kg per truck.</FieldDescription>
@@ -820,7 +820,7 @@ function Specimen() {
           <Field invalid>
             <FieldLabel>Gross weight</FieldLabel>
             <FieldFrame>
-              <FieldInput defaultValue="31,200.0" align="end" />
+              <FieldControl defaultValue="31,200.0" align="end" />
               <FieldAffix className="kl-code">kg</FieldAffix>
             </FieldFrame>
             <FieldError match>Over 24,000 kg needs two trucks. Split the shipment first.</FieldError>
@@ -829,7 +829,7 @@ function Specimen() {
             <FieldLabel>Customs value</FieldLabel>
             <FieldFrame>
               <FieldAffix className="kl-code">€</FieldAffix>
-              <FieldInput defaultValue="142,880.00" align="end" />
+              <FieldControl defaultValue="142,880.00" align="end" />
             </FieldFrame>
             <FieldDescription>Locked after the declaration is filed.</FieldDescription>
           </Field>

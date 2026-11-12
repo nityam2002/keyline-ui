@@ -23,6 +23,16 @@ const USAGE = `<RadioGroup aria-label="Delivery" value={how} onValueChange={setH
   <RadioGroupItem value="morning" label="Next morning" meta="" />
 </RadioGroup>`;
 
+const PARTS = `<RadioGroup aria-label="Delivery" defaultValue="road">
+  <Radio value="road" className={(state) => (state.checked ? "font-semibold" : undefined)}>
+    <span className="grid w-10 place-items-center">
+      <RadioIndicator />
+    </span>
+    <span className="py-2">Road</span>
+  </Radio>
+  <RadioGroupItem value="rail" label="Rail" meta="€€" />
+</RadioGroup>`;
+
 const PROPS: Prop[] = [
   {
     name: "value",
@@ -30,7 +40,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        The chosen item, with <code>onValueChange</code>. Or start with <code>defaultValue</code>.
+        The chosen item, with <code>onValueChange</code>, which also gets Base UI&apos;s event details (the reason for
+        the change, and the event). Or start with <code>defaultValue</code>.
       </>
     ),
   },
@@ -86,7 +97,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "in-a-panel", label: "In a panel" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function RadioGroupPage() {
@@ -132,6 +149,24 @@ export default function RadioGroupPage() {
         Name the group with <code>aria-label</code> or <code>aria-labelledby</code>. Tab enters at the chosen row and
         arrow keys move and choose. For a short choice on one line, Segmented fits better. Built on{" "}
         <a href="https://base-ui.com/react/components/radio">Base UI Radio Group</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>RadioGroup</code>, <code>RadioRoot</code> (also exported as{" "}
+        <code>Radio</code>: one row) and <code>RadioIndicator</code> (the box, with its dot while chosen).{" "}
+        <code>RadioGroupItem</code> is the labelled row built from them; the two mix in one group. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>radio-group</code>, <code>radio</code>,{" "}
+        <code>radio-indicator</code>; a labelled row is <code>radio-group-item</code>, with{" "}
+        <code>radio-group-item-box</code>, <code>-text</code>, <code>-label</code>, <code>-description</code> and{" "}
+        <code>-meta</code> inside), and Base UI&apos;s state attributes: <code>data-checked</code>,{" "}
+        <code>data-unchecked</code>, <code>data-disabled</code>, <code>data-readonly</code> and{" "}
+        <code>data-required</code>. The row under the ink band has <code>data-kl-covered</code>; the group has{" "}
+        <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

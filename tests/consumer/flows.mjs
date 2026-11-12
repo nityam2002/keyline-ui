@@ -882,7 +882,7 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "lookup: the hint bar holds a kbd in the theme's mono voice",
-    await mlf.locator('.kl-field-bar kbd[data-slot="kbd"]').evaluate(
+    await mlf.locator('[data-slot=field-bar] kbd[data-slot="kbd"]').evaluate(
       (k) =>
         getComputedStyle(k).fontFamily.replace(/[\s"']/g, "") ===
           getComputedStyle(k)

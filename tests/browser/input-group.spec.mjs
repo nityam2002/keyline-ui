@@ -110,7 +110,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
         f = fr.getBoundingClientRect(),
         bw = parseFloat(getComputedStyle(fr).borderLeftWidth),
         ta = el.querySelector("textarea").getBoundingClientRect();
-      return [...fr.querySelectorAll(".kl-field-bar")].map((b) => {
+      return [...fr.querySelectorAll("[data-slot=field-bar]")].map((b) => {
         const r = b.getBoundingClientRect();
         return [
           b.dataset.side,

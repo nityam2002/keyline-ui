@@ -22,7 +22,7 @@ test("checkbox group: parent row, keyboard, descriptions, rules", async ({ open,
   ok(
     "checkbox group: the parent is mixed while some are checked; its count says 2/4",
     (await parent.getAttribute("aria-checked")) === "mixed" &&
-      (await n.locator("[data-kl-parent] .kl-cbg-meta").textContent()) === "2/4",
+      (await n.locator("[data-kl-parent] [data-slot=checkbox-group-item-meta]").textContent()) === "2/4",
     await parent.getAttribute("aria-checked"),
   );
   await parent.click();
@@ -71,8 +71,8 @@ test("checkbox group: parent row, keyboard, descriptions, rules", async ({ open,
   );
   ok("checkbox group: an option's description describes its box", /ETA moved/.test(desc), desc);
   const g = await n.evaluate((root) => {
-    const rows = [...root.querySelectorAll(".kl-cbg-row")];
-    const meta = rows.map((r) => r.querySelector(".kl-cbg-meta").getBoundingClientRect().x);
+    const rows = [...root.querySelectorAll("[data-slot=checkbox-group-item]")];
+    const meta = rows.map((r) => r.querySelector("[data-slot=checkbox-group-item-meta]").getBoundingClientRect().x);
     return {
       parentRule: getComputedStyle(rows[1]).borderTopWidth,
       rowRule: getComputedStyle(rows[2]).borderTopWidth,
@@ -91,10 +91,12 @@ test("checkbox group: parent row, keyboard, descriptions, rules", async ({ open,
     g.metaStraight && g.wrapH > g.h + 10,
     g,
   );
-  const inv = n.locator(".kl-cbg-row[data-disabled]");
+  const inv = n.locator("[data-slot=checkbox-group-item][data-disabled]");
   ok(
     "checkbox group: the disabled option is hatched",
-    /repeating-linear-gradient|linear-gradient/.test(await css(inv.locator(".kl-cbg-label"), "background-image")),
+    /repeating-linear-gradient|linear-gradient/.test(
+      await css(inv.locator("[data-slot=checkbox-group-item-row]"), "background-image"),
+    ),
     null,
   );
   ok("checkbox group: no page errors", p.errs.length === 0, p.errs);
@@ -108,7 +110,7 @@ test("checkbox group in a Form: validate, values, server error", async ({ open, 
   const values = () => p.getByTestId("cbg-values").textContent();
   await f.getByRole("checkbox", { name: "Benelux" }).click();
   await f.getByRole("button", { name: "Save access" }).click();
-  const regions = f.locator(".kl-cbg");
+  const regions = f.locator("[data-slot=checkbox-group]");
   await f
     .getByText("Choose at least one region.")
     .waitFor({ state: "visible" })
@@ -116,7 +118,7 @@ test("checkbox group in a Form: validate, values, server error", async ({ open, 
   await idle(p);
   const red = await token(p, "--kl-red");
   const frame = await poll(
-    () => css(regions.locator(".kl-cbg-frame"), "border-top-color"),
+    () => css(regions.locator("[data-slot=checkbox-group-frame]"), "border-top-color"),
     (c) => c === red,
     2000,
   );
@@ -169,13 +171,13 @@ test("checkbox group cells in a popover; invalid and disabled groups", async ({ 
     "checkbox group cells: in a popover the legend names the group but is not shown",
     (await pgroup.count()) === 1 &&
       (await pop
-        .locator(".kl-cbg legend, .kl-cbg .kl-field-label")
+        .locator("[data-slot=checkbox-group-legend]")
         .first()
         .evaluate((e) => e.getBoundingClientRect().width <= 1)),
     null,
   );
   const pf = await pop
-    .locator(".kl-cbg-frame")
+    .locator("[data-slot=checkbox-group-frame]")
     .evaluate((e) => ({ b: getComputedStyle(e).borderTopWidth, l: getComputedStyle(e).borderLeftWidth }));
   ok("checkbox group cells: no frame of its own inside the popover", pf.b === "0px" && pf.l === "0px", pf);
   await pop.getByRole("checkbox", { name: "Late" }).click();
@@ -191,7 +193,7 @@ test("checkbox group cells in a popover; invalid and disabled groups", async ({ 
   const bad = sec.getByRole("group", { name: "Labels to print" });
   ok(
     "checkbox group: invalid shows a red frame and its message",
-    (await css(bad.locator(".kl-cbg-frame"), "border-top-color")) === (await token(p, "--kl-red")) &&
+    (await css(bad.locator("[data-slot=checkbox-group-frame]"), "border-top-color")) === (await token(p, "--kl-red")) &&
       (await bad.getByText("Pick at least one label.").isVisible()),
     null,
   );
@@ -204,7 +206,8 @@ test("checkbox group cells in a popover; invalid and disabled groups", async ({ 
   ok(
     "checkbox group: a disabled group disables every box and dims its frame",
     db.every(Boolean) &&
-      (await css(dis.locator(".kl-cbg-frame"), "border-top-color")) !== (await token(p, "--kl-line")),
+      (await css(dis.locator("[data-slot=checkbox-group-frame]"), "border-top-color")) !==
+        (await token(p, "--kl-line")),
     db,
   );
   ok("checkbox group: no page errors", p.errs.length === 0, p.errs);

@@ -185,11 +185,11 @@ function checkClientBoundary(file: string) {
 }
 
 // ---------- CSS-level dependencies ----------
-// A component's markup can use classes another item styles (NumberField is a .kl-field frame; RadioGroup rows are
-// .kl-choice-* rows). Imports cannot reveal that, so: every kl-* class an item's source uses that neither its own CSS
-// nor the theme styles must come from an item it depends on. If none of its (transitive) dependencies styles it, the
-// item whose CSS styles it becomes a dependency: the one named by the class's prefix (kl-field-label -> field) when
-// several mention it, the only one otherwise; still ambiguous fails the build. Classes no CSS styles are hooks.
+// A component's markup can use classes another item styles. Imports cannot reveal that, so: every kl-* class an
+// item's source uses that neither its own CSS nor the theme styles must come from an item it depends on. If none of
+// its (transitive) dependencies styles it, the item whose CSS styles it becomes a dependency: the one named by the
+// class's prefix (kl-<item>-*) when several mention it, the only one otherwise; still ambiguous fails the build.
+// Classes no CSS styles are hooks.
 function cssDependencies(metas: Meta[], derived: Map<string, Set<string>>) {
   const classesIn = (txt: string) => new Set([...txt.matchAll(/\.(kl-[a-z0-9-]+)/g)].map((m) => m[1] ?? ""));
   const styled = new Map(metas.flatMap((it) => (it.cssFile ? [[it.name, classesIn(read(it.cssFile))] as const] : [])));
@@ -211,7 +211,7 @@ function cssDependencies(metas: Meta[], derived: Map<string, Set<string>>) {
       (it.files ?? []).flatMap((f) => [...read(f.path).matchAll(/["'`\s(](kl-[a-z0-9-]+)/g)].map((m) => m[1] ?? "")),
     );
     const ownersOf = (c: string) => [...styled].filter(([n, set]) => n !== it.name && set.has(c)).map(([n]) => n);
-    // classes with one owner first: they often settle the ambiguous ones (switch's .kl-choice-row -> checkbox)
+    // classes with one owner first: they often settle the ambiguous ones
     const pending = [...used]
       .filter((c) => !own.has(c) && !themeClasses.has(c))
       .sort((a, b) => ownersOf(a).length - ownersOf(b).length || a.localeCompare(b));

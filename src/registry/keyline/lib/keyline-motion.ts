@@ -248,7 +248,9 @@ function inkRoom(el: HTMLElement, axis: "x" | "y", fwd: boolean) {
     } else if (
       n instanceof SVGSVGElement ||
       n instanceof HTMLImageElement ||
-      (n as HTMLElement).matches?.(".kl-lamp, .kl-check, .kl-radio, .kl-glyph")
+      (n as HTMLElement).matches?.(
+        ".kl-lamp, .kl-glyph, [data-slot=checkbox], [data-slot=radio-indicator], [data-slot=questionnaire-choice-mark]",
+      )
     ) {
       take((n as Element).getBoundingClientRect());
     }

@@ -821,6 +821,170 @@
         "width": "10px",
         "height": "0",
         "border-block-start": "2px solid currentColor"
+      },
+      ".kl-field": {
+        "display": "grid",
+        "gap": "6px",
+        "min-width": "0",
+        "align-content": "start",
+        "border": "0",
+        "margin": "0",
+        "padding": "0"
+      },
+      ".kl-field-label": {
+        "display": "flex",
+        "align-items": "baseline",
+        "gap": "8px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "var(--kl-text-label)",
+        "padding": "0"
+      },
+      ".kl-field-frame": {
+        "display": "flex",
+        "min-height": "var(--kl-ctl)",
+        "background-color": "var(--kl-cell)",
+        "cursor": "text"
+      },
+      ".kl-field-frame:hover:not(:has(:is(input, textarea):focus))": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-field-input": {
+        "flex": "1",
+        "min-width": "0",
+        "width": "0",
+        "border": "0",
+        "margin": "0",
+        "background": "transparent",
+        "color": "inherit",
+        "padding": "0 var(--kl-inset)",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "var(--kl-text-lead)",
+        "outline": "0"
+      },
+      ".kl-field-input[data-align=\"end\"]": {
+        "text-align": "end",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-field-input::-webkit-search-cancel-button, .kl-field-input::-webkit-search-decoration": {
+        "appearance": "none",
+        "display": "none"
+      },
+      ".kl-field-input::placeholder": {
+        "color": "var(--kl-ink-3)",
+        "opacity": "1"
+      },
+      ".kl-field-affix": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "min-width": "38px",
+        "padding-inline": "8px",
+        "font": "500 var(--kl-text-label) / 1 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-field-bang > span > span": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "30px",
+        "height": "100%",
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)",
+        "font-weight": "var(--kl-weight-display)",
+        "font-size": "var(--kl-text-lead)"
+      },
+      ".kl-field-bang > span": {
+        "display": "flex"
+      },
+      ".kl-field-frame > .kl-field-bang": {
+        "flex": "none"
+      },
+      ".kl-field[data-invalid] .kl-field-frame": {
+        "border-color": "var(--kl-red)",
+        "--kl-cut-line": "var(--kl-red)"
+      },
+      ".kl-field[data-invalid] .kl-ctl.kl-edge": {
+        "--kl-edge-w": "var(--kl-ring)"
+      },
+      ".kl-field[data-kl-layout=\"cell\"]": {
+        "gap": "0",
+        "flex": "1",
+        "align-self": "stretch",
+        "align-content": "stretch"
+      },
+      ".kl-field-frame[data-kl-layout=\"cell\"]": {
+        "min-height": "var(--kl-row)",
+        "height": "100%"
+      },
+      ".kl-field-frame[data-kl-layout=\"cell\"]:hover:not(:has(:is(input, textarea):focus))": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-field[data-invalid] .kl-field-bang": {
+        "grid-template-columns": "1fr",
+        "border-inline-start-color": "var(--kl-red)",
+        "transition": "grid-template-columns var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-field[data-invalid] .kl-field-bang + *": {
+        "border-inline-start-color": "var(--kl-red)"
+      },
+      ".kl-field-frame > .kl-slot:first-child + *": {
+        "border-inline-start": "0"
+      },
+      ".kl-field[data-invalid] .kl-field-frame > .kl-slot:first-child + *": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-red)"
+      },
+      ".kl-field[data-disabled] .kl-field-frame": {
+        "background-color": "var(--kl-cell)",
+        "background-image": "var(--kl-hatch)",
+        "border-color": "var(--kl-dis-line)",
+        "--kl-cut-line": "var(--kl-dis-line)",
+        "cursor": "not-allowed"
+      },
+      ".kl-field[data-disabled] .kl-field-frame > * + *": {
+        "border-color": "var(--kl-dis-line)"
+      },
+      ".kl-field[data-disabled] .kl-field-input": {
+        "color": "var(--kl-dis)",
+        "cursor": "not-allowed"
+      },
+      ".kl-field[data-disabled] .kl-field-label": {
+        "color": "var(--kl-ink-2)"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field)": {
+        "grid-template-columns": "var(--kl-form-label, 11rem) minmax(0, 1fr)",
+        "column-gap": "var(--kl-form-gap, 16px)"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > *": {
+        "grid-column": "2",
+        "align-self": "start"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > .kl-field-label": {
+        "grid-column": "1",
+        "grid-row": "1",
+        "min-height": "var(--kl-ctl)",
+        "align-items": "center"
+      },
+      "[data-kl-form-orientation=\"horizontal\"] > :is([data-slot=\"form-actions\"], [data-kl-span=\"control\"])": {
+        "margin-inline-start": "calc(var(--kl-form-label, 11rem) + var(--kl-form-gap, 16px))"
+      },
+      "@container kl-form (min-width: 560px)": {
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field)": {
+          "grid-template-columns": "var(--kl-form-label, 11rem) minmax(0, 1fr)",
+          "column-gap": "var(--kl-form-gap, 16px)"
+        },
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > *": {
+          "grid-column": "2",
+          "align-self": "start"
+        },
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > .kl-field-label": {
+          "grid-column": "1",
+          "grid-row": "1",
+          "min-height": "var(--kl-ctl)",
+          "align-items": "center"
+        },
+        "[data-kl-form-orientation=\"responsive\"] > :is([data-slot=\"form-actions\"], [data-kl-span=\"control\"])": {
+          "margin-inline-start": "calc(var(--kl-form-label, 11rem) + var(--kl-form-gap, 16px))"
+        }
       }
     },
     "@keyframes kl-more-pin": {

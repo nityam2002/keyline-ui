@@ -16,18 +16,34 @@ export const metadata = componentMetadata(
   "field",
 );
 
-const IMPORT = `import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldInput, FieldError } from "@/components/keyline/ui/field"`;
+const IMPORT = `import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldControl, FieldError } from "@/components/keyline/ui/field"`;
 
 const USAGE = `<Form onFormSubmit={placeOrder}>
   <Field name="client">
     <FieldLabel>Client</FieldLabel>
     <FieldFrame>
-      <FieldInput required />
+      <FieldControl required />
     </FieldFrame>
     <FieldError match="valueMissing">Who is the order for?</FieldError>
   </Field>
   <FormActions>
     <Button type="submit" variant="primary">Place order</Button>
+  </FormActions>
+</Form>`;
+
+const PARTS = `<Form onFormSubmit={save}>
+  <FieldRoot name="weight" validate={(v) => (Number(v) > 0 ? null : "Enter the weight")}>
+    <FieldLabel>Weight</FieldLabel>
+    <FieldFrame>
+      <FieldControl inputMode="decimal" align="end" />
+      <FieldAffix>kg</FieldAffix>
+    </FieldFrame>
+    <FieldDescription>Gross, with the pallet</FieldDescription>
+    <FieldError />
+    <FieldValidity>{(state) => (state.validity.valid ? null : <Notice>Check the scale</Notice>)}</FieldValidity>
+  </FieldRoot>
+  <FormActions>
+    <Button type="submit" variant="primary">Save</Button>
   </FormActions>
 </Form>`;
 
@@ -120,10 +136,16 @@ const TOC: TocGroup[] = [
     label: "Examples",
     items: [
       { id: "server-errors", label: "Server errors" },
-      { id: "parts", label: "Several parts" },
+      { id: "group", label: "Several parts" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function FieldPage() {
@@ -164,7 +186,7 @@ export default function FieldPage() {
         code={code("field-tracking.tsx", "server errors example code")}
       />
 
-      <h3 id="parts">Several parts</h3>
+      <h3 id="group">Several parts</h3>
       <p>
         <code>FieldGroup</code> puts several labelled inputs in one frame. A rule across them goes in{" "}
         <code>FieldGroupError</code>, and <code>invalid</code> marks the part that broke it.
@@ -178,10 +200,32 @@ export default function FieldPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Field and form props" props={PROPS} />
       <p className="s-small">
-        Also exported: <code>FieldTextarea</code>, <code>FieldAffix</code> for a unit or icon cell,{" "}
-        <code>FieldBar</code> for a row across the frame, <code>FieldDescription</code>, and the <code>FieldGroup</code>{" "}
-        parts. Built on <a href="https://base-ui.com/react/components/field">Base UI Field</a> and{" "}
-        <a href="https://base-ui.com/react/components/form">Form</a>.
+        Built on <a href="https://base-ui.com/react/components/field">Base UI Field</a>,{" "}
+        <a href="https://base-ui.com/react/components/fieldset">Fieldset</a> and{" "}
+        <a href="https://base-ui.com/react/components/form">Form</a>; their other props pass through.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>Form</code>, <code>FieldRoot</code> (also exported as{" "}
+        <code>Field</code>), <code>FieldLabel</code>, <code>FieldControl</code>, <code>FieldDescription</code>,{" "}
+        <code>FieldError</code>, <code>FieldValidity</code> (a function child with the field&apos;s validity, no
+        element), <code>Fieldset</code> and <code>FieldsetLegend</code>. Keyline adds the frame and its cells:{" "}
+        <code>FieldFrame</code>, <code>FieldTextarea</code> (a <code>FieldControl</code> rendering a textarea),{" "}
+        <code>FieldAffix</code> for a unit or icon cell, <code>FieldBar</code> for a row across the frame, and{" "}
+        <code>FormActions</code>; and for several inputs in one frame, <code>FieldGroup</code>,{" "}
+        <code>FieldGroupPart</code>, <code>FieldGroupJoin</code> and <code>FieldGroupError</code>. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>form</code>, <code>field</code>,{" "}
+        <code>field-label</code>, <code>field-frame</code>, <code>field-control</code>, <code>field-affix</code>,{" "}
+        <code>field-description</code>, <code>field-error</code>, <code>fieldset</code> and so on), and Base UI&apos;s
+        state attributes on the field and its parts: <code>data-invalid</code>, <code>data-valid</code>,{" "}
+        <code>data-dirty</code>, <code>data-touched</code>, <code>data-filled</code>, <code>data-focused</code> and{" "}
+        <code>data-disabled</code>. The frame has <code>data-kl-layout</code>, a field with an <code>orientation</code>{" "}
+        has <code>data-kl-orientation</code>, and the form has <code>data-kl-form-orientation</code>.
       </p>
     </DocPage>
   );

@@ -6,8 +6,10 @@ import { Questionnaire as Q } from "@shadcn/react/questionnaire";
 import { cn } from "@/lib/utils";
 import { useStretch } from "../lib/keyline-motion";
 import { Button } from "./button";
-import { FieldFrame } from "./field";
+import { checkboxStyles, choiceStyles } from "./checkbox";
+import { FieldFrame, fieldStyles } from "./field";
 import { Progress } from "./progress";
+import { radioStyles } from "./radio-group";
 
 /*
  * A questionnaire on @shadcn/react's Questionnaire, as the reference. The library owns the behaviour:
@@ -135,7 +137,7 @@ function QuestionnaireTitle({
 }
 
 function QuestionnaireDescription({ className, ...props }: React.ComponentProps<typeof Q.Description>) {
-  return <Q.Description className={cn("kl-field-desc kl-q-desc", className)} {...props} />;
+  return <Q.Description className={cn(fieldStyles.description, "kl-q-desc", className)} {...props} />;
 }
 
 /**
@@ -165,10 +167,10 @@ function QuestionnaireChoices({ className, children, ...props }: React.Component
       data-slot="questionnaire-choices"
       data-kl-stretch=""
       data-multiple={multiple || undefined}
-      className={cn("kl-ctl kl-rows kl-radio-group kl-q-choices", className)}
+      className={cn(radioStyles.group, "kl-q-choices", className)}
       {...props}
     >
-      <span data-kl-band="" className="kl-radio-band" aria-hidden hidden />
+      <span data-kl-band="" className={radioStyles.band} aria-hidden hidden />
       {children}
     </Q.Choices>
   );
@@ -185,39 +187,51 @@ function QuestionnaireChoice({
     <Q.Choice
       data-slot="questionnaire-choice"
       data-kl-item=""
-      className={cn("kl-key kl-radio-row kl-q-choice", className)}
+      className={cn(radioStyles.row, "kl-q-choice", className)}
       {...props}
       render={(rp, s) => (
         <label {...rp}>
           <Q.ChoiceInput className="kl-q-input" />
-          <span className="kl-choice-box" aria-hidden>
+          <span data-slot="questionnaire-choice-box" className={choiceStyles.box} aria-hidden>
             {s.type === "radio" ? (
-              <span className="kl-radio">
-                <span
-                  className="kl-radio-dot"
-                  data-checked={s.checked ? "" : undefined}
-                  data-unchecked={s.checked ? undefined : ""}
-                />
+              <span
+                data-slot="questionnaire-choice-mark"
+                className={radioStyles.indicator}
+                data-checked={s.checked ? "" : undefined}
+                data-unchecked={s.checked ? undefined : ""}
+              >
+                <span className={radioStyles.dot} />
               </span>
             ) : (
               <span
-                className="kl-check"
+                data-slot="questionnaire-choice-mark"
+                className={checkboxStyles.root}
                 data-checked={s.checked ? "" : undefined}
+                data-unchecked={s.checked ? undefined : ""}
                 data-disabled={s.disabled ? "" : undefined}
               >
                 <span
-                  className="kl-check-ind"
+                  className={checkboxStyles.indicator}
                   data-checked={s.checked ? "" : undefined}
                   data-unchecked={s.checked ? undefined : ""}
                 />
               </span>
             )}
           </span>
-          <Q.ChoiceLabel className="kl-choice-text">
-            <span className="kl-choice-label">{children}</span>
-            {description ? <span className="kl-choice-desc">{description}</span> : null}
+          <Q.ChoiceLabel data-slot="questionnaire-choice-text" className={choiceStyles.text}>
+            <span data-slot="questionnaire-choice-label" className={choiceStyles.label}>
+              {children}
+            </span>
+            {description ? (
+              <span data-slot="questionnaire-choice-description" className={radioStyles.description}>
+                {description}
+              </span>
+            ) : null}
           </Q.ChoiceLabel>
-          <Q.ChoiceShortcut className="kl-code kl-radio-meta kl-q-key" />
+          <Q.ChoiceShortcut
+            data-slot="questionnaire-choice-key"
+            className={cn("kl-code", radioStyles.meta, "kl-q-key")}
+          />
         </label>
       )}
     />
@@ -253,7 +267,8 @@ function QuestionnaireInput({ className, ...props }: React.ComponentProps<typeof
 function QuestionnaireError({ className, ...props }: React.ComponentProps<typeof Q.Error>) {
   return (
     <Q.Error
-      className={cn("kl-field-error kl-q-error", className)}
+      data-slot="questionnaire-error"
+      className={cn(fieldStyles.error, "kl-q-error", className)}
       {...props}
       render={(ep) => (
         <p {...ep}>

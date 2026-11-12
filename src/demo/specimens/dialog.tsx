@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
   AlertDialogContent,
 } from "@/registry/keyline/ui/dialog";
-import { Field, FieldLabel, FieldFrame, FieldInput, FieldDescription, FieldError } from "@/registry/keyline/ui/field";
+import { Field, FieldLabel, FieldFrame, FieldControl, FieldDescription, FieldError } from "@/registry/keyline/ui/field";
 
 /* ------------------------------------------------------------------ *
  * 2. Dialog and alert dialog
@@ -54,7 +54,7 @@ export function DialogSpecimen() {
                 <FieldLabel>Name</FieldLabel>
                 <FieldFrame>
                   {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- a rename dialog opens with its field focused */}
-                  <FieldInput value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus />
+                  <FieldControl value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus />
                 </FieldFrame>
                 <FieldDescription>Up to 40 characters.</FieldDescription>
                 <FieldError match>Give the view a name.</FieldError>

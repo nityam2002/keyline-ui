@@ -8,7 +8,7 @@ import {
   FieldDescription,
   FieldError,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldLabel,
   FieldTextarea,
   Form,
@@ -33,7 +33,7 @@ export function NewOrder() {
       <Field name="client">
         <FieldLabel>Client</FieldLabel>
         <FieldFrame>
-          <FieldInput required defaultValue="Scranton Business Park" autoComplete="organization" />
+          <FieldControl required defaultValue="Scranton Business Park" autoComplete="organization" />
         </FieldFrame>
         <FieldError match="valueMissing">Who is the order for?</FieldError>
       </Field>
@@ -45,7 +45,7 @@ export function NewOrder() {
       >
         <FieldLabel>Quantity</FieldLabel>
         <FieldFrame>
-          <FieldInput type="number" inputMode="numeric" min={1} required defaultValue="40" align="end" />
+          <FieldControl type="number" inputMode="numeric" min={1} required defaultValue="40" align="end" />
           <FieldAffix>cases</FieldAffix>
         </FieldFrame>
         <FieldDescription>20 lb copy paper, 10 reams to a case.</FieldDescription>

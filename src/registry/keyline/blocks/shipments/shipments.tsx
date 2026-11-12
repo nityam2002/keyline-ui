@@ -29,7 +29,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldAffix,
   FieldDescription,
   FieldError,
@@ -418,7 +418,7 @@ function ShipmentInspector({
               <Field invalid={!!show("reference")} disabled={state === "cancelled"}>
                 <FieldLabel>Customer reference</FieldLabel>
                 <FieldFrame>
-                  <FieldInput
+                  <FieldControl
                     data-insp-field="reference"
                     value={draft.reference}
                     onChange={set("reference")}
@@ -439,7 +439,7 @@ function ShipmentInspector({
               <Field invalid={!!show("kg")} disabled={state === "cancelled"}>
                 <FieldLabel>Gross weight</FieldLabel>
                 <FieldFrame>
-                  <FieldInput
+                  <FieldControl
                     data-insp-field="kg"
                     inputMode="decimal"
                     align="end"

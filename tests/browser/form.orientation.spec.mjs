@@ -20,10 +20,10 @@ test("form: orientation, label column, validation, server error, success", async
     L.x + L.width <= F.x && near(L.y + L.height / 2, F.y + F.height / 2, 3),
     { L, F },
   );
-  const act = await box(f.locator(".kl-form-actions"));
+  const act = await box(f.locator("[data-slot=form-actions]"));
   ok("form: actions sit in the control column", near(act.x, F.x, 1), { act: act.x, F: F.x });
   const labels = await f
-    .locator(".kl-form > .kl-field > .kl-field-label, .kl-form > .kl-field > * > .kl-field-label")
+    .locator("[data-slot=form] > .kl-field > .kl-field-label, [data-slot=form] > .kl-field > * > .kl-field-label")
     .evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().width)));
   ok("form: every field's label column has the same width", new Set(labels).size === 1, labels);
   await f.getByRole("radio", { name: "Vertical" }).click();

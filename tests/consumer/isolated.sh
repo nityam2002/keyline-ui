@@ -33,29 +33,35 @@ $SHADCN init -t vite -b base -p nova -y --no-monorepo
 $SHADCN registry add "@keyline-ui=$REG"
 
 fails=0
-check() { # item, component file, export, selector that must be in the CSS
+check() { # item, component file, export, selector that must be in the CSS (or file:<path> that must be installed)
   local item=$1 file=$2 name=$3 sel=$4
   $SHADCN add "@keyline-ui/$item" -y >/dev/null
   printf 'import { %s } from "@/components/keyline/ui/%s"\nexport const used = %s\n' "$name" "$file" "$name" > "src/use-$item.ts"
-  if grep -qF "$sel" src/index.css; then echo "  ✓ $item: brought $sel"; else echo "  ✖ $item: $sel missing from the CSS"; fails=$((fails + 1)); fi
+  if [[ $sel == file:* ]]; then
+    if [ -f "${sel#file:}" ]; then echo "  ✓ $item: brought ${sel#file:}"; else echo "  ✖ $item: ${sel#file:} not installed"; fails=$((fails + 1)); fi
+  elif grep -qF "$sel" src/index.css; then echo "  ✓ $item: brought $sel"; else echo "  ✖ $item: $sel missing from the CSS"; fails=$((fails + 1)); fi
 }
-# each pair: the item, and a rule from the item it depends on only through its CSS
+# each pair: the item, and a rule from the item it depends on only through its CSS. Field's frame and ! cell are
+# shared construction, so they come with the theme: number-field, time-field, otp-field and native-select check that.
 check number-field number-field NumberField ".kl-field-frame"
-check switch switch Switch ".kl-choice-row"
+# Switch's row is the checkbox's choice row, utilities in checkbox.tsx (choiceStyles): the file must arrive, and the
+# build below must generate its rules
+check switch switch Switch "file:src/components/keyline/ui/checkbox.tsx"
 check time-field time-field TimeField ".kl-field-frame"
 check app-shell app-shell AppShell ".kl-nav-ic"
 check tabs tabs Tabs ".kl-more-fade"
-check checkbox-group checkbox-group CheckboxGroup ".kl-choice-row"
+check checkbox-group checkbox-group CheckboxGroup "file:src/components/keyline/ui/checkbox.tsx"
 # Table now composes toolbar (filter tokens in a toolbar), so its CSS must come with it
 check table table TableSortHeader ".kl-tb-item"
 # The date picker ships its own CSS (the time row); time-field is already here
 check date-picker date-picker DateTimePicker ".kl-dtp-time"
 check date-picker date-picker Calendar ".kl-cal-dd"
-# Avatar needs only the theme (its count's key travel); hover-card the theme's positioner; otp-field Field's frame and ! cell
+# Avatar needs only the theme (its count's key travel); hover-card the theme's positioner; otp-field the field's frame
+# and ! cell (theme)
 check avatar avatar AvatarGroup ".kl-key"
 check hover-card hover-card HoverCardPopup ".kl-positioner"
 check otp-field otp-field OtpField ".kl-field-bang"
-# Kbd and toggle need only the theme; native-select brings Field's frame and ! cell. Command has no CSS of its own
+# Kbd and toggle need only the theme; native-select needs the field's frame and ! cell (theme). Command has no CSS of its own
 # (its rows, footer and kbd tone are utilities in command.tsx); what it needs from CSS is the theme's flood
 check kbd kbd KbdGroup ".kl-sr"
 check toggle toggle Toggle ".kl-flood"
@@ -67,5 +73,8 @@ check navigation-menu navigation-menu NavigationMenu ".kl-positioner"
 printf 'import "./index.css"\n' > src/main.tsx
 npx tsc -p tsconfig.json
 npx vite build >/dev/null
+# the choice row's utilities come from the installed checkbox.tsx (Tailwind scans it): its group-active/choice-row
+# press rule is in no other file
+if grep -qF 'choice-row' dist/assets/*.css; then echo "  ✓ build: the choice row's rules generated"; else echo "  ✖ build: no choice-row rules in the CSS"; fails=$((fails + 1)); fi
 echo "isolated: ${fails} missing"
 exit $fails

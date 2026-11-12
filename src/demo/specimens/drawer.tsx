@@ -13,7 +13,7 @@ import {
   DrawerTrigger,
 } from "@/registry/keyline/ui/drawer";
 import { Button } from "@/registry/keyline/ui/button";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/registry/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/registry/keyline/ui/field";
 
 /* ------------------------------------------------------------------ *
  * 4. Drawer (Base UI Drawer: swipe to dismiss)
@@ -24,13 +24,13 @@ function DamageForm() {
       <Field>
         <FieldLabel>Pallet</FieldLabel>
         <FieldFrame>
-          <FieldInput defaultValue="PLT-4492-07" />
+          <FieldControl defaultValue="PLT-4492-07" />
         </FieldFrame>
       </Field>
       <Field>
         <FieldLabel>What is damaged</FieldLabel>
         <FieldFrame>
-          <FieldInput defaultValue="Corner block crushed, wrap torn" />
+          <FieldControl defaultValue="Corner block crushed, wrap torn" />
         </FieldFrame>
       </Field>
     </>

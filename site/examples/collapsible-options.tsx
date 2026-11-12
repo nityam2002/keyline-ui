@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@/components/keyline/ui/collapsible";
-import { Field, FieldDescription, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Field, FieldDescription, FieldFrame, FieldControl, FieldLabel } from "@/components/keyline/ui/field";
 import { SwitchField } from "@/components/keyline/ui/switch";
 
 export function DeliveryOptions() {
@@ -15,7 +15,7 @@ export function DeliveryOptions() {
       <Field>
         <FieldLabel>Deliver to</FieldLabel>
         <FieldFrame>
-          <FieldInput defaultValue="200 North Washington Avenue" />
+          <FieldControl defaultValue="200 North Washington Avenue" />
         </FieldFrame>
       </Field>
       <Collapsible>
@@ -30,7 +30,7 @@ export function DeliveryOptions() {
           <Field>
             <FieldLabel>Delivery window</FieldLabel>
             <FieldFrame>
-              <FieldInput value={window} onChange={(e) => setWindow(e.target.value)} placeholder="9:00 to 11:00" />
+              <FieldControl value={window} onChange={(e) => setWindow(e.target.value)} placeholder="9:00 to 11:00" />
             </FieldFrame>
             <FieldDescription>Darryl plans the route the night before.</FieldDescription>
           </Field>

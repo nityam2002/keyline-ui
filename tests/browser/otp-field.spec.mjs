@@ -78,7 +78,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
         a = document.activeElement;
       return (
         f.hasAttribute("data-invalid") &&
-        /doesn't match/.test(f.querySelector(".kl-field-error")?.textContent ?? "") &&
+        /doesn't match/.test(f.querySelector("[data-slot=field-error]")?.textContent ?? "") &&
         f.querySelector(".kl-field-bang")?.getBoundingClientRect().width > 20 &&
         a?.classList.contains("kl-otp-slot") &&
         !a.getAttribute("aria-label") &&
@@ -88,7 +88,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     ok(
       `${q}: failed: invalid, the ! cell and the message`,
       (await f.getAttribute("data-invalid")) !== null &&
-        /doesn't match/.test(await f.locator(".kl-field-error").textContent()) &&
+        /doesn't match/.test(await f.locator("[data-slot=field-error]").textContent()) &&
         (await f.locator(".kl-field-bang").evaluate((x) => x.getBoundingClientRect().width)) > 20,
       null,
     );
@@ -149,13 +149,14 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await until(p, () => {
       const f = document.querySelector("[data-testid=otp-form]");
       return (
-        f.querySelector(".kl-otp")?.hasAttribute("data-invalid") && f.querySelectorAll(".kl-field-error").length === 1
+        f.querySelector(".kl-otp")?.hasAttribute("data-invalid") &&
+        f.querySelectorAll("[data-slot=field-error]").length === 1
       );
     });
     ok(
       `${q}: Form: an empty required code is invalid with a message`,
       (await form.locator(".kl-otp").getAttribute("data-invalid")) !== null &&
-        (await form.locator(".kl-field-error").count()) === 1,
+        (await form.locator("[data-slot=field-error]").count()) === 1,
       null,
     );
     const rslots = form.locator("input.kl-otp-slot");
@@ -168,11 +169,13 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     );
     await form.getByRole("button", { name: "Use code" }).click();
     await until(p, () =>
-      /at least one digit/.test(document.querySelector("[data-testid=otp-form] .kl-field-error")?.textContent ?? ""),
+      /at least one digit/.test(
+        document.querySelector("[data-testid=otp-form] [data-slot=field-error]")?.textContent ?? "",
+      ),
     );
     ok(
       `${q}: Form: validate rejects a code without a digit`,
-      /at least one digit/.test(await form.locator(".kl-field-error").textContent()),
+      /at least one digit/.test(await form.locator("[data-slot=field-error]").textContent()),
       null,
     );
     await rslots.first().click();

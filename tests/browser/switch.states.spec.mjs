@@ -6,7 +6,7 @@ test.use({ only: ["select", "choices"] });
 
 const state = (loc) =>
   loc.evaluate((e) => {
-    const t = e.querySelector(".kl-switch-thumb"),
+    const t = e.querySelector("[data-slot=switch-thumb]"),
       r = e.getBoundingClientRect(),
       tr = t.getBoundingClientRect(),
       cs = getComputedStyle(t);
@@ -85,7 +85,7 @@ test("switch: RTL and reduced motion", async ({ open, ok }) => {
   const swr = p.getByRole("switch", { name: "Standalone switch" }).first();
   await swr.click();
   const rtl = await swr.evaluate((e) => {
-    const t = e.querySelector(".kl-switch-thumb"),
+    const t = e.querySelector("[data-slot=switch-thumb]"),
       r = e.getBoundingClientRect(),
       tr = t.getBoundingClientRect();
     return { leftHalf: tr.left + tr.width / 2 < r.left + r.width / 2, dur: getComputedStyle(t).transitionDuration };

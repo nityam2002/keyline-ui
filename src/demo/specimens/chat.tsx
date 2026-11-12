@@ -3,7 +3,7 @@ import * as ui from "../demo-ui";
 import { Avatar } from "@/registry/keyline/ui/avatar";
 import { Button } from "@/registry/keyline/ui/button";
 import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/registry/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/registry/keyline/ui/field";
 import {
   Message,
   MessageAvatar,
@@ -463,7 +463,7 @@ function ConversationLog() {
           <Field style={{ flex: 1 }}>
             <FieldLabel className="sr-only">Message</FieldLabel>
             <FieldFrame>
-              <FieldInput
+              <FieldControl
                 value={draft}
                 onValueChange={(v) => setDraft(String(v))}
                 placeholder="Write to Tomasz"

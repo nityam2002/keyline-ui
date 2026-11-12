@@ -77,7 +77,7 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
   ok(
     "number: invalid inserts the ! cell before the − and shows its message",
     bang.width > 20 &&
-      (await bad.locator(".kl-field-error").isVisible()) &&
+      (await bad.locator("[data-slot=field-error]").isVisible()) &&
       (await bad.locator(".kl-field-bang").evaluate((e) => e.nextElementSibling.classList.contains("kl-number-step"))),
     bang,
   );

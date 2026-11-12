@@ -29,6 +29,15 @@ const USAGE = `<CheckboxGroup
   onValueChange={setTo}
 />`;
 
+const PARTS = `<CheckboxGroupRoot name="notify" defaultValue={["delayed"]} allValues={["delayed", "delivered"]}>
+  <CheckboxGroupLegend>Notify me about</CheckboxGroupLegend>
+  <CheckboxGroupFrame>
+    <CheckboxGroupItem parent label="All events" />
+    <CheckboxGroupItem value="delayed" label="Delayed" meta="12" />
+    <CheckboxGroupItem value="delivered" label="Delivered" meta="48" />
+  </CheckboxGroupFrame>
+</CheckboxGroupRoot>`;
+
 const PROPS: Prop[] = [
   { name: "legend", type: "ReactNode", default: "—", description: "The question the group answers. Required." },
   {
@@ -47,7 +56,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        The checked values, with <code>onValueChange</code>. Or start with <code>defaultValue</code>.
+        The checked values, with <code>onValueChange</code>, which also gets Base UI&apos;s event details (the reason
+        for the change, and the event). Or start with <code>defaultValue</code>.
       </>
     ),
   },
@@ -95,7 +105,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "in-a-form", label: "In a form" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function CheckboxGroupPage() {
@@ -141,6 +157,26 @@ export default function CheckboxGroupPage() {
         Also exported: <code>CheckboxGroupItem</code>, for a row the options can&apos;t describe. Tab visits each box
         and Space toggles it. Built on{" "}
         <a href="https://base-ui.com/react/components/checkbox-group">Base UI Checkbox Group</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts: <code>CheckboxGroupRoot</code> (Base UI&apos;s CheckboxGroup, as a fieldset in its own Field, so{" "}
+        <code>name</code>, <code>invalid</code> and <code>validate</code> reach a Form),{" "}
+        <code>CheckboxGroupLegend</code> (Base UI&apos;s Fieldset.Legend), <code>CheckboxGroupFrame</code> and{" "}
+        <code>CheckboxGroupItem</code> rows (a Base UI Field.Item with a Checkbox; <code>parent</code> makes it the All
+        row). <code>CheckboxGroup</code> is built from them. Every part but the row takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state; the row&apos;s{" "}
+        <code>className</code> may be one too.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>checkbox-group</code>, <code>checkbox-group-legend</code>,{" "}
+        <code>checkbox-group-frame</code>, <code>checkbox-group-item</code>, with <code>checkbox-group-item-row</code>,{" "}
+        <code>-box</code>, <code>-text</code>, <code>-label</code>, <code>-description</code> and <code>-meta</code>{" "}
+        inside), and Base UI&apos;s state attributes: <code>data-disabled</code> and <code>data-invalid</code> on the
+        group and rows, and the checkbox&apos;s on each box. The parent row has <code>data-kl-parent</code>; the group
+        and frame have <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

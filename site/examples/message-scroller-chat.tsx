@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/keyline/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/keyline/ui/bubble";
 import { Button } from "@/components/keyline/ui/button";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/components/keyline/ui/field";
 import { Message, MessageAvatar, MessageContent, MessageHeader } from "@/components/keyline/ui/message";
 import {
   MessageScroller,
@@ -108,7 +108,7 @@ function Chat() {
         <Field className="flex-1">
           <FieldLabel className="sr-only">Message</FieldLabel>
           <FieldFrame>
-            <FieldInput value={draft} onValueChange={(v) => setDraft(String(v))} placeholder="Write to Darryl" />
+            <FieldControl value={draft} onValueChange={(v) => setDraft(String(v))} placeholder="Write to Darryl" />
           </FieldFrame>
         </Field>
         <Button type="submit" variant="primary">

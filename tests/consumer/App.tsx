@@ -23,7 +23,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldAffix,
   FieldDescription,
   FieldError,
@@ -272,7 +272,7 @@ function Settings() {
         <Field invalid={invalid}>
           <FieldLabel>Alert address</FieldLabel>
           <FieldFrame>
-            <FieldInput value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+            <FieldControl value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
             <FieldAffix>@</FieldAffix>
           </FieldFrame>
           {invalid ? (
@@ -548,7 +548,7 @@ function CreateDialog() {
             <Field>
               <FieldLabel>Reference</FieldLabel>
               <FieldFrame>
-                <FieldInput name="ref" defaultValue="PO-4102" required />
+                <FieldControl name="ref" defaultValue="PO-4102" required />
               </FieldFrame>
             </Field>
             <Select
@@ -925,7 +925,7 @@ function Dispatch() {
               <Field name="reference" invalid={!!errors.reference}>
                 <FieldLabel>Reference</FieldLabel>
                 <FieldFrame>
-                  <FieldInput
+                  <FieldControl
                     placeholder="BK-40"
                     autoComplete="off"
                     {...register("reference", {
@@ -1756,7 +1756,7 @@ function ManifestLookup() {
             <Field>
               <FieldLabel>Container or booking</FieldLabel>
               <FieldFrame>
-                <FieldInput ref={input} name="q" value={q} onChange={(e) => setQ(e.target.value)} />
+                <FieldControl ref={input} name="q" value={q} onChange={(e) => setQ(e.target.value)} />
                 {q ? (
                   <Button
                     layout="cell"

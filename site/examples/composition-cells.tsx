@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/components/keyline/ui/field";
 import { Panel, PanelBody, PanelFooter, PanelHeader } from "@/components/keyline/ui/panel";
 import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented";
 
@@ -35,7 +35,7 @@ export function DeclaredCells() {
           <Field name="cases">
             <FieldLabel>Cases</FieldLabel>
             <FieldFrame>
-              <FieldInput type="number" inputMode="numeric" defaultValue="40" align="end" />
+              <FieldControl type="number" inputMode="numeric" defaultValue="40" align="end" />
               <Button layout="cell">Add 10</Button>
             </FieldFrame>
           </Field>

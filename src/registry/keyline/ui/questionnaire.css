@@ -84,25 +84,16 @@
   .kl-q-choices[data-multiple] .kl-q-choice:hover:not([data-disabled]) {
     background-color: var(--kl-tint);
   }
-  .kl-q-choice .kl-choice-label {
+  .kl-q-choice [data-slot="questionnaire-choice-label"] {
     overflow-wrap: anywhere;
   }
   .kl-q-choice .kl-q-key {
     --kl-radio-meta: 40px;
-    justify-content: center;
-    padding-inline: 0;
-    font-weight: 400;
-  }
-  .kl-q-choice .kl-q-key[hidden] {
-    display: none;
   }
   /* an invalid step: the choice frame turns red, as a field's does */
   .kl-q-item[data-invalid] .kl-q-choices {
     border-color: var(--kl-red);
     --kl-cut-line: var(--kl-red);
-  }
-  .kl-q-error[hidden] {
-    display: none;
   }
   /* action cells: Back at the start, Skip and Next at the end; hidden ones take no room */
   .kl-q-actions {
@@ -124,5 +115,19 @@
     .kl-q-item[data-invalid] .kl-q-choices {
       border-color: CanvasText;
     }
+  }
+}
+
+/* These override utilities the radio group's and the field's exported styles put on the same elements (the shortcut
+   cell is a radio meta cell; the error is a field error), so they sit in the utilities layer, keyed on attributes. */
+@layer utilities {
+  [data-slot="questionnaire-choice"] [data-slot="questionnaire-choice-key"] {
+    justify-content: center;
+    padding-inline: 0;
+    font-weight: 400;
+  }
+  [data-slot="questionnaire-choice"] [data-slot="questionnaire-choice-key"][hidden],
+  [data-slot="questionnaire-error"][hidden] {
+    display: none;
   }
 }

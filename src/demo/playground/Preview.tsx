@@ -18,7 +18,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldAffix,
   FieldDescription,
   FieldError,
@@ -203,7 +203,7 @@ function BookDialog() {
           <Field>
             <FieldLabel>Reference</FieldLabel>
             <FieldFrame>
-              <FieldInput defaultValue="PO-4102" />
+              <FieldControl defaultValue="PO-4102" />
             </FieldFrame>
           </Field>
           <Select
@@ -269,7 +269,7 @@ function CarrierSheet() {
           <Field>
             <FieldLabel>Account manager</FieldLabel>
             <FieldFrame>
-              <FieldInput defaultValue="Ines Brandt" />
+              <FieldControl defaultValue="Ines Brandt" />
             </FieldFrame>
           </Field>
           <SwitchField label="Allow weekend pickups" description="Saturday 08:00–12:00 only." defaultChecked />
@@ -301,7 +301,7 @@ function Settings() {
         <Field invalid={invalid}>
           <FieldLabel>Alert address</FieldLabel>
           <FieldFrame>
-            <FieldInput value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+            <FieldControl value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
           </FieldFrame>
           {invalid ? (
             <FieldError match>Enter a full address, like ops@acme.com.</FieldError>
@@ -312,7 +312,7 @@ function Settings() {
         <Field>
           <FieldLabel>Escalate after</FieldLabel>
           <FieldFrame>
-            <FieldInput defaultValue="4" inputMode="numeric" align="end" />
+            <FieldControl defaultValue="4" inputMode="numeric" align="end" />
             <FieldAffix>hours</FieldAffix>
           </FieldFrame>
         </Field>

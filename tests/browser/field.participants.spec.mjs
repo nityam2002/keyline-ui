@@ -150,7 +150,7 @@ test("participants: validate, values, slider validate, server errors, cells", as
   // cells
   const cells = sec.locator('.kl-cells:has(> [data-slot="select"])');
   const cellSel = cells.locator('[data-slot="select"]');
-  const cellErr = cellSel.locator(".kl-field-error");
+  const cellErr = cellSel.locator("[data-slot=field-error]");
   ok(
     "participants: an invalid Select cell keeps its message for assistive tech only (kl-sr)",
     (await cellErr.getAttribute("class")).includes("kl-sr") &&

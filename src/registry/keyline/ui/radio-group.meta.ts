@@ -6,7 +6,13 @@ export default {
   title: "Radio group",
   description: "Exclusive choice as framed rows; the ink band stretches to the chosen row.",
   files: [{ path: "src/registry/keyline/ui/radio-group.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/radio-group.css",
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-motion", "@keyline-ui/checkbox"],
+  registryDependencies: [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/checkbox",
+    "@keyline-ui/keyline-render",
+    "@keyline-ui/keyline-scope",
+  ],
 } satisfies KeylineItem;

@@ -18,7 +18,7 @@ import {
   FieldDescription,
   FieldError,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldLabel,
   Form,
 } from "@/components/keyline/ui/field";
@@ -53,14 +53,14 @@ export function NewClient() {
               <Field name="company">
                 <FieldLabel>Company</FieldLabel>
                 <FieldFrame>
-                  <FieldInput required autoComplete="organization" />
+                  <FieldControl required autoComplete="organization" />
                 </FieldFrame>
                 <FieldError match="valueMissing">Which company?</FieldError>
               </Field>
               <Field name="contact">
                 <FieldLabel>Contact</FieldLabel>
                 <FieldFrame>
-                  <FieldInput autoComplete="name" />
+                  <FieldControl autoComplete="name" />
                 </FieldFrame>
                 <FieldDescription>Who orders the paper.</FieldDescription>
               </Field>

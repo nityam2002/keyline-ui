@@ -96,7 +96,7 @@ function Slider<V extends number | readonly number[]>({
 
   return (
     <FieldPrimitive.Root
-      className="kl-field-host"
+      className="contents"
       name={props.name}
       disabled={props.disabled}
       invalid={invalid}

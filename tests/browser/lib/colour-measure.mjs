@@ -75,7 +75,9 @@ export async function measure(p, rootSel) {
         });
       }
       if (
-        el.matches(".kl-ctl:not([data-kl-layout=cell]), .kl-frame:not([data-kl-layout=cell]), .kl-check, .kl-switch") &&
+        el.matches(
+          ".kl-ctl:not([data-kl-layout=cell]), .kl-frame:not([data-kl-layout=cell]), [data-slot=checkbox], [data-slot=switch]",
+        ) &&
         parseFloat(s.borderTopWidth) > 0 &&
         !/rgba\(.*, 0\)$/.test(s.borderTopColor)
       ) {

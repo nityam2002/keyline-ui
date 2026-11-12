@@ -7,7 +7,7 @@ import {
   FieldDescription,
   FieldError,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldLabel,
   Form,
 } from "@/components/keyline/ui/field";
@@ -45,7 +45,7 @@ export function TrackShipment() {
       <Field name="tracking">
         <FieldLabel>Tracking number</FieldLabel>
         <FieldFrame>
-          <FieldInput required defaultValue="DM-9999" spellCheck={false} className="font-kl-mono" />
+          <FieldControl required defaultValue="DM-9999" spellCheck={false} className="font-kl-mono" />
           <Button type="submit" layout="cell" signal={busy ? "pending" : "idle"}>
             Track
           </Button>

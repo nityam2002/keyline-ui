@@ -18,7 +18,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/registry/keyline/ui/sheet";
-import { Field, FieldLabel, FieldFrame, FieldInput, FieldDescription } from "@/registry/keyline/ui/field";
+import { Field, FieldLabel, FieldFrame, FieldControl, FieldDescription } from "@/registry/keyline/ui/field";
 import { Slider } from "@/registry/keyline/ui/slider";
 import {
   DEFAULT_CONFIG,
@@ -531,7 +531,7 @@ const config = ${JSON.stringify(cfg, null, 2)}
           <Field>
             <FieldLabel>Scope (optional)</FieldLabel>
             <FieldFrame>
-              <FieldInput value={scope} onChange={(e) => setScope(e.target.value)} placeholder="Whole app" />
+              <FieldControl value={scope} onChange={(e) => setScope(e.target.value)} placeholder="Whole app" />
             </FieldFrame>
             <FieldDescription>
               Empty: the whole app (:root). A name, for example "billing": only elements with data-kl-config="billing",

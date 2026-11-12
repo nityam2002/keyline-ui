@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
 import { Empty } from "@/components/keyline/ui/empty";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/components/keyline/ui/field";
 
 const CLIENTS = [
   "Blue Cross of Pennsylvania",
@@ -23,7 +23,7 @@ export function ClientSearch() {
       <Field>
         <FieldLabel>Search clients</FieldLabel>
         <FieldFrame>
-          <FieldInput type="search" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} />
+          <FieldControl type="search" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} />
         </FieldFrame>
       </Field>
       {hits.length ? (

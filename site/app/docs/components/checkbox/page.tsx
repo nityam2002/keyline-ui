@@ -25,6 +25,10 @@ const USAGE = `<CheckboxField
   onCheckedChange={setLocked}
 />`;
 
+const PARTS = `<CheckboxRoot name="hazardous" aria-label="Hazardous goods" indeterminate={some}>
+  <CheckboxIndicator className={(state) => (state.indeterminate ? "opacity-60" : undefined)} />
+</CheckboxRoot>`;
+
 const PROPS: Prop[] = [
   {
     name: "label",
@@ -43,7 +47,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        With <code>onCheckedChange</code>. Or start with <code>defaultChecked</code>.
+        With <code>onCheckedChange</code>, which also gets Base UI&apos;s event details (the reason for the change, and
+        the event). Or start with <code>defaultChecked</code>.
       </>
     ),
   },
@@ -75,7 +80,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "bare", label: "Bare box" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function CheckboxPage() {
@@ -119,6 +130,23 @@ export default function CheckboxPage() {
       <p className="s-small">
         For several choices that answer one question, use Checkbox group. Built on{" "}
         <a href="https://base-ui.com/react/components/checkbox">Base UI Checkbox</a>; its other props pass through.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>CheckboxRoot</code> (also exported as <code>Checkbox</code>;
+        without children it draws its indicator) and <code>CheckboxIndicator</code> (the tick or the bar, kept mounted
+        so the box never jumps). <code>CheckboxField</code> is the labelled row built from them. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>checkbox</code>, <code>checkbox-indicator</code>; the row is{" "}
+        <code>checkbox-field</code>, with <code>checkbox-field-row</code>, <code>-box</code>, <code>-text</code>,{" "}
+        <code>-label</code> and <code>-description</code> inside), and Base UI&apos;s state attributes:{" "}
+        <code>data-checked</code>, <code>data-unchecked</code>, <code>data-indeterminate</code>,{" "}
+        <code>data-disabled</code>, <code>data-readonly</code>, <code>data-required</code> and <code>data-invalid</code>
+        . The row has <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

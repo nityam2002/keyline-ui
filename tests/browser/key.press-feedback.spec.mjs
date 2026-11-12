@@ -43,8 +43,16 @@ test("key: specimen families answer the press before release", async ({ open, ok
   // what shows: the background of the pressed thing (or of its box), never a hidden child
   const families = [
     [".kl-nav-i:not([aria-current])", "nav item", ""],
-    [".kl-choice-row:has(.kl-check:not([data-checked], [data-disabled]))", "checkbox row", ".kl-check"],
-    ["[data-slot=table] td.kl-ix .kl-ix-in:has(.kl-check[data-unchecked])", "table index cell", ".kl-check"],
+    [
+      ":is([data-slot=checkbox-field-row], [data-slot=checkbox-group-item-row]):has([data-slot=checkbox]:not([data-checked], [data-disabled]))",
+      "checkbox row",
+      "[data-slot=checkbox]",
+    ],
+    [
+      "[data-slot=table] td.kl-ix .kl-ix-in:has([data-slot=checkbox][data-unchecked])",
+      "table index cell",
+      "[data-slot=checkbox]",
+    ],
     ["button.kl-dr-trigger[data-kl-layout=control]", "date field trigger", ""],
     ["button.kl-dr-trigger[data-kl-layout=cell]", "date cell trigger", ""],
   ];
@@ -134,7 +142,7 @@ test("key cells: specimen families keep their cells on the frame", async ({ open
     ],
     ['[data-slot="button"]:has([data-slot=button-affix])', "button with an affix"],
     [".kl-tb-item:has(> .kl-tb-affix)", "toolbar item with an affix"],
-    [".kl-radio-row:has(> .kl-radio-meta):not([data-checked])", "radio row with a meta cell"],
+    ["[data-slot=radio-group-item]:has(> .kl-radio-meta):not([data-checked])", "radio row with a meta cell"],
     [".kl-acc-trigger", "accordion trigger"],
   ];
   for (const [sel, name] of families) await cellsCheck(p, ok, sel, name);

@@ -231,7 +231,7 @@ for (const theme of ["light", "dark"]) {
       await part.click();
       s = await state(p);
       const groupBand = await part.evaluate((i) => {
-        const g = i.closest(".kl-field-group-frame");
+        const g = i.closest("[data-slot=field-group-frame]");
         const b = getComputedStyle(g, "::before");
         return { content: b.content, outline: getComputedStyle(g).outlineStyle };
       });

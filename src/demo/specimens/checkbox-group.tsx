@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ui from "../demo-ui";
 import { Button } from "@/registry/keyline/ui/button";
-import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldInput } from "@/registry/keyline/ui/field";
+import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldControl } from "@/registry/keyline/ui/field";
 import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
 import { Popover, PopoverTrigger, PopoverPopup, PopoverHeader, PopoverFooter } from "@/registry/keyline/ui/popover";
 import { CheckboxGroup, CheckboxGroupItem } from "@/registry/keyline/ui/checkbox-group";
@@ -62,7 +62,7 @@ export function CheckboxGroupSpecimen() {
               <Field name="carrier">
                 <FieldLabel>Carrier</FieldLabel>
                 <FieldFrame>
-                  <FieldInput defaultValue="DSV Road" />
+                  <FieldControl defaultValue="DSV Road" />
                 </FieldFrame>
               </Field>
               <CheckboxGroup

@@ -5,7 +5,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldTextarea,
   FieldAffix,
   FieldBar,
@@ -40,7 +40,7 @@ function PasswordField() {
     <Field>
       <FieldLabel>Password</FieldLabel>
       <FieldFrame>
-        <FieldInput
+        <FieldControl
           type={shown ? "text" : "password"}
           defaultValue="harbour-light-42"
           autoComplete="current-password"
@@ -70,7 +70,7 @@ function CopyLink() {
     <Field>
       <FieldLabel>Tracking link</FieldLabel>
       <FieldFrame>
-        <FieldInput readOnly defaultValue="https://track.freightdesk.io/SH-20483" />
+        <FieldControl readOnly defaultValue="https://track.freightdesk.io/SH-20483" />
         <Button
           layout="cell"
           signal={signal}
@@ -98,7 +98,7 @@ function SearchField({ testid }: { testid?: string }) {
         <FieldAffix>
           <Icon d={SEARCH} />
         </FieldAffix>
-        <FieldInput ref={input} value={q} onChange={(e) => setQ(e.target.value)} type="search" />
+        <FieldControl ref={input} value={q} onChange={(e) => setQ(e.target.value)} type="search" />
         {q ? (
           <Button
             layout="cell"
@@ -166,7 +166,7 @@ export function InputGroupSpecimen() {
         <Field invalid data-testid="ig-invalid">
           <FieldLabel>Container number</FieldLabel>
           <FieldFrame>
-            <FieldInput defaultValue="MSCU 123456" />
+            <FieldControl defaultValue="MSCU 123456" />
             <Button layout="cell">Check</Button>
           </FieldFrame>
           <FieldError match>Container numbers have 7 digits after the owner code.</FieldError>
@@ -182,7 +182,7 @@ export function InputGroupSpecimen() {
         <Field>
           <FieldLabel>رابط التتبع</FieldLabel>
           <FieldFrame>
-            <FieldInput readOnly defaultValue="https://track.freightdesk.io/SH-20483" dir="ltr" />
+            <FieldControl readOnly defaultValue="https://track.freightdesk.io/SH-20483" dir="ltr" />
             <Button layout="cell">نسخ</Button>
           </FieldFrame>
         </Field>

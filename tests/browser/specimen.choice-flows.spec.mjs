@@ -77,7 +77,7 @@ test("radio: arrows move, disabled is skipped", async ({ open, ok }) => {
   const checked = () =>
     g
       .locator('[role=radio][aria-checked="true"]')
-      .evaluate((el) => el.closest(".kl-radio-item, label, [data-slot]")?.textContent ?? el.textContent);
+      .evaluate((el) => el.closest("[data-slot=radio-group-item], label, [data-slot]")?.textContent ?? el.textContent);
   await g.locator('[role=radio][aria-checked="true"]').focus();
   const seq = [];
   for (let k = 0; k < 3; k++) {

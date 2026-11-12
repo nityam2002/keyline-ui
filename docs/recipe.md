@@ -148,6 +148,17 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   `kl-slot`, `kl-pending`, `kl-code`, `kl-count`, `kl-key`. They carry the construction rules that utilities can't
   express. A rule that only one component used moves into its classes; a rule shared across components moves into
   `theme/foundation.css` with a flat selector.
+- **A component whose rules other components share** (Field: Select, NumberField, OTP field, Time field, Date
+  picker, Slider and more draw `kl-field-frame`, `kl-field-input`, `kl-field-bang`) moves those rules into the
+  foundation under its own heading, and its classes stay. That includes rules consumers reach through an attribute
+  (`.kl-field-input[data-align="end"]`, which NumberField sets) and the parent-state rules (`.kl-field[data-invalid]
+  .kl-field-frame`). Only the parts nobody else draws become utilities. Check every consumer's markup, not only its
+  CSS, before calling a rule "own".
+- **An unconverted component that draws a converted one's look over its own markup** (Questionnaire draws radio
+  rows, checkbox boxes and field messages over its native inputs) imports the converted component's exported style
+  constants (`radioStyles`, `checkboxStyles`, `choiceStyles`, `fieldStyles`, as `toggleVariants` is for Toggle) and
+  puts the state attributes those utilities read (`data-checked`, `data-unchecked`, `data-disabled`) on its own
+  elements. Its own overrides of those utilities go to `@layer utilities`, as above.
 
 ## 4. Tests
 

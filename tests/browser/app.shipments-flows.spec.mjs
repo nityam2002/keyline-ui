@@ -62,7 +62,7 @@ test("app: view tabs (keyboard)", async ({ open, ok }) => {
 test("app: assign + Undo restores each row's own value", async ({ open, ok }) => {
   const a = await app(open);
   const { p, rows } = a;
-  for (const i of [0, 1, 2]) await rows.nth(i).locator(".kl-check").click();
+  for (const i of [0, 1, 2]) await rows.nth(i).locator("[data-slot=checkbox]").click();
   const c = await a.count();
   ok("three selected", same(c, "3"), { actual: c, expected: "3" });
   const before = await a.carriers(3);
@@ -84,7 +84,7 @@ test("app: assign + Undo restores each row's own value", async ({ open, ok }) =>
 test("app: async failure changes nothing", async ({ open, ok }) => {
   const a = await app(open);
   const { p } = a;
-  await p.locator(".kl-sx-table thead .kl-check").click();
+  await p.locator(".kl-sx-table thead [data-slot=checkbox]").click();
   const n = Number(await a.count());
   const before = await a.carriers(6);
   await p.locator(".kl-tf-bulk button", { hasText: "Assign carrier" }).click();
@@ -101,7 +101,7 @@ test("app: async failure changes nothing", async ({ open, ok }) => {
 test("app: selection outside the results", async ({ open, ok }) => {
   const a = await app(open);
   const { p, rows } = a;
-  for (const i of [0, 1, 2]) await rows.nth(i).locator(".kl-check").click();
+  for (const i of [0, 1, 2]) await rows.nth(i).locator("[data-slot=checkbox]").click();
   const id = (await rows.nth(0).locator("td").nth(2).textContent()).trim();
   await a.search.fill(id);
   await until(async () => /not in these results/.test(await p.locator(".kl-tf-bulk").textContent()));
@@ -118,7 +118,7 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   const { p, rows } = a;
   const firstTab = () => p.locator("[role=tab]").first().textContent();
   const total = await firstTab();
-  for (const i of [0, 1]) await rows.nth(i).locator(".kl-check").click();
+  for (const i of [0, 1]) await rows.nth(i).locator("[data-slot=checkbox]").click();
   await p.locator(".kl-tf-bulk [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
   await p.waitForSelector("[data-slot=alert-dialog-popup]");

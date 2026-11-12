@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
 import { DirectionProvider } from "@/components/keyline/ui/direction";
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/components/keyline/ui/field";
 import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented";
 import { Select, type SelectOption } from "@/components/keyline/ui/select";
 
@@ -83,7 +83,7 @@ export function ModesRegion() {
             <Field name="cases">
               <FieldLabel>Cases</FieldLabel>
               <FieldFrame>
-                <FieldInput type="number" inputMode="numeric" defaultValue="40" align="end" />
+                <FieldControl type="number" inputMode="numeric" defaultValue="40" align="end" />
               </FieldFrame>
             </Field>
           </div>

@@ -8,7 +8,7 @@ import {
   Field,
   FieldLabel,
   FieldFrame,
-  FieldInput,
+  FieldControl,
   FieldTextarea,
   FieldDescription,
   FieldError,
@@ -81,7 +81,7 @@ export function FormSpecimen() {
             >
               <FieldLabel>Reference</FieldLabel>
               <FieldFrame>
-                <FieldInput placeholder="SH-24-0193" autoComplete="off" />
+                <FieldControl placeholder="SH-24-0193" autoComplete="off" />
               </FieldFrame>
               <FieldDescription>Type “DUP-1” to see a server error.</FieldDescription>
               <FieldError />
@@ -117,9 +117,9 @@ export function FormSpecimen() {
             <Field name="window">
               <FieldLabel>Loading window at the shipper’s dock, local time</FieldLabel>
               <FieldFrame>
-                <FieldInput placeholder="08:00" />
+                <FieldControl placeholder="08:00" />
                 <FieldAffix>to</FieldAffix>
-                <FieldInput placeholder="16:00" aria-label="Window end" />
+                <FieldControl placeholder="16:00" aria-label="Window end" />
               </FieldFrame>
             </Field>
             <Field name="notes">

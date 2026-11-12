@@ -16,9 +16,9 @@ for (const t of ["light", "dark"]) {
       width: 1280,
       height: 900,
       ctx: { deviceScaleFactor: 4 },
-      ready: ".kl-check[data-checked]",
+      ready: "[data-slot=checkbox][data-checked]",
     });
-    const box = p.locator(".kl-check[data-checked]:not([data-disabled])").first();
+    const box = p.locator("[data-slot=checkbox][data-checked]:not([data-disabled])").first();
     await box.scrollIntoViewIfNeeded();
     const worst = { off: [0, 0], at: null };
     let inked = true;

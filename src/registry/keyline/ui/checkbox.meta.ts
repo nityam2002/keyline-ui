@@ -6,7 +6,6 @@ export default {
   title: "Checkbox",
   description: "Square check box and a labelled checkbox row with description; indeterminate supported.",
   files: [{ path: "src/registry/keyline/ui/checkbox.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/checkbox.css",
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

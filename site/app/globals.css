@@ -4,7 +4,6 @@
 /* The real Keyline theme and the CSS of the items this site renders, exactly as the registry ships them (the registry is the source). */
 @import "../../src/registry/keyline/theme/keyline.css";
 @import "../../src/registry/keyline/ui/toolbar.css";
-@import "../../src/registry/keyline/ui/checkbox.css";
 @import "../../src/registry/keyline/ui/tabs.css";
 @import "../../src/registry/keyline/ui/scroll-area.css";
 @import "../../src/registry/keyline/ui/table.css";
@@ -12,10 +11,6 @@
 @import "../../src/registry/keyline/ui/breadcrumb.css";
 @import "../../src/registry/keyline/ui/app-shell.css";
 @import "../../src/registry/keyline/ui/panel.css";
-@import "../../src/registry/keyline/ui/field.css";
-@import "../../src/registry/keyline/ui/checkbox-group.css";
-@import "../../src/registry/keyline/ui/radio-group.css";
-@import "../../src/registry/keyline/ui/switch.css";
 @import "../../src/registry/keyline/ui/slider.css";
 @import "../../src/registry/keyline/ui/number-field.css";
 @import "../../src/registry/keyline/ui/otp-field.css";

@@ -25,6 +25,10 @@ const USAGE = `<SwitchField
   onCheckedChange={setReorder}
 />`;
 
+const PARTS = `<SwitchRoot name="reorder" aria-label="Reorder when low" onCheckedChange={(on, eventDetails) => save(on)}>
+  <SwitchThumb className={(state) => (state.checked ? "shadow-none" : undefined)} />
+</SwitchRoot>`;
+
 const PROPS: Prop[] = [
   {
     name: "label",
@@ -43,7 +47,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        With <code>onCheckedChange</code>. Or start with <code>defaultChecked</code>.
+        With <code>onCheckedChange</code>, which also gets Base UI&apos;s event details (the reason for the change, and
+        the event). Or start with <code>defaultChecked</code>.
       </>
     ),
   },
@@ -73,7 +78,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function SwitchPage() {
@@ -105,6 +116,22 @@ export default function SwitchPage() {
       <p className="s-small">
         Also exported: <code>Switch</code>, the bare control; give it an <code>aria-label</code>. Built on{" "}
         <a href="https://base-ui.com/react/components/switch">Base UI Switch</a>; its other props pass through.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>SwitchRoot</code> (also exported as <code>Switch</code>;
+        without children it draws its thumb) and <code>SwitchThumb</code>. <code>SwitchField</code> is the labelled row
+        built from them. Every part takes <code>render</code>, and a <code>className</code> or <code>style</code> that
+        may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>switch</code>, <code>switch-thumb</code>; the row is{" "}
+        <code>switch-field</code>, with <code>switch-field-row</code>, <code>-text</code>, <code>-label</code>,{" "}
+        <code>-description</code> and <code>-cell</code> inside), and Base UI&apos;s state attributes on both parts:{" "}
+        <code>data-checked</code>, <code>data-unchecked</code>, <code>data-disabled</code>, <code>data-readonly</code>,{" "}
+        <code>data-required</code> and <code>data-invalid</code>. The row has <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

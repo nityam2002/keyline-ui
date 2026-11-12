@@ -4,7 +4,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@/re
 import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@/registry/keyline/ui/collapsible";
 import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
 import { ItemList, Item, ItemContent, ItemMeta } from "@/registry/keyline/ui/item";
-import { Field, FieldLabel, FieldFrame, FieldInput } from "@/registry/keyline/ui/field";
+import { Field, FieldLabel, FieldFrame, FieldControl } from "@/registry/keyline/ui/field";
 import { Status } from "@/registry/keyline/ui/status";
 
 /* ------------------------------------------------------------------ */
@@ -64,7 +64,7 @@ export function DisclosureSpecimen() {
                           <Field>
                             <FieldLabel>Max axle load</FieldLabel>
                             <FieldFrame>
-                              <FieldInput align="end" defaultValue="11.5" />
+                              <FieldControl align="end" defaultValue="11.5" />
                             </FieldFrame>
                           </Field>
                           <Slider label="Tolerance" unit="%" defaultValue={5} max={20} />

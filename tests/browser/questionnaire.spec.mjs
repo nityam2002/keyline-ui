@@ -223,8 +223,8 @@ test("questionnaire: rtl and dark", async ({ open, ok }) => {
     ...(await q.evaluate((f) => {
       const r = (s) => f.querySelector(s).getBoundingClientRect();
       return {
-        box: r(".kl-q-item:not([hidden]) .kl-choice-box").left,
-        label: r(".kl-q-item:not([hidden]) .kl-choice-text").left,
+        box: r(".kl-q-item:not([hidden]) [data-slot=questionnaire-choice-box]").left,
+        label: r(".kl-q-item:not([hidden]) [data-slot=questionnaire-choice-text]").left,
       };
     })),
     // the nav buttons are Buttons (their slot): found by role and name
@@ -257,7 +257,7 @@ test("questionnaire: reduced motion lands the band at once", async ({ open, ok }
   await row.click();
   await p.waitForTimeout(40); // timing: "at once" — the band must already be on the row 40 ms after the click
   const land = await q.evaluate((f) => {
-    const b = f.querySelector(".kl-q-item:not([hidden]) .kl-radio-band").getBoundingClientRect();
+    const b = f.querySelector(".kl-q-item:not([hidden]) [data-kl-band]").getBoundingClientRect();
     const r = f.querySelector(".kl-q-item:not([hidden]) [data-kl-item][data-checked]").getBoundingClientRect();
     return Math.abs(b.top - r.top);
   });
@@ -275,7 +275,7 @@ test("questionnaire: forced colours", async ({ open, ok, eng }) => {
   await until(() => q.evaluate((f) => !!f.querySelector(".kl-q-item:not([hidden]) [data-kl-covered]")));
   await idle(p);
   const fc = await q.evaluate((f) => ({
-    band: getComputedStyle(f.querySelector(".kl-q-item:not([hidden]) .kl-radio-band")).backgroundColor,
+    band: getComputedStyle(f.querySelector(".kl-q-item:not([hidden]) [data-kl-band]")).backgroundColor,
     row: getComputedStyle(f.querySelector(".kl-q-item:not([hidden]) [data-kl-covered]")).color,
   }));
   ok(

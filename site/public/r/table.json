@@ -532,6 +532,12 @@
       ".kl-tr-state [data-slot=\"empty\"].kl-tf-state": {
         "min-height": "240px",
         "white-space": "normal"
+      },
+      ".kl-ix-in:active [data-slot=\"checkbox\"]:not([data-disabled], [data-checked], [data-indeterminate])": {
+        "background-color": "var(--kl-press)"
+      },
+      ".kl-ix-in:active [data-slot=\"checkbox\"]:not([data-disabled]) > [data-slot=\"checkbox-indicator\"]": {
+        "translate": "0 1px"
       }
     }
   },

@@ -34,7 +34,9 @@ for (const q of ["theme=light", "theme=dark"]) {
       p,
       (t) => {
         const fl = t.closest(".kl-field");
-        return fl.hasAttribute("data-invalid") && (fl.querySelector(".kl-field-error")?.textContent ?? "").length > 0;
+        return (
+          fl.hasAttribute("data-invalid") && (fl.querySelector("[data-slot=field-error]")?.textContent ?? "").length > 0
+        );
       },
       await term.elementHandle(),
     );
@@ -42,7 +44,9 @@ for (const q of ["theme=light", "theme=dark"]) {
       `${q}: required: submitting empty marks it invalid with a message`,
       (await term.evaluate((t) => {
         const fl = t.closest(".kl-field");
-        return fl.hasAttribute("data-invalid") && (fl.querySelector(".kl-field-error")?.textContent ?? "").length > 0;
+        return (
+          fl.hasAttribute("data-invalid") && (fl.querySelector("[data-slot=field-error]")?.textContent ?? "").length > 0
+        );
       })) && (await sec.getByTestId("ns-submitted").textContent()).includes("—"),
       null,
     );

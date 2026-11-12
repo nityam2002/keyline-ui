@@ -575,3 +575,15 @@
     white-space: normal;
   }
 }
+
+/* KEY on the index cell: pressing anywhere in the cell presses its checkbox (an empty box darkens, a tick travels
+   1px), as a press on a checkbox row does. The box's fill is a utility on the Checkbox, so this override sits in the
+   utilities layer, keyed on the Checkbox's data-slot. */
+@layer utilities {
+  .kl-ix-in:active [data-slot="checkbox"]:not([data-disabled], [data-checked], [data-indeterminate]) {
+    background-color: var(--kl-press);
+  }
+  .kl-ix-in:active [data-slot="checkbox"]:not([data-disabled]) > [data-slot="checkbox-indicator"] {
+    translate: 0 1px;
+  }
+}
