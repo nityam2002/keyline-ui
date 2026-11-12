@@ -71,7 +71,7 @@ function Attachment({
     <AttachmentContext.Provider value={{ state, progress, titleId, mark }}>
       <div
         data-slot="attachment"
-        data-state={state}
+        data-status={state}
         data-size={size}
         data-kl-layout={layout}
         data-mark={mark ?? undefined}

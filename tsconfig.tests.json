@@ -15,7 +15,8 @@
     "tests/**/*.tsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "site/lib/**/*.ts"
+    "site/lib/**/*.ts",
+    "scripts/registry/**/*.ts"
   ],
   "exclude": ["tests/consumer/App.tsx", "tests/consumer/PreviewPage.tsx", "tests/lint/fixtures/**", "tests/types/**"]
 }

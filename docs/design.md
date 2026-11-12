@@ -238,6 +238,6 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
    the owning rule gets one more class, or the shared rule uses `:where()`.
 10. Measure narrow layouts on the component, and keep the page from scrolling sideways.
 11. Work in light and dark, every density, cut off and on, RTL, reduced motion and forced colours.
-12. Register it in `src/registry/manifest.mjs`. Dependencies are derived from imports and from the `kl-` classes
-    it uses; the build fails on a missing file, an import outside the registry, an ambiguous class owner, or a
-    CSS rule that does not reach its item.
+12. Register it in its `<name>.meta.ts`. Dependencies are derived from imports and from the `kl-` classes
+    it uses; the build fails on a missing file, an import outside the registry, an ambiguous class owner, a
+    CSS rule that does not reach its item, or declared dependencies that differ from the derived ones.

@@ -108,7 +108,7 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
     "upload: the file is a cell of your new bubble with a named progressbar on its bottom keyline",
     (await file.getAttribute("data-kl-layout")) === "cell" &&
       (await bar.count()) === 1 &&
-      (await file.getAttribute("data-state")) === "uploading",
+      (await file.getAttribute("data-status")) === "uploading",
   );
   // mid-upload: a value above 0 reached, and the bar's transform caught up with it
   await until(
@@ -145,7 +145,7 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
           '[data-testid="ms-frame"] .kl-att:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child .kl-att',
         )
         ?.closest(".kl-msg") &&
-      [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "processing",
+      [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "processing",
     null,
     { timeout: 4000 },
   );
@@ -198,7 +198,7 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   const fw = () => ff.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10);
   const fws = [await fw()];
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "error",
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "error",
     null,
     { timeout: 4000 },
   );
@@ -243,7 +243,7 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
     p,
     () => {
       const a = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1);
-      return a.dataset.state === "uploading" && a.dataset.mark == null;
+      return a.dataset.status === "uploading" && a.dataset.mark == null;
     },
     null,
     2000,
@@ -251,11 +251,11 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   fws.push(await fw());
   ok(
     "retry (keyboard): the same bar resumes from 61% in the working colour, the ! retracts",
-    (await ff.getAttribute("data-state")) === "uploading" &&
+    (await ff.getAttribute("data-status")) === "uploading" &&
       Number(await ff.locator("[role=progressbar]").getAttribute("aria-valuenow")) >= 61 &&
       (await ff.getAttribute("data-mark")) === null,
     {
-      state: await ff.getAttribute("data-state"),
+      state: await ff.getAttribute("data-status"),
       now: await ff
         .locator("[role=progressbar]")
         .getAttribute("aria-valuenow")
@@ -264,7 +264,7 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
     },
   );
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "done",
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "done",
     null,
     { timeout: 5000 },
   );

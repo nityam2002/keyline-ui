@@ -28,16 +28,19 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm format:check
+      # includes tests/registry/rebuild.test.ts: the committed registry equals a fresh in-memory build
       - run: pnpm test
       - run: pnpm test:types
       - name: Registry is up to date
         run: |
           pnpm registry:build
-          if [ -n "$(git status --porcelain -- site/public/r)" ]; then
-            git status --short -- site/public/r
-            echo "::error::site/public/r is out of date. Run pnpm registry:build and commit the result."
+          if [ -n "$(git status --porcelain -- site/public/r registry.json)" ]; then
+            git status --short -- site/public/r registry.json
+            echo "::error::The registry is out of date. Run pnpm registry:build and commit the result."
             exit 1
           fi
+      - run: pnpm exec shadcn registry validate
+      - run: pnpm registry:verify
       - run: pnpm build
       - run: pnpm site:build
       # Chrome for the page specs; Playwright's own Chromium, Firefox and WebKit for the part tests and specs

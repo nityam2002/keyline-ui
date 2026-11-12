@@ -280,7 +280,7 @@ function ShipmentRow({
       <TableDetail open={expanded} presence={presence} colSpan={cols.size + 2} id={`legs-${s.id}`}>
         <ol className="kl-sx-legs" aria-label={`Legs for ${s.id}`}>
           {LEGS.map((l) => (
-            <li key={l.at} data-state={l.state}>
+            <li key={l.at} data-status={l.state}>
               <span className="kl-code">{l.at}</span>
               <b>{l.place}</b>
               <span>{l.what}</span>

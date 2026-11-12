@@ -49,7 +49,7 @@ The first command adds the mapping to `components.json`, which you can also writ
 { "registries": { "@keyline-ui": "https://keyline-ui.dev/r/{name}.json" } }
 ```
 
-Item names are the ones in `src/registry/manifest.mjs` (for example `select`, `date-picker`, `scroll-area`,
+Item names are the ones in the registry index, `/r/registry.json` (for example `select`, `date-picker`, `scroll-area`,
 `toolbar`, `app-shell`). A few names install other items: `sidebar` installs `app-shell` and `nav`;
 `alert-dialog` installs `dialog`, which exports `AlertDialog`.
 

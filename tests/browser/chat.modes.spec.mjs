@@ -138,7 +138,7 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
   ok("touch: tapping Latest lands on the newest", (await geo()).gap <= 2, await geo());
   await p.getByTestId("ms-attach-fail").tap();
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "error",
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "error",
     null,
     { timeout: 4000 },
   );
@@ -150,13 +150,13 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
   await rb.tap();
   await until(
     p,
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "uploading",
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "uploading",
     null,
     2000,
   );
   ok(
     "touch: Retry is a full-height cell (≥ 40px tall) and a tap resumes the upload",
-    rbb.height >= 40 && (await frame.locator(".kl-att").last().getAttribute("data-state")) === "uploading",
+    rbb.height >= 40 && (await frame.locator(".kl-att").last().getAttribute("data-status")) === "uploading",
     rbb,
   );
   ok("phone: no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs]);

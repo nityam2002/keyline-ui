@@ -105,7 +105,7 @@ pnpm check           # types, lint, format, unit and browser tests, the registry
 ```
 
 ```text
-src/registry/   the components as they ship (src/registry/manifest.mjs lists the items)
+src/registry/   the components as they ship, each with a <name>.meta.ts describing its item
 src/demo/       the demo app the browser tests run against
 src/lib/        cn(), standing in for a consumer's shadcn setup
 site/           the documentation site; site/public/r/ is the built registry it serves

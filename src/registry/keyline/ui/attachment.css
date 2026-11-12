@@ -14,13 +14,13 @@
   .kl-att > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger)) {
     border-inline-start: var(--kl-k1) solid var(--kl-line);
   }
-  .kl-att[data-state="idle"] {
+  .kl-att[data-status="idle"] {
     border-color: var(--kl-line-soft);
   }
-  .kl-att[data-state="idle"] > * {
+  .kl-att[data-status="idle"] > * {
     border-color: var(--kl-line-soft);
   }
-  .kl-att[data-state="error"] {
+  .kl-att[data-status="error"] {
     border-color: var(--kl-red);
   }
 
@@ -30,7 +30,7 @@
     align-self: stretch;
     background-color: transparent;
   }
-  .kl-att[data-kl-layout="cell"][data-state="error"] {
+  .kl-att[data-kl-layout="cell"][data-status="error"] {
     border-color: var(--kl-seam);
   } /* the red ! cell and bar say it; the bubble keeps its seams */
   .kl-att[data-kl-layout="cell"]
@@ -64,8 +64,8 @@
     height: 100%;
     object-fit: cover;
   }
-  .kl-att[data-state="uploading"] .kl-att-media > img,
-  .kl-att[data-state="processing"] .kl-att-media > img {
+  .kl-att[data-status="uploading"] .kl-att-media > img,
+  .kl-att[data-status="processing"] .kl-att-media > img {
     opacity: 0.6;
   }
 
@@ -137,7 +137,7 @@
     font-variant-numeric: tabular-nums;
     text-align: start;
   }
-  .kl-att[data-state="error"] .kl-att-desc {
+  .kl-att[data-status="error"] .kl-att-desc {
     color: var(--kl-red-text);
     white-space: normal;
   }
@@ -219,7 +219,7 @@
   .kl-att-bar:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) > span {
     transform-origin: right;
   }
-  .kl-att[data-state="error"] .kl-att-bar > span {
+  .kl-att[data-status="error"] .kl-att-bar > span {
     background-color: var(--kl-red);
   }
 

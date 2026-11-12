@@ -1,5 +1,5 @@
 /* Keyline theme: tokens + shared construction primitives.
-   Source of truth for the `keyline` registry style item (converted by scripts/build-registry.mjs).
+   Source of truth for the `keyline` registry style item (converted by scripts/registry/build.ts).
    Coexistence rule: this file defines only --kl-* tokens, kl- classes and data-kl-* scopes. Mapping shadcn's
    tokens, radius, fonts and body to Keyline is opt-in: keyline-shadcn.css (registry item `keyline-shadcn`).
    Every token lives in @layer base, so a consumer's own unlayered :root (or a config item) always wins,

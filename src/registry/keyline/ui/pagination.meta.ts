@@ -1,0 +1,12 @@
+import type { KeylineItem } from "../../item";
+
+export default {
+  name: "pagination",
+  type: "registry:ui",
+  title: "Pagination",
+  description:
+    'Page numbers as cells with a cobalt current page; constant width while paging; folds to "5 / 20" when narrow; buttons or links.',
+  files: [{ path: "src/registry/keyline/ui/pagination.tsx", type: "registry:ui" }],
+  cssFile: "src/registry/keyline/ui/pagination.css",
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/collection"],
+} satisfies KeylineItem;

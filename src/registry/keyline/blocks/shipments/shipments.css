@@ -93,10 +93,10 @@
   .kl-sx-legs > li:first-child {
     border-inline-start: 0;
   }
-  .kl-sx-legs > li[data-state="current"] {
+  .kl-sx-legs > li[data-status="current"] {
     box-shadow: inset 0 3px 0 var(--kl-cobalt);
   }
-  .kl-sx-legs > li[data-state="next"] {
+  .kl-sx-legs > li[data-status="next"] {
     color: var(--kl-ink-2);
   }
 
