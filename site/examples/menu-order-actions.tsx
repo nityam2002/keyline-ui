@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { ChevronDown } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 import {
   Menu,
   MenuContent,
@@ -14,16 +14,16 @@ import {
   MenuSubmenuContent,
   MenuSubmenuTrigger,
   MenuTrigger,
-} from "@/components/keyline/ui/menu"
+} from "@/components/keyline/ui/menu";
 
-const REPS = ["Dwight Schrute", "Jim Halpert", "Phyllis Vance", "Stanley Hudson"]
+const REPS = ["Dwight Schrute", "Jim Halpert", "Phyllis Vance", "Stanley Hudson"];
 
 export function OrderActions() {
-  const [rep, setRep] = useState("Dwight Schrute")
-  const [due, setDue] = useState("Thu 12 Nov")
-  const [copies, setCopies] = useState(0)
-  const [cancelled, setCancelled] = useState(false)
-  const [last, setLast] = useState("Nothing changed yet.")
+  const [rep, setRep] = useState("Dwight Schrute");
+  const [due, setDue] = useState("Thu 12 Nov");
+  const [copies, setCopies] = useState(0);
+  const [cancelled, setCancelled] = useState(false);
+  const [last, setLast] = useState("Nothing changed yet.");
 
   return (
     <div className="grid gap-4">
@@ -48,16 +48,16 @@ export function OrderActions() {
             <MenuItem
               disabled={cancelled}
               onClick={() => {
-                setDue("Mon 16 Nov")
-                setLast("Delivery moved to Monday. The client gets an email.")
+                setDue("Mon 16 Nov");
+                setLast("Delivery moved to Monday. The client gets an email.");
               }}
             >
               Move delivery to Monday
             </MenuItem>
             <MenuItem
               onClick={() => {
-                setCopies(copies + 1)
-                setLast(`Duplicated as DM-${4141 + copies}, same paper and client.`)
+                setCopies(copies + 1);
+                setLast(`Duplicated as DM-${4141 + copies}, same paper and client.`);
               }}
             >
               Duplicate order
@@ -68,8 +68,8 @@ export function OrderActions() {
                 <MenuRadioGroup
                   value={rep}
                   onValueChange={(r: string) => {
-                    setRep(r)
-                    setLast(`${r.split(" ")[0]} has the account now.`)
+                    setRep(r);
+                    setLast(`${r.split(" ")[0]} has the account now.`);
                   }}
                 >
                   {REPS.map((r) => (
@@ -85,8 +85,8 @@ export function OrderActions() {
               variant="destructive"
               disabled={cancelled}
               onClick={() => {
-                setCancelled(true)
-                setLast("Order cancelled. 40 cases go back on the shelf.")
+                setCancelled(true);
+                setLast("Order cancelled. 40 cases go back on the shelf.");
               }}
             >
               Cancel order
@@ -103,8 +103,8 @@ export function OrderActions() {
             size="compact"
             variant="quiet"
             onClick={() => {
-              setCancelled(false)
-              setLast("Order restored. Nothing went back on the shelf.")
+              setCancelled(false);
+              setLast("Order restored. Nothing went back on the shelf.");
             }}
           >
             Undo
@@ -112,5 +112,5 @@ export function OrderActions() {
         ) : null}
       </div>
     </div>
-  )
+  );
 }

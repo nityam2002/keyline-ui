@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { NumberField } from "@/components/keyline/ui/number-field"
+import { useState } from "react";
+import { NumberField } from "@/components/keyline/ui/number-field";
 
-const IN_STOCK = 480
+const IN_STOCK = 480;
 
 export function Reorder() {
-  const [cases, setCases] = useState<number | null>(24)
-  const over = cases != null && cases > IN_STOCK
+  const [cases, setCases] = useState<number | null>(24);
+  const over = cases != null && cases > IN_STOCK;
 
   return (
     <div className="grid max-w-[320px] gap-3">
@@ -26,5 +26,5 @@ export function Reorder() {
         {cases == null ? "Enter a quantity." : over ? "Not sent." : `${cases * 10} reams, on Thursday's truck.`}
       </p>
     </div>
-  )
+  );
 }

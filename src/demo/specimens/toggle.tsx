@@ -1,10 +1,10 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
-import { Toggle } from "@/registry/keyline/ui/toggle"
-import { Icon } from "./input-group"
+import * as React from "react";
+import * as ui from "../demo-ui";
+import { Toggle } from "@/registry/keyline/ui/toggle";
+import { Icon } from "./input-group";
 
 export function ToggleSpecimen() {
-  const [mine, setMine] = React.useState(true)
+  const [mine, setMine] = React.useState(true);
   return (
     <div className={ui.stack} data-testid="specimen-toggle">
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
@@ -23,7 +23,8 @@ export function ToggleSpecimen() {
         </Toggle>
       </div>
       <p className={ui.note}>
-        Showing {mine ? "12 shipments assigned to you" : "all 128 shipments"}. The label stays the same; the flood and the lamp say whether it is on.
+        Showing {mine ? "12 shipments assigned to you" : "all 128 shipments"}. The label stays the same; the flood and
+        the lamp say whether it is on.
       </p>
       <div dir="rtl" style={{ display: "flex", gap: 12 }} data-testid="tg-rtl">
         <Toggle defaultPressed count={3}>
@@ -31,5 +32,5 @@ export function ToggleSpecimen() {
         </Toggle>
       </div>
     </div>
-  )
+  );
 }

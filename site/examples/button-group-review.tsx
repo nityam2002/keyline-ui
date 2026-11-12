@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { ButtonGroup, ButtonGroupText } from "@/components/keyline/ui/button-group"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { ButtonGroup, ButtonGroupText } from "@/components/keyline/ui/button-group";
 
 const ORDERS = [
   { id: "DM-4102", client: "Scranton Business Park", paper: "40 cases, 20 lb copy", rep: "Dwight Schrute" },
@@ -10,12 +10,12 @@ const ORDERS = [
   { id: "DM-4120", client: "Wilkes-Barre Library", paper: "6 cases, recycled bond", rep: "Phyllis Vance" },
   { id: "DM-4131", client: "Blue Cross of Pennsylvania", paper: "25 cases, letterhead", rep: "Stanley Hudson" },
   { id: "DM-4136", client: "Harper Collins, Scranton", paper: "8 cases, legal pads", rep: "Andy Bernard" },
-]
+];
 
 export function OrderReview() {
-  const [i, setI] = useState(0)
-  const order = ORDERS[i]
-  if (!order) return null
+  const [i, setI] = useState(0);
+  const order = ORDERS[i];
+  if (!order) return null;
 
   return (
     <div className="grid gap-4">
@@ -41,5 +41,5 @@ export function OrderReview() {
         <dd className="m-0">{order.rep}</dd>
       </dl>
     </div>
-  )
+  );
 }

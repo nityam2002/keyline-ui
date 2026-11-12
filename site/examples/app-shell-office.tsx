@@ -1,28 +1,34 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
-import { AppShell } from "@/components/keyline/ui/app-shell"
-import { Breadcrumb } from "@/components/keyline/ui/breadcrumb"
-import { Button } from "@/components/keyline/ui/button"
-import { Inspector, InspectorActions, InspectorBody, InspectorFacts, InspectorHeader } from "@/components/keyline/ui/inspector"
-import { Item, ItemContent, ItemList, ItemMedia } from "@/components/keyline/ui/item"
-import { Nav } from "@/components/keyline/ui/nav"
-import { Status } from "@/components/keyline/ui/status"
+import { useRef, useState } from "react";
+import { AppShell } from "@/components/keyline/ui/app-shell";
+import { Breadcrumb } from "@/components/keyline/ui/breadcrumb";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  Inspector,
+  InspectorActions,
+  InspectorBody,
+  InspectorFacts,
+  InspectorHeader,
+} from "@/components/keyline/ui/inspector";
+import { Item, ItemContent, ItemList, ItemMedia } from "@/components/keyline/ui/item";
+import { Nav } from "@/components/keyline/ui/nav";
+import { Status } from "@/components/keyline/ui/status";
 
-const VIEWS = { orders: "Orders", clients: "Clients", warehouse: "Warehouse" } as const
-type View = keyof typeof VIEWS
+const VIEWS = { orders: "Orders", clients: "Clients", warehouse: "Warehouse" } as const;
+type View = keyof typeof VIEWS;
 
 const ORDERS = [
   { id: "DM-4107", client: "Lackawanna County", cases: 120, rep: "Dwight Schrute" },
   { id: "DM-4108", client: "Blue Cross of Pennsylvania", cases: 60, rep: "Jim Halpert" },
   { id: "DM-4109", client: "Vance Refrigeration", cases: 12, rep: "Phyllis Vance" },
-]
+];
 
 export function OfficeShell() {
-  const [view, setView] = useState<View>("orders")
-  const [open, setOpen] = useState<string | null>(null)
-  const opener = useRef<HTMLElement | null>(null)
-  const order = ORDERS.find((o) => o.id === open)
+  const [view, setView] = useState<View>("orders");
+  const [open, setOpen] = useState<string | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const order = ORDERS.find((o) => o.id === open);
 
   return (
     <AppShell
@@ -40,12 +46,32 @@ export function OfficeShell() {
           items={Object.entries(VIEWS).map(([value, label]) => ({ value, label }))}
         />
       }
-      header={<Breadcrumb layout="cell" items={[{ label: "Scranton", render: <a href="?view=orders" onClick={(e) => (e.preventDefault(), setView("orders"))} /> }, { label: VIEWS[view] }]} />}
-      actions={<Button layout="cell" variant="primary">New order</Button>}
+      header={
+        <Breadcrumb
+          layout="cell"
+          items={[
+            {
+              label: "Scranton",
+              render: <a href="?view=orders" onClick={(e) => (e.preventDefault(), setView("orders"))} />,
+            },
+            { label: VIEWS[view] },
+          ]}
+        />
+      }
+      actions={
+        <Button layout="cell" variant="primary">
+          New order
+        </Button>
+      }
       aside={
         order ? (
           <Inspector>
-            <InspectorHeader code={order.id} title={order.client} status={<Status kind="normal">Out for delivery</Status>} onClose={() => setOpen(null)} />
+            <InspectorHeader
+              code={order.id}
+              title={order.client}
+              status={<Status kind="normal">Out for delivery</Status>}
+              onClose={() => setOpen(null)}
+            />
             <InspectorBody>
               <InspectorFacts
                 items={[
@@ -75,8 +101,8 @@ export function OfficeShell() {
               current={o.id === open}
               render={<button type="button" />}
               onClick={(e) => {
-                opener.current = e.currentTarget
-                setOpen(o.id)
+                opener.current = e.currentTarget;
+                setOpen(o.id);
               }}
             >
               <ItemMedia>{o.id.slice(3)}</ItemMedia>
@@ -85,8 +111,10 @@ export function OfficeShell() {
           ))}
         </ItemList>
       ) : (
-        <p className="m-0 text-[14px] text-kl-ink-2">{view === "clients" ? "64 active clients." : "88 pallets on the floor."}</p>
+        <p className="m-0 text-[14px] text-kl-ink-2">
+          {view === "clients" ? "64 active clients." : "88 pallets on the floor."}
+        </p>
       )}
     </AppShell>
-  )
+  );
 }

@@ -1,41 +1,41 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Progress } from "@/components/keyline/ui/progress"
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Progress } from "@/components/keyline/ui/progress";
 
-const SIZE = 4.8 // MB
+const SIZE = 4.8; // MB
 
 export function UploadReport() {
-  const [sent, setSent] = useState<number | null>(null)
-  const [failed, setFailed] = useState(false)
-  const tries = useRef(0)
-  const timer = useRef<ReturnType<typeof setInterval>>(undefined)
-  useEffect(() => () => clearInterval(timer.current), [])
+  const [sent, setSent] = useState<number | null>(null);
+  const [failed, setFailed] = useState(false);
+  const tries = useRef(0);
+  const timer = useRef<ReturnType<typeof setInterval>>(undefined);
+  useEffect(() => () => clearInterval(timer.current), []);
 
   const upload = () => {
-    tries.current += 1
+    tries.current += 1;
     // the first try drops at 62%, as corporate's server does on Fridays; the retry goes through
-    const dropAt = tries.current === 1 ? 62 : Infinity
-    setFailed(false)
-    setSent(0)
-    clearInterval(timer.current)
+    const dropAt = tries.current === 1 ? 62 : Infinity;
+    setFailed(false);
+    setSent(0);
+    clearInterval(timer.current);
     timer.current = setInterval(() => {
       setSent((v) => {
-        const next = Math.min(100, (v ?? 0) + 7)
+        const next = Math.min(100, (v ?? 0) + 7);
         if (next >= dropAt) {
-          clearInterval(timer.current)
-          setFailed(true)
-          return dropAt
+          clearInterval(timer.current);
+          setFailed(true);
+          return dropAt;
         }
-        if (next === 100) clearInterval(timer.current)
-        return next
-      })
-    }, 180)
-  }
+        if (next === 100) clearInterval(timer.current);
+        return next;
+      });
+    }, 180);
+  };
 
-  const mb = sent == null ? 0 : (SIZE * sent) / 100
-  const running = sent != null && sent < 100 && !failed
+  const mb = sent == null ? 0 : (SIZE * sent) / 100;
+  const running = sent != null && sent < 100 && !failed;
 
   return (
     <div className="grid max-w-[480px] gap-4">
@@ -59,5 +59,5 @@ export function UploadReport() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

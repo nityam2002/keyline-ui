@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Avatar, AvatarGroup } from "@/components/keyline/ui/avatar"
-import { CheckboxGroup } from "@/components/keyline/ui/checkbox-group"
+import { useState } from "react";
+import { Avatar, AvatarGroup } from "@/components/keyline/ui/avatar";
+import { CheckboxGroup } from "@/components/keyline/ui/checkbox-group";
 
 const STAFF = [
   { value: "dwight", label: "Dwight Schrute", photo: "/avatars/dwight-schrute.svg" },
@@ -11,15 +11,21 @@ const STAFF = [
   { value: "stanley", label: "Stanley Hudson", photo: "/avatars/stanley-hudson.svg" },
   { value: "andy", label: "Andy Bernard", photo: "/avatars/andy-bernard.svg" },
   { value: "pam", label: "Pam Beesly", photo: "/avatars/pam-beesly.svg" },
-]
+];
 
 export function AccountTeam() {
-  const [team, setTeam] = useState(["dwight", "jim", "phyllis"])
-  const people = STAFF.filter((s) => team.includes(s.value))
+  const [team, setTeam] = useState(["dwight", "jim", "phyllis"]);
+  const people = STAFF.filter((s) => team.includes(s.value));
 
   return (
     <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-start">
-      <CheckboxGroup legend="Lackawanna County account" description="Who gets the county's orders and calls." options={STAFF} value={team} onValueChange={setTeam} />
+      <CheckboxGroup
+        legend="Lackawanna County account"
+        description="Who gets the county's orders and calls."
+        options={STAFF}
+        value={team}
+        onValueChange={setTeam}
+      />
       <div className="grid gap-2 sm:justify-items-end">
         <span className="text-[13px] font-semibold text-kl-ink-2">On the account</span>
         {people.length ? (
@@ -33,5 +39,5 @@ export function AccountTeam() {
         )}
       </div>
     </div>
-  )
+  );
 }

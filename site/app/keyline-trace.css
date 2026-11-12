@@ -4,101 +4,307 @@
 
 @layer components {
   /* one screen, no scroll: the sheet is the viewport, the land takes what the heading and the title block leave */
-  .s-lost.s-sheet { height: 100dvh; min-height: 560px; }
-  .s-lost .s-frame { height: 100%; min-height: 0; grid-template-rows: auto minmax(0, 1fr) auto; }
-  .s-lost .s-frame > .s-title { pointer-events: none; }
+  .s-lost.s-sheet {
+    height: 100dvh;
+    min-height: 560px;
+  }
+  .s-lost .s-frame {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .s-lost .s-frame > .s-title {
+    pointer-events: none;
+  }
   /* no pause control on this sheet (its land holds still), so the site controls take the corner */
-  .s-lost.s-home .s-frame > .s-site-ctl { margin-inline-end: var(--s-title-x); }
+  .s-lost.s-home .s-frame > .s-site-ctl {
+    margin-inline-end: var(--s-title-x);
+  }
 
   .s-kt-board {
-    grid-row: 1 / 3; grid-column: 1; position: relative; overflow: hidden; min-height: 0;
+    grid-row: 1 / 3;
+    grid-column: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
     /* faint behind the lettering, as sheet 1's land is */
     --s-fade: linear-gradient(to bottom, rgb(0 0 0 / 0.35) 0, rgb(0 0 0 / 0.4) 90px, #000 170px);
   }
   .s-kt-board > svg {
-    position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
-    -webkit-mask-image: var(--s-fade); mask-image: var(--s-fade);
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-mask-image: var(--s-fade);
+    mask-image: var(--s-fade);
   }
-  .s-kt-board[data-phase="tracing"] > svg { cursor: none; }
+  .s-kt-board[data-phase="tracing"] > svg {
+    cursor: none;
+  }
 
   /* the keyline home: a band you must stay inside, the line itself hashed blue (as a keyline is drawn on land) */
-  .s-kt-band { fill: none; stroke: color-mix(in oklab, var(--kl-cobalt) 11%, transparent); stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: stroke 240ms var(--kl-ease-out); }
-  .s-kt-line { fill: none; stroke: var(--kl-cobalt); stroke-width: 2; stroke-dasharray: 7 5; vector-effect: non-scaling-stroke; }
-  .s-kt-trail { fill: none; stroke: var(--kl-cobalt); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-  .s-kt-hand { fill: var(--kl-cobalt); stroke: var(--kl-paper); stroke-width: 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+  .s-kt-band {
+    fill: none;
+    stroke: color-mix(in oklab, var(--kl-cobalt) 11%, transparent);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    transition: stroke 240ms var(--kl-ease-out);
+  }
+  .s-kt-line {
+    fill: none;
+    stroke: var(--kl-cobalt);
+    stroke-width: 2;
+    stroke-dasharray: 7 5;
+    vector-effect: non-scaling-stroke;
+  }
+  .s-kt-trail {
+    fill: none;
+    stroke: var(--kl-cobalt);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .s-kt-hand {
+    fill: var(--kl-cobalt);
+    stroke: var(--kl-paper);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+  }
 
   /* markers: where you are (the brand's plate and keyline) and where home is (an open frame, filled on arrival) */
-  .s-kt-start text, .s-kt-goal text {
-    font-family: var(--kl-font-mono); font-size: 13px; font-weight: 700; fill: var(--kl-ink);
-    paint-order: stroke; stroke: var(--kl-paper); stroke-width: 5px; stroke-linejoin: round;
+  .s-kt-start text,
+  .s-kt-goal text {
+    font-family: var(--kl-font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    fill: var(--kl-ink);
+    paint-order: stroke;
+    stroke: var(--kl-paper);
+    stroke-width: 5px;
+    stroke-linejoin: round;
   }
-  .s-kt-goal > rect { fill: var(--kl-paper); stroke: var(--kl-line); stroke-width: 3; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; }
+  .s-kt-goal > rect {
+    fill: var(--kl-paper);
+    stroke: var(--kl-line);
+    stroke-width: 3;
+    vector-effect: non-scaling-stroke;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
   /* the start calls for a press: one ring breathes out from it until the trace begins */
-  .s-kt-call { fill: none; stroke: var(--kl-cobalt); stroke-width: 2; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; animation: s-kt-call 1600ms var(--kl-ease-out) infinite; }
-  .s-kt-call[data-nudge] { animation: s-kt-call 520ms var(--kl-ease-out) 3; stroke-width: 3; }
-  @keyframes s-kt-call { from { transform: scale(0.55); opacity: 0.9; } to { transform: scale(1.6); opacity: 0; } }
+  .s-kt-call {
+    fill: none;
+    stroke: var(--kl-cobalt);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: s-kt-call 1600ms var(--kl-ease-out) infinite;
+  }
+  .s-kt-call[data-nudge] {
+    animation: s-kt-call 520ms var(--kl-ease-out) 3;
+    stroke-width: 3;
+  }
+  @keyframes s-kt-call {
+    from {
+      transform: scale(0.55);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
 
   /* home: the band fills, the frame takes the cobalt plate */
-  .s-kt-board[data-phase="won"] .s-kt-band { stroke: color-mix(in oklab, var(--kl-cobalt) 24%, transparent); }
-  .s-kt-board[data-phase="won"] .s-kt-goal > rect { fill: var(--kl-cobalt); animation: s-kt-land 420ms var(--kl-ease-out) both; }
-  @keyframes s-kt-land { 0% { transform: scale(1.7); } 100% { transform: scale(1); } }
+  .s-kt-board[data-phase="won"] .s-kt-band {
+    stroke: color-mix(in oklab, var(--kl-cobalt) 24%, transparent);
+  }
+  .s-kt-board[data-phase="won"] .s-kt-goal > rect {
+    fill: var(--kl-cobalt);
+    animation: s-kt-land 420ms var(--kl-ease-out) both;
+  }
+  @keyframes s-kt-land {
+    0% {
+      transform: scale(1.7);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
   /* off the line: the trace turns red, and a red stroke runs from the line to where the hand left it */
-  .s-kt-board[data-phase="lost"] .s-kt-band { stroke: color-mix(in oklab, var(--kl-ink) 6%, transparent); }
-  .s-kt-board[data-phase="lost"] .s-kt-trail { stroke: var(--kl-red); }
-  .s-kt-miss > path { fill: none; stroke: var(--kl-red); stroke-width: 2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-  .s-kt-miss > path:first-child { stroke-dasharray: 3 4; }
+  .s-kt-board[data-phase="lost"] .s-kt-band {
+    stroke: color-mix(in oklab, var(--kl-ink) 6%, transparent);
+  }
+  .s-kt-board[data-phase="lost"] .s-kt-trail {
+    stroke: var(--kl-red);
+  }
+  .s-kt-miss > path {
+    fill: none;
+    stroke: var(--kl-red);
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .s-kt-miss > path:first-child {
+    stroke-dasharray: 3 4;
+  }
 
   /* the result: a plate printed onto the sheet, in register (sheet 1's plate turn), above the land */
   .s-kt-plate {
-    position: absolute; z-index: 3; left: 50%; top: 56%; translate: -50% -50%;
-    width: min(440px, calc(100% - 32px)); box-sizing: border-box; padding: 22px 24px 24px;
-    border: var(--kl-k3) solid var(--kl-line); background: var(--kl-paper);
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 56%;
+    translate: -50% -50%;
+    width: min(440px, calc(100% - 32px));
+    box-sizing: border-box;
+    padding: 22px 24px 24px;
+    border: var(--kl-k3) solid var(--kl-line);
+    background: var(--kl-paper);
     box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.28);
     animation: s-plate-ink 220ms var(--kl-ease-out) both;
   }
   .s-kt-plate[data-tone="won"]::after {
-    content: ""; position: absolute; inset: calc(-1 * var(--kl-k3)); pointer-events: none; border: var(--kl-k3) solid var(--kl-cobalt);
-    opacity: 0; animation: s-plate-reg 240ms steps(3, end) both;
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--kl-k3));
+    pointer-events: none;
+    border: var(--kl-k3) solid var(--kl-cobalt);
+    opacity: 0;
+    animation: s-plate-reg 240ms steps(3, end) both;
   }
-  .s-kt-word { margin: 0; font-size: 48px; line-height: 1; font-weight: 800; letter-spacing: -0.035em; }
-  .s-kt-plate[data-tone="won"] .s-kt-word { color: var(--kl-cobalt-text); }
-  .s-kt-plate[data-tone="lost"] .s-kt-word { color: var(--kl-red-text); }
-  .s-kt-sub { margin: 10px 0 18px; font-size: 15px; line-height: 1.45; color: var(--kl-ink-2); text-wrap: pretty; }
-  .s-kt-acts { display: flex; flex-wrap: wrap; gap: 10px; }
-  .s-kt-acts > .kl-button { min-height: 44px; padding-inline: 18px; font-size: 15px; text-decoration: none; }
+  .s-kt-word {
+    margin: 0;
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+  .s-kt-plate[data-tone="won"] .s-kt-word {
+    color: var(--kl-cobalt-text);
+  }
+  .s-kt-plate[data-tone="lost"] .s-kt-word {
+    color: var(--kl-red-text);
+  }
+  .s-kt-sub {
+    margin: 10px 0 18px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--kl-ink-2);
+    text-wrap: pretty;
+  }
+  .s-kt-acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .s-kt-acts > .kl-button {
+    min-height: 44px;
+    padding-inline: 18px;
+    font-size: 15px;
+    text-decoration: none;
+  }
 
   /* the title block, cut to one row: who, how far, the way out */
-  .s-kt-block { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) auto; }
-  .s-kt-block .s-tb-id { justify-content: center; gap: 6px; padding: 14px 20px; }
-  .s-kt-status { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding: 12px 20px; }
-  .s-kt-status .kl-progress-l { font-weight: 700; }
-  .s-kt-best { font-weight: 400; color: var(--kl-ink-3); }
-  .s-kt-act { flex-direction: row; align-items: center; padding: 14px 20px; }
-  .s-kt-act .kl-button { min-height: 44px; }
+  .s-kt-block {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) auto;
+  }
+  .s-kt-block .s-tb-id {
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 20px;
+  }
+  .s-kt-status {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    padding: 12px 20px;
+  }
+  .s-kt-status .kl-progress-l {
+    font-weight: 700;
+  }
+  .s-kt-best {
+    font-weight: 400;
+    color: var(--kl-ink-3);
+  }
+  .s-kt-act {
+    flex-direction: row;
+    align-items: center;
+    padding: 14px 20px;
+  }
+  .s-kt-act .kl-button {
+    min-height: 44px;
+  }
   /* a control Button lets its label wrap; these two short labels hold one line at every width */
-  .s-lost .s-kt-act .kl-button > .kl-button-label { white-space: nowrap; }
+  .s-lost .s-kt-act .kl-button > .kl-button-label {
+    white-space: nowrap;
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .s-kt-call { animation: none; transform: scale(1.2); opacity: 0.5; }
-    .s-kt-board[data-phase="won"] .s-kt-goal > rect, .s-kt-plate, .s-kt-plate::after { animation: none; }
-    .s-kt-band { transition: none; }
+    .s-kt-call {
+      animation: none;
+      transform: scale(1.2);
+      opacity: 0.5;
+    }
+    .s-kt-board[data-phase="won"] .s-kt-goal > rect,
+    .s-kt-plate,
+    .s-kt-plate::after {
+      animation: none;
+    }
+    .s-kt-band {
+      transition: none;
+    }
   }
   @media (forced-colors: active) {
-    .s-kt-line, .s-kt-trail, .s-kt-call { stroke: Highlight; }
-    .s-kt-board[data-phase="lost"] .s-kt-trail, .s-kt-miss > path { stroke: CanvasText; }
-    .s-kt-goal > rect { stroke: CanvasText; }
+    .s-kt-line,
+    .s-kt-trail,
+    .s-kt-call {
+      stroke: Highlight;
+    }
+    .s-kt-board[data-phase="lost"] .s-kt-trail,
+    .s-kt-miss > path {
+      stroke: CanvasText;
+    }
+    .s-kt-goal > rect {
+      stroke: CanvasText;
+    }
   }
   @media (max-width: 1080px) {
-    .s-kt-block { grid-template-columns: minmax(0, 1fr) auto; }
-    .s-kt-block .s-tb-id { display: none; }
-    .s-kt-block > .s-kt-status { border-inline-start: 0; }
+    .s-kt-block {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .s-kt-block .s-tb-id {
+      display: none;
+    }
+    .s-kt-block > .s-kt-status {
+      border-inline-start: 0;
+    }
   }
   @media (max-width: 720px) {
-    .s-kt-block { grid-template-columns: minmax(0, 1fr); }
-    .s-kt-status { padding: 12px 16px; }
-    .s-kt-act { padding: 12px 16px; }
-    .s-kt-act > :first-child { flex: 1; }
-    .s-kt-word { font-size: 40px; }
+    .s-kt-block {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .s-kt-status {
+      padding: 12px 16px;
+    }
+    .s-kt-act {
+      padding: 12px 16px;
+    }
+    .s-kt-act > :first-child {
+      flex: 1;
+    }
+    .s-kt-word {
+      font-size: 40px;
+    }
   }
 }

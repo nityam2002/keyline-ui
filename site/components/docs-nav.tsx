@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Nav, NavIdentity, type NavGroup } from "@/components/keyline/ui/nav"
-import { ScrollArea } from "@/components/keyline/ui/scroll-area"
-import { INDEX } from "@site/lib/catalog"
-import { Mark } from "./land"
+import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Nav, NavIdentity, type NavGroup } from "@/components/keyline/ui/nav";
+import { ScrollArea } from "@/components/keyline/ui/scroll-area";
+import { INDEX } from "@site/lib/catalog";
+import { Mark } from "./land";
 
 const GROUPS: NavGroup[] = INDEX.map((g) => ({
   label: g.group,
@@ -17,30 +17,30 @@ const GROUPS: NavGroup[] = INDEX.map((g) => ({
     // registry items whose pages are not written yet: listed, not links
     disabled: !it.href,
   })),
-}))
+}));
 
 /* Set by DocsNav: records the page a link was just pressed for, so the band moves on the press. */
-const Choose = React.createContext<(href: string) => void>(() => {})
+const Choose = React.createContext<(href: string) => void>(() => {});
 
 /**
  * The Nav's link: Next's Link (client-side navigation), which also reports a plain left click at once. A
  * click that opens a new tab or window, or that something prevented, chooses nothing here.
  */
 function NavLink({ onClick, ...props }: React.ComponentProps<typeof Link>) {
-  const choose = React.useContext(Choose)
+  const choose = React.useContext(Choose);
   return (
     <Link
       {...props}
       onClick={(e) => {
-        onClick?.(e)
-        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-        choose(typeof props.href === "string" ? props.href : (props.href.pathname ?? ""))
+        onClick?.(e);
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        choose(typeof props.href === "string" ? props.href : (props.href.pathname ?? ""));
       }}
     />
-  )
+  );
 }
 
-const nameOf = (href: string) => INDEX.flatMap((g) => g.items).find((e) => e.href === href)?.name
+const nameOf = (href: string) => INDEX.flatMap((g) => g.items).find((e) => e.href === href)?.name;
 
 /**
  * Every component, grouped, in Keyline's Nav. The identity stays put at the top of the column; only the
@@ -53,26 +53,29 @@ const nameOf = (href: string) => INDEX.flatMap((g) => g.items).find((e) => e.hre
  * truth again.
  */
 export function DocsNav({ current }: { current: string }) {
-  const pathname = usePathname()
-  const [chosen, setChosen] = React.useState<{ on: string; name: string } | null>(null)
+  const pathname = usePathname();
+  const [chosen, setChosen] = React.useState<{ on: string; name: string } | null>(null);
   const choose = React.useCallback(
     (href: string) => {
-      const name = nameOf(href)
-      if (name) setChosen({ on: pathname, name })
+      const name = nameOf(href);
+      if (name) setChosen({ on: pathname, name });
     },
     [pathname],
-  )
+  );
   // the URL moved (the page landed, or back/forward): the choice is spent, never applied again on return
-  if (chosen && chosen.on !== pathname) setChosen(null)
-  const value = chosen && chosen.on === pathname ? chosen.name : current
+  if (chosen && chosen.on !== pathname) setChosen(null);
+  const value = chosen && chosen.on === pathname ? chosen.name : current;
   return (
     <Choose.Provider value={choose}>
-      <Link href="/" className="s-dnav-home flex min-h-[60px] flex-none border-be-3 border-kl-line text-kl-ink no-underline hover:bg-kl-paper focus-visible:outline-offset-[-4px]">
+      <Link
+        href="/"
+        className="s-dnav-home flex min-h-[60px] flex-none border-be-3 border-kl-line text-kl-ink no-underline hover:bg-kl-paper focus-visible:outline-offset-[-4px]"
+      >
         <NavIdentity mark={<Mark />} title="Keyline UI" meta="Components" />
       </Link>
       <ScrollArea label="Component index" className="s-dnav">
         <Nav linkComponent={NavLink} layout="cell" label="Components" value={value} groups={GROUPS} />
       </ScrollArea>
     </Choose.Provider>
-  )
+  );
 }

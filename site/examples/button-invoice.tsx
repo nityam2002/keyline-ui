@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 
-type Signal = "idle" | "pending" | "done"
+type Signal = "idle" | "pending" | "done";
 
 export function InvoiceActions() {
-  const [signal, setSignal] = useState<Signal>("idle")
-  const [sentAt, setSentAt] = useState<string | null>(null)
-  const [paid, setPaid] = useState(false)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  useEffect(() => () => clearTimeout(timer.current), [])
+  const [signal, setSignal] = useState<Signal>("idle");
+  const [sentAt, setSentAt] = useState<string | null>(null);
+  const [paid, setPaid] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const email = () => {
-    setSignal("pending")
+    setSignal("pending");
     // stands in for the request to your mail service
     timer.current = setTimeout(() => {
-      setSentAt(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }))
-      setSignal("done")
-      timer.current = setTimeout(() => setSignal("idle"), 1600)
-    }, 1200)
-  }
+      setSentAt(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+      setSignal("done");
+      timer.current = setTimeout(() => setSignal("idle"), 1600);
+    }, 1200);
+  };
 
   return (
     <div className="grid gap-4">
@@ -51,5 +51,5 @@ export function InvoiceActions() {
             : "Not sent yet."}
       </p>
     </div>
-  )
+  );
 }

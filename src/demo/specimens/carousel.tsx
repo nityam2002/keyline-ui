@@ -1,12 +1,7 @@
 import * as ui from "../demo-ui";
-import {
-Carousel,
-CarouselBar,
-CarouselContent,
-CarouselItem,
-} from "@/registry/keyline/ui/carousel";
+import { Carousel, CarouselBar, CarouselContent, CarouselItem } from "@/registry/keyline/ui/carousel";
 import { Stat } from "@/registry/keyline/ui/stat";
-import { Status,type StatusKind } from "@/registry/keyline/ui/status";
+import { Status, type StatusKind } from "@/registry/keyline/ui/status";
 
 /* ------------------------------------------------------------------ *
  * 2. Carousel (embla)
@@ -62,7 +57,7 @@ const TRAILERS: {
 ];
 function TrailerCard({ t }: { t: (typeof TRAILERS)[number] }) {
   return (
-    <div className="grid content-start gap-2.5 p-4 min-h-[200px]">
+    <div className="grid min-h-[200px] content-start gap-2.5 p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="kl-code">{t.id}</span>
         <Status kind={t.kind}>{t.state}</Status>
@@ -79,10 +74,7 @@ export function CarouselSpecimen() {
   return (
     <div className={ui.stack} data-testid="specimen-carousel">
       <div className={ui.group}>
-        <h3 className={ui.cap}>
-          One per view: arrows on the region, previous and next cells, position
-          ticks
-        </h3>
+        <h3 className={ui.cap}>One per view: arrows on the region, previous and next cells, position ticks</h3>
         <div style={{ maxWidth: 420 }}>
           <Carousel aria-label="Trailers at dock 4" data-testid="cr-one">
             <CarouselContent>
@@ -97,15 +89,9 @@ export function CarouselSpecimen() {
         </div>
       </div>
       <div className={ui.group}>
-        <h3 className={ui.cap}>
-          Two per view on seams; a step moves one slide
-        </h3>
+        <h3 className={ui.cap}>Two per view on seams; a step moves one slide</h3>
         <div style={{ maxWidth: 640 }}>
-          <Carousel
-            aria-label="Trailers, two up"
-            opts={{ align: "start", slidesToScroll: 1 }}
-            data-testid="cr-two"
-          >
+          <Carousel aria-label="Trailers, two up" opts={{ align: "start", slidesToScroll: 1 }} data-testid="cr-two">
             <CarouselContent>
               {TRAILERS.map((t) => (
                 <CarouselItem key={t.id} basis="50%">
@@ -118,9 +104,7 @@ export function CarouselSpecimen() {
         </div>
       </div>
       <div className={ui.group} dir="rtl">
-        <h3 className={ui.cap}>
-          RTL: the first slide at the inline start; the arrows and keys mirror
-        </h3>
+        <h3 className={ui.cap}>RTL: the first slide at the inline start; the arrows and keys mirror</h3>
         <div style={{ maxWidth: 420 }}>
           <Carousel aria-label="المقطورات" data-testid="cr-rtl">
             <CarouselContent>

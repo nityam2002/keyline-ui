@@ -1,13 +1,31 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Dialog, DialogBody, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/keyline/ui/dialog"
-import { Field, FieldDescription, FieldError, FieldFrame, FieldInput, FieldLabel, Form } from "@/components/keyline/ui/field"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/keyline/ui/dialog";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldFrame,
+  FieldInput,
+  FieldLabel,
+  Form,
+} from "@/components/keyline/ui/field";
 
 export function NewClient() {
-  const [open, setOpen] = useState(false)
-  const [clients, setClients] = useState(["Lackawanna County", "Blue Cross of Pennsylvania"])
+  const [open, setOpen] = useState(false);
+  const [clients, setClients] = useState(["Lackawanna County", "Blue Cross of Pennsylvania"]);
 
   return (
     <div className="grid gap-4">
@@ -28,8 +46,8 @@ export function NewClient() {
             <Form
               id="new-client"
               onFormSubmit={(v) => {
-                setClients((all) => [...all, String(v["company"]).trim()])
-                setOpen(false)
+                setClients((all) => [...all, String(v["company"]).trim()]);
+                setOpen(false);
               }}
             >
               <Field name="company">
@@ -57,5 +75,5 @@ export function NewClient() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

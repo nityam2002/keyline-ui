@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { ChevronDown } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { ButtonGroup } from "@/components/keyline/ui/button-group"
-import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu"
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { ButtonGroup } from "@/components/keyline/ui/button-group";
+import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu";
 
 export function TrackingLink() {
-  const [sent, setSent] = useState<string | null>(null)
+  const [sent, setSent] = useState<string | null>(null);
 
   return (
     <div className="grid gap-4">
@@ -31,5 +31,5 @@ export function TrackingLink() {
         {sent ?? "Order DM-4087 left the warehouse at 10:15."}
       </p>
     </div>
-  )
+  );
 }

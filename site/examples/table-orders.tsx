@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useMemo, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useMemo, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 import {
   Status,
   Table,
@@ -24,11 +24,11 @@ import {
   nextSort,
   sortOf,
   type Sort,
-} from "@/components/keyline/ui/table"
-import type { StatusKind } from "@/components/keyline/ui/status"
+} from "@/components/keyline/ui/table";
+import type { StatusKind } from "@/components/keyline/ui/status";
 
-type State = "out" | "loading" | "held" | "delivered"
-type Order = { id: string; client: string; rep: string; cases: number; due: string; state: State }
+type State = "out" | "loading" | "held" | "delivered";
+type Order = { id: string; client: string; rep: string; cases: number; due: string; state: State };
 
 const ORDERS: Order[] = [
   { id: "DM-4102", client: "Scranton Business Park", rep: "Dwight", cases: 40, due: "2026-11-12", state: "out" },
@@ -42,57 +42,64 @@ const ORDERS: Order[] = [
   { id: "DM-4129", client: "Penn Paper Supply", rep: "Phyllis", cases: 15, due: "2026-11-11", state: "held" },
   { id: "DM-4131", client: "Wilkes-Barre Library", rep: "Stanley", cases: 18, due: "2026-11-18", state: "out" },
   { id: "DM-4134", client: "Sabre", rep: "Andy", cases: 300, due: "2026-11-19", state: "loading" },
-]
+];
 
 const SAY: Record<State, [StatusKind, string]> = {
   loading: ["waiting", "Loading"],
   out: ["normal", "Out for delivery"],
   held: ["attention", "Held"],
   delivered: ["done", "Delivered"],
-}
+};
 
-type Key = "id" | "client" | "cases" | "due"
-const PAGE = 5
-const day = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })
+type Key = "id" | "client" | "cases" | "due";
+const PAGE = 5;
+const day = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
 
 export function OpenOrders() {
-  const [orders, setOrders] = useState(ORDERS)
-  const [view, setView] = useState("all")
-  const [q, setQ] = useState("")
-  const [sort, setSort] = useState<Sort<Key>>({ key: "due", direction: "ascending" })
-  const [page, setPage] = useState(0)
-  const [picked, setPicked] = useState<Set<string>>(new Set())
+  const [orders, setOrders] = useState(ORDERS);
+  const [view, setView] = useState("all");
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState<Sort<Key>>({ key: "due", direction: "ascending" });
+  const [page, setPage] = useState(0);
+  const [picked, setPicked] = useState<Set<string>>(new Set());
 
   const rows = useMemo(() => {
-    const term = q.trim().toLowerCase()
+    const term = q.trim().toLowerCase();
     const hit = orders.filter(
       (o) =>
         (view === "all" || (view === "held" ? o.state === "held" : o.state === "delivered")) &&
-        (!term || o.client.toLowerCase().includes(term) || o.id.toLowerCase().includes(term) || o.rep.toLowerCase().includes(term)),
-    )
-    return sort ? hit.sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.direction)) : hit
-  }, [orders, view, q, sort])
+        (!term ||
+          o.client.toLowerCase().includes(term) ||
+          o.id.toLowerCase().includes(term) ||
+          o.rep.toLowerCase().includes(term)),
+    );
+    return sort ? hit.sort((a, b) => compareValues(a[sort.key], b[sort.key], sort.direction)) : hit;
+  }, [orders, view, q, sort]);
 
-  const shown = rows.slice(page * PAGE, page * PAGE + PAGE)
-  const onPage = shown.filter((o) => picked.has(o.id)).length
-  const reset = () => (setPage(0), setPicked(new Set()))
+  const shown = rows.slice(page * PAGE, page * PAGE + PAGE);
+  const onPage = shown.filter((o) => picked.has(o.id)).length;
+  const reset = () => (setPage(0), setPicked(new Set()));
   const pick = (id: string, on: boolean) =>
     setPicked((p) => {
-      const n = new Set(p)
-      if (on) n.add(id)
-      else n.delete(id)
-      return n
-    })
+      const n = new Set(p);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
   const deliver = () => {
-    setOrders((all) => all.map((o) => (picked.has(o.id) ? { ...o, state: "delivered" } : o)))
-    setPicked(new Set())
-  }
+    setOrders((all) => all.map((o) => (picked.has(o.id) ? { ...o, state: "delivered" } : o)));
+    setPicked(new Set());
+  };
   const head = (key: Key, label: string, align?: "end", first?: "descending") => (
-    <TableSortHeader align={align} sort={sortOf(sort, key)} onSort={() => (setSort((s) => nextSort(s, key, { first })), setPage(0))}>
+    <TableSortHeader
+      align={align}
+      sort={sortOf(sort, key)}
+      onSort={() => (setSort((s) => nextSort(s, key, { first })), setPage(0))}
+    >
       {label}
     </TableSortHeader>
-  )
-  const count = (f: (o: Order) => boolean) => orders.filter(f).length
+  );
+  const count = (f: (o: Order) => boolean) => orders.filter(f).length;
 
   return (
     <TableFrame>
@@ -107,9 +114,17 @@ export function OpenOrders() {
         ]}
       />
       <TableToolbar aria-label="Filter orders">
-        <TableSearch label="Search orders" placeholder="Client, order or rep" value={q} onChange={(e) => (setQ(e.target.value), reset())} />
+        <TableSearch
+          label="Search orders"
+          placeholder="Client, order or rep"
+          value={q}
+          onChange={(e) => (setQ(e.target.value), reset())}
+        />
       </TableToolbar>
-      <TableBulkBar count={picked.size} scope={picked.size ? `${picked.size} of ${rows.length} orders` : "Select orders to act on them."}>
+      <TableBulkBar
+        count={picked.size}
+        scope={picked.size ? `${picked.size} of ${rows.length} orders` : "Select orders to act on them."}
+      >
         <Button layout="cell" variant="primary" disabled={!picked.size} onClick={deliver}>
           Mark delivered
         </Button>
@@ -135,10 +150,15 @@ export function OpenOrders() {
           <TableBody>
             {shown.length ? (
               shown.map((o, i) => {
-                const [kind, words] = SAY[o.state]
+                const [kind, words] = SAY[o.state];
                 return (
                   <TableRow key={o.id} selected={picked.has(o.id)}>
-                    <TableIndexCell checked={picked.has(o.id)} onCheckedChange={(on) => pick(o.id, on)} code={String(page * PAGE + i + 1).padStart(2, "0")} label={`Select ${o.id}`} />
+                    <TableIndexCell
+                      checked={picked.has(o.id)}
+                      onCheckedChange={(on) => pick(o.id, on)}
+                      code={String(page * PAGE + i + 1).padStart(2, "0")}
+                      label={`Select ${o.id}`}
+                    />
                     <TableCell className="font-kl-mono text-[13px]">{o.id}</TableCell>
                     <TableCell>
                       {o.client} <span className="text-kl-ink-3">· {o.rep}</span>
@@ -149,7 +169,7 @@ export function OpenOrders() {
                       <Status kind={kind}>{words}</Status>
                     </TableCell>
                   </TableRow>
-                )
+                );
               })
             ) : (
               <TableState
@@ -170,5 +190,5 @@ export function OpenOrders() {
       </TableScroll>
       <TablePagination page={page} pageSize={PAGE} total={rows.length} onPageChange={setPage} noun="orders" />
     </TableFrame>
-  )
+  );
 }

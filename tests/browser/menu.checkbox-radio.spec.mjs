@@ -1,47 +1,84 @@
 // Menu checkbox and radio items: counts, checking keeps the menu open, filled box and tick, disabled, Space on a
 // radio item, the dot, Escape and focus return, page state; the same radio items in a ContextMenu.
-import { test } from "./fixtures.mjs"
-import { until } from "./lib/probe.mjs"
+import { test } from "./fixtures.mjs";
+import { until } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
-test.use({ only: ["number","menu-choices"] })
+test.use({ only: ["number", "menu-choices"] });
 
 test("menu: checkbox and radio items, in a Menu and a ContextMenu", async ({ open, ok }) => {
-  const p = await open({ ready: "#number .kl-number" })
-  const m = p.locator("#menu-choices")
-  await m.scrollIntoViewIfNeeded()
-  const trig = p.getByRole("button", { name: "View options" })
-  await trig.click()
-  const menu = p.getByRole("menu")
-  await menu.waitFor()
-  const cbs = p.getByRole("menuitemcheckbox")
-  ok("menu: four checkbox items, three checked", (await cbs.count()) === 4 && (await p.locator("[role=menuitemcheckbox][aria-checked=true]").count()) === 3, await cbs.count())
-  const carrier = p.getByRole("menuitemcheckbox", { name: /Carrier reference/ })
-  await carrier.click()
-  await until(async () => (await carrier.getAttribute("aria-checked")) === "true")
-  ok("menu: checking an item keeps the menu open and checks it", (await menu.isVisible()) && (await carrier.getAttribute("aria-checked")) === "true", null)
-  const filled = await carrier.locator(".kl-menu-box").evaluate((e) => getComputedStyle(e).backgroundColor)
-  ok("menu: a checked box is filled (shape, not colour alone: tick inside)", filled !== "rgba(0, 0, 0, 0)" && (await carrier.locator("svg").count()) === 1, filled)
-  ok("menu: the disabled checked item is aria-disabled", (await p.getByRole("menuitemcheckbox", { name: /always shown/ }).getAttribute("aria-disabled")) === "true", null)
-  const radios = p.getByRole("menuitemradio")
-  ok("menu: radio items, one checked", (await radios.count()) === 2 && (await p.locator("[role=menuitemradio][aria-checked=true]").count()) === 1, null)
+  const p = await open({ ready: "#number .kl-number" });
+  const m = p.locator("#menu-choices");
+  await m.scrollIntoViewIfNeeded();
+  const trig = p.getByRole("button", { name: "View options" });
+  await trig.click();
+  const menu = p.getByRole("menu");
+  await menu.waitFor();
+  const cbs = p.getByRole("menuitemcheckbox");
+  ok(
+    "menu: four checkbox items, three checked",
+    (await cbs.count()) === 4 && (await p.locator("[role=menuitemcheckbox][aria-checked=true]").count()) === 3,
+    await cbs.count(),
+  );
+  const carrier = p.getByRole("menuitemcheckbox", { name: /Carrier reference/ });
+  await carrier.click();
+  await until(async () => (await carrier.getAttribute("aria-checked")) === "true");
+  ok(
+    "menu: checking an item keeps the menu open and checks it",
+    (await menu.isVisible()) && (await carrier.getAttribute("aria-checked")) === "true",
+    null,
+  );
+  const filled = await carrier.locator(".kl-menu-box").evaluate((e) => getComputedStyle(e).backgroundColor);
+  ok(
+    "menu: a checked box is filled (shape, not colour alone: tick inside)",
+    filled !== "rgba(0, 0, 0, 0)" && (await carrier.locator("svg").count()) === 1,
+    filled,
+  );
+  ok(
+    "menu: the disabled checked item is aria-disabled",
+    (await p.getByRole("menuitemcheckbox", { name: /always shown/ }).getAttribute("aria-disabled")) === "true",
+    null,
+  );
+  const radios = p.getByRole("menuitemradio");
+  ok(
+    "menu: radio items, one checked",
+    (await radios.count()) === 2 && (await p.locator("[role=menuitemradio][aria-checked=true]").count()) === 1,
+    null,
+  );
   // keyboard: move to Compact and press Space
-  const compact = p.getByRole("menuitemradio", { name: "Compact" })
-  await compact.hover()
-  await p.keyboard.press("Space")
-  await until(async () => (await compact.getAttribute("aria-checked")) === "true")
-  ok("menu: Space on a radio item chooses it; the other clears", (await compact.getAttribute("aria-checked")) === "true" && (await p.getByRole("menuitemradio", { name: "Default" }).getAttribute("aria-checked")) === "false", null)
-  const dot = await compact.locator(".kl-menu-dot").count()
-  ok("menu: a chosen radio shows the filled square (a different shape from the tick)", dot === 1, dot)
-  await p.keyboard.press("Escape")
-  await until(async () => !(await menu.isVisible()))
-  ok("menu: Escape closes and returns focus to the trigger", !(await menu.isVisible()) && (await trig.evaluate((e) => e === document.activeElement)), null)
-  const state = p.getByTestId("menu-choices-state")
-  ok("menu: the page state reflects the choices", /carrier/.test(await state.innerText()) && /density: compact/.test(await state.innerText()), await state.innerText())
+  const compact = p.getByRole("menuitemradio", { name: "Compact" });
+  await compact.hover();
+  await p.keyboard.press("Space");
+  await until(async () => (await compact.getAttribute("aria-checked")) === "true");
+  ok(
+    "menu: Space on a radio item chooses it; the other clears",
+    (await compact.getAttribute("aria-checked")) === "true" &&
+      (await p.getByRole("menuitemradio", { name: "Default" }).getAttribute("aria-checked")) === "false",
+    null,
+  );
+  const dot = await compact.locator(".kl-menu-dot").count();
+  ok("menu: a chosen radio shows the filled square (a different shape from the tick)", dot === 1, dot);
+  await p.keyboard.press("Escape");
+  await until(async () => !(await menu.isVisible()));
+  ok(
+    "menu: Escape closes and returns focus to the trigger",
+    !(await menu.isVisible()) && (await trig.evaluate((e) => e === document.activeElement)),
+    null,
+  );
+  const state = p.getByTestId("menu-choices-state");
+  ok(
+    "menu: the page state reflects the choices",
+    /carrier/.test(await state.innerText()) && /density: compact/.test(await state.innerText()),
+    await state.innerText(),
+  );
   // the same items in a context menu
-  await p.getByTestId("ctx-target").click({ button: "right" })
-  await p.getByRole("menu").waitFor()
-  await p.getByRole("menuitemradio", { name: "Weight" }).click()
-  await until(async () => /sort: weight/.test(await state.innerText()))
-  ok("context menu: radio items work there too (sort: weight)", /sort: weight/.test(await state.innerText()), await state.innerText())
-  ok("no page errors (default page)", p.errs.length === 0, p.errs)
-})
+  await p.getByTestId("ctx-target").click({ button: "right" });
+  await p.getByRole("menu").waitFor();
+  await p.getByRole("menuitemradio", { name: "Weight" }).click();
+  await until(async () => /sort: weight/.test(await state.innerText()));
+  ok(
+    "context menu: radio items work there too (sort: weight)",
+    /sort: weight/.test(await state.innerText()),
+    await state.innerText(),
+  );
+  ok("no page errors (default page)", p.errs.length === 0, p.errs);
+});

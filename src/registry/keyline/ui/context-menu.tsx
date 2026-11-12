@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react"
-import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
+import * as React from "react";
+import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
 
-import { cn } from "@/lib/utils"
-import { scopeProps, useKeylineScope } from "../lib/keyline-scope"
+import { cn } from "@/lib/utils";
+import { scopeProps, useKeylineScope } from "../lib/keyline-scope";
 
 /**
  * A menu opened on an object (right-click, long-press, the Menu key or Shift+F10 on a focused target).
@@ -22,28 +22,44 @@ import { scopeProps, useKeylineScope } from "../lib/keyline-scope"
  * Opening, positioning at the pointer, long-press on touch, keyboard, typeahead and focus return are
  * Base UI Context Menu's.
  */
-const ContextMenu = ContextMenuPrimitive.Root
+const ContextMenu = ContextMenuPrimitive.Root;
 
 function ContextMenuTrigger({ className, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
-  return <ContextMenuPrimitive.Trigger data-slot="context-menu-trigger" className={cn("kl-ctx-trigger", className)} {...props} />
+  return (
+    <ContextMenuPrimitive.Trigger
+      data-slot="context-menu-trigger"
+      className={cn("kl-ctx-trigger", className)}
+      {...props}
+    />
+  );
 }
 
-function ContextMenuContent({ className, container, ...props }: React.ComponentProps<typeof ContextMenuPrimitive.Popup> & { container?: React.ComponentProps<typeof ContextMenuPrimitive.Portal>["container"] }) {
-  const [marker, scope, probe] = useKeylineScope(false, container)
+function ContextMenuContent({
+  className,
+  container,
+  ...props
+}: React.ComponentProps<typeof ContextMenuPrimitive.Popup> & {
+  container?: React.ComponentProps<typeof ContextMenuPrimitive.Portal>["container"];
+}) {
+  const [marker, scope, probe] = useKeylineScope(false, container);
   return (
     <>
       {marker}
       <ContextMenuPrimitive.Portal container={container}>
         {probe}
         <ContextMenuPrimitive.Positioner collisionPadding={8} {...scopeProps(scope, { className: "kl-positioner" })}>
-          <ContextMenuPrimitive.Popup data-slot="context-menu" className={cn("kl-attached kl-dock kl-menu kl-ctx-menu", className)} {...props} />
+          <ContextMenuPrimitive.Popup
+            data-slot="context-menu"
+            className={cn("kl-attached kl-dock kl-menu kl-ctx-menu", className)}
+            {...props}
+          />
         </ContextMenuPrimitive.Positioner>
       </ContextMenuPrimitive.Portal>
     </>
-  )
+  );
 }
 
-export { ContextMenu, ContextMenuTrigger, ContextMenuContent }
+export { ContextMenu, ContextMenuTrigger, ContextMenuContent };
 
 /* The rows are Menu's (Base UI's ContextMenu items are its Menu items). Re-exported under ContextMenu
    names so a context menu imports from one place; importing them from ./menu is equivalent. */
@@ -58,4 +74,4 @@ export {
   MenuSubmenu as ContextMenuSubmenu,
   MenuSubmenuTrigger as ContextMenuSubmenuTrigger,
   MenuSubmenuContent as ContextMenuSubmenuContent,
-} from "./menu"
+} from "./menu";

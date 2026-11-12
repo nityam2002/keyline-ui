@@ -1,13 +1,13 @@
 "use client";
 
-import * as React from "react"
-import { Questionnaire as Q } from "@shadcn/react/questionnaire"
+import * as React from "react";
+import { Questionnaire as Q } from "@shadcn/react/questionnaire";
 
-import { cn } from "@/lib/utils"
-import { useStretch } from "../lib/keyline-motion"
-import { Button } from "./button"
-import { FieldFrame } from "./field"
-import { Progress } from "./progress"
+import { cn } from "@/lib/utils";
+import { useStretch } from "../lib/keyline-motion";
+import { Button } from "./button";
+import { FieldFrame } from "./field";
+import { Progress } from "./progress";
 
 /*
  * A questionnaire on @shadcn/react's Questionnaire, as the reference. The library owns the behaviour:
@@ -29,8 +29,8 @@ import { Progress } from "./progress"
  *   └───────────────────────────────────────────────┘
  */
 
-type ItemCtx = { headingId: string; required: boolean; multiple: boolean }
-const ItemContext = React.createContext<ItemCtx>({ headingId: "", required: false, multiple: false })
+type ItemCtx = { headingId: string; required: boolean; multiple: boolean };
+const ItemContext = React.createContext<ItemCtx>({ headingId: "", required: false, multiple: false });
 
 /**
  * The form, in one region frame. `items` declares the steps (`name`, `required`, `choices`) and drives progress,
@@ -43,19 +43,26 @@ function Questionnaire({ className, onFocus, ...props }: React.ComponentProps<ty
       data-slot="questionnaire"
       className={cn("kl-frame kl-rows kl-q", className)}
       onFocus={(e) => {
-        onFocus?.(e)
+        onFocus?.(e);
         // the library focuses the new step's fieldset; Keyline moves on to its heading, so the question is what
         // a screen reader reads and where the next Tab starts. (An invalid answer is focused directly: untouched.)
-        const t = e.target as HTMLElement
-        if (t.matches('fieldset[data-slot="questionnaire-item"]')) t.querySelector<HTMLElement>('[data-slot="questionnaire-heading"]')?.focus()
+        const t = e.target as HTMLElement;
+        if (t.matches('fieldset[data-slot="questionnaire-item"]'))
+          t.querySelector<HTMLElement>('[data-slot="questionnaire-heading"]')?.focus();
       }}
       {...props}
     />
-  )
+  );
 }
 
 /** "Question 2 of 4" over a Keyline Progress whose fill is the steps behind you. */
-function QuestionnaireProgress({ className, label = (c: number, t: number) => `Question ${c} of ${t}` }: { className?: string; label?: (current: number, total: number) => string }) {
+function QuestionnaireProgress({
+  className,
+  label = (c: number, t: number) => `Question ${c} of ${t}`,
+}: {
+  className?: string;
+  label?: (current: number, total: number) => string;
+}) {
   return (
     <Q.Progress
       render={(_props, s) => (
@@ -63,32 +70,60 @@ function QuestionnaireProgress({ className, label = (c: number, t: number) => `Q
           <span className="kl-q-count">
             <bdi>{label(s.current, s.total)}</bdi>
           </span>
-          <Progress label={label(s.current, s.total)} hideLabel value={s.total ? s.current - 1 : 0} max={Math.max(1, s.total)} getAriaValueText={() => label(s.current, s.total)} />
+          <Progress
+            label={label(s.current, s.total)}
+            hideLabel
+            value={s.total ? s.current - 1 : 0}
+            max={Math.max(1, s.total)}
+            getAriaValueText={() => label(s.current, s.total)}
+          />
         </div>
       )}
     />
-  )
+  );
 }
 
 /** One step: a fieldset named by its title. `required`, `multiple`, `invalid` (your own check) and `name` as the library. */
-function QuestionnaireItem({ className, children, required = false, multiple = false, ...props }: React.ComponentProps<typeof Q.Item>) {
-  const headingId = React.useId()
+function QuestionnaireItem({
+  className,
+  children,
+  required = false,
+  multiple = false,
+  ...props
+}: React.ComponentProps<typeof Q.Item>) {
+  const headingId = React.useId();
   return (
     <ItemContext.Provider value={{ headingId, required, multiple }}>
-      <Q.Item data-slot="questionnaire-item" required={required} multiple={multiple} className={cn("kl-q-item", className)} {...props}>
+      <Q.Item
+        data-slot="questionnaire-item"
+        required={required}
+        multiple={multiple}
+        className={cn("kl-q-item", className)}
+        {...props}
+      >
         {children}
       </Q.Item>
     </ItemContext.Provider>
-  )
+  );
 }
 
 /**
  * The step's question: a heading inside the fieldset's legend. It takes focus when the step appears. Optional
  * steps say so (`optionalText`, null to hide it).
  */
-function QuestionnaireTitle({ className, children, level = 2, optionalText = "Optional" }: { className?: string; children: React.ReactNode; level?: 2 | 3 | 4 | 5 | 6; optionalText?: React.ReactNode }) {
-  const { headingId, required } = React.useContext(ItemContext)
-  const H = `h${level}` as "h2"
+function QuestionnaireTitle({
+  className,
+  children,
+  level = 2,
+  optionalText = "Optional",
+}: {
+  className?: string;
+  children: React.ReactNode;
+  level?: 2 | 3 | 4 | 5 | 6;
+  optionalText?: React.ReactNode;
+}) {
+  const { headingId, required } = React.useContext(ItemContext);
+  const H = `h${level}` as "h2";
   return (
     <Q.Title className="kl-q-legend">
       <H id={headingId} tabIndex={-1} data-slot="questionnaire-heading" className={cn("kl-q-title", className)}>
@@ -96,11 +131,11 @@ function QuestionnaireTitle({ className, children, level = 2, optionalText = "Op
         {!required && optionalText ? <span className="kl-code kl-q-opt">{optionalText}</span> : null}
       </H>
     </Q.Title>
-  )
+  );
 }
 
 function QuestionnaireDescription({ className, ...props }: React.ComponentProps<typeof Q.Description>) {
-  return <Q.Description className={cn("kl-field-desc kl-q-desc", className)} {...props} />
+  return <Q.Description className={cn("kl-field-desc kl-q-desc", className)} {...props} />;
 }
 
 /**
@@ -108,31 +143,44 @@ function QuestionnaireDescription({ className, ...props }: React.ComponentProps<
  * stretches between rows; several choices (`multiple` on the item) are checkbox rows.
  */
 function QuestionnaireChoices({ className, children, ...props }: React.ComponentProps<typeof Q.Choices>) {
-  const { multiple } = React.useContext(ItemContext)
-  const ref = React.useRef<HTMLDivElement>(null)
-  const [chosen, setChosen] = React.useState(-1)
+  const { multiple } = React.useContext(ItemContext);
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [chosen, setChosen] = React.useState(-1);
   // the chosen row is read from the library's data-checked: it changes on a press, a key, Skip, reset or a
   // controlled value, and only the attribute sees all of them
   React.useLayoutEffect(() => {
-    const el = ref.current
-    if (!el || multiple) return
-    const read = () => setChosen(Array.from(el.querySelectorAll("[data-kl-item]")).findIndex((r) => r.hasAttribute("data-checked")))
-    read()
-    const mo = new MutationObserver(read)
-    mo.observe(el, { subtree: true, attributes: true, attributeFilter: ["data-checked"] })
-    return () => mo.disconnect()
-  }, [multiple])
-  useStretch(ref, multiple ? -1 : chosen, { axis: "y" })
+    const el = ref.current;
+    if (!el || multiple) return;
+    const read = () =>
+      setChosen(Array.from(el.querySelectorAll("[data-kl-item]")).findIndex((r) => r.hasAttribute("data-checked")));
+    read();
+    const mo = new MutationObserver(read);
+    mo.observe(el, { subtree: true, attributes: true, attributeFilter: ["data-checked"] });
+    return () => mo.disconnect();
+  }, [multiple]);
+  useStretch(ref, multiple ? -1 : chosen, { axis: "y" });
   return (
-    <Q.Choices ref={ref} data-slot="questionnaire-choices" data-kl-stretch="" data-multiple={multiple || undefined} className={cn("kl-ctl kl-rows kl-radio-group kl-q-choices", className)} {...props}>
+    <Q.Choices
+      ref={ref}
+      data-slot="questionnaire-choices"
+      data-kl-stretch=""
+      data-multiple={multiple || undefined}
+      className={cn("kl-ctl kl-rows kl-radio-group kl-q-choices", className)}
+      {...props}
+    >
       <span data-kl-band="" className="kl-radio-band" aria-hidden hidden />
       {children}
     </Q.Choices>
-  )
+  );
 }
 
 /** A choice row: a native radio or checkbox under the row, the box, the label and description, the shortcut cell. */
-function QuestionnaireChoice({ className, children, description, ...props }: React.ComponentProps<typeof Q.Choice> & { description?: React.ReactNode }) {
+function QuestionnaireChoice({
+  className,
+  children,
+  description,
+  ...props
+}: React.ComponentProps<typeof Q.Choice> & { description?: React.ReactNode }) {
   return (
     <Q.Choice
       data-slot="questionnaire-choice"
@@ -145,11 +193,23 @@ function QuestionnaireChoice({ className, children, description, ...props }: Rea
           <span className="kl-choice-box" aria-hidden>
             {s.type === "radio" ? (
               <span className="kl-radio">
-                <span className="kl-radio-dot" data-checked={s.checked ? "" : undefined} data-unchecked={s.checked ? undefined : ""} />
+                <span
+                  className="kl-radio-dot"
+                  data-checked={s.checked ? "" : undefined}
+                  data-unchecked={s.checked ? undefined : ""}
+                />
               </span>
             ) : (
-              <span className="kl-check" data-checked={s.checked ? "" : undefined} data-disabled={s.disabled ? "" : undefined}>
-                <span className="kl-check-ind" data-checked={s.checked ? "" : undefined} data-unchecked={s.checked ? undefined : ""} />
+              <span
+                className="kl-check"
+                data-checked={s.checked ? "" : undefined}
+                data-disabled={s.disabled ? "" : undefined}
+              >
+                <span
+                  className="kl-check-ind"
+                  data-checked={s.checked ? "" : undefined}
+                  data-unchecked={s.checked ? undefined : ""}
+                />
               </span>
             )}
           </span>
@@ -161,7 +221,7 @@ function QuestionnaireChoice({ className, children, description, ...props }: Rea
         </label>
       )}
     />
-  )
+  );
 }
 
 /**
@@ -169,20 +229,24 @@ function QuestionnaireChoice({ className, children, description, ...props }: Rea
  * `type` as the library: text, email, number, url, tel, date and the other input types.
  */
 function QuestionnaireInput({ className, ...props }: React.ComponentProps<typeof Q.Input>) {
-  const { headingId } = React.useContext(ItemContext)
+  const { headingId } = React.useContext(ItemContext);
   return (
     <Q.Input
       aria-labelledby={headingId}
       {...props}
       render={(ip, s) => (
-        <div className="kl-field kl-q-field" data-invalid={s.invalid ? "" : undefined} data-disabled={s.disabled ? "" : undefined}>
+        <div
+          className="kl-field kl-q-field"
+          data-invalid={s.invalid ? "" : undefined}
+          data-disabled={s.disabled ? "" : undefined}
+        >
           <FieldFrame>
             <input {...ip} className={cn("kl-field-input", className)} />
           </FieldFrame>
         </div>
       )}
     />
-  )
+  );
 }
 
 /** The step's error: the field error's look, announced (role=alert) and described on the step only while it shows. */
@@ -198,28 +262,65 @@ function QuestionnaireError({ className, ...props }: React.ComponentProps<typeof
         </p>
       )}
     />
-  )
+  );
 }
 
 /** The action row: Back at the start; Skip and Next (or Submit on the last step) at the end. */
 function QuestionnaireActions({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="questionnaire-actions" className={cn("kl-cells kl-q-actions", className)} {...props} />
+  return <div data-slot="questionnaire-actions" className={cn("kl-cells kl-q-actions", className)} {...props} />;
 }
 
-type NavProps<T extends React.ElementType> = Omit<React.ComponentProps<T>, "render"> & Pick<React.ComponentProps<typeof Button>, "signal">
+type NavProps<T extends React.ElementType> = Omit<React.ComponentProps<T>, "render"> &
+  Pick<React.ComponentProps<typeof Button>, "signal">;
 
 function QuestionnairePrevious({ className, children, signal, ...props }: NavProps<typeof Q.Previous>) {
-  return <Q.Previous data-slot="questionnaire-previous" className={cn("kl-q-prev", className)} render={<Button layout="cell" variant="quiet" signal={signal} />} {...props}>{children ?? "Back"}</Q.Previous>
+  return (
+    <Q.Previous
+      data-slot="questionnaire-previous"
+      className={cn("kl-q-prev", className)}
+      render={<Button layout="cell" variant="quiet" signal={signal} />}
+      {...props}
+    >
+      {children ?? "Back"}
+    </Q.Previous>
+  );
 }
 function QuestionnaireSkip({ className, children, signal, ...props }: NavProps<typeof Q.Skip>) {
-  return <Q.Skip data-slot="questionnaire-skip" className={cn("kl-q-skip", className)} render={<Button layout="cell" variant="quiet" signal={signal} />} {...props}>{children ?? "Skip"}</Q.Skip>
+  return (
+    <Q.Skip
+      data-slot="questionnaire-skip"
+      className={cn("kl-q-skip", className)}
+      render={<Button layout="cell" variant="quiet" signal={signal} />}
+      {...props}
+    >
+      {children ?? "Skip"}
+    </Q.Skip>
+  );
 }
 function QuestionnaireNext({ className, children, signal, ...props }: NavProps<typeof Q.Next>) {
-  return <Q.Next data-slot="questionnaire-next" className={cn("kl-q-next", className)} render={<Button layout="cell" variant="primary" signal={signal} />} {...props}>{children ?? "Next"}</Q.Next>
+  return (
+    <Q.Next
+      data-slot="questionnaire-next"
+      className={cn("kl-q-next", className)}
+      render={<Button layout="cell" variant="primary" signal={signal} />}
+      {...props}
+    >
+      {children ?? "Next"}
+    </Q.Next>
+  );
 }
 /** Submits the form on the last step. `signal` shows the submission: pending, done, failed (Button's signals). */
 function QuestionnaireSubmit({ className, children, signal, ...props }: NavProps<typeof Q.Submit>) {
-  return <Q.Submit data-slot="questionnaire-submit" className={cn("kl-q-next", className)} render={<Button layout="cell" variant="primary" signal={signal} />} {...props}>{children ?? "Submit"}</Q.Submit>
+  return (
+    <Q.Submit
+      data-slot="questionnaire-submit"
+      className={cn("kl-q-next", className)}
+      render={<Button layout="cell" variant="primary" signal={signal} />}
+      {...props}
+    >
+      {children ?? "Submit"}
+    </Q.Submit>
+  );
 }
 
 export {
@@ -237,4 +338,4 @@ export {
   QuestionnaireSkip,
   QuestionnaireNext,
   QuestionnaireSubmit,
-}
+};

@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Slider } from "@/components/keyline/ui/slider"
+import { useState } from "react";
+import { Slider } from "@/components/keyline/ui/slider";
 
-const ORDER = 12_400 // Lackawanna County's annual paper order, in dollars
-const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+const ORDER = 12_400; // Lackawanna County's annual paper order, in dollars
+const usd = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export function CountyDiscount() {
-  const [pct, setPct] = useState(6)
-  const needsMichael = pct > 10
+  const [pct, setPct] = useState(6);
+  const needsMichael = pct > 10;
 
   return (
     <div className="grid max-w-[440px] gap-3">
@@ -26,5 +26,5 @@ export function CountyDiscount() {
         {needsMichael ? " Michael has to approve this one." : ""}
       </p>
     </div>
-  )
+  );
 }

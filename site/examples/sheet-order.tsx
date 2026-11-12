@@ -1,12 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/keyline/ui/sheet"
-import { Status } from "@/components/keyline/ui/status"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/keyline/ui/sheet";
+import { Status } from "@/components/keyline/ui/status";
 
 export function OrderSheet() {
-  const [delivered, setDelivered] = useState(false)
+  const [delivered, setDelivered] = useState(false);
 
   return (
     <div className="flex flex-wrap items-center gap-3 text-[14px]">
@@ -43,5 +53,5 @@ export function OrderSheet() {
         </SheetContent>
       </Sheet>
     </div>
-  )
+  );
 }

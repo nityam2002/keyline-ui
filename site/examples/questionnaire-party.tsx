@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { Fragment, useEffect, useRef, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Panel, PanelBody, PanelHeader } from "@/components/keyline/ui/panel"
+import { Fragment, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Panel, PanelBody, PanelHeader } from "@/components/keyline/ui/panel";
 import {
   Questionnaire,
   QuestionnaireActions,
@@ -18,15 +18,15 @@ import {
   QuestionnaireSkip,
   QuestionnaireSubmit,
   QuestionnaireTitle,
-} from "@/components/keyline/ui/questionnaire"
-import { Status } from "@/components/keyline/ui/status"
+} from "@/components/keyline/ui/questionnaire";
+import { Status } from "@/components/keyline/ui/status";
 
 const STEPS = [
   { name: "cake", required: true, choices: [{ value: "chocolate" }, { value: "carrot" }, { value: "ice-cream" }] },
   { name: "diet", choices: [{ value: "vegetarian" }, { value: "no-nuts" }, { value: "no-dairy" }] },
   { name: "name", required: true },
   { name: "note" },
-] as const
+] as const;
 const LABEL: Record<string, string> = {
   chocolate: "Chocolate",
   carrot: "Carrot",
@@ -34,17 +34,17 @@ const LABEL: Record<string, string> = {
   vegetarian: "Vegetarian",
   "no-nuts": "No nuts",
   "no-dairy": "No dairy",
-}
-const TERM: Record<string, string> = { cake: "Cake", diet: "Dietary needs", name: "Name", note: "Note" }
+};
+const TERM: Record<string, string> = { cake: "Cake", diet: "Dietary needs", name: "Name", note: "Note" };
 
 export function BirthdaySurvey() {
-  const [run, setRun] = useState(0)
-  const [answers, setAnswers] = useState<[string, string][] | null>(null)
-  const done = useRef<HTMLSpanElement>(null)
+  const [run, setRun] = useState(0);
+  const [answers, setAnswers] = useState<[string, string][] | null>(null);
+  const done = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (answers) done.current?.focus()
-  }, [answers])
+    if (answers) done.current?.focus();
+  }, [answers]);
 
   if (answers)
     return (
@@ -70,15 +70,15 @@ export function BirthdaySurvey() {
           <Button
             className="justify-self-start"
             onClick={() => {
-              setAnswers(null)
-              setRun((r) => r + 1)
+              setAnswers(null);
+              setRun((r) => r + 1);
             }}
           >
             Answer again
           </Button>
         </PanelBody>
       </Panel>
-    )
+    );
 
   return (
     <Questionnaire
@@ -88,9 +88,17 @@ export function BirthdaySurvey() {
       shortcuts="letters"
       aria-label="Meredith's birthday"
       onSubmit={(e) => {
-        e.preventDefault()
-        const fd = new FormData(e.currentTarget)
-        setAnswers(STEPS.map((s) => [s.name, fd.getAll(s.name).map((v) => (typeof v === "string" ? (LABEL[v] ?? v) : v.name)).join(", ") || "Skipped"]))
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        setAnswers(
+          STEPS.map((s) => [
+            s.name,
+            fd
+              .getAll(s.name)
+              .map((v) => (typeof v === "string" ? (LABEL[v] ?? v) : v.name))
+              .join(", ") || "Skipped",
+          ]),
+        );
       }}
     >
       <QuestionnaireProgress />
@@ -137,5 +145,5 @@ export function BirthdaySurvey() {
         <QuestionnaireSubmit>Send answers</QuestionnaireSubmit>
       </QuestionnaireActions>
     </Questionnaire>
-  )
+  );
 }

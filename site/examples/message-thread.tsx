@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Avatar } from "@/components/keyline/ui/avatar"
-import { Bubble, BubbleContent } from "@/components/keyline/ui/bubble"
-import { Message, MessageAvatar, MessageContent, MessageFooter, MessageHeader } from "@/components/keyline/ui/message"
+import { useState } from "react";
+import { Avatar } from "@/components/keyline/ui/avatar";
+import { Bubble, BubbleContent } from "@/components/keyline/ui/bubble";
+import { Message, MessageAvatar, MessageContent, MessageFooter, MessageHeader } from "@/components/keyline/ui/message";
 
 export function ThreadWithJim() {
-  const [state, setState] = useState<"failed" | "sending" | "sent">("failed")
+  const [state, setState] = useState<"failed" | "sending" | "sent">("failed");
 
   const retry = () => {
-    setState("sending")
-    setTimeout(() => setState("sent"), 1200)
-  }
+    setState("sending");
+    setTimeout(() => setState("sent"), 1200);
+  };
 
   return (
     <div className="grid max-w-[520px] gap-5">
@@ -57,5 +57,5 @@ export function ThreadWithJim() {
         </MessageContent>
       </Message>
     </div>
-  )
+  );
 }

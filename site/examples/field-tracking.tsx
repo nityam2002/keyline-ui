@@ -1,37 +1,45 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Field, FieldDescription, FieldError, FieldFrame, FieldInput, FieldLabel, Form } from "@/components/keyline/ui/field"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldFrame,
+  FieldInput,
+  FieldLabel,
+  Form,
+} from "@/components/keyline/ui/field";
 
 // stands in for your API: only today's shipments exist
 const SHIPMENTS: Record<string, string> = {
   "DM-4102": "On Darryl's truck, due at Scranton Business Park by 2 PM.",
   "DM-4087": "Delivered to the Wilkes-Barre Library at 10:14 AM.",
-}
+};
 
 export function TrackShipment() {
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [found, setFound] = useState<string | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [found, setFound] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   return (
     <Form
       className="max-w-[440px]"
       errors={errors}
       onFormSubmit={(v) => {
-        const id = String(v["tracking"]).trim().toUpperCase()
-        setBusy(true)
+        const id = String(v["tracking"]).trim().toUpperCase();
+        setBusy(true);
         setTimeout(() => {
-          setBusy(false)
+          setBusy(false);
           if (SHIPMENTS[id]) {
-            setErrors({})
-            setFound(`${id}: ${SHIPMENTS[id]}`)
+            setErrors({});
+            setFound(`${id}: ${SHIPMENTS[id]}`);
           } else {
-            setFound(null)
-            setErrors({ tracking: `No shipment ${id} today. Try DM-4102.` })
+            setFound(null);
+            setErrors({ tracking: `No shipment ${id} today. Try DM-4102.` });
           }
-        }, 600)
+        }, 600);
       }}
     >
       <Field name="tracking">
@@ -49,5 +57,5 @@ export function TrackShipment() {
         {found}
       </p>
     </Form>
-  )
+  );
 }

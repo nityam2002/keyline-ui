@@ -1,9 +1,9 @@
-import type { Metadata, Viewport } from "next"
-import "./globals.css"
-import { PageScroll } from "@site/components/page-scroll"
-import { themeInitScript } from "@site/lib/theme"
-import { SiteCommand } from "@site/components/site-command"
-import { INDEXABLE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@site/lib/seo"
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import { PageScroll } from "@site/components/page-scroll";
+import { themeInitScript } from "@site/lib/theme";
+import { SiteCommand } from "@site/components/site-command";
+import { INDEXABLE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@site/lib/seo";
 
 export const metadata: Metadata = {
   title: { default: "Keyline UI · React components for dense interfaces", template: "%s · Keyline UI" },
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   // production only (lib/seo.ts): previews and local builds stay out of the index
   robots: INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
-}
+};
 
 export const viewport: Viewport = {
   // Keyline's paper (--kl-paper) in the light and dark themes
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "#101215" },
   ],
   colorScheme: "light dark",
-}
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,5 +36,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </SiteCommand>
       </body>
     </html>
-  )
+  );
 }

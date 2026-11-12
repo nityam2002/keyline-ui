@@ -104,10 +104,5 @@
       }
     }
   ],
-  "ignorePatterns": [
-    "node_modules/**",
-    "site/.next/**",
-    "site/public/**",
-    ".artifacts/**"
-  ]
+  "ignorePatterns": ["node_modules/**", "site/.next/**", "site/public/**", ".artifacts/**"]
 }

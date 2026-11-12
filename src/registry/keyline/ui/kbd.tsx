@@ -1,11 +1,11 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type KbdProps = React.ComponentProps<"kbd"> & {
   /** Words for a symbol key ("Command" for ⌘, "Shift" for ⇧): the glyph shows, the words are read. */
-  label?: string
-}
+  label?: string;
+};
 
 /**
  * A key, in the Code voice. A small key cell: a 1px keyline with a 2px floor, the key's lip.
@@ -23,20 +23,20 @@ function Kbd({ label, className, children, ...props }: KbdProps) {
         children
       )}
     </kbd>
-  )
+  );
 }
 
 type KbdGroupProps = React.ComponentProps<"kbd"> & {
   /** Read between keys (the seam shows it): "+" for a chord, "then" for a sequence. */
-  separator?: string
-}
+  separator?: string;
+};
 
 /**
  * Keys pressed together (or in order) as cells of one key frame on shared seams (C1), nested <kbd> as
  * HTML specifies for a combination. The separator is read, not drawn: the seam is the join.
  */
 function KbdGroup({ separator = "+", className, children, ...props }: KbdGroupProps) {
-  const keys = React.Children.toArray(children)
+  const keys = React.Children.toArray(children);
   return (
     <kbd data-slot="kbd-group" className={cn("kl-kbd-group", className)} {...props}>
       {keys.map((k, i) => (
@@ -46,7 +46,7 @@ function KbdGroup({ separator = "+", className, children, ...props }: KbdGroupPr
         </React.Fragment>
       ))}
     </kbd>
-  )
+  );
 }
 
-export { Kbd, KbdGroup, type KbdProps, type KbdGroupProps }
+export { Kbd, KbdGroup, type KbdProps, type KbdGroupProps };

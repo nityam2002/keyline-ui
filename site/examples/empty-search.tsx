@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Empty } from "@/components/keyline/ui/empty"
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Empty } from "@/components/keyline/ui/empty";
+import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
 
-const CLIENTS = ["Blue Cross of Pennsylvania", "Harper Collins", "Lackawanna County", "Scranton Business Park", "Scranton White Pages", "Vance Refrigeration"]
+const CLIENTS = [
+  "Blue Cross of Pennsylvania",
+  "Harper Collins",
+  "Lackawanna County",
+  "Scranton Business Park",
+  "Scranton White Pages",
+  "Vance Refrigeration",
+];
 
 export function ClientSearch() {
-  const [q, setQ] = useState("Stamford")
-  const hits = CLIENTS.filter((c) => c.toLowerCase().includes(q.trim().toLowerCase()))
+  const [q, setQ] = useState("Stamford");
+  const hits = CLIENTS.filter((c) => c.toLowerCase().includes(q.trim().toLowerCase()));
 
   return (
     <div className="grid max-w-[560px] gap-4">
@@ -34,5 +41,5 @@ export function ClientSearch() {
         />
       )}
     </div>
-  )
+  );
 }

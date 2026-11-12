@@ -5,14 +5,7 @@
     "allowJs": true,
     "checkJs": false,
     "tsBuildInfoFile": ".artifacts/tsconfig.scripts.tsbuildinfo",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "scripts/**/*.ts",
-    "scripts/**/*.mts",
-    "scripts/**/*.mjs",
-    "lint/**/*.ts"
-  ]
+  "include": ["scripts/**/*.ts", "scripts/**/*.mts", "scripts/**/*.mjs", "lint/**/*.ts"]
 }

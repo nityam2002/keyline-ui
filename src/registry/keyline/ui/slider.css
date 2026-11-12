@@ -3,78 +3,212 @@
      hit area); the readout cell prints the value. Rail and fill are the Meter's construction (k1 rail,
      ink fill), so a measured quantity and a chosen one read as the same family; the thumb is what
      makes it a control. */
-  .kl-slider { --kl-slider-rail: 10px; --kl-slider-tw: 14px; --kl-slider-th: 24px; }
-  [data-kl-density="compact"] .kl-slider, .kl-slider[data-kl-density="compact"] { --kl-slider-rail: 8px; --kl-slider-tw: 12px; --kl-slider-th: 18px; }
-  .kl-slider-frame { min-height: var(--kl-ctl); background-color: var(--kl-cell); }
+  .kl-slider {
+    --kl-slider-rail: 10px;
+    --kl-slider-tw: 14px;
+    --kl-slider-th: 24px;
+  }
+  [data-kl-density="compact"] .kl-slider,
+  .kl-slider[data-kl-density="compact"] {
+    --kl-slider-rail: 8px;
+    --kl-slider-tw: 12px;
+    --kl-slider-th: 18px;
+  }
+  .kl-slider-frame {
+    min-height: var(--kl-ctl);
+    background-color: var(--kl-cell);
+  }
   .kl-slider-control {
-    flex: 1 1 auto; min-width: 96px; position: relative; display: flex; align-items: center;
+    flex: 1 1 auto;
+    min-width: 96px;
+    position: relative;
+    display: flex;
+    align-items: center;
     /* the thumb's centre reaches the rail's ends, so the cell keeps half a thumb plus the inset clear */
     padding-inline: calc(var(--kl-inset) + var(--kl-slider-tw) / 2);
-    touch-action: none; cursor: pointer; user-select: none;
+    touch-action: none;
+    cursor: pointer;
+    user-select: none;
   }
-  .kl-slider-rail { position: relative; flex: 1; height: var(--kl-slider-rail); box-sizing: border-box; border: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-cell); }
-  .kl-slider-fill { background-color: var(--kl-inverse); }
+  .kl-slider-rail {
+    position: relative;
+    flex: 1;
+    height: var(--kl-slider-rail);
+    box-sizing: border-box;
+    border: var(--kl-k1) solid var(--kl-line);
+    background-color: var(--kl-cell);
+  }
+  .kl-slider-fill {
+    background-color: var(--kl-inverse);
+  }
   /* a painted rail (hue spectrum) carries the scale itself: no fill over it, the thumb marks the value */
-  .kl-slider[data-kl-rail="painted"] .kl-slider-fill { visibility: hidden; }
+  .kl-slider[data-kl-rail="painted"] .kl-slider-fill {
+    visibility: hidden;
+  }
 
   /* thumb: a standalone 2px block with a grip keyline. Its centre is the value. */
   .kl-slider-thumb {
-    box-sizing: border-box; width: var(--kl-slider-tw); height: var(--kl-slider-th);
-    display: grid; place-items: center;
-    border: var(--kl-k2) solid var(--kl-line); background-color: var(--kl-cell); color: var(--kl-inverse);
-    cursor: grab; outline: 0;
+    box-sizing: border-box;
+    width: var(--kl-slider-tw);
+    height: var(--kl-slider-th);
+    display: grid;
+    place-items: center;
+    border: var(--kl-k2) solid var(--kl-line);
+    background-color: var(--kl-cell);
+    color: var(--kl-inverse);
+    cursor: grab;
+    outline: 0;
   }
-  .kl-slider-grip { width: 2px; height: calc(var(--kl-slider-th) - 12px); background-color: currentColor; }
-  .kl-slider-thumb:hover { background-color: var(--kl-tint); }
+  .kl-slider-grip {
+    width: 2px;
+    height: calc(var(--kl-slider-th) - 12px);
+    background-color: currentColor;
+  }
+  .kl-slider-thumb:hover {
+    background-color: var(--kl-tint);
+  }
   /* dragging: the thumb floods ink (its own state while held); nothing else changes */
-  .kl-slider-thumb[data-dragging] { cursor: grabbing; background-color: var(--kl-inverse); border-color: var(--kl-inverse); color: var(--kl-on-inverse); }
-  .kl-slider[data-dragging] .kl-slider-control { cursor: grabbing; }
+  .kl-slider-thumb[data-dragging] {
+    cursor: grabbing;
+    background-color: var(--kl-inverse);
+    border-color: var(--kl-inverse);
+    color: var(--kl-on-inverse);
+  }
+  .kl-slider[data-dragging] .kl-slider-control {
+    cursor: grabbing;
+  }
   /* focus lands on the hidden range input inside the thumb; the ring belongs to the thumb (standalone, outside) */
-  .kl-slider-thumb:has(input:focus-visible) { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-out); }
+  .kl-slider-thumb:has(input:focus-visible) {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: var(--kl-ring-out);
+  }
 
   /* STRETCH (adapted): a press on the rail or an arrow key moves the end of the fill and the thumb with
      the lead timing; under the pointer (dragging) the thumb follows directly, no transition. */
-  .kl-slider-thumb { transition: inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), bottom calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out); }
-  .kl-slider-fill { transition: width calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out); }
-  .kl-slider[data-dragging] :is(.kl-slider-thumb, .kl-slider-fill) { transition: none; }
+  .kl-slider-thumb {
+    transition:
+      inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out),
+      bottom calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out);
+  }
+  .kl-slider-fill {
+    transition:
+      width calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out),
+      inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out);
+  }
+  .kl-slider[data-dragging] :is(.kl-slider-thumb, .kl-slider-fill) {
+    transition: none;
+  }
 
   /* readout: the live value and a hidden sizer (the longest value the scale prints) share one grid cell,
      so the cell is as wide as its widest value and never moves the rail */
   .kl-slider-value {
-    flex: none; display: grid; align-items: center; justify-items: end; box-sizing: border-box; padding-inline: var(--kl-inset);
-    font-size: 14px; font-weight: var(--kl-weight-strong); font-variant-numeric: tabular-nums; white-space: nowrap;
+    flex: none;
+    display: grid;
+    align-items: center;
+    justify-items: end;
+    box-sizing: border-box;
+    padding-inline: var(--kl-inset);
+    font-size: 14px;
+    font-weight: var(--kl-weight-strong);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
-  .kl-slider-out { grid-area: 1 / 1; display: flex; align-items: center; gap: 4px; }
-  .kl-slider-sizer { visibility: hidden; }
-  .kl-slider-out bdi { unicode-bidi: isolate; }
-  .kl-slider-out > .kl-code { unicode-bidi: isolate; }
-  .kl-slider-out > span[aria-hidden] { color: var(--kl-ink-2); font-weight: 500; }
+  .kl-slider-out {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .kl-slider-sizer {
+    visibility: hidden;
+  }
+  .kl-slider-out bdi {
+    unicode-bidi: isolate;
+  }
+  .kl-slider-out > .kl-code {
+    unicode-bidi: isolate;
+  }
+  .kl-slider-out > span[aria-hidden] {
+    color: var(--kl-ink-2);
+    font-weight: 500;
+  }
 
   /* layout="cell": the enclosing cell is the frame */
-  .kl-slider[data-kl-layout="cell"] { display: flex; flex-direction: column; gap: 0; flex: 1; align-self: stretch; min-width: 0; }
-  .kl-slider-frame[data-kl-layout="cell"] { flex: 1; min-height: var(--kl-row); }
+  .kl-slider[data-kl-layout="cell"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    align-self: stretch;
+    min-width: 0;
+  }
+  .kl-slider-frame[data-kl-layout="cell"] {
+    flex: 1;
+    min-height: var(--kl-row);
+  }
 
   /* the ! cell is Field's (field.css: closed slot, opens red while invalid); the rail cell after it draws
      no seam of its own while the slot is closed */
-  .kl-slider-frame > .kl-slot:first-child + * { border-inline-start: 0; }
-  .kl-slider[data-invalid] .kl-slider-frame > .kl-slot:first-child + * { border-inline-start: var(--kl-k1) solid var(--kl-red); }
+  .kl-slider-frame > .kl-slot:first-child + * {
+    border-inline-start: 0;
+  }
+  .kl-slider[data-invalid] .kl-slider-frame > .kl-slot:first-child + * {
+    border-inline-start: var(--kl-k1) solid var(--kl-red);
+  }
   /* invalid (Base UI Field): the frame turns red, as a field does */
-  .kl-slider[data-invalid] .kl-slider-frame { border-color: var(--kl-red); --kl-cut-line: var(--kl-red); }
-  .kl-slider[data-invalid] .kl-slider-frame > * + * { border-color: var(--kl-red); }
+  .kl-slider[data-invalid] .kl-slider-frame {
+    border-color: var(--kl-red);
+    --kl-cut-line: var(--kl-red);
+  }
+  .kl-slider[data-invalid] .kl-slider-frame > * + * {
+    border-color: var(--kl-red);
+  }
 
   /* disabled: out of service; the value stays readable */
-  .kl-slider[data-disabled] .kl-slider-frame { background-image: var(--kl-hatch); border-color: var(--kl-dis-line); --kl-cut-line: var(--kl-dis-line); }
-  .kl-slider[data-disabled] .kl-slider-frame > * + * { border-color: var(--kl-dis-line); }
-  .kl-slider[data-disabled] :is(.kl-slider-control, .kl-slider-thumb) { cursor: not-allowed; }
-  .kl-slider[data-disabled] .kl-slider-rail { border-color: var(--kl-dis-line); }
-  .kl-slider[data-disabled] .kl-slider-fill { background-color: var(--kl-dis); }
-  .kl-slider[data-disabled] .kl-slider-thumb { border-color: var(--kl-dis); color: var(--kl-dis); background-color: var(--kl-cell); }
-  .kl-slider[data-disabled] :is(.kl-slider-value, .kl-field-label) { color: var(--kl-ink-2); }
+  .kl-slider[data-disabled] .kl-slider-frame {
+    background-image: var(--kl-hatch);
+    border-color: var(--kl-dis-line);
+    --kl-cut-line: var(--kl-dis-line);
+  }
+  .kl-slider[data-disabled] .kl-slider-frame > * + * {
+    border-color: var(--kl-dis-line);
+  }
+  .kl-slider[data-disabled] :is(.kl-slider-control, .kl-slider-thumb) {
+    cursor: not-allowed;
+  }
+  .kl-slider[data-disabled] .kl-slider-rail {
+    border-color: var(--kl-dis-line);
+  }
+  .kl-slider[data-disabled] .kl-slider-fill {
+    background-color: var(--kl-dis);
+  }
+  .kl-slider[data-disabled] .kl-slider-thumb {
+    border-color: var(--kl-dis);
+    color: var(--kl-dis);
+    background-color: var(--kl-cell);
+  }
+  .kl-slider[data-disabled] :is(.kl-slider-value, .kl-field-label) {
+    color: var(--kl-ink-2);
+  }
 
   @media (forced-colors: active) {
-    .kl-slider-fill { forced-color-adjust: none; background: CanvasText; }
-    .kl-slider-thumb { forced-color-adjust: none; background: Canvas; border-color: CanvasText; color: CanvasText; }
-    .kl-slider-thumb[data-dragging] { background: Highlight; border-color: Highlight; color: HighlightText; }
-    .kl-slider-thumb:has(input:focus-visible) { outline: 3px solid Highlight; }
+    .kl-slider-fill {
+      forced-color-adjust: none;
+      background: CanvasText;
+    }
+    .kl-slider-thumb {
+      forced-color-adjust: none;
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+    .kl-slider-thumb[data-dragging] {
+      background: Highlight;
+      border-color: Highlight;
+      color: HighlightText;
+    }
+    .kl-slider-thumb:has(input:focus-visible) {
+      outline: 3px solid Highlight;
+    }
   }
 }

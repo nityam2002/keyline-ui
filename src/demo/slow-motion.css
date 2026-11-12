@@ -3,4 +3,11 @@
    component is written onto its portaled overlay, so an attribute selector is the only hook that slows the
    overlays of a slowed subtree too (the playground preview's menus, popovers and dialogs live under <body>).
    It is not a Keyline motion mode: consumers have data-kl-motion="reduce" and prefers-reduced-motion. */
-[data-kl-motion="slow"] { --kl-t-flood: 1120ms; --kl-t-unflood: 880ms; --kl-t-unfold: 1280ms; --kl-t-fold: 960ms; --kl-stretch-lead: 800; --kl-stretch-trail: 1760; }
+[data-kl-motion="slow"] {
+  --kl-t-flood: 1120ms;
+  --kl-t-unflood: 880ms;
+  --kl-t-unfold: 1280ms;
+  --kl-t-fold: 960ms;
+  --kl-stretch-lead: 800;
+  --kl-stretch-trail: 1760;
+}

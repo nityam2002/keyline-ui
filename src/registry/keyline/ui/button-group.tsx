@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Buttons attached in one control frame: cells on shared seams (C1), each button its own Tab stop.
@@ -12,7 +12,11 @@ import { cn } from "@/lib/utils"
  * `orientation="vertical"` stacks them on horizontal seams. A group inside a group is not drawn (put the
  * groups one gutter apart instead: unrelated parts sit apart).
  */
-function ButtonGroup({ className, orientation = "horizontal", ...props }: React.ComponentProps<"div"> & { orientation?: "horizontal" | "vertical" }) {
+function ButtonGroup({
+  className,
+  orientation = "horizontal",
+  ...props
+}: React.ComponentProps<"div"> & { orientation?: "horizontal" | "vertical" }) {
   return (
     <div
       role="group"
@@ -21,17 +25,24 @@ function ButtonGroup({ className, orientation = "horizontal", ...props }: React.
       className={cn("kl-ctl kl-button-group", orientation === "vertical" ? "kl-rows" : "kl-cells", className)}
       {...props}
     />
-  )
+  );
 }
 
 /** A text cell in the group: a value between steppers, a unit, a label ("Page 3"). Not focusable. */
 function ButtonGroupText({ className, ...props }: React.ComponentProps<"span">) {
-  return <span data-slot="button-group-text" className={cn("kl-cell kl-button-group-text", className)} {...props} />
+  return <span data-slot="button-group-text" className={cn("kl-cell kl-button-group-text", className)} {...props} />;
 }
 
 /** A heavier seam between sub-groups of cells (2px, a control's weight) where a plain seam reads as one run. */
 function ButtonGroupSeparator({ className, ...props }: React.ComponentProps<"span">) {
-  return <span role="separator" data-slot="button-group-separator" className={cn("kl-button-group-sep", className)} {...props} />
+  return (
+    <span
+      role="separator"
+      data-slot="button-group-separator"
+      className={cn("kl-button-group-sep", className)}
+      {...props}
+    />
+  );
 }
 
-export { ButtonGroup, ButtonGroupText, ButtonGroupSeparator }
+export { ButtonGroup, ButtonGroupText, ButtonGroupSeparator };

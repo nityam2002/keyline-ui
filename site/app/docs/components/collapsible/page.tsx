@@ -1,46 +1,89 @@
-import { CodeBlock } from "@site/components/code-block"
-import { InstallCommand } from "@site/components/install-command"
-import { ComponentDemo } from "@site/components/component-demo"
-import { PropsReference, type Prop } from "@site/components/props-reference"
-import { DocPage } from "@site/components/doc-page"
-import { ExampleCode } from "@site/components/example-code"
-import type { TocGroup } from "@site/components/page-toc"
-import { componentMetadata } from "@site/lib/seo"
-import { CollapsibleOptions } from "@site/components/layout-previews"
+import { CodeBlock } from "@site/components/code-block";
+import { InstallCommand } from "@site/components/install-command";
+import { ComponentDemo } from "@site/components/component-demo";
+import { PropsReference, type Prop } from "@site/components/props-reference";
+import { DocPage } from "@site/components/doc-page";
+import { ExampleCode } from "@site/components/example-code";
+import type { TocGroup } from "@site/components/page-toc";
+import { componentMetadata } from "@site/lib/seo";
+import { CollapsibleOptions } from "@site/components/layout-previews";
 
-const ITEM = "collapsible"
+const ITEM = "collapsible";
 
-export const metadata = componentMetadata("Collapsible", "A React collapsible: one unframed disclosure for the less common settings in a form or panel, with a summary of what is inside while it is closed. On Base UI.", "collapsible")
+export const metadata = componentMetadata(
+  "Collapsible",
+  "A React collapsible: one unframed disclosure for the less common settings in a form or panel, with a summary of what is inside while it is closed. On Base UI.",
+  "collapsible",
+);
 
-const IMPORT = `import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@/components/keyline/ui/collapsible"`
+const IMPORT = `import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@/components/keyline/ui/collapsible"`;
 
 const USAGE = `<Collapsible>
   <CollapsibleTrigger meta="2 set">Delivery options</CollapsibleTrigger>
   <CollapsiblePanel>…</CollapsiblePanel>
-</Collapsible>`
+</Collapsible>`;
 
 const PROPS: Prop[] = [
-  { name: "open \u00b7 defaultOpen \u00b7 onOpenChange", type: "boolean", default: "false", description: <>On <code>Collapsible</code>.</> },
-  { name: "meta", type: "ReactNode", default: "\u2014", description: <>On <code>CollapsibleTrigger</code>: what&apos;s hidden, in the code voice, such as a count.</> },
-  { name: "hiddenUntilFound", type: "boolean", default: "false", description: <>On <code>CollapsiblePanel</code>: find-in-page opens it.</> },
-]
+  {
+    name: "open \u00b7 defaultOpen \u00b7 onOpenChange",
+    type: "boolean",
+    default: "false",
+    description: (
+      <>
+        On <code>Collapsible</code>.
+      </>
+    ),
+  },
+  {
+    name: "meta",
+    type: "ReactNode",
+    default: "\u2014",
+    description: (
+      <>
+        On <code>CollapsibleTrigger</code>: what&apos;s hidden, in the code voice, such as a count.
+      </>
+    ),
+  },
+  {
+    name: "hiddenUntilFound",
+    type: "boolean",
+    default: "false",
+    description: (
+      <>
+        On <code>CollapsiblePanel</code>: find-in-page opens it.
+      </>
+    ),
+  },
+];
 
 const TOC: TocGroup[] = [
-  { label: "Setup", items: [{ id: "installation", label: "Installation" }, { id: "usage", label: "Usage" }] },
+  {
+    label: "Setup",
+    items: [
+      { id: "installation", label: "Installation" },
+      { id: "usage", label: "Usage" },
+    ],
+  },
   { label: "Reference", items: [{ id: "props", label: "Props" }] },
-]
+];
 
 export default function CollapsiblePage() {
-  const code = (file: string, label: string) => <ExampleCode file={file} label={label} />
+  const code = (file: string, label: string) => <ExampleCode file={file} label={label} />;
 
   return (
     <DocPage name="Collapsible" toc={TOC}>
       <h1>Collapsible</h1>
       <p className="s-doc-lede">
-        One disclosure with no frame, for the less common settings in a form. The trigger&apos;s caret box runs a keyline down the panel&apos;s edge, so what unfolds reads as part of it. <code>meta</code> says what&apos;s inside while it&apos;s closed.
+        One disclosure with no frame, for the less common settings in a form. The trigger&apos;s caret box runs a
+        keyline down the panel&apos;s edge, so what unfolds reads as part of it. <code>meta</code> says what&apos;s
+        inside while it&apos;s closed.
       </p>
 
-      <ComponentDemo label="Collapsible example" preview={<CollapsibleOptions />} code={code("collapsible-options.tsx", "example code")} />
+      <ComponentDemo
+        label="Collapsible example"
+        preview={<CollapsibleOptions />}
+        code={code("collapsible-options.tsx", "example code")}
+      />
 
       <h2 id="installation">Installation</h2>
       <InstallCommand item={ITEM} />
@@ -52,8 +95,9 @@ export default function CollapsiblePage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Collapsible props" props={PROPS} />
       <p className="s-small">
-        Built on <a href="https://base-ui.com/react/components/collapsible">Base UI Collapsible</a>. For several sections in one frame, use Accordion.
+        Built on <a href="https://base-ui.com/react/components/collapsible">Base UI Collapsible</a>. For several
+        sections in one frame, use Accordion.
       </p>
     </DocPage>
-  )
+  );
 }

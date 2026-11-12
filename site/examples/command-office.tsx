@@ -1,34 +1,42 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { CommandDialog, CommandEmpty, CommandFooter, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/keyline/ui/command"
-import { Kbd, KbdGroup } from "@/components/keyline/ui/kbd"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandFooter,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/keyline/ui/command";
+import { Kbd, KbdGroup } from "@/components/keyline/ui/kbd";
 
-const PAGES = ["Orders", "Clients", "Invoices", "Warehouse"]
+const PAGES = ["Orders", "Clients", "Invoices", "Warehouse"];
 
 export function OfficeCommands() {
-  const [open, setOpen] = useState(false)
-  const [q, setQ] = useState("")
-  const [last, setLast] = useState("Nothing run yet.")
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const [last, setLast] = useState("Nothing run yet.");
 
   // ⌘K or Ctrl+K opens it from anywhere on the page
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault()
-        setOpen((o) => !o)
+        e.preventDefault();
+        setOpen((o) => !o);
       }
-    }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [])
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const run = (said: string) => () => {
-    setOpen(false)
-    setQ("")
-    setLast(said)
-  }
+    setOpen(false);
+    setQ("");
+    setLast(said);
+  };
 
   return (
     <div className="grid gap-4">
@@ -84,5 +92,5 @@ export function OfficeCommands() {
         </CommandFooter>
       </CommandDialog>
     </div>
-  )
+  );
 }

@@ -1,34 +1,44 @@
 "use client";
 
-import * as React from "react"
-import { useRender } from "@base-ui/react/use-render"
+import * as React from "react";
+import { useRender } from "@base-ui/react/use-render";
 
-import { cn } from "@/lib/utils"
-import { Menu, MenuTrigger, MenuContent, MenuItem } from "./menu"
+import { cn } from "@/lib/utils";
+import { Menu, MenuTrigger, MenuContent, MenuItem } from "./menu";
 
 type Crumb = {
-  label: React.ReactNode
-  href?: string
+  label: React.ReactNode;
+  href?: string;
   /** A router link instead of <a>: render={<Link to="…" />}. Props and refs merge (Base UI useRender). */
-  render?: React.ReactElement
-}
+  render?: React.ReactElement;
+};
 
 type BreadcrumbProps = Omit<React.ComponentProps<"nav">, "children"> & {
   /** Ancestors first; the last item is the current page (not a link). */
-  items: Crumb[]
+  items: Crumb[];
   /** Above this many items the ones before the parent fold into a "…" cell with a menu. Default 4. */
-  maxItems?: number
+  maxItems?: number;
   /** control: its own 2px frame. cell: a row of an enclosing frame (a panel's or page header's top cell). */
-  layout?: "control" | "cell"
+  layout?: "control" | "cell";
   /** Name of the "…" menu trigger. */
-  moreLabel?: string
-}
+  moreLabel?: string;
+};
 
 const Chevron = () => (
-  <svg className="kl-crumb-sep" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" aria-hidden>
+  <svg
+    className="kl-crumb-sep"
+    viewBox="0 0 16 16"
+    width="12"
+    height="12"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="square"
+    aria-hidden
+  >
     <path d="m6 4 4 4-4 4" />
   </svg>
-)
+);
 
 function CrumbLink({ crumb }: { crumb: Crumb }) {
   return useRender({
@@ -42,7 +52,7 @@ function CrumbLink({ crumb }: { crumb: Crumb }) {
         </>
       ),
     },
-  })
+  });
 }
 
 /**
@@ -58,14 +68,28 @@ function CrumbLink({ crumb }: { crumb: Crumb }) {
  * - Folding: more than `maxItems`, or less than 480px of its own width, folds every ancestor before the
  *   parent into a "…" cell whose menu lists them in order. The parent and the page itself always show.
  */
-function Breadcrumb({ items, maxItems = 4, layout = "control", moreLabel = "Earlier levels", className, ...props }: BreadcrumbProps) {
-  const n = items.length
-  const current = items[n - 1]
-  const parentIndex = n - 2
-  const early = items.slice(0, Math.max(0, parentIndex))
-  const folded = n > maxItems
+function Breadcrumb({
+  items,
+  maxItems = 4,
+  layout = "control",
+  moreLabel = "Earlier levels",
+  className,
+  ...props
+}: BreadcrumbProps) {
+  const n = items.length;
+  const current = items[n - 1];
+  const parentIndex = n - 2;
+  const early = items.slice(0, Math.max(0, parentIndex));
+  const folded = n > maxItems;
   return (
-    <nav aria-label="Breadcrumb" data-slot="breadcrumb" data-kl-layout={layout} data-kl-folded={folded || undefined} className={cn("kl-crumbs", className)} {...props}>
+    <nav
+      aria-label="Breadcrumb"
+      data-slot="breadcrumb"
+      data-kl-layout={layout}
+      data-kl-folded={folded || undefined}
+      className={cn("kl-crumbs", className)}
+      {...props}
+    >
       <ol data-kl-layout={layout} className="kl-ctl kl-cells kl-crumbs-list">
         {early.length ? (
           <li className="kl-crumb kl-crumb-more">
@@ -98,7 +122,7 @@ function Breadcrumb({ items, maxItems = 4, layout = "control", moreLabel = "Earl
         ) : null}
       </ol>
     </nav>
-  )
+  );
 }
 
-export { Breadcrumb, type Crumb, type BreadcrumbProps }
+export { Breadcrumb, type Crumb, type BreadcrumbProps };

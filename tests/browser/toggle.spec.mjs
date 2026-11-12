@@ -1,37 +1,85 @@
 // Toggle: controlled and uncontrolled, keyboard, lamp and flood, icon floor, disabled, ToggleGroup's lamp, RTL.
-import { test } from "./fixtures.mjs"
+import { test } from "./fixtures.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
-test.use({ only: ["toggle","split","edges"] })
+test.use({ only: ["toggle", "split", "edges"] });
 // the specimen entries these tests use (fixtures.mjs: only)
 
-const until = (p, fn, arg, timeout = 4000) => p.waitForFunction(fn, arg, { timeout }).catch(() => {})
+const until = (p, fn, arg, timeout = 4000) => p.waitForFunction(fn, arg, { timeout }).catch(() => {});
 
 test("toggle: controlled, keyboard, icon, disabled, group lamp, RTL", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", q: "theme=light", ready: "#toggle" })
-  const mine = p.getByTestId("tg-mine")
-  await mine.scrollIntoViewIfNeeded()
-  const lamp = (t) => t.locator(".kl-lamp").evaluate((l) => getComputedStyle(l).borderTopWidth)
-  ok("toggle: controlled, pressed: aria-pressed and a full lamp", (await mine.getAttribute("aria-pressed")) === "true" && (await lamp(mine)) === "5px", await lamp(mine))
-  await mine.click()
-  await until(p, () => { const t = document.querySelector("[data-testid=tg-mine]"); return t.getAttribute("aria-pressed") === "false" && getComputedStyle(t.querySelector(".kl-lamp")).borderTopWidth === "2px" })
-  ok("toggle: press turns it off; the lamp empties; the label stays", (await mine.getAttribute("aria-pressed")) === "false" && (await lamp(mine)) === "2px" && (await mine.textContent()).includes("Assigned to me") && (await p.getByText("all 128 shipments").count()) === 1, null)
-  const follow = p.getByTestId("tg-follow")
-  await follow.focus()
-  await p.keyboard.press("Enter")
-  await until(p, () => document.querySelector("[data-testid=tg-follow]").getAttribute("aria-pressed") === "true", null, 2000)
-  const afterEnter = await follow.getAttribute("aria-pressed")
-  await p.keyboard.press("Space")
-  await until(p, () => document.querySelector("[data-testid=tg-follow]").getAttribute("aria-pressed") === "false", null, 2000)
-  ok("toggle: Enter and Space toggle it (uncontrolled)", afterEnter === "true" && (await follow.getAttribute("aria-pressed")) === "false", afterEnter)
-  const pin = p.getByTestId("tg-pin")
-  const pinS = await pin.evaluate((t) => { const r = t.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), getComputedStyle(t).boxShadow, t.getAttribute("aria-label")] })
-  ok("toggle: icon only is a named square with a floor keyline when pressed", Math.abs(pinS[0] - pinS[1]) <= 1 && pinS[2].includes("inset") && pinS[3] === "Pin to dashboard", pinS)
-  const dis = p.getByRole("button", { name: "Locked" })
-  await dis.click({ force: true })
-  ok("toggle: disabled keeps its state and lamp; presses do nothing", (await dis.getAttribute("aria-pressed")) === "true" && (await lamp(dis)) === "5px", null)
-  const grp = await p.locator(".kl-toggle-group [data-pressed] .kl-lamp").evaluateAll((ls) => ls.map((l) => getComputedStyle(l).borderTopWidth))
-  ok("toggle group: a pressed cell's lamp is full", grp.length > 0 && grp.every((w) => w === "5px"), grp)
-  const trtl = await p.getByTestId("tg-rtl").evaluate((el) => { const l = el.querySelector(".kl-lamp").getBoundingClientRect(), t = el.querySelector(".kl-toggle").getBoundingClientRect(); return l.left > t.left + t.width / 2 })
-  ok("toggle: in RTL the lamp leads at the right", trtl, null)
-  ok("kbd and toggle: no page errors", p.errs.length === 0, p.errs)
-})
+  const p = await open({ route: "specimen", q: "theme=light", ready: "#toggle" });
+  const mine = p.getByTestId("tg-mine");
+  await mine.scrollIntoViewIfNeeded();
+  const lamp = (t) => t.locator(".kl-lamp").evaluate((l) => getComputedStyle(l).borderTopWidth);
+  ok(
+    "toggle: controlled, pressed: aria-pressed and a full lamp",
+    (await mine.getAttribute("aria-pressed")) === "true" && (await lamp(mine)) === "5px",
+    await lamp(mine),
+  );
+  await mine.click();
+  await until(p, () => {
+    const t = document.querySelector("[data-testid=tg-mine]");
+    return (
+      t.getAttribute("aria-pressed") === "false" &&
+      getComputedStyle(t.querySelector(".kl-lamp")).borderTopWidth === "2px"
+    );
+  });
+  ok(
+    "toggle: press turns it off; the lamp empties; the label stays",
+    (await mine.getAttribute("aria-pressed")) === "false" &&
+      (await lamp(mine)) === "2px" &&
+      (await mine.textContent()).includes("Assigned to me") &&
+      (await p.getByText("all 128 shipments").count()) === 1,
+    null,
+  );
+  const follow = p.getByTestId("tg-follow");
+  await follow.focus();
+  await p.keyboard.press("Enter");
+  await until(
+    p,
+    () => document.querySelector("[data-testid=tg-follow]").getAttribute("aria-pressed") === "true",
+    null,
+    2000,
+  );
+  const afterEnter = await follow.getAttribute("aria-pressed");
+  await p.keyboard.press("Space");
+  await until(
+    p,
+    () => document.querySelector("[data-testid=tg-follow]").getAttribute("aria-pressed") === "false",
+    null,
+    2000,
+  );
+  ok(
+    "toggle: Enter and Space toggle it (uncontrolled)",
+    afterEnter === "true" && (await follow.getAttribute("aria-pressed")) === "false",
+    afterEnter,
+  );
+  const pin = p.getByTestId("tg-pin");
+  const pinS = await pin.evaluate((t) => {
+    const r = t.getBoundingClientRect();
+    return [Math.round(r.width), Math.round(r.height), getComputedStyle(t).boxShadow, t.getAttribute("aria-label")];
+  });
+  ok(
+    "toggle: icon only is a named square with a floor keyline when pressed",
+    Math.abs(pinS[0] - pinS[1]) <= 1 && pinS[2].includes("inset") && pinS[3] === "Pin to dashboard",
+    pinS,
+  );
+  const dis = p.getByRole("button", { name: "Locked" });
+  await dis.click({ force: true });
+  ok(
+    "toggle: disabled keeps its state and lamp; presses do nothing",
+    (await dis.getAttribute("aria-pressed")) === "true" && (await lamp(dis)) === "5px",
+    null,
+  );
+  const grp = await p
+    .locator(".kl-toggle-group [data-pressed] .kl-lamp")
+    .evaluateAll((ls) => ls.map((l) => getComputedStyle(l).borderTopWidth));
+  ok("toggle group: a pressed cell's lamp is full", grp.length > 0 && grp.every((w) => w === "5px"), grp);
+  const trtl = await p.getByTestId("tg-rtl").evaluate((el) => {
+    const l = el.querySelector(".kl-lamp").getBoundingClientRect(),
+      t = el.querySelector(".kl-toggle").getBoundingClientRect();
+    return l.left > t.left + t.width / 2;
+  });
+  ok("toggle: in RTL the lamp leads at the right", trtl, null);
+  ok("kbd and toggle: no page errors", p.errs.length === 0, p.errs);
+});

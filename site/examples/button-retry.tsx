@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 
-type Signal = "idle" | "pending" | "done" | "failed"
+type Signal = "idle" | "pending" | "done" | "failed";
 
 export function CorporateSync() {
-  const [signal, setSignal] = useState<Signal>("idle")
-  const attempts = useRef(0)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  useEffect(() => () => clearTimeout(timer.current), [])
+  const [signal, setSignal] = useState<Signal>("idle");
+  const attempts = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const sync = () => {
-    setSignal("pending")
-    attempts.current += 1
+    setSignal("pending");
+    attempts.current += 1;
     // for the demo, the first attempt fails and the second goes through
-    const fails = attempts.current === 1
-    timer.current = setTimeout(() => setSignal(fails ? "failed" : "done"), 1000)
-  }
+    const fails = attempts.current === 1;
+    timer.current = setTimeout(() => setSignal(fails ? "failed" : "done"), 1000);
+  };
 
   return (
     <div className="grid gap-4">
@@ -31,5 +31,5 @@ export function CorporateSync() {
         {signal === "idle" && "3 orders are waiting for the end-of-day sync."}
       </p>
     </div>
-  )
+  );
 }

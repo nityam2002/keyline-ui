@@ -10,15 +10,15 @@
 // Tests tagged @timing measure a duration (a settle time, frames to a commit). They run after the main projects,
 // one at a time across both engines, so the load of other workers is not part of what they measure. If a main
 // project has a failure, Playwright does not start the timing projects; the run is red either way.
-import { defineConfig } from "playwright/test"
+import { defineConfig } from "playwright/test";
 
-const CI = !!process.env.CI
-const PORT = 5391
-const base = process.env.KL_BASE
-const TIMING = /@timing/
+const CI = !!process.env.CI;
+const PORT = 5391;
+const base = process.env.KL_BASE;
+const TIMING = /@timing/;
 
-const chrome = { browserName: "chromium", channel: "chrome" }
-const webkit = { browserName: "webkit" }
+const chrome = { browserName: "chromium", channel: "chrome" };
+const webkit = { browserName: "webkit" };
 
 export default defineConfig({
   testDir: "tests/browser",
@@ -31,7 +31,9 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 10_000 },
   forbidOnly: CI,
-  reporter: CI ? [["github"], ["list"], ["html", { outputFolder: ".artifacts/playwright-report", open: "never" }]] : [["list"]],
+  reporter: CI
+    ? [["github"], ["list"], ["html", { outputFolder: ".artifacts/playwright-report", open: "never" }]]
+    : [["list"]],
   use: {
     baseURL: base || `http://127.0.0.1:${PORT}/`,
     viewport: { width: 1280, height: 900 },
@@ -42,11 +44,16 @@ export default defineConfig({
   },
   webServer: base
     ? undefined
-    : { command: `node scripts/test-app.mjs --port=${PORT}`, url: `http://127.0.0.1:${PORT}/`, reuseExistingServer: false, timeout: 180_000 },
+    : {
+        command: `node scripts/test-app.mjs --port=${PORT}`,
+        url: `http://127.0.0.1:${PORT}/`,
+        reuseExistingServer: false,
+        timeout: 180_000,
+      },
   projects: [
     { name: "chromium", use: chrome, grepInvert: TIMING },
     { name: "webkit", use: webkit, grepInvert: TIMING },
     { name: "chromium-timing", use: chrome, grep: TIMING, workers: 1, dependencies: ["chromium", "webkit"] },
     { name: "webkit-timing", use: webkit, grep: TIMING, workers: 1, dependencies: ["chromium-timing"] },
   ],
-})
+});

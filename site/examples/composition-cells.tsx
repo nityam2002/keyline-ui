@@ -1,26 +1,36 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field"
-import { Panel, PanelBody, PanelFooter, PanelHeader } from "@/components/keyline/ui/panel"
-import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Field, FieldFrame, FieldInput, FieldLabel } from "@/components/keyline/ui/field";
+import { Panel, PanelBody, PanelFooter, PanelHeader } from "@/components/keyline/ui/panel";
+import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented";
 
 // The same footer twice. Putting a Button inside the Panel's footer changes nothing by itself: as a control it
 // keeps its own 2px frame and doubles the footer's edges. Declared as a cell, it fills its cell and the footer
 // draws the one seam between the parts.
 export function DeclaredCells() {
-  const [layout, setLayout] = useState<"cell" | "control">("cell")
-  const [sent, setSent] = useState(false)
+  const [layout, setLayout] = useState<"cell" | "control">("cell");
+  const [sent, setSent] = useState(false);
 
   return (
     <div className="grid w-full max-w-[520px] gap-4">
-      <Segmented size="compact" aria-label="Footer buttons" value={layout} onValueChange={(v: string) => setLayout(v as "cell" | "control")} className="justify-self-start">
+      <Segmented
+        size="compact"
+        aria-label="Footer buttons"
+        value={layout}
+        onValueChange={(v: string) => setLayout(v as "cell" | "control")}
+        className="justify-self-start"
+      >
         <SegmentedItem value="cell">layout=&quot;cell&quot;</SegmentedItem>
         <SegmentedItem value="control">layout=&quot;control&quot;</SegmentedItem>
       </Segmented>
       <Panel>
-        <PanelHeader code="PO-118" title="Reorder copy paper" description="Stamford asked for the order to arrive before the audit." />
+        <PanelHeader
+          code="PO-118"
+          title="Reorder copy paper"
+          description="Stamford asked for the order to arrive before the audit."
+        />
         <PanelBody>
           <Field name="cases">
             <FieldLabel>Cases</FieldLabel>
@@ -41,5 +51,5 @@ export function DeclaredCells() {
         </PanelFooter>
       </Panel>
     </div>
-  )
+  );
 }

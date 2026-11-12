@@ -1,8 +1,8 @@
 "use client";
 
-import * as ResizablePrimitive from "react-resizable-panels"
+import * as ResizablePrimitive from "react-resizable-panels";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * Resizable (on react-resizable-panels v4 since the round-20 review): panels that share a seam
@@ -24,21 +24,33 @@ import { cn } from "@/lib/utils"
  * - No frame of its own: put it in a Panel body, a shell column or any frame.
  */
 function ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupProps) {
-  return <ResizablePrimitive.Group data-slot="resizable" className={cn("kl-rz", className)} {...props} />
+  return <ResizablePrimitive.Group data-slot="resizable" className={cn("kl-rz", className)} {...props} />;
 }
 
 function ResizablePanel({ className, ...props }: ResizablePrimitive.PanelProps) {
-  return <ResizablePrimitive.Panel data-slot="resizable-panel" className={cn("kl-rz-panel", className)} {...props} />
+  return <ResizablePrimitive.Panel data-slot="resizable-panel" className={cn("kl-rz-panel", className)} {...props} />;
 }
 
-function ResizableHandle({ withHandle, className, children, ...props }: ResizablePrimitive.SeparatorProps & { withHandle?: boolean }) {
+function ResizableHandle({
+  withHandle,
+  className,
+  children,
+  ...props
+}: ResizablePrimitive.SeparatorProps & { withHandle?: boolean }) {
   return (
     <ResizablePrimitive.Separator data-slot="resizable-handle" className={cn("kl-rz-handle", className)} {...props}>
       {withHandle ? <span className="kl-rz-grip" aria-hidden /> : null}
       {children}
     </ResizablePrimitive.Separator>
-  )
+  );
 }
 
-export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
-export { usePanelRef, useGroupRef, useDefaultLayout, type PanelImperativeHandle, type GroupImperativeHandle, type Layout } from "react-resizable-panels"
+export { ResizablePanelGroup, ResizablePanel, ResizableHandle };
+export {
+  usePanelRef,
+  useGroupRef,
+  useDefaultLayout,
+  type PanelImperativeHandle,
+  type GroupImperativeHandle,
+  type Layout,
+} from "react-resizable-panels";

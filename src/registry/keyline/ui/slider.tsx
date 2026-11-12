@@ -1,36 +1,39 @@
 "use client";
 
-import * as React from "react"
-import { Slider as SliderPrimitive } from "@base-ui/react/slider"
-import { DirectionProvider } from "@base-ui/react/direction-provider"
-import { Field as FieldPrimitive } from "@base-ui/react/field"
+import * as React from "react";
+import { Slider as SliderPrimitive } from "@base-ui/react/slider";
+import { DirectionProvider } from "@base-ui/react/direction-provider";
+import { Field as FieldPrimitive } from "@base-ui/react/field";
 
-import { cn } from "@/lib/utils"
-import { useDomDirection } from "../lib/keyline-scope"
-import { longestValue } from "../lib/options"
-import { FieldMessages, type FieldParticipantProps } from "./field"
+import { cn } from "@/lib/utils";
+import { useDomDirection } from "../lib/keyline-scope";
+import { longestValue } from "../lib/options";
+import { FieldMessages, type FieldParticipantProps } from "./field";
 
-type SliderRootProps<V extends number | readonly number[]> = Omit<React.ComponentProps<typeof SliderPrimitive.Root<V>>, "children" | "className" | "render" | "orientation">
+type SliderRootProps<V extends number | readonly number[]> = Omit<
+  React.ComponentProps<typeof SliderPrimitive.Root<V>>,
+  "children" | "className" | "render" | "orientation"
+>;
 
 type SliderProps<V extends number | readonly number[]> = SliderRootProps<V> & {
   /** Visible label (visually hidden with layout="cell"). Names every thumb. */
-  label: React.ReactNode
+  label: React.ReactNode;
   /** Unit printed after the value in the readout cell, in the Code voice ("kg", "°", "%"). */
-  unit?: React.ReactNode
+  unit?: React.ReactNode;
   /** The readout cell. Hide it only when the surrounding text already prints the value. */
-  showValue?: boolean
+  showValue?: boolean;
   /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */
-  layout?: "control" | "cell"
+  layout?: "control" | "cell";
   /** Range sliders: one accessible name per thumb. Defaults to "<label>, from" / "<label>, to" when the label is text. */
-  thumbLabels?: string[]
+  thumbLabels?: string[];
   /** Text read for a thumb's value (e.g. "12 kilograms"). Defaults to the formatted value and unit when the unit is text. */
-  getAriaValueText?: React.ComponentProps<typeof SliderPrimitive.Thumb>["getAriaValueText"]
+  getAriaValueText?: React.ComponentProps<typeof SliderPrimitive.Thumb>["getAriaValueText"];
   /** Paints the rail itself, for a slider whose scale is visual (a hue spectrum). The fill is then drawn as a hollow window. */
-  railStyle?: React.CSSProperties
-  className?: string
-} & FieldParticipantProps
+  railStyle?: React.CSSProperties;
+  className?: string;
+} & FieldParticipantProps;
 
-const count = (v: unknown) => (Array.isArray(v) ? v.length : 1)
+const count = (v: unknown) => (Array.isArray(v) ? v.length : 1);
 
 /**
  * A continuous or stepped value in one control frame of two cells:
@@ -57,23 +60,49 @@ const count = (v: unknown) => (Array.isArray(v) ? v.length : 1)
  * frame, and the frame inserts the ! cell before the rail, in either layout. The Field.Root is a `display: contents` host: the Slider root (role="group") stays the grid
  * that a horizontal Form lays out.
  */
-function Slider<V extends number | readonly number[]>({ label, unit, showValue = true, layout = "control", thumbLabels, getAriaValueText, railStyle, className, invalid, error, description, validate, validationMode, orientation, ...props }: SliderProps<V>) {
-  const ref = React.useRef<HTMLDivElement>(null)
-  const [dir, refreshDir] = useDomDirection(ref)
-  const thumbs = count(props.value ?? props.defaultValue)
-  const min = props.min ?? 0
-  const max = props.max ?? 100
+function Slider<V extends number | readonly number[]>({
+  label,
+  unit,
+  showValue = true,
+  layout = "control",
+  thumbLabels,
+  getAriaValueText,
+  railStyle,
+  className,
+  invalid,
+  error,
+  description,
+  validate,
+  validationMode,
+  orientation,
+  ...props
+}: SliderProps<V>) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [dir, refreshDir] = useDomDirection(ref);
+  const thumbs = count(props.value ?? props.defaultValue);
+  const min = props.min ?? 0;
+  const max = props.max ?? 100;
   // A hidden sizer holding the longest value the scale can print shares the readout's grid cell, so the
   // cell never changes width while the value moves (digits, separators and the unit measured in their own fonts).
-  const longest = React.useMemo(() => longestValue(min, max, props.step ?? 1, props.locale, props.format), [props.locale, props.format, props.step, min, max])
-  const unitText = typeof unit === "string" ? unit : ""
-  const labelText = typeof label === "string" ? label : undefined
-  const names = thumbLabels ?? (thumbs > 1 && labelText ? [`${labelText}, from`, `${labelText}, to`] : undefined)
-  const firstName = names?.[0]
-  const valueText = getAriaValueText ?? (unitText ? (formatted: string) => `${formatted} ${unitText}` : undefined)
+  const longest = React.useMemo(
+    () => longestValue(min, max, props.step ?? 1, props.locale, props.format),
+    [props.locale, props.format, props.step, min, max],
+  );
+  const unitText = typeof unit === "string" ? unit : "";
+  const labelText = typeof label === "string" ? label : undefined;
+  const names = thumbLabels ?? (thumbs > 1 && labelText ? [`${labelText}, from`, `${labelText}, to`] : undefined);
+  const firstName = names?.[0];
+  const valueText = getAriaValueText ?? (unitText ? (formatted: string) => `${formatted} ${unitText}` : undefined);
 
   return (
-    <FieldPrimitive.Root className="kl-field-host" name={props.name} disabled={props.disabled} invalid={invalid} validate={validate} validationMode={validationMode}>
+    <FieldPrimitive.Root
+      className="kl-field-host"
+      name={props.name}
+      disabled={props.disabled}
+      invalid={invalid}
+      validate={validate}
+      validationMode={validationMode}
+    >
       <DirectionProvider direction={dir}>
         <SliderPrimitive.Root<V>
           ref={ref}
@@ -87,7 +116,9 @@ function Slider<V extends number | readonly number[]>({ label, unit, showValue =
           onFocusCapture={refreshDir}
           {...props}
         >
-          <SliderPrimitive.Label className={cn("kl-field-label", layout === "cell" && "kl-sr")}>{label}</SliderPrimitive.Label>
+          <SliderPrimitive.Label className={cn("kl-field-label", layout === "cell" && "kl-sr")}>
+            {label}
+          </SliderPrimitive.Label>
           <div data-kl-layout={layout} className="kl-ctl kl-cells kl-slider-frame">
             {/* the attention cell, as every field has: in a cell layout there is no frame to turn red, so
                 this is the only mark of the state beside the (visually hidden) message */}
@@ -100,7 +131,13 @@ function Slider<V extends number | readonly number[]>({ label, unit, showValue =
               <SliderPrimitive.Track className="kl-slider-rail" style={railStyle}>
                 <SliderPrimitive.Indicator className="kl-slider-fill" />
                 {Array.from({ length: thumbs }, (_, i) => (
-                  <SliderPrimitive.Thumb key={i} index={i} className="kl-key kl-slider-thumb" getAriaLabel={names && firstName !== undefined ? (j) => names[j] ?? firstName : undefined} getAriaValueText={valueText}>
+                  <SliderPrimitive.Thumb
+                    key={i}
+                    index={i}
+                    className="kl-key kl-slider-thumb"
+                    getAriaLabel={names && firstName !== undefined ? (j) => names[j] ?? firstName : undefined}
+                    getAriaValueText={valueText}
+                  >
                     <span className="kl-slider-grip" aria-hidden />
                   </SliderPrimitive.Thumb>
                 ))}
@@ -121,7 +158,7 @@ function Slider<V extends number | readonly number[]>({ label, unit, showValue =
         </SliderPrimitive.Root>
       </DirectionProvider>
     </FieldPrimitive.Root>
-  )
+  );
 }
 
 function Readout({ values, unit, sizer }: { values: readonly string[]; unit?: React.ReactNode; sizer?: boolean }) {
@@ -136,8 +173,7 @@ function Readout({ values, unit, sizer }: { values: readonly string[]; unit?: Re
       {/* isolated, so a unit led by a neutral character ("°C") keeps its order in RTL */}
       {unit != null ? <bdi className="kl-code">{unit}</bdi> : null}
     </span>
-  )
+  );
 }
 
-
-export { Slider, type SliderProps }
+export { Slider, type SliderProps };

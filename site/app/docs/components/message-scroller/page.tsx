@@ -1,16 +1,20 @@
-import { CodeBlock } from "@site/components/code-block"
-import { InstallCommand } from "@site/components/install-command"
-import { ComponentDemo } from "@site/components/component-demo"
-import { PropsReference, type Prop } from "@site/components/props-reference"
-import { DocPage } from "@site/components/doc-page"
-import { ExampleCode } from "@site/components/example-code"
-import type { TocGroup } from "@site/components/page-toc"
-import { componentMetadata } from "@site/lib/seo"
-import { MessageScrollerChat } from "@site/components/conversation-previews"
+import { CodeBlock } from "@site/components/code-block";
+import { InstallCommand } from "@site/components/install-command";
+import { ComponentDemo } from "@site/components/component-demo";
+import { PropsReference, type Prop } from "@site/components/props-reference";
+import { DocPage } from "@site/components/doc-page";
+import { ExampleCode } from "@site/components/example-code";
+import type { TocGroup } from "@site/components/page-toc";
+import { componentMetadata } from "@site/lib/seo";
+import { MessageScrollerChat } from "@site/components/conversation-previews";
 
-const ITEM = "message-scroller"
+const ITEM = "message-scroller";
 
-export const metadata = componentMetadata("Message scroller", "A React chat message scroller that follows the newest message, holds your place when you scroll up, and counts new messages on a jump cell.", "message-scroller")
+export const metadata = componentMetadata(
+  "Message scroller",
+  "A React chat message scroller that follows the newest message, holds your place when you scroll up, and counts new messages on a jump cell.",
+  "message-scroller",
+);
 
 const IMPORT = `import {
   MessageScroller,
@@ -20,7 +24,7 @@ const IMPORT = `import {
   MessageScrollerProvider,
   MessageScrollerViewport,
   useMessageScroller,
-} from "@/components/keyline/ui/message-scroller"`
+} from "@/components/keyline/ui/message-scroller"`;
 
 const USAGE = `<MessageScrollerProvider>
   <MessageScroller className="h-[380px]">
@@ -31,33 +35,91 @@ const USAGE = `<MessageScrollerProvider>
     </MessageScrollerViewport>
     <MessageScrollerButton />
   </MessageScroller>
-</MessageScrollerProvider>`
+</MessageScrollerProvider>`;
 
 const PROPS: Prop[] = [
-  { name: "autoScroll", type: "boolean", default: "true", description: <>On <code>MessageScrollerProvider</code>: follow new messages while the reader is at the end.</> },
-  { name: "aria-label", type: "string", default: "\"Messages\"", description: <>On <code>MessageScrollerViewport</code>: who the conversation is with.</> },
-  { name: "messageId", type: "string", default: "\u2014", description: <>On <code>MessageScrollerItem</code>: to scroll to a message, or to land on one.</> },
-  { name: "MessageScrollerSeparator", type: "div", default: "\u2014", description: "A day or &ldquo;New messages&rdquo; divider: a seam with its words in the code voice." },
-  { name: "direction", type: "\"end\" | \"start\"", default: "\"end\"", description: <>On <code>MessageScrollerButton</code>: the jump cell&apos;s target.</> },
-  { name: "useMessageScroller", type: "() => { scrollToEnd, \u2026 }", default: "\u2014", description: "After the reader sends, call <code>scrollToEnd()</code>; their own message always shows." },
-]
+  {
+    name: "autoScroll",
+    type: "boolean",
+    default: "true",
+    description: (
+      <>
+        On <code>MessageScrollerProvider</code>: follow new messages while the reader is at the end.
+      </>
+    ),
+  },
+  {
+    name: "aria-label",
+    type: "string",
+    default: '"Messages"',
+    description: (
+      <>
+        On <code>MessageScrollerViewport</code>: who the conversation is with.
+      </>
+    ),
+  },
+  {
+    name: "messageId",
+    type: "string",
+    default: "\u2014",
+    description: (
+      <>
+        On <code>MessageScrollerItem</code>: to scroll to a message, or to land on one.
+      </>
+    ),
+  },
+  {
+    name: "MessageScrollerSeparator",
+    type: "div",
+    default: "\u2014",
+    description: "A day or &ldquo;New messages&rdquo; divider: a seam with its words in the code voice.",
+  },
+  {
+    name: "direction",
+    type: '"end" | "start"',
+    default: '"end"',
+    description: (
+      <>
+        On <code>MessageScrollerButton</code>: the jump cell&apos;s target.
+      </>
+    ),
+  },
+  {
+    name: "useMessageScroller",
+    type: "() => { scrollToEnd, \u2026 }",
+    default: "\u2014",
+    description: "After the reader sends, call <code>scrollToEnd()</code>; their own message always shows.",
+  },
+];
 
 const TOC: TocGroup[] = [
-  { label: "Setup", items: [{ id: "installation", label: "Installation" }, { id: "usage", label: "Usage" }] },
+  {
+    label: "Setup",
+    items: [
+      { id: "installation", label: "Installation" },
+      { id: "usage", label: "Usage" },
+    ],
+  },
   { label: "Reference", items: [{ id: "props", label: "Props" }] },
-]
+];
 
 export default function MessageScrollerPage() {
-  const code = (file: string, label: string) => <ExampleCode file={file} label={label} />
+  const code = (file: string, label: string) => <ExampleCode file={file} label={label} />;
 
   return (
     <DocPage name="Message scroller" toc={TOC}>
       <h1>Message scroller</h1>
       <p className="s-doc-lede">
-        A conversation log that stays on the newest message while you&apos;re at the end, and holds your place when you&apos;ve scrolled up to read. New messages below you are counted on a jump cell, and a jump from far up takes the same short time as one from near. Your place holds when something above you changes size.
+        A conversation log that stays on the newest message while you&apos;re at the end, and holds your place when
+        you&apos;ve scrolled up to read. New messages below you are counted on a jump cell, and a jump from far up takes
+        the same short time as one from near. Your place holds when something above you changes size.
       </p>
 
-      <ComponentDemo label="Message scroller example" preview={<MessageScrollerChat />} code={code("message-scroller-chat.tsx", "example code")} />
+      <ComponentDemo
+        label="Message scroller example"
+        preview={<MessageScrollerChat />}
+        code={code("message-scroller-chat.tsx", "example code")}
+      />
 
       <h2 id="installation">Installation</h2>
       <InstallCommand item={ITEM} />
@@ -69,8 +131,10 @@ export default function MessageScrollerPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Message scroller props" props={PROPS} />
       <p className="s-small">
-        Scroll up in the example, then press Darryl replies: the jump cell counts what arrived. Built on <a href="https://github.com/shadcn-ui/ui">@shadcn/react</a>&apos;s MessageScroller, scrolling in Keyline&apos;s Scroll Area.
+        Scroll up in the example, then press Darryl replies: the jump cell counts what arrived. Built on{" "}
+        <a href="https://github.com/shadcn-ui/ui">@shadcn/react</a>&apos;s MessageScroller, scrolling in Keyline&apos;s
+        Scroll Area.
       </p>
     </DocPage>
-  )
+  );
 }

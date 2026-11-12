@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/keyline/ui/dialog"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/keyline/ui/dialog";
 
 const START = [
   { name: "Vance Refrigeration", orders: 6 },
   { name: "Penn Paper Supply", orders: 2 },
   { name: "Mount Airy Casino", orders: 0 },
-]
+];
 
 export function RemoveClient() {
-  const [clients, setClients] = useState(START)
-  const [last, setLast] = useState("")
+  const [clients, setClients] = useState(START);
+  const [last, setLast] = useState("");
 
   return (
     <div className="grid gap-4">
@@ -20,7 +20,8 @@ export function RemoveClient() {
         {clients.map((c) => (
           <li key={c.name} className="grid grid-cols-[1fr_auto] items-center gap-3">
             <span>
-              {c.name} <span className="text-kl-ink-3">· {c.orders === 0 ? "no orders" : `${c.orders} open orders`}</span>
+              {c.name}{" "}
+              <span className="text-kl-ink-3">· {c.orders === 0 ? "no orders" : `${c.orders} open orders`}</span>
             </span>
             <AlertDialog>
               <AlertDialogTrigger render={<Button size="compact" />}>Remove</AlertDialogTrigger>
@@ -34,8 +35,8 @@ export function RemoveClient() {
                 cancelLabel="Keep the client"
                 confirmLabel="Remove client"
                 onConfirm={() => {
-                  setClients((all) => all.filter((x) => x.name !== c.name))
-                  setLast(`${c.name} removed.`)
+                  setClients((all) => all.filter((x) => x.name !== c.name));
+                  setLast(`${c.name} removed.`);
                 }}
               />
             </AlertDialog>
@@ -46,5 +47,5 @@ export function RemoveClient() {
         {clients.length ? last : `${last} No clients left; refresh the page to bring them back.`}
       </p>
     </div>
-  )
+  );
 }

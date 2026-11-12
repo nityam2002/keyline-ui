@@ -5,10 +5,10 @@
  * name: Alert dialog (in dialog), Sidebar (app-shell + nav), Badge (in status), Meter (in stat).
  * Calendar and DateTimePicker share the "Date picker and calendar" page; Meter shares "Stat and meter". Every catalogue entry has a page.
  */
-export type Entry = { name: string; item: string; href?: string; description?: string }
-export type Group = { group: string; items: Entry[] }
+export type Entry = { name: string; item: string; href?: string; description?: string };
+export type Group = { group: string; items: Entry[] };
 
-const page = (name: string) => `/docs/components/${name}`
+const page = (name: string) => `/docs/components/${name}`;
 
 export const CATALOG: Group[] = [
   {
@@ -112,40 +112,84 @@ export const CATALOG: Group[] = [
       { name: "Questionnaire", item: "questionnaire", href: page("questionnaire") },
     ],
   },
-]
+];
 
 /** Pages that are not a component: read before the catalogue, listed first in the index. Not registry items.
  *  `keywords` feed the site search, so a reader typing "dark" or "tokens" finds the guide that answers it.
  *  `description` is the page's meta description and its line in /llms.txt (pageDescription). */
-export type Guide = { name: string; href: string; keywords: string; description: string }
+export type Guide = { name: string; href: string; keywords: string; description: string };
 export const GUIDES: Guide[] = [
-  { name: "Installation", href: "/docs/installation", keywords: "install setup get started shadcn registry namespace components.json troubleshooting error", description: "Install Keyline into a React app with the shadcn CLI: map the @keyline-ui registry once, then add components by name. Requirements, updates, troubleshooting." },
-  { name: "Theming", href: "/docs/theming", keywords: "theme tokens colour color palette brand roles tailwind utilities fonts atkinson plex system shadcn keyline-shadcn", description: "Theme Keyline with ten source tokens: brand colours, derived colours, colour roles as Tailwind utilities, fonts, and an opt-in theme for shadcn components." },
-  { name: "Modes", href: "/docs/modes", keywords: "dark mode light density compact comfortable cut rtl direction reduced motion", description: "Dark mode, density, the cut (Keyline's corner shape), right-to-left and reduced motion. Each is a class or attribute, for the whole app or one region." },
-  { name: "Configuration", href: "/docs/configuration", keywords: "configuration config scope KeylineConfigScope playground export css portals overlays tenant", description: "Configure Keyline for a whole React app or one region with KeylineConfigScope, generate the matching CSS, and keep portalled overlays in their region." },
-  { name: "Composition", href: "/docs/composition", keywords: "composition layout cell control frame seam edges sizing overlays z-index public classes limitations helpers", description: "How Keyline components fit together: controls and cells, one owner per edge, sizing, overlay stacking, the public API, shared helpers and known limitations." },
-]
+  {
+    name: "Installation",
+    href: "/docs/installation",
+    keywords: "install setup get started shadcn registry namespace components.json troubleshooting error",
+    description:
+      "Install Keyline into a React app with the shadcn CLI: map the @keyline-ui registry once, then add components by name. Requirements, updates, troubleshooting.",
+  },
+  {
+    name: "Theming",
+    href: "/docs/theming",
+    keywords:
+      "theme tokens colour color palette brand roles tailwind utilities fonts atkinson plex system shadcn keyline-shadcn",
+    description:
+      "Theme Keyline with ten source tokens: brand colours, derived colours, colour roles as Tailwind utilities, fonts, and an opt-in theme for shadcn components.",
+  },
+  {
+    name: "Modes",
+    href: "/docs/modes",
+    keywords: "dark mode light density compact comfortable cut rtl direction reduced motion",
+    description:
+      "Dark mode, density, the cut (Keyline's corner shape), right-to-left and reduced motion. Each is a class or attribute, for the whole app or one region.",
+  },
+  {
+    name: "Configuration",
+    href: "/docs/configuration",
+    keywords: "configuration config scope KeylineConfigScope playground export css portals overlays tenant",
+    description:
+      "Configure Keyline for a whole React app or one region with KeylineConfigScope, generate the matching CSS, and keep portalled overlays in their region.",
+  },
+  {
+    name: "Composition",
+    href: "/docs/composition",
+    keywords:
+      "composition layout cell control frame seam edges sizing overlays z-index public classes limitations helpers",
+    description:
+      "How Keyline components fit together: controls and cells, one owner per edge, sizing, overlay stacking, the public API, shared helpers and known limitations.",
+  },
+];
 
 /** Registry blocks: whole screens composed from the components. Each names the item it installs, like the catalogue. */
 export const BLOCKS: Group = {
   group: "Blocks",
-  items: [{ name: "Shipments", item: "shipments-demo", href: "/docs/blocks/shipments", description: "A complete React records screen built from Keyline: app shell, filterable, sortable table, bulk actions with undo, an inspector, command menu and toasts." }],
-}
+  items: [
+    {
+      name: "Shipments",
+      item: "shipments-demo",
+      href: "/docs/blocks/shipments",
+      description:
+        "A complete React records screen built from Keyline: app shell, filterable, sortable table, bulk actions with undo, an inspector, command menu and toasts.",
+    },
+  ],
+};
 
 /** The docs index: the guides, then the catalogue, then the blocks built from it. */
-export const INDEX: { group: string; items: { name: string; href?: string }[] }[] = [{ group: "Get started", items: GUIDES }, ...CATALOG, BLOCKS]
+export const INDEX: { group: string; items: { name: string; href?: string }[] }[] = [
+  { group: "Get started", items: GUIDES },
+  ...CATALOG,
+  BLOCKS,
+];
 
 /** Written pages in index order: sheet 1 is the homepage, so a page's sheet number is its position + 2. */
-export const WRITTEN = INDEX.flatMap((g) => g.items).filter((e) => e.href)
+export const WRITTEN = INDEX.flatMap((g) => g.items).filter((e) => e.href);
 
 export function sheet(name: string) {
-  const i = WRITTEN.findIndex((e) => e.name === name)
-  return { n: i + 2, of: WRITTEN.length + 1, prev: WRITTEN[i - 1], next: WRITTEN[i + 1] }
+  const i = WRITTEN.findIndex((e) => e.name === name);
+  return { n: i + 2, of: WRITTEN.length + 1, prev: WRITTEN[i - 1], next: WRITTEN[i + 1] };
 }
 
 /** A guide's or block's description, kept here so its page metadata and /llms.txt say the same thing. */
 export function pageDescription(href: string): string {
-  const d = [...GUIDES, ...BLOCKS.items].find((e) => e.href === href)?.description
-  if (!d) throw new Error(`Keyline site: no catalogue description for ${href}`)
-  return d
+  const d = [...GUIDES, ...BLOCKS.items].find((e) => e.href === href)?.description;
+  if (!d) throw new Error(`Keyline site: no catalogue description for ${href}`);
+  return d;
 }

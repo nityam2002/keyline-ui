@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * A step in a conversation or activity timeline: "Searched the web", "Assigned to DHL Freight",
@@ -12,7 +12,13 @@ import { cn } from "@/lib/utils"
  * - `pending`: work in progress ("Thinking…"): the pending segment runs under the words, never a spinner, and
  *   the marker becomes a polite status so the change is announced. Drop `pending` when the step is done.
  */
-function Marker({ className, variant = "default", pending, children, ...props }: React.ComponentProps<"div"> & { variant?: "default" | "separator" | "border"; pending?: boolean }) {
+function Marker({
+  className,
+  variant = "default",
+  pending,
+  children,
+  ...props
+}: React.ComponentProps<"div"> & { variant?: "default" | "separator" | "border"; pending?: boolean }) {
   return (
     <div
       data-slot="marker"
@@ -26,16 +32,16 @@ function Marker({ className, variant = "default", pending, children, ...props }:
       {children}
       {pending ? <span className="kl-pending kl-marker-run" aria-hidden /> : null}
     </div>
-  )
+  );
 }
 
 /** A 16px glyph cell (authored SVG or a Status glyph), hidden from assistive tech. */
 function MarkerIcon({ className, ...props }: React.ComponentProps<"span">) {
-  return <span data-slot="marker-icon" aria-hidden className={cn("kl-marker-ic", className)} {...props} />
+  return <span data-slot="marker-icon" aria-hidden className={cn("kl-marker-ic", className)} {...props} />;
 }
 
 function MarkerContent({ className, ...props }: React.ComponentProps<"span">) {
-  return <span data-slot="marker-content" className={cn("kl-marker-t", className)} {...props} />
+  return <span data-slot="marker-content" className={cn("kl-marker-t", className)} {...props} />;
 }
 
-export { Marker, MarkerIcon, MarkerContent }
+export { Marker, MarkerIcon, MarkerContent };

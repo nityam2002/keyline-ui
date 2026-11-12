@@ -1,6 +1,6 @@
-import * as ui from "../demo-ui"
-import { Kbd,KbdGroup } from "@/registry/keyline/ui/kbd"
-import { Panel,PanelHeader,PanelBody } from "@/registry/keyline/ui/panel"
+import * as ui from "../demo-ui";
+import { Kbd, KbdGroup } from "@/registry/keyline/ui/kbd";
+import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
 
 /* ------------------------------------------------------------------ *
  * 3. Kbd and 4. Toggle
@@ -40,5 +40,5 @@ export function KbdSpecimen() {
         لفتح القائمة.
       </p>
     </div>
-  )
+  );
 }

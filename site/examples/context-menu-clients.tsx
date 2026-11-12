@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/keyline/ui/context-menu"
+} from "@/components/keyline/ui/context-menu";
 
 const CLIENTS = [
   { name: "Scranton Business Park", contact: "Front desk", rep: "Dwight" },
   { name: "Lackawanna County", contact: "Procurement office", rep: "Jim" },
   { name: "Blue Cross of Pennsylvania", contact: "Accounts payable", rep: "Stanley" },
-]
+];
 
 export function ClientList() {
-  const [log, setLog] = useState("Right-click a client, or focus one and press Shift+F10.")
-  const [archived, setArchived] = useState<string[]>([])
-  const shown = CLIENTS.filter((c) => !archived.includes(c.name))
+  const [log, setLog] = useState("Right-click a client, or focus one and press Shift+F10.");
+  const [archived, setArchived] = useState<string[]>([]);
+  const shown = CLIENTS.filter((c) => !archived.includes(c.name));
 
   return (
     <div className="grid gap-4">
@@ -40,15 +40,17 @@ export function ClientList() {
               <ContextMenuContent>
                 <ContextMenuItem onClick={() => setLog(`Calling ${c.name}, ${c.contact}.`)}>Call</ContextMenuItem>
                 <ContextMenuItem onClick={() => setLog(`New order started for ${c.name}.`)}>New order</ContextMenuItem>
-                <ContextMenuItem onClick={() => setLog(`${c.rep} will get a reminder to follow up with ${c.name} on Friday.`)}>
+                <ContextMenuItem
+                  onClick={() => setLog(`${c.rep} will get a reminder to follow up with ${c.name} on Friday.`)}
+                >
                   Remind {c.rep} to follow up
                 </ContextMenuItem>
                 <ContextMenuSeparator />
                 <ContextMenuItem
                   variant="destructive"
                   onClick={() => {
-                    setArchived([...archived, c.name])
-                    setLog(`${c.name} archived.`)
+                    setArchived([...archived, c.name]);
+                    setLog(`${c.name} archived.`);
                   }}
                 >
                   Archive client
@@ -70,5 +72,5 @@ export function ClientList() {
         {log}
       </p>
     </div>
-  )
+  );
 }

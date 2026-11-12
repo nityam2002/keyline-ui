@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Meter } from "@/components/keyline/ui/stat"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Meter } from "@/components/keyline/ui/stat";
 
-const MAX = 120
-const HIGH = 100
+const MAX = 120;
+const HIGH = 100;
 
 export function WarehouseSpace() {
-  const [pallets, setPallets] = useState(88)
+  const [pallets, setPallets] = useState(88);
 
   return (
     <div className="grid max-w-[420px] gap-4">
@@ -29,5 +29,5 @@ export function WarehouseSpace() {
             : `Room for ${MAX - pallets} more.`}
       </p>
     </div>
-  )
+  );
 }

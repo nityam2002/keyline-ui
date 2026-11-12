@@ -1,37 +1,58 @@
 "use client";
 
-import * as React from "react"
-import { NumberField as NumberFieldPrimitive } from "@base-ui/react/number-field"
-import { Field as FieldPrimitive } from "@base-ui/react/field"
+import * as React from "react";
+import { NumberField as NumberFieldPrimitive } from "@base-ui/react/number-field";
+import { Field as FieldPrimitive } from "@base-ui/react/field";
 
-import { cn } from "@/lib/utils"
-import { FieldMessages, type FieldParticipantProps } from "./field"
+import { cn } from "@/lib/utils";
+import { FieldMessages, type FieldParticipantProps } from "./field";
 
-type NumberFieldProps = Omit<React.ComponentProps<typeof NumberFieldPrimitive.Root>, "children" | "className" | "render"> & {
+type NumberFieldProps = Omit<
+  React.ComponentProps<typeof NumberFieldPrimitive.Root>,
+  "children" | "className" | "render"
+> & {
   /** Visible label (visually hidden with layout="cell"). */
-  label: React.ReactNode
+  label: React.ReactNode;
   /** Unit printed in an affix cell after the number, in the Code voice ("kg", "%", "pallets"). */
-  unit?: React.ReactNode
+  unit?: React.ReactNode;
   /** Stepper cells (− and +). Off for a field where stepping makes no sense (an order number, a postcode is not a number field at all). */
-  steppers?: boolean
+  steppers?: boolean;
   /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */
-  layout?: "control" | "cell"
-  placeholder?: string
-  decrementLabel?: string
-  incrementLabel?: string
-  className?: string
-} & FieldParticipantProps
+  layout?: "control" | "cell";
+  placeholder?: string;
+  decrementLabel?: string;
+  incrementLabel?: string;
+  className?: string;
+} & FieldParticipantProps;
 
 const Minus = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden>
+  <svg
+    viewBox="0 0 16 16"
+    width="14"
+    height="14"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="square"
+    aria-hidden
+  >
     <path d="M3.5 8h9" />
   </svg>
-)
+);
 const Plus = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden>
+  <svg
+    viewBox="0 0 16 16"
+    width="14"
+    height="14"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="square"
+    aria-hidden
+  >
     <path d="M3.5 8h9M8 3.5v9" />
   </svg>
-)
+);
 
 /**
  * A number in a field frame, with stepper cells:
@@ -52,7 +73,25 @@ const Plus = () => (
  * - Formatting (`format`, `locale`) is Base UI's Intl.NumberFormat; the unit cell is a label, not part of
  *   the value.
  */
-function NumberField({ label, unit, description, error, invalid, steppers = true, layout = "control", placeholder, decrementLabel = "Decrease", incrementLabel = "Increase", orientation, validate, validationMode, className, name, disabled, ...props }: NumberFieldProps) {
+function NumberField({
+  label,
+  unit,
+  description,
+  error,
+  invalid,
+  steppers = true,
+  layout = "control",
+  placeholder,
+  decrementLabel = "Decrease",
+  incrementLabel = "Increase",
+  orientation,
+  validate,
+  validationMode,
+  className,
+  name,
+  disabled,
+  ...props
+}: NumberFieldProps) {
   return (
     <FieldPrimitive.Root
       data-slot="number-field"
@@ -65,9 +104,14 @@ function NumberField({ label, unit, description, error, invalid, steppers = true
       validationMode={validationMode}
       className={cn("kl-field kl-number", className)}
     >
-      <FieldPrimitive.Label className={cn("kl-field-label", layout === "cell" && "kl-sr")}>{label}</FieldPrimitive.Label>
+      <FieldPrimitive.Label className={cn("kl-field-label", layout === "cell" && "kl-sr")}>
+        {label}
+      </FieldPrimitive.Label>
       <NumberFieldPrimitive.Root name={name} disabled={disabled} {...props}>
-        <NumberFieldPrimitive.Group data-kl-layout={layout} className="kl-ctl kl-cells kl-field-frame kl-edge kl-number-frame">
+        <NumberFieldPrimitive.Group
+          data-kl-layout={layout}
+          className="kl-ctl kl-cells kl-field-frame kl-edge kl-number-frame"
+        >
           <span className="kl-slot kl-field-bang" aria-hidden>
             <span>
               <span>!</span>
@@ -78,7 +122,11 @@ function NumberField({ label, unit, description, error, invalid, steppers = true
               <Minus />
             </NumberFieldPrimitive.Decrement>
           ) : null}
-          <NumberFieldPrimitive.Input placeholder={placeholder} data-align="end" className="kl-field-input kl-number-input" />
+          <NumberFieldPrimitive.Input
+            placeholder={placeholder}
+            data-align="end"
+            className="kl-field-input kl-number-input"
+          />
           {unit != null ? (
             <span className="kl-field-affix kl-number-unit">
               {/* isolated, so a unit led by a neutral character ("°C") keeps its order in RTL */}
@@ -94,7 +142,7 @@ function NumberField({ label, unit, description, error, invalid, steppers = true
       </NumberFieldPrimitive.Root>
       <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />
     </FieldPrimitive.Root>
-  )
+  );
 }
 
-export { NumberField, type NumberFieldProps }
+export { NumberField, type NumberFieldProps };

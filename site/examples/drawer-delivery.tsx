@@ -1,8 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/keyline/ui/drawer"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/keyline/ui/drawer";
 
 const STOPS = [
   ["9:40", "Left the warehouse"],
@@ -11,10 +21,10 @@ const STOPS = [
   ["12:30", "Lunch at Cugino's"],
   ["13:20", "Vance Refrigeration, held: no one to sign"],
   ["14:10", "Blue Cross of Pennsylvania, 60 cases"],
-]
+];
 
 export function TruckRoute() {
-  const [called, setCalled] = useState(false)
+  const [called, setCalled] = useState(false);
 
   return (
     <div className="grid gap-4">
@@ -37,7 +47,9 @@ export function TruckRoute() {
           </DrawerBody>
           <DrawerFooter>
             <DrawerClose render={<Button layout="cell" />}>Close</DrawerClose>
-            <DrawerClose render={<Button layout="cell" variant="primary" onClick={() => setCalled(true)} />}>Call Bob Vance</DrawerClose>
+            <DrawerClose render={<Button layout="cell" variant="primary" onClick={() => setCalled(true)} />}>
+              Call Bob Vance
+            </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -45,5 +57,5 @@ export function TruckRoute() {
         {called ? "Calling Vance Refrigeration about the held delivery." : ""}
       </p>
     </div>
-  )
+  );
 }

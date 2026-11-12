@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -11,13 +11,13 @@ import {
   MenubarRadioItem,
   MenubarSeparator,
   MenubarTrigger,
-} from "@/components/keyline/ui/menubar"
+} from "@/components/keyline/ui/menubar";
 
 export function SalesReportMenus() {
-  const [period, setPeriod] = useState("quarter")
-  const [targets, setTargets] = useState(true)
-  const [byRep, setByRep] = useState(false)
-  const [last, setLast] = useState<string | null>(null)
+  const [period, setPeriod] = useState("quarter");
+  const [targets, setTargets] = useState(true);
+  const [byRep, setByRep] = useState(false);
+  const [last, setLast] = useState<string | null>(null);
 
   return (
     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
@@ -51,7 +51,9 @@ export function SalesReportMenus() {
         <MenubarMenu>
           <MenubarTrigger>Share</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem onClick={() => setLast("Emailed to the Scranton sales team.")}>Email the sales team</MenubarItem>
+            <MenubarItem onClick={() => setLast("Emailed to the Scranton sales team.")}>
+              Email the sales team
+            </MenubarItem>
             <MenubarItem onClick={() => setLast("Posted on the break room board.")}>Post in the break room</MenubarItem>
           </MenubarContent>
         </MenubarMenu>
@@ -69,5 +71,5 @@ export function SalesReportMenus() {
         {last ? ` · ${last}` : ""}
       </p>
     </div>
-  )
+  );
 }

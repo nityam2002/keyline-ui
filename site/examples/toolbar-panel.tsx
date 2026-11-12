@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Search } from "lucide-react"
-import { useState } from "react"
+import { Search } from "lucide-react";
+import { useState } from "react";
 import {
   Toolbar,
   ToolbarButton,
@@ -10,7 +10,7 @@ import {
   ToolbarMenuContent,
   ToolbarMenuTrigger,
   ToolbarSeparator,
-} from "@/components/keyline/ui/toolbar"
+} from "@/components/keyline/ui/toolbar";
 import {
   Menu,
   MenuCheckboxItem,
@@ -19,22 +19,26 @@ import {
   MenuRadioGroup,
   MenuRadioItem,
   MenuSeparator,
-} from "@/components/keyline/ui/menu"
-import { Panel, PanelBody } from "@/components/keyline/ui/panel"
+} from "@/components/keyline/ui/menu";
+import { Panel, PanelBody } from "@/components/keyline/ui/panel";
 
-const LABELS = { client: "Client", rep: "Sales rep", branch: "Branch" }
+const LABELS = { client: "Client", rep: "Sales rep", branch: "Branch" };
 
 export function OrdersPanel() {
-  const [columns, setColumns] = useState({ client: true, rep: true, branch: false })
-  const [rows, setRows] = useState("comfortable")
+  const [columns, setColumns] = useState({ client: true, rep: true, branch: false });
+  const [rows, setRows] = useState("comfortable");
   const shown = (Object.keys(columns) as (keyof typeof columns)[])
     .filter((key) => columns[key])
-    .map((key) => LABELS[key])
+    .map((key) => LABELS[key]);
 
   return (
     <Panel>
       <Toolbar layout="cell" overflow="menu" aria-label="Orders">
-        <ToolbarInput label="Search orders" placeholder="Search orders" glyph={<Search size={16} aria-hidden="true" />} />
+        <ToolbarInput
+          label="Search orders"
+          placeholder="Search orders"
+          glyph={<Search size={16} aria-hidden="true" />}
+        />
         <Menu>
           <ToolbarMenuTrigger>Columns</ToolbarMenuTrigger>
           <ToolbarMenuContent>
@@ -68,5 +72,5 @@ export function OrdersPanel() {
         </p>
       </PanelBody>
     </Panel>
-  )
+  );
 }

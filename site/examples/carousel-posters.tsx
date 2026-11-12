@@ -1,6 +1,14 @@
-"use client"
+"use client";
 
-import { Carousel, CarouselBar, CarouselContent, CarouselItem, CarouselNext, CarouselPosition, CarouselPrevious } from "@/components/keyline/ui/carousel"
+import {
+  Carousel,
+  CarouselBar,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPosition,
+  CarouselPrevious,
+} from "@/components/keyline/ui/carousel";
 
 const POSTERS = [
   { month: "January", who: "Stanley Hudson", why: "Closed the Hammermill account without leaving his chair." },
@@ -8,7 +16,7 @@ const POSTERS = [
   { month: "March", who: "Dwight Schrute", why: "1,680 reams. He'd like you to know it was 1,680." },
   { month: "April", who: "Jim Halpert", why: "Won back Blue Cross of Pennsylvania." },
   { month: "May", who: "Darryl Philbin", why: "Not one late delivery, through three snowstorms." },
-]
+];
 
 export function EmployeeOfTheMonth() {
   return (
@@ -32,5 +40,5 @@ export function EmployeeOfTheMonth() {
         <CarouselNext />
       </CarouselBar>
     </Carousel>
-  )
+  );
 }

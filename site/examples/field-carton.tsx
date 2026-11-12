@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState, type ChangeEvent } from "react"
-import { FieldGroup, FieldGroupError, FieldGroupJoin, FieldGroupPart } from "@/components/keyline/ui/field"
+import { useState, type ChangeEvent } from "react";
+import { FieldGroup, FieldGroupError, FieldGroupJoin, FieldGroupPart } from "@/components/keyline/ui/field";
 
-const SHELF = 30 // inches under the truck's top shelf
+const SHELF = 30; // inches under the truck's top shelf
 
 export function CartonSize() {
-  const [size, setSize] = useState({ l: "24", w: "18", h: "34" })
-  const tall = Number(size.h) > SHELF
+  const [size, setSize] = useState({ l: "24", w: "18", h: "34" });
+  const tall = Number(size.h) > SHELF;
   const part = (k: keyof typeof size) => ({
     inputMode: "numeric" as const,
     value: size[k],
     onChange: (e: ChangeEvent<HTMLInputElement>) => setSize({ ...size, [k]: e.target.value }),
-  })
+  });
 
   return (
     <div className="grid max-w-[360px] gap-2">
@@ -23,7 +23,9 @@ export function CartonSize() {
         <FieldGroupJoin />
         <FieldGroupPart label="H" invalid={tall} inputProps={part("h")} />
       </FieldGroup>
-      <FieldGroupError>{tall ? `At ${size.h} in, it won't fit under the truck's top shelf. Keep it to ${SHELF} in.` : null}</FieldGroupError>
+      <FieldGroupError>
+        {tall ? `At ${size.h} in, it won't fit under the truck's top shelf. Keep it to ${SHELF} in.` : null}
+      </FieldGroupError>
     </div>
-  )
+  );
 }

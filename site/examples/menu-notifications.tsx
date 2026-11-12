@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 import {
   Menu,
   MenuCheckboxItem,
@@ -12,15 +12,15 @@ import {
   MenuRadioItem,
   MenuSeparator,
   MenuTrigger,
-} from "@/components/keyline/ui/menu"
+} from "@/components/keyline/ui/menu";
 
-const EVENTS = { shipped: "An order ships", complaint: "A client complains", mention: "Someone mentions me" }
-type Event = keyof typeof EVENTS
+const EVENTS = { shipped: "An order ships", complaint: "A client complains", mention: "Someone mentions me" };
+type Event = keyof typeof EVENTS;
 
 export function NotificationMenu() {
-  const [on, setOn] = useState<Record<Event, boolean>>({ shipped: true, complaint: true, mention: false })
-  const [when, setWhen] = useState("now")
-  const chosen = (Object.keys(EVENTS) as Event[]).filter((e) => on[e])
+  const [on, setOn] = useState<Record<Event, boolean>>({ shipped: true, complaint: true, mention: false });
+  const [when, setWhen] = useState("now");
+  const chosen = (Object.keys(EVENTS) as Event[]).filter((e) => on[e]);
 
   return (
     <div className="grid gap-4">
@@ -51,5 +51,5 @@ export function NotificationMenu() {
           : "No notifications. You’ll hear about it at the next conference room meeting."}
       </p>
     </div>
-  )
+  );
 }

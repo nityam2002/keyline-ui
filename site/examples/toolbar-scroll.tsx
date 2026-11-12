@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/components/keyline/ui/toolbar"
+import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/components/keyline/ui/toolbar";
 
 export function OrderCommands() {
   return (
@@ -11,5 +11,5 @@ export function OrderCommands() {
       <ToolbarSeparator />
       <ToolbarButton>Cancel order</ToolbarButton>
     </Toolbar>
-  )
+  );
 }

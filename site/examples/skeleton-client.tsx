@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Panel, PanelBody, PanelHeader } from "@/components/keyline/ui/panel"
-import { Skeleton, SkeletonGroup } from "@/components/keyline/ui/skeleton"
-import { Stat } from "@/components/keyline/ui/stat"
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Panel, PanelBody, PanelHeader } from "@/components/keyline/ui/panel";
+import { Skeleton, SkeletonGroup } from "@/components/keyline/ui/skeleton";
+import { Stat } from "@/components/keyline/ui/stat";
 
 export function ClientCard() {
-  const [busy, setBusy] = useState(true)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const [busy, setBusy] = useState(true);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const load = () => {
-    setBusy(true)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setBusy(false), 1400)
-  }
+    setBusy(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setBusy(false), 1400);
+  };
   useEffect(() => {
-    load()
-    return () => clearTimeout(timer.current)
-  }, [])
+    load();
+    return () => clearTimeout(timer.current);
+  }, []);
 
   return (
     <div className="grid max-w-[520px] gap-4">
@@ -38,7 +38,8 @@ export function ClientCard() {
               <Skeleton lines={3} />
             ) : (
               <p className="m-0 text-[14px] leading-relaxed">
-                Buys in bulk every quarter. The new purchasing officer prefers phone calls to email and wants the delivery on the loading dock, not at reception.
+                Buys in bulk every quarter. The new purchasing officer prefers phone calls to email and wants the
+                delivery on the loading dock, not at reception.
               </p>
             )}
           </PanelBody>
@@ -48,5 +49,5 @@ export function ClientCard() {
         Reload
       </Button>
     </div>
-  )
+  );
 }

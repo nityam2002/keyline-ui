@@ -1,17 +1,29 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
+import * as React from "react";
+import * as ui from "../demo-ui";
 import {
-Menubar,MenubarMenu,MenubarTrigger,MenubarContent,MenubarItem,MenubarCheckboxItem,MenubarRadioGroup,MenubarRadioItem,
-MenubarSeparator,MenubarGroup,MenubarGroupLabel,MenubarSubmenu,MenubarSubmenuTrigger,MenubarSubmenuContent,
-} from "@/registry/keyline/ui/menubar"
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+  MenubarCheckboxItem,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarGroup,
+  MenubarGroupLabel,
+  MenubarSubmenu,
+  MenubarSubmenuTrigger,
+  MenubarSubmenuContent,
+} from "@/registry/keyline/ui/menubar";
 
 /* ------------------------------------------------------------------ *
  * 6. Menubar
  * ------------------------------------------------------------------ */
 export function MenubarSpecimen() {
-  const [last, setLast] = React.useState("nothing yet")
-  const [cols, setCols] = React.useState({ status: true, eta: true, value: false })
-  const [rows, setRows] = React.useState("24")
+  const [last, setLast] = React.useState("nothing yet");
+  const [cols, setCols] = React.useState({ status: true, eta: true, value: false });
+  const [rows, setRows] = React.useState("24");
   return (
     <div className={ui.stack}>
       <Menubar aria-label="Shipments">
@@ -90,8 +102,13 @@ export function MenubarSpecimen() {
         </MenubarMenu>
       </Menubar>
       <p className={ui.note} data-testid="specimen-menubar">
-        Last command: {last} · Columns: {Object.entries(cols).filter(([, v]) => v).map(([k]) => k).join(", ") || "none"} · {rows} rows
+        Last command: {last} · Columns:{" "}
+        {Object.entries(cols)
+          .filter(([, v]) => v)
+          .map(([k]) => k)
+          .join(", ") || "none"}{" "}
+        · {rows} rows
       </p>
     </div>
-  )
+  );
 }

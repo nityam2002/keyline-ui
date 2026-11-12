@@ -1,95 +1,278 @@
 // Attachment: its states (idle, uploading, processing, error, done) as one object; uploads inside the chat, a failed
 // upload and its retry.
-import { test } from "./fixtures.mjs"
-import { chat, rgb, until } from "./lib/chat.mjs"
+import { test } from "./fixtures.mjs";
+import { chat, rgb, until } from "./lib/chat.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
-test.use({ only: ["chat"] })
+test.use({ only: ["chat"] });
 
-const VIEW = { width: 1280, height: 1000 }
-const noErrors = (ok, p) => ok("no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs])
+const VIEW = { width: 1280, height: 1000 };
+const noErrors = (ok, p) =>
+  ok("no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs]);
 
-test("attachment: the specimen states — progress, processing, failed, long names, idle, actions", async ({ open, ok }) => {
-  const p = await open({ ...VIEW, ready: "[data-testid=at-up]" })
-  const { frame } = await chat(p)
-  const up = p.getByTestId("at-up")
-  const bar = up.locator("[role=progressbar]")
-  const barName = await bar.evaluate((b) => document.getElementById(b.getAttribute("aria-labelledby")).textContent)
-  ok("attachment: uploading is a progressbar named by the file, value 42, the percentage printed", (await bar.getAttribute("aria-valuenow")) === "42" && barName === "pallet-damage-bay2.jpg" && /42%/.test(await up.innerText()) && (await up.getAttribute("aria-busy")) === "true", barName)
-  const fill = await bar.locator("span").evaluate((s) => [s.getBoundingClientRect().width, s.parentElement.getBoundingClientRect().width, s.parentElement.getBoundingClientRect().bottom - s.parentElement.closest(".kl-att").getBoundingClientRect().bottom])
-  ok("attachment: the segment runs 42% along the inside of the bottom keyline", Math.abs(fill[0] / fill[1] - 0.42) < 0.02 && fill[2] <= 0 && fill[2] >= -3, fill)
-  await up.getByRole("button", { name: /^Cancel/ }).click()
-  await until(p, () => document.querySelector("[data-testid=at-up] [role=progressbar]")?.getAttribute("aria-valuenow") === "62", null, 3000)
-  ok("attachment: progress updates", (await bar.getAttribute("aria-valuenow")) === "62")
-  ok("attachment: processing runs the pending segment and is busy", (await p.getByTestId("at-proc").locator(".kl-pending").count()) === 1 && (await p.getByTestId("at-proc").getAttribute("aria-busy")) === "true")
-  const err = p.getByTestId("at-err")
-  ok("attachment: failed: attention frame, the media cell flooded red with !, the reason as an alert", (await err.evaluate((e) => getComputedStyle(e).borderTopColor)) === (await rgb(p, "var(--kl-red)")) && (await err.getAttribute("data-mark")) === "error" && (await err.locator(".kl-att-mark").innerText()) === "!" && (await err.locator("[role=alert]").innerText()) === "Over the 25 MB limit. Split the scan and try again.")
-  const ext = await err.locator(".kl-att-title").evaluate((t) => { const e = t.querySelector(".kl-att-ext").getBoundingClientRect(); const r = t.getBoundingClientRect(); return [t.querySelector(".kl-att-ext").textContent, e.right <= r.right + 0.5, t.querySelector(".kl-att-stem").scrollWidth > t.querySelector(".kl-att-stem").clientWidth] })
-  ok("attachment: a long name truncates its stem and keeps the extension in view", ext[0] === ".pdf" && ext[1] && ext[2], ext)
-  ok("attachment: idle is a soft frame", (await p.getByTestId("at-idle").evaluate((e) => getComputedStyle(e).borderTopColor)) === (await rgb(p, "var(--kl-line-soft)")))
-  ok("attachment: actions are named keys; the whole frame opens through a named trigger", (await err.getByRole("button", { name: /^Retry customs/ }).count()) === 1 && (await frame.getByRole("button", { name: "Open CMR-2026-11-09-TR4492-signed.pdf" }).count()) === 1)
-  ok("attachment: a Latin file name keeps ltr inside any page", (await p.getByTestId("at-idle").locator(".kl-att-title").getAttribute("dir")) === "auto")
-  noErrors(ok, p)
-})
+test("attachment: the specimen states — progress, processing, failed, long names, idle, actions", async ({
+  open,
+  ok,
+}) => {
+  const p = await open({ ...VIEW, ready: "[data-testid=at-up]" });
+  const { frame } = await chat(p);
+  const up = p.getByTestId("at-up");
+  const bar = up.locator("[role=progressbar]");
+  const barName = await bar.evaluate((b) => document.getElementById(b.getAttribute("aria-labelledby")).textContent);
+  ok(
+    "attachment: uploading is a progressbar named by the file, value 42, the percentage printed",
+    (await bar.getAttribute("aria-valuenow")) === "42" &&
+      barName === "pallet-damage-bay2.jpg" &&
+      /42%/.test(await up.innerText()) &&
+      (await up.getAttribute("aria-busy")) === "true",
+    barName,
+  );
+  const fill = await bar
+    .locator("span")
+    .evaluate((s) => [
+      s.getBoundingClientRect().width,
+      s.parentElement.getBoundingClientRect().width,
+      s.parentElement.getBoundingClientRect().bottom -
+        s.parentElement.closest(".kl-att").getBoundingClientRect().bottom,
+    ]);
+  ok(
+    "attachment: the segment runs 42% along the inside of the bottom keyline",
+    Math.abs(fill[0] / fill[1] - 0.42) < 0.02 && fill[2] <= 0 && fill[2] >= -3,
+    fill,
+  );
+  await up.getByRole("button", { name: /^Cancel/ }).click();
+  await until(
+    p,
+    () => document.querySelector("[data-testid=at-up] [role=progressbar]")?.getAttribute("aria-valuenow") === "62",
+    null,
+    3000,
+  );
+  ok("attachment: progress updates", (await bar.getAttribute("aria-valuenow")) === "62");
+  ok(
+    "attachment: processing runs the pending segment and is busy",
+    (await p.getByTestId("at-proc").locator(".kl-pending").count()) === 1 &&
+      (await p.getByTestId("at-proc").getAttribute("aria-busy")) === "true",
+  );
+  const err = p.getByTestId("at-err");
+  ok(
+    "attachment: failed: attention frame, the media cell flooded red with !, the reason as an alert",
+    (await err.evaluate((e) => getComputedStyle(e).borderTopColor)) === (await rgb(p, "var(--kl-red)")) &&
+      (await err.getAttribute("data-mark")) === "error" &&
+      (await err.locator(".kl-att-mark").innerText()) === "!" &&
+      (await err.locator("[role=alert]").innerText()) === "Over the 25 MB limit. Split the scan and try again.",
+  );
+  const ext = await err.locator(".kl-att-title").evaluate((t) => {
+    const e = t.querySelector(".kl-att-ext").getBoundingClientRect();
+    const r = t.getBoundingClientRect();
+    return [
+      t.querySelector(".kl-att-ext").textContent,
+      e.right <= r.right + 0.5,
+      t.querySelector(".kl-att-stem").scrollWidth > t.querySelector(".kl-att-stem").clientWidth,
+    ];
+  });
+  ok(
+    "attachment: a long name truncates its stem and keeps the extension in view",
+    ext[0] === ".pdf" && ext[1] && ext[2],
+    ext,
+  );
+  ok(
+    "attachment: idle is a soft frame",
+    (await p.getByTestId("at-idle").evaluate((e) => getComputedStyle(e).borderTopColor)) ===
+      (await rgb(p, "var(--kl-line-soft)")),
+  );
+  ok(
+    "attachment: actions are named keys; the whole frame opens through a named trigger",
+    (await err.getByRole("button", { name: /^Retry customs/ }).count()) === 1 &&
+      (await frame.getByRole("button", { name: "Open CMR-2026-11-09-TR4492-signed.pdf" }).count()) === 1,
+  );
+  ok(
+    "attachment: a Latin file name keeps ltr inside any page",
+    (await p.getByTestId("at-idle").locator(".kl-att-title").getAttribute("dir")) === "auto",
+  );
+  noErrors(ok, p);
+});
 
-test("attachment: an upload in the chat — progress, processing, the done tick, one width, then Read", async ({ open, ok }) => {
-  const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" })
-  const { frame } = await chat(p)
-  const n = await frame.locator(".kl-att").count()
-  await p.getByTestId("ms-attach").click()
-  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000)
-  const file = frame.locator(".kl-att").last()
-  const width = () => file.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10)
-  const ws = [await width()]
-  const bar = file.locator("[role=progressbar]")
-  ok("upload: the file is a cell of your new bubble with a named progressbar on its bottom keyline", (await file.getAttribute("data-kl-layout")) === "cell" && (await bar.count()) === 1 && (await file.getAttribute("data-state")) === "uploading")
+test("attachment: an upload in the chat — progress, processing, the done tick, one width, then Read", async ({
+  open,
+  ok,
+}) => {
+  const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
+  const { frame } = await chat(p);
+  const n = await frame.locator(".kl-att").count();
+  await p.getByTestId("ms-attach").click();
+  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000);
+  const file = frame.locator(".kl-att").last();
+  const width = () => file.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10);
+  const ws = [await width()];
+  const bar = file.locator("[role=progressbar]");
+  ok(
+    "upload: the file is a cell of your new bubble with a named progressbar on its bottom keyline",
+    (await file.getAttribute("data-kl-layout")) === "cell" &&
+      (await bar.count()) === 1 &&
+      (await file.getAttribute("data-state")) === "uploading",
+  );
   // mid-upload: a value above 0 reached, and the bar's transform caught up with it
-  await until(p, () => Number([...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).querySelector("[role=progressbar]")?.getAttribute("aria-valuenow")) >= 27, null, 3000)
+  await until(
+    p,
+    () =>
+      Number(
+        [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')]
+          .at(-1)
+          .querySelector("[role=progressbar]")
+          ?.getAttribute("aria-valuenow"),
+      ) >= 27,
+    null,
+    3000,
+  );
   // value, length and words read in one frame (the upload keeps moving)
   const [v1, frac, words] = await file.evaluate((x) => {
-    const s = x.querySelector(".kl-att-bar > span")
-    return [Number(x.querySelector("[role=progressbar]").getAttribute("aria-valuenow")), new DOMMatrix(getComputedStyle(s).transform).a, x.innerText]
-  })
-  ok("upload: progress rises and the bar's length follows it", v1 > 0 && v1 < 100 && Math.abs(frac - v1 / 100) < 0.12 && new RegExp(`${v1}%`).test(words), [v1, frac])
-  ws.push(await width())
-  await p.waitForFunction(() => document.querySelector('[data-testid="ms-frame"] .kl-att:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child .kl-att')?.closest(".kl-msg") && [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "processing", null, { timeout: 4000 })
-  ws.push(await width())
-  ok("upload: processing runs the pending segment", (await file.locator(".kl-pending").count()) === 1)
-  await p.waitForFunction(() => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.mark === "done", null, { timeout: 3000 })
-  ws.push(await width())
-  ok("upload: when it lands the media cell floods yellow with a tick", (await file.locator(".kl-att-mark").evaluate((m) => getComputedStyle(m).clipPath)) !== "circle(0px at 50% 100%)" && (await file.locator(".kl-att-mark svg").count()) === 1)
-  await p.waitForTimeout(1100) // timing: the done tick holds 900ms, then retracts
-  ok("upload: after 900ms the tick retracts and the glyph returns; Open and Download are there", (await file.getAttribute("data-mark")) === null && (await file.getByRole("button", { name: /^Download/ }).count()) === 1 && (await file.getByRole("button", { name: /^Open/ }).count()) === 1)
-  ws.push(await width())
-  ok("upload: the file keeps its width through uploading, processing and done", ws.every((x) => Math.abs(x - ws[0]) <= 0.5), ws)
-  await until(p, () => /^Read/.test([...document.querySelectorAll('[data-testid=ms-frame] [data-testid="receipt"]')].at(-1)?.innerText ?? ""), null, 6000)
-  ok("upload: the message then reads Sent → Read", /^Read/.test(await frame.getByTestId("receipt").last().innerText()))
-  noErrors(ok, p)
-})
+    const s = x.querySelector(".kl-att-bar > span");
+    return [
+      Number(x.querySelector("[role=progressbar]").getAttribute("aria-valuenow")),
+      new DOMMatrix(getComputedStyle(s).transform).a,
+      x.innerText,
+    ];
+  });
+  ok(
+    "upload: progress rises and the bar's length follows it",
+    v1 > 0 && v1 < 100 && Math.abs(frac - v1 / 100) < 0.12 && new RegExp(`${v1}%`).test(words),
+    [v1, frac],
+  );
+  ws.push(await width());
+  await p.waitForFunction(
+    () =>
+      document
+        .querySelector(
+          '[data-testid="ms-frame"] .kl-att:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child .kl-att',
+        )
+        ?.closest(".kl-msg") &&
+      [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "processing",
+    null,
+    { timeout: 4000 },
+  );
+  ws.push(await width());
+  ok("upload: processing runs the pending segment", (await file.locator(".kl-pending").count()) === 1);
+  await p.waitForFunction(
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.mark === "done",
+    null,
+    { timeout: 3000 },
+  );
+  ws.push(await width());
+  ok(
+    "upload: when it lands the media cell floods yellow with a tick",
+    (await file.locator(".kl-att-mark").evaluate((m) => getComputedStyle(m).clipPath)) !== "circle(0px at 50% 100%)" &&
+      (await file.locator(".kl-att-mark svg").count()) === 1,
+  );
+  await p.waitForTimeout(1100); // timing: the done tick holds 900ms, then retracts
+  ok(
+    "upload: after 900ms the tick retracts and the glyph returns; Open and Download are there",
+    (await file.getAttribute("data-mark")) === null &&
+      (await file.getByRole("button", { name: /^Download/ }).count()) === 1 &&
+      (await file.getByRole("button", { name: /^Open/ }).count()) === 1,
+  );
+  ws.push(await width());
+  ok(
+    "upload: the file keeps its width through uploading, processing and done",
+    ws.every((x) => Math.abs(x - ws[0]) <= 0.5),
+    ws,
+  );
+  await until(
+    p,
+    () =>
+      /^Read/.test(
+        [...document.querySelectorAll('[data-testid=ms-frame] [data-testid="receipt"]')].at(-1)?.innerText ?? "",
+      ),
+    null,
+    6000,
+  );
+  ok("upload: the message then reads Sent → Read", /^Read/.test(await frame.getByTestId("receipt").last().innerText()));
+  noErrors(ok, p);
+});
 
 test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it in place", async ({ open, ok }) => {
-  const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" })
-  const { frame } = await chat(p)
-  const n = await frame.locator(".kl-att").count()
-  await p.getByTestId("ms-attach-fail").click()
-  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000)
-  const ff = frame.locator(".kl-att").last()
-  const fw = () => ff.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10)
-  const fws = [await fw()]
-  await p.waitForFunction(() => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "error", null, { timeout: 4000 })
+  const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
+  const { frame } = await chat(p);
+  const n = await frame.locator(".kl-att").count();
+  await p.getByTestId("ms-attach-fail").click();
+  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000);
+  const ff = frame.locator(".kl-att").last();
+  const fw = () => ff.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10);
+  const fws = [await fw()];
+  await p.waitForFunction(
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "error",
+    null,
+    { timeout: 4000 },
+  );
   // the bar settles at its stopping point (its length transitions)
-  await until(p, () => { const s = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).querySelector(".kl-att-bar > span"); return !s.getAnimations().some((a) => a.playState === "running") && Math.abs(s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width - 0.61) < 0.02 }, null, 3000)
-  fws.push(await fw())
-  const fb = await ff.locator(".kl-att-bar > span").evaluate((s) => [s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width, getComputedStyle(s).backgroundColor])
-  ok("failed upload: the bar stops at 61% and turns red; the media cell floods red with !; the reason is an alert", Math.abs(fb[0] - 0.61) < 0.02 && (await ff.getAttribute("data-mark")) === "error" && /Connection lost at 61%/.test(await ff.locator("[role=alert]").innerText()), fb)
-  ok("failed upload: no receipt claims it was sent", (await frame.locator(".kl-msg").last().getByTestId("receipt").count()) === 0 || !/Sent|Read/.test(await frame.locator(".kl-msg").last().getByTestId("receipt").last().innerText()))
-  const retryBtn = ff.getByRole("button", { name: /^Retry/ })
-  await retryBtn.focus()
-  await p.keyboard.press("Enter")
-  await until(p, () => { const a = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1); return a.dataset.state === "uploading" && a.dataset.mark == null }, null, 2000)
-  fws.push(await fw())
-  ok("retry (keyboard): the same bar resumes from 61% in the working colour, the ! retracts", (await ff.getAttribute("data-state")) === "uploading" && Number(await ff.locator("[role=progressbar]").getAttribute("aria-valuenow")) >= 61 && (await ff.getAttribute("data-mark")) === null, { state: await ff.getAttribute("data-state"), now: await ff.locator("[role=progressbar]").getAttribute("aria-valuenow").catch(() => "none"), mark: await ff.getAttribute("data-mark") })
-  await p.waitForFunction(() => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "done", null, { timeout: 5000 })
-  fws.push(await fw())
-  ok("retry: it completes; the name and the action cell never moved", fws.every((x) => Math.abs(x - fws[0]) <= 0.5), fws)
-  noErrors(ok, p)
-})
+  await until(
+    p,
+    () => {
+      const s = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')]
+        .at(-1)
+        .querySelector(".kl-att-bar > span");
+      return (
+        !s.getAnimations().some((a) => a.playState === "running") &&
+        Math.abs(s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width - 0.61) < 0.02
+      );
+    },
+    null,
+    3000,
+  );
+  fws.push(await fw());
+  const fb = await ff
+    .locator(".kl-att-bar > span")
+    .evaluate((s) => [
+      s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width,
+      getComputedStyle(s).backgroundColor,
+    ]);
+  ok(
+    "failed upload: the bar stops at 61% and turns red; the media cell floods red with !; the reason is an alert",
+    Math.abs(fb[0] - 0.61) < 0.02 &&
+      (await ff.getAttribute("data-mark")) === "error" &&
+      /Connection lost at 61%/.test(await ff.locator("[role=alert]").innerText()),
+    fb,
+  );
+  ok(
+    "failed upload: no receipt claims it was sent",
+    (await frame.locator(".kl-msg").last().getByTestId("receipt").count()) === 0 ||
+      !/Sent|Read/.test(await frame.locator(".kl-msg").last().getByTestId("receipt").last().innerText()),
+  );
+  const retryBtn = ff.getByRole("button", { name: /^Retry/ });
+  await retryBtn.focus();
+  await p.keyboard.press("Enter");
+  await until(
+    p,
+    () => {
+      const a = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1);
+      return a.dataset.state === "uploading" && a.dataset.mark == null;
+    },
+    null,
+    2000,
+  );
+  fws.push(await fw());
+  ok(
+    "retry (keyboard): the same bar resumes from 61% in the working colour, the ! retracts",
+    (await ff.getAttribute("data-state")) === "uploading" &&
+      Number(await ff.locator("[role=progressbar]").getAttribute("aria-valuenow")) >= 61 &&
+      (await ff.getAttribute("data-mark")) === null,
+    {
+      state: await ff.getAttribute("data-state"),
+      now: await ff
+        .locator("[role=progressbar]")
+        .getAttribute("aria-valuenow")
+        .catch(() => "none"),
+      mark: await ff.getAttribute("data-mark"),
+    },
+  );
+  await p.waitForFunction(
+    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.state === "done",
+    null,
+    { timeout: 5000 },
+  );
+  fws.push(await fw());
+  ok(
+    "retry: it completes; the name and the action cell never moved",
+    fws.every((x) => Math.abs(x - fws[0]) <= 0.5),
+    fws,
+  );
+  noErrors(ok, p);
+});

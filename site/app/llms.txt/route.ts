@@ -1,7 +1,7 @@
-import manifest from "../../public/r/registry.json"
-import { BLOCKS, CATALOG, GUIDES } from "@site/lib/catalog"
-import { installCommand, registryAddCommand, SITE_ORIGIN } from "@site/lib/registry"
-import { SITE_DESCRIPTION, SITE_NAME } from "@site/lib/seo"
+import manifest from "../../public/r/registry.json";
+import { BLOCKS, CATALOG, GUIDES } from "@site/lib/catalog";
+import { installCommand, registryAddCommand, SITE_ORIGIN } from "@site/lib/registry";
+import { SITE_DESCRIPTION, SITE_NAME } from "@site/lib/seo";
 
 /**
  * /llms.txt (the llmstxt.org proposal): a Markdown index of the docs and the registry for language-model tools and
@@ -12,19 +12,19 @@ import { SITE_DESCRIPTION, SITE_NAME } from "@site/lib/seo"
  * component's line from its registry item, the commands from lib/registry. A new page or item appears here
  * without editing this file. Links are absolute when the site knows its origin (lib/registry.ts), else root-relative.
  */
-export const dynamic = "force-static"
+export const dynamic = "force-static";
 
-type Item = { name: string; type: string; description?: string }
-const items: Item[] = manifest.items
+type Item = { name: string; type: string; description?: string };
+const items: Item[] = manifest.items;
 
-const url = (path: string) => `${SITE_ORIGIN ?? ""}${path}`
-const describe = (name: string) => items.find((i) => i.name === name)?.description ?? ""
-const line = (name: string, href: string, note: string) => `- [${name}](${url(href)})${note ? `: ${note}` : ""}`
+const url = (path: string) => `${SITE_ORIGIN ?? ""}${path}`;
+const describe = (name: string) => items.find((i) => i.name === name)?.description ?? "";
+const line = (name: string, href: string, note: string) => `- [${name}](${url(href)})${note ? `: ${note}` : ""}`;
 
 function body() {
-  const paged = new Set([...CATALOG.flatMap((g) => g.items), ...BLOCKS.items].map((e) => e.item))
+  const paged = new Set([...CATALOG.flatMap((g) => g.items), ...BLOCKS.items].map((e) => e.item));
   // installed as dependencies of the components, or added on purpose (the style, the whole-app theme): no page of their own
-  const unpaged = items.filter((i) => !paged.has(i.name))
+  const unpaged = items.filter((i) => !paged.has(i.name));
 
   return [
     `# ${SITE_NAME}`,
@@ -59,21 +59,31 @@ function body() {
     ...CATALOG.flatMap((g) => [
       `## Components: ${g.group}`,
       "",
-      ...g.items.filter((e) => e.href).map((e) => line(e.name, e.href!, `\`@keyline-ui/${e.item}\`. ${describe(e.item)}`)),
+      ...g.items
+        .filter((e) => e.href)
+        .map((e) => line(e.name, e.href!, `\`@keyline-ui/${e.item}\`. ${describe(e.item)}`)),
       "",
     ]),
     `## ${BLOCKS.group}`,
     "",
-    ...BLOCKS.items.filter((e) => e.href).map((e) => line(e.name, e.href!, `\`@keyline-ui/${e.item}\`. ${e.description ?? describe(e.item)}`)),
+    ...BLOCKS.items
+      .filter((e) => e.href)
+      .map((e) => line(e.name, e.href!, `\`@keyline-ui/${e.item}\`. ${e.description ?? describe(e.item)}`)),
     "",
     "## Optional",
     "",
-    line("Registry index", "/r/registry.json", `every item Keyline ships (${items.length}), with its type, files and dependencies`),
-    ...unpaged.map((i) => line(`@keyline-ui/${i.name}`, `/r/${i.name}.json`, `${i.type}. ${i.description ?? ""}`.trim())),
+    line(
+      "Registry index",
+      "/r/registry.json",
+      `every item Keyline ships (${items.length}), with its type, files and dependencies`,
+    ),
+    ...unpaged.map((i) =>
+      line(`@keyline-ui/${i.name}`, `/r/${i.name}.json`, `${i.type}. ${i.description ?? ""}`.trim()),
+    ),
     "",
-  ].join("\n")
+  ].join("\n");
 }
 
 export function GET() {
-  return new Response(body(), { headers: { "Content-Type": "text/plain; charset=utf-8" } })
+  return new Response(body(), { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }

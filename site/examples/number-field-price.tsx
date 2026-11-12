@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { NumberField } from "@/components/keyline/ui/number-field"
+import { useState } from "react";
+import { NumberField } from "@/components/keyline/ui/number-field";
 
 export function UnitPrice() {
-  const [price, setPrice] = useState<number | null>(42)
+  const [price, setPrice] = useState<number | null>(42);
 
   return (
     <div className="grid max-w-[320px] gap-3">
@@ -19,8 +19,12 @@ export function UnitPrice() {
         onValueChange={setPrice}
       />
       <p role="status" className="text-[14px] text-kl-ink-2">
-        {price == null ? "No price yet." : price < 38 ? "Below the floor corporate set. Jan will call." : "Within the price list."}
+        {price == null
+          ? "No price yet."
+          : price < 38
+            ? "Below the floor corporate set. Jan will call."
+            : "Within the price list."}
       </p>
     </div>
-  )
+  );
 }

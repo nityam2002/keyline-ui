@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tabs, TabsList, TabsTab } from "@/components/keyline/ui/tabs"
+import { useState } from "react";
+import { Tabs, TabsList, TabsTab } from "@/components/keyline/ui/tabs";
 
 const CALLS = [
   { who: "Lackawanna County", rep: "Dwight", done: true },
@@ -9,17 +9,17 @@ const CALLS = [
   { who: "Harper Collins", rep: "Phyllis", done: true },
   { who: "Mount Airy Casino", rep: "Jim", done: false },
   { who: "Penn Paper Supply", rep: "Stanley", done: false },
-]
+];
 
 const VIEWS = [
   { value: "all", label: "All", test: () => true },
   { value: "todo", label: "To call", test: (c: (typeof CALLS)[number]) => !c.done },
   { value: "done", label: "Called", test: (c: (typeof CALLS)[number]) => c.done },
-]
+];
 
 export function CallViews() {
-  const [view, setView] = useState("todo")
-  const shown = CALLS.filter(VIEWS.find((v) => v.value === view)!.test)
+  const [view, setView] = useState("todo");
+  const shown = CALLS.filter(VIEWS.find((v) => v.value === view)!.test);
 
   return (
     <div className="grid gap-4">
@@ -41,5 +41,5 @@ export function CallViews() {
         ))}
       </ul>
     </div>
-  )
+  );
 }

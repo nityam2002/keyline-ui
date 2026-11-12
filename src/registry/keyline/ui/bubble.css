@@ -1,61 +1,180 @@
 @layer components {
-  .kl-bubble-group { display: flex; flex-direction: column; align-items: inherit; min-width: 0; max-width: 100%; }
+  .kl-bubble-group {
+    display: flex;
+    flex-direction: column;
+    align-items: inherit;
+    min-width: 0;
+    max-width: 100%;
+  }
 
   /* the frame: as wide as its words (short replies stay compact), at most the column */
   .kl-bubble {
     --kl-bubble-x: var(--kl-msg-x, var(--kl-inset));
-    display: flex; flex-direction: column; inline-size: fit-content; min-inline-size: 3rem; max-inline-size: 100%; min-width: 0;
-    background-color: var(--kl-cell); color: var(--kl-ink);
+    display: flex;
+    flex-direction: column;
+    inline-size: fit-content;
+    min-inline-size: 3rem;
+    max-inline-size: 100%;
+    min-width: 0;
+    background-color: var(--kl-cell);
+    color: var(--kl-ink);
     overflow: visible; /* reactions hang over the bottom keyline */
   }
-  .kl-bubble[data-tone="tint"] { background-color: var(--kl-tint); }
-  .kl-bubble[data-tone="attention"] { border-color: var(--kl-red); }
+  .kl-bubble[data-tone="tint"] {
+    background-color: var(--kl-tint);
+  }
+  .kl-bubble[data-tone="attention"] {
+    border-color: var(--kl-red);
+  }
 
   /* ATTACHED: the next bubble of a run lies on this one's bottom keyline, so the two share one 2px line (as a docked
      surface takes its owner's weight on the shared edge). Where widths differ the line runs on as the wider
      bubble's own edge: a clean T-junction, never a doubled or thinned line. Only the first of a run has the cut. */
-  .kl-bubble + .kl-bubble { margin-block-start: calc(-1 * var(--kl-k2)); --kl-cut-size: 0px; }
+  .kl-bubble + .kl-bubble {
+    margin-block-start: calc(-1 * var(--kl-k2));
+    --kl-cut-size: 0px;
+  }
   /* an attention bubble paints its whole red frame over the shared line; a bubble after one, or after reactions,
      stands apart */
-  .kl-bubble[data-tone="attention"] { z-index: 1; }
-  .kl-bubble:is([data-tone="attention"], :has(> .kl-bubble-rx)) + .kl-bubble { margin-block-start: var(--kl-msg-gap, 6px); }
-  .kl-bubble:has(> .kl-bubble-rx) + .kl-bubble { margin-block-start: 14px; }
+  .kl-bubble[data-tone="attention"] {
+    z-index: 1;
+  }
+  .kl-bubble:is([data-tone="attention"], :has(> .kl-bubble-rx)) + .kl-bubble {
+    margin-block-start: var(--kl-msg-gap, 6px);
+  }
+  .kl-bubble:has(> .kl-bubble-rx) + .kl-bubble {
+    margin-block-start: 14px;
+  }
 
   /* the text cell */
-  .kl-bubble-c { display: flex; align-items: stretch; min-width: 0; color: inherit; font: inherit; font-family: var(--kl-font); font-size: var(--kl-fs); line-height: 1.45; text-align: start; }
-  .kl-bubble-t { display: block; flex: 1 1 auto; min-width: 0; padding: 7px var(--kl-bubble-x) 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .kl-bubble-t a { color: var(--kl-cobalt-text); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
-  .kl-bubble-t a:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: 1px; }
+  .kl-bubble-c {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    color: inherit;
+    font: inherit;
+    font-family: var(--kl-font);
+    font-size: var(--kl-fs);
+    line-height: 1.45;
+    text-align: start;
+  }
+  .kl-bubble-t {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 7px var(--kl-bubble-x) 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .kl-bubble-t a {
+    color: var(--kl-cobalt-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    overflow-wrap: anywhere;
+  }
+  .kl-bubble-t a:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: 1px;
+  }
 
   /* the ! cell: inserted (Signal: failed) on an attention bubble, as on fields and buttons */
-  .kl-bubble-bang > span { display: flex; }
-  .kl-bubble-bang > span > span { display: grid; place-items: center; width: 28px; background-color: var(--kl-red); color: var(--kl-on-red); font-weight: var(--kl-weight-display, 800); }
-  .kl-bubble[data-tone="attention"] .kl-bubble-bang { grid-template-columns: 1fr; transition: grid-template-columns var(--kl-t-unfold) var(--kl-ease-out); }
+  .kl-bubble-bang > span {
+    display: flex;
+  }
+  .kl-bubble-bang > span > span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    background-color: var(--kl-red);
+    color: var(--kl-on-red);
+    font-weight: var(--kl-weight-display, 800);
+  }
+  .kl-bubble[data-tone="attention"] .kl-bubble-bang {
+    grid-template-columns: 1fr;
+    transition: grid-template-columns var(--kl-t-unfold) var(--kl-ease-out);
+  }
 
   /* files inside the bubble are cells: a seam between each */
-  .kl-bubble > .kl-att { border-block-start: var(--kl-k1) solid var(--kl-seam); }
-  .kl-bubble > .kl-att:first-child { border-block-start: 0; }
+  .kl-bubble > .kl-att {
+    border-block-start: var(--kl-k1) solid var(--kl-seam);
+  }
+  .kl-bubble > .kl-att:first-child {
+    border-block-start: 0;
+  }
 
   /* sending: the Signal segment inside the bottom keyline */
-  .kl-bubble-pend { --kl-bw: 3px; }
+  .kl-bubble-pend {
+    --kl-bw: 3px;
+  }
 
   /* a text cell that acts (a button or link) presses like a key */
-  :is(button, a).kl-bubble-c { cursor: pointer; text-decoration: none; }
-  :is(button, a).kl-bubble-c:hover { background-color: var(--kl-press); }
-  .kl-bubble[data-tone="plain"] > :is(button, a).kl-bubble-c:hover { background-color: var(--kl-tint); }
-  :is(button, a).kl-bubble-c:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: calc(var(--kl-ring) * -1); }
-  :is(button, a).kl-bubble-c:active > .kl-bubble-t { translate: 0 1px; }
+  :is(button, a).kl-bubble-c {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  :is(button, a).kl-bubble-c:hover {
+    background-color: var(--kl-press);
+  }
+  .kl-bubble[data-tone="plain"] > :is(button, a).kl-bubble-c:hover {
+    background-color: var(--kl-tint);
+  }
+  :is(button, a).kl-bubble-c:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: calc(var(--kl-ring) * -1);
+  }
+  :is(button, a).kl-bubble-c:active > .kl-bubble-t {
+    translate: 0 1px;
+  }
 
   /* reactions: a small frame on the bubble's bottom keyline, toward the inline end */
-  .kl-bubble-rx { position: absolute; inset-block-end: -12px; inset-inline-end: 10px; z-index: 1; height: 22px; border: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-raised); font-size: 12px; line-height: 1; }
-  .kl-bubble:has(> .kl-bubble-rx) { margin-block-end: 12px; }
-  .kl-bubble-rx > * { display: inline-flex; align-items: center; gap: 4px; padding-inline: 6px; }
-  .kl-bubble-rx > button { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 4px; padding-inline: 6px; cursor: pointer; }
-  .kl-bubble-rx > button:hover { background-color: var(--kl-tint); }
-  .kl-bubble-rx > button[aria-pressed="true"] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
-  .kl-bubble-rx > button:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: calc(var(--kl-ring) * -1); }
-  .kl-bubble-rx .kl-code { color: inherit; }
+  .kl-bubble-rx {
+    position: absolute;
+    inset-block-end: -12px;
+    inset-inline-end: 10px;
+    z-index: 1;
+    height: 22px;
+    border: var(--kl-k1) solid var(--kl-line);
+    background-color: var(--kl-raised);
+    font-size: 12px;
+    line-height: 1;
+  }
+  .kl-bubble:has(> .kl-bubble-rx) {
+    margin-block-end: 12px;
+  }
+  .kl-bubble-rx > * {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+  }
+  .kl-bubble-rx > button {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding-inline: 6px;
+    cursor: pointer;
+  }
+  .kl-bubble-rx > button:hover {
+    background-color: var(--kl-tint);
+  }
+  .kl-bubble-rx > button[aria-pressed="true"] {
+    background-color: var(--kl-inverse);
+    color: var(--kl-on-inverse);
+  }
+  .kl-bubble-rx > button:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: calc(var(--kl-ring) * -1);
+  }
+  .kl-bubble-rx .kl-code {
+    color: inherit;
+  }
   @media (forced-colors: active) {
-    .kl-bubble-bang > span > span { forced-color-adjust: none; background-color: Mark; color: MarkText; }
+    .kl-bubble-bang > span > span {
+      forced-color-adjust: none;
+      background-color: Mark;
+      color: MarkText;
+    }
   }
 }

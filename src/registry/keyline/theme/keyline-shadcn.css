@@ -2,7 +2,8 @@
    Maps shadcn's semantic tokens, radius, fonts and the page body to Keyline tokens.
    Source of truth for the `keyline-shadcn` registry item. Requires the `keyline` item. */
 
-:root, .light {
+:root,
+.light {
   --background: var(--kl-paper);
   --foreground: var(--kl-ink);
   --card: var(--kl-cell);
@@ -104,8 +105,13 @@
 
 @layer base {
   /* native controls and scrollbars follow the theme; layered, so an app's own color-scheme still wins */
-  :root, .light { color-scheme: light; }
-  .dark { color-scheme: dark; }
+  :root,
+  .light {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
   body {
     background-color: var(--kl-paper);
     color: var(--kl-ink);
@@ -115,5 +121,8 @@
     font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
   }
-  :focus-visible { outline: 2px solid var(--kl-focus); outline-offset: 2px; }
+  :focus-visible {
+    outline: 2px solid var(--kl-focus);
+    outline-offset: 2px;
+  }
 }

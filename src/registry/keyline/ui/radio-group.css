@@ -1,23 +1,95 @@
 @layer components {
-  .kl-radio-group { position: relative; isolation: isolate; display: flex; flex-direction: column; background-color: var(--kl-cell); min-width: 0; }
-  .kl-radio-band { position: absolute; z-index: -1; background-color: var(--kl-inverse); pointer-events: none; }
+  .kl-radio-group {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--kl-cell);
+    min-width: 0;
+  }
+  .kl-radio-band {
+    position: absolute;
+    z-index: -1;
+    background-color: var(--kl-inverse);
+    pointer-events: none;
+  }
   /* the band is drawn under the row; its keylines stay on top */
-  .kl-radio-row { all: unset; box-sizing: border-box; display: flex; align-items: stretch; min-height: var(--kl-row); cursor: pointer; color: var(--kl-ink); }
-  .kl-radio-group.kl-rows > .kl-radio-row:nth-child(2) { border-block-start: 0; }
-  .kl-radio-row:hover:not([data-checked]):not([data-disabled]) { background-color: var(--kl-tint); }
-  .kl-radio-row:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
-  .kl-radio-row[data-kl-covered] { color: var(--kl-on-inverse); }
-  .kl-radio-row[data-kl-covered] .kl-choice-desc, .kl-radio-row[data-kl-covered] .kl-radio-meta { color: inherit; }
-  .kl-radio-row[data-disabled] { cursor: not-allowed; color: var(--kl-dis); background-image: var(--kl-hatch); }
-  .kl-radio-row[data-disabled][data-kl-covered] { color: var(--kl-on-inverse); }
-  .kl-radio { width: 18px; height: 18px; display: grid; place-items: center; border: 2px solid currentColor; }
-  .kl-radio-dot { width: 8px; height: 8px; background-color: currentColor; }
-  .kl-radio-dot[data-unchecked] { visibility: hidden; }
-  .kl-radio-meta { flex: none; display: flex; align-items: center; justify-content: flex-end; min-width: var(--kl-radio-meta, 64px); padding-inline: var(--kl-inset); border-inline-start: var(--kl-k1) solid currentColor; font-variant-numeric: tabular-nums; font-weight: var(--kl-weight-strong); color: var(--kl-ink-2); }
+  .kl-radio-row {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    min-height: var(--kl-row);
+    cursor: pointer;
+    color: var(--kl-ink);
+  }
+  .kl-radio-group.kl-rows > .kl-radio-row:nth-child(2) {
+    border-block-start: 0;
+  }
+  .kl-radio-row:hover:not([data-checked]):not([data-disabled]) {
+    background-color: var(--kl-tint);
+  }
+  .kl-radio-row:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: var(--kl-ring-in);
+  }
+  .kl-radio-row[data-kl-covered] {
+    color: var(--kl-on-inverse);
+  }
+  .kl-radio-row[data-kl-covered] .kl-choice-desc,
+  .kl-radio-row[data-kl-covered] .kl-radio-meta {
+    color: inherit;
+  }
+  .kl-radio-row[data-disabled] {
+    cursor: not-allowed;
+    color: var(--kl-dis);
+    background-image: var(--kl-hatch);
+  }
+  .kl-radio-row[data-disabled][data-kl-covered] {
+    color: var(--kl-on-inverse);
+  }
+  .kl-radio {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    border: 2px solid currentColor;
+  }
+  .kl-radio-dot {
+    width: 8px;
+    height: 8px;
+    background-color: currentColor;
+  }
+  .kl-radio-dot[data-unchecked] {
+    visibility: hidden;
+  }
+  .kl-radio-meta {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: var(--kl-radio-meta, 64px);
+    padding-inline: var(--kl-inset);
+    border-inline-start: var(--kl-k1) solid currentColor;
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--kl-weight-strong);
+    color: var(--kl-ink-2);
+  }
   /* one row with meta → every row keeps the meta column (empty cell), so the divider runs straight */
-  .kl-radio-group:has(.kl-radio-meta) .kl-radio-row:not(:has(.kl-radio-meta))::after { content: ""; flex: none; min-width: var(--kl-radio-meta, 64px); border-inline-start: var(--kl-k1) solid currentColor; }
+  .kl-radio-group:has(.kl-radio-meta) .kl-radio-row:not(:has(.kl-radio-meta))::after {
+    content: "";
+    flex: none;
+    min-width: var(--kl-radio-meta, 64px);
+    border-inline-start: var(--kl-k1) solid currentColor;
+  }
   @media (forced-colors: active) {
-    .kl-radio-band { forced-color-adjust: none; background: Highlight; }
-    .kl-radio-row[data-kl-covered] { forced-color-adjust: none; color: HighlightText; }
+    .kl-radio-band {
+      forced-color-adjust: none;
+      background: Highlight;
+    }
+    .kl-radio-row[data-kl-covered] {
+      forced-color-adjust: none;
+      color: HighlightText;
+    }
   }
 }

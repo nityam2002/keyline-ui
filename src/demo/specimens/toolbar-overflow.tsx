@@ -1,19 +1,37 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
-import { Menu,MenuItem } from "@/registry/keyline/ui/menu"
-import { Segmented,SegmentedItem } from "@/registry/keyline/ui/segmented"
-import { Panel,PanelBody } from "@/registry/keyline/ui/panel"
+import * as React from "react";
+import * as ui from "../demo-ui";
+import { Menu, MenuItem } from "@/registry/keyline/ui/menu";
+import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
+import { Panel, PanelBody } from "@/registry/keyline/ui/panel";
 import {
-Toolbar,ToolbarButton,ToolbarToggle,ToolbarToggleGroup,ToolbarGroup,ToolbarSeparator,ToolbarLink,
-ToolbarInput,ToolbarMenuTrigger,ToolbarMenuContent,
-} from "@/registry/keyline/ui/toolbar"
-import { GLYPH } from "./glyphs"
+  Toolbar,
+  ToolbarButton,
+  ToolbarToggle,
+  ToolbarToggleGroup,
+  ToolbarGroup,
+  ToolbarSeparator,
+  ToolbarLink,
+  ToolbarInput,
+  ToolbarMenuTrigger,
+  ToolbarMenuContent,
+} from "@/registry/keyline/ui/toolbar";
+import { GLYPH } from "./glyphs";
 
 const G = ({ d }: { d: string }) => (
-  <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square" strokeLinejoin="miter" aria-hidden>
+  <svg
+    viewBox="0 0 16 16"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="square"
+    strokeLinejoin="miter"
+    aria-hidden
+  >
     <path d={d} />
   </svg>
-)
+);
 /* ------------------------------------------------------------------ *
  * 1. Toolbar overflow: items that don't fit move into "More"
  * ------------------------------------------------------------------ */
@@ -22,23 +40,23 @@ const WIDTHS = [
   { value: "560", label: "560px", px: 560 },
   { value: "380", label: "380px", px: 380 },
   { value: "220", label: "220px", px: 220 },
-]
+];
 export function ToolbarOverflowSpecimen() {
-  const [width, setWidth] = React.useState("fit")
-  const [log, setLog] = React.useState("—")
-  const [wrap, setWrap] = React.useState<boolean | null>(null)
-  const [view, setView] = React.useState("list")
-  const [sig, setSig] = React.useState<"idle" | "pending" | "done" | "failed">("idle")
-  const [fail, setFail] = React.useState(false)
+  const [width, setWidth] = React.useState("fit");
+  const [log, setLog] = React.useState("—");
+  const [wrap, setWrap] = React.useState<boolean | null>(null);
+  const [view, setView] = React.useState("list");
+  const [sig, setSig] = React.useState<"idle" | "pending" | "done" | "failed">("idle");
+  const [fail, setFail] = React.useState(false);
   const publish = () => {
-    setSig("pending")
-    setLog("Publish")
+    setSig("pending");
+    setLog("Publish");
     setTimeout(() => {
-      setSig(fail ? "failed" : "done")
-      if (!fail) setTimeout(() => setSig((s) => (s === "done" ? "idle" : s)), 900)
-    }, 700)
-  }
-  const px = WIDTHS.find((w) => w.value === width)!.px
+      setSig(fail ? "failed" : "done");
+      if (!fail) setTimeout(() => setSig((s) => (s === "done" ? "idle" : s)), 900);
+    }, 700);
+  };
+  const px = WIDTHS.find((w) => w.value === width)!.px;
   return (
     <div className={ui.stack} data-testid="specimen-overflow">
       <div className={ui.group}>
@@ -53,11 +71,22 @@ export function ToolbarOverflowSpecimen() {
         <div style={{ width: px ?? "auto", maxWidth: "100%", minWidth: 0, marginTop: 12 }} data-testid="ov-box">
           <Toolbar aria-label="Document" overflow="menu" data-testid="ov-tb">
             <ToolbarGroup aria-label="History">
-              <ToolbarButton icon aria-label="Undo" onClick={() => setLog("Undo")}><G d={GLYPH.undo} /></ToolbarButton>
-              <ToolbarButton icon aria-label="Redo" disabled><G d={GLYPH.redo} /></ToolbarButton>
+              <ToolbarButton icon aria-label="Undo" onClick={() => setLog("Undo")}>
+                <G d={GLYPH.undo} />
+              </ToolbarButton>
+              <ToolbarButton icon aria-label="Redo" disabled>
+                <G d={GLYPH.redo} />
+              </ToolbarButton>
             </ToolbarGroup>
-            <ToolbarToggle defaultPressed onPressedChange={(p) => setWrap(p)}>Wrap</ToolbarToggle>
-            <ToolbarToggleGroup aria-label="Layout" multiple={false} defaultValue={["list"]} onValueChange={([first]) => first !== undefined && setView(first)}>
+            <ToolbarToggle defaultPressed onPressedChange={(p) => setWrap(p)}>
+              Wrap
+            </ToolbarToggle>
+            <ToolbarToggleGroup
+              aria-label="Layout"
+              multiple={false}
+              defaultValue={["list"]}
+              onValueChange={([first]) => first !== undefined && setView(first)}
+            >
               <ToolbarToggle value="list">List</ToolbarToggle>
               <ToolbarToggle value="board">Board</ToolbarToggle>
               <ToolbarToggle value="map">Map</ToolbarToggle>
@@ -65,18 +94,27 @@ export function ToolbarOverflowSpecimen() {
             <Menu>
               <ToolbarMenuTrigger>Insert</ToolbarMenuTrigger>
               <ToolbarMenuContent>
-                <MenuItem code="1" onClick={() => setLog("Insert table")}>Table</MenuItem>
-                <MenuItem code="2" onClick={() => setLog("Insert checklist")}>Checklist</MenuItem>
+                <MenuItem code="1" onClick={() => setLog("Insert table")}>
+                  Table
+                </MenuItem>
+                <MenuItem code="2" onClick={() => setLog("Insert checklist")}>
+                  Checklist
+                </MenuItem>
               </ToolbarMenuContent>
             </Menu>
             <ToolbarSeparator />
-            <ToolbarButton affix={<kbd>⌘D</kbd>} onClick={() => setLog("Duplicate")}>Duplicate</ToolbarButton>
+            <ToolbarButton affix={<kbd>⌘D</kbd>} onClick={() => setLog("Duplicate")}>
+              Duplicate
+            </ToolbarButton>
             <ToolbarLink href="#toolbar-overflow">Help</ToolbarLink>
-            <ToolbarButton primary signal={sig} onClick={publish}>Publish</ToolbarButton>
+            <ToolbarButton primary signal={sig} onClick={publish}>
+              Publish
+            </ToolbarButton>
           </Toolbar>
         </div>
         <p className={ui.note} data-testid="ov-log">
-          Last command: {log} · wrap {wrap == null ? "on (default)" : wrap ? "on" : "off"} · layout {view} · publish {sig}
+          Last command: {log} · wrap {wrap == null ? "on (default)" : wrap ? "on" : "off"} · layout {view} · publish{" "}
+          {sig}
         </p>
         <label className={ui.note} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
           <input type="checkbox" checked={fail} onChange={(e) => setFail(e.target.checked)} /> The next publish fails
@@ -94,7 +132,9 @@ export function ToolbarOverflowSpecimen() {
               <ToolbarButton>Share</ToolbarButton>
             </Toolbar>
             <PanelBody>
-              <p className={ui.note}>At this width the input shrinks to its minimum first; then the commands move into Actions.</p>
+              <p className={ui.note}>
+                At this width the input shrinks to its minimum first; then the commands move into Actions.
+              </p>
             </PanelBody>
           </Panel>
         </div>
@@ -104,10 +144,12 @@ export function ToolbarOverflowSpecimen() {
             <ToolbarButton signal="pending">Saving</ToolbarButton>
             <ToolbarButton signal="done">Saved</ToolbarButton>
             <ToolbarButton signal="failed">Retry</ToolbarButton>
-            <ToolbarButton primary signal="pending">Publish</ToolbarButton>
+            <ToolbarButton primary signal="pending">
+              Publish
+            </ToolbarButton>
           </Toolbar>
         </div>
       </div>
     </div>
-  )
+  );
 }

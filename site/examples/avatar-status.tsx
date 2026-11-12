@@ -1,14 +1,38 @@
-"use client"
+"use client";
 
-import { Avatar, type AvatarStatus } from "@/components/keyline/ui/avatar"
+import { Avatar, type AvatarStatus } from "@/components/keyline/ui/avatar";
 
 const PEOPLE: { name: string; role: string; status: AvatarStatus; where: string; src?: string }[] = [
-  { name: "Michael Scott", role: "Regional Manager", status: "normal", where: "In his office", src: "/avatars/michael-scott.svg" },
-  { name: "Jim Halpert", role: "Sales", status: "waiting", where: "At a client, back at 2", src: "/avatars/jim-halpert.svg" },
-  { name: "Dwight Schrute", role: "Assistant to the Regional Manager", status: "attention", where: "Three missed calls from corporate", src: "/avatars/dwight-schrute.svg" },
+  {
+    name: "Michael Scott",
+    role: "Regional Manager",
+    status: "normal",
+    where: "In his office",
+    src: "/avatars/michael-scott.svg",
+  },
+  {
+    name: "Jim Halpert",
+    role: "Sales",
+    status: "waiting",
+    where: "At a client, back at 2",
+    src: "/avatars/jim-halpert.svg",
+  },
+  {
+    name: "Dwight Schrute",
+    role: "Assistant to the Regional Manager",
+    status: "attention",
+    where: "Three missed calls from corporate",
+    src: "/avatars/dwight-schrute.svg",
+  },
   // this photo is damaged on purpose: the initials hold the cell and no broken image shows
-  { name: "Toby Flenderson", role: "Human Resources", status: "none", where: "Out today", src: "data:image/jpeg;base64,AAAA" },
-]
+  {
+    name: "Toby Flenderson",
+    role: "Human Resources",
+    status: "none",
+    where: "Out today",
+    src: "data:image/jpeg;base64,AAAA",
+  },
+];
 
 export function WhosIn() {
   return (
@@ -25,5 +49,5 @@ export function WhosIn() {
         </li>
       ))}
     </ul>
-  )
+  );
 }

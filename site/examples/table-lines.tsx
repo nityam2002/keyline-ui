@@ -1,7 +1,18 @@
-"use client"
+"use client";
 
-import { Fragment, useState } from "react"
-import { Table, TableBody, TableCell, TableDetail, TableExpandCell, TableFrame, TableHead, TableHeaderCell, TableRow, TableScroll } from "@/components/keyline/ui/table"
+import { Fragment, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableDetail,
+  TableExpandCell,
+  TableFrame,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  TableScroll,
+} from "@/components/keyline/ui/table";
 
 const ORDERS = [
   {
@@ -28,17 +39,17 @@ const ORDERS = [
     total: "$740.00",
     lines: [["Copy paper, letter, 20 lb", "10 cases", "$740.00"]],
   },
-]
+];
 
 export function OrderLines() {
-  const [open, setOpen] = useState<Set<string>>(new Set(["DM-4107"]))
+  const [open, setOpen] = useState<Set<string>>(new Set(["DM-4107"]));
   const toggle = (id: string) =>
     setOpen((o) => {
-      const n = new Set(o)
-      if (n.has(id)) n.delete(id)
-      else n.add(id)
-      return n
-    })
+      const n = new Set(o);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
 
   return (
     <TableFrame>
@@ -80,5 +91,5 @@ export function OrderLines() {
         </Table>
       </TableScroll>
     </TableFrame>
-  )
+  );
 }

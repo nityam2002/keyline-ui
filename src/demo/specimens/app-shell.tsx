@@ -1,14 +1,20 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
-import { Button } from "@/registry/keyline/ui/button"
-import { Panel,PanelHeader } from "@/registry/keyline/ui/panel"
-import { Segmented,SegmentedItem } from "@/registry/keyline/ui/segmented"
-import { Nav } from "@/registry/keyline/ui/nav"
-import { AppShell } from "@/registry/keyline/ui/app-shell"
-import { Breadcrumb } from "@/registry/keyline/ui/breadcrumb"
-import { Inspector,InspectorHeader,InspectorFacts,InspectorBody,InspectorSection } from "@/registry/keyline/ui/inspector"
-import { Status } from "@/registry/keyline/ui/status"
-import { Item,ItemList,ItemContent,ItemMeta } from "@/registry/keyline/ui/item"
+import * as React from "react";
+import * as ui from "../demo-ui";
+import { Button } from "@/registry/keyline/ui/button";
+import { Panel, PanelHeader } from "@/registry/keyline/ui/panel";
+import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
+import { Nav } from "@/registry/keyline/ui/nav";
+import { AppShell } from "@/registry/keyline/ui/app-shell";
+import { Breadcrumb } from "@/registry/keyline/ui/breadcrumb";
+import {
+  Inspector,
+  InspectorHeader,
+  InspectorFacts,
+  InspectorBody,
+  InspectorSection,
+} from "@/registry/keyline/ui/inspector";
+import { Status } from "@/registry/keyline/ui/status";
+import { Item, ItemList, ItemContent, ItemMeta } from "@/registry/keyline/ui/item";
 
 /* ------------------------------------------------------------------ *
  * 4. App shell
@@ -18,13 +24,18 @@ const SHELL_ROWS = [
   { id: "SHP-24019", dest: "Hamburg Waltershof", carrier: "DHL Freight", status: "docs" as const },
   { id: "SHP-24020", dest: "Antwerp Deurganck", carrier: "Raben", status: "delayed" as const },
   { id: "SHP-24021", dest: "Gdańsk DCT", carrier: "DSV Road", status: "delivered" as const },
-]
-const STATUS_TEXT = { transit: ["normal", "In transit"], docs: ["waiting", "Awaiting docs"], delayed: ["attention", "Delayed 2 d"], delivered: ["done", "Delivered"] } as const
+];
+const STATUS_TEXT = {
+  transit: ["normal", "In transit"],
+  docs: ["waiting", "Awaiting docs"],
+  delayed: ["attention", "Delayed 2 d"],
+  delivered: ["done", "Delivered"],
+} as const;
 export function AppShellSpecimen() {
-  const [width, setWidth] = React.useState("wide")
-  const [place, setPlace] = React.useState("shipments")
-  const [open, setOpen] = React.useState<string | null>(null)
-  const row = SHELL_ROWS.find((r) => r.id === open)
+  const [width, setWidth] = React.useState("wide");
+  const [place, setPlace] = React.useState("shipments");
+  const [open, setOpen] = React.useState<string | null>(null);
+  const row = SHELL_ROWS.find((r) => r.id === open);
   return (
     <div className={ui.stack}>
       <Segmented value={width} onValueChange={setWidth} aria-label="Shell width">
@@ -62,17 +73,34 @@ export function AppShellSpecimen() {
                 { label: "Northwind", href: "#" },
                 { label: "Europe", href: "#" },
                 { label: "Netherlands", href: "#" },
-                { label: place === "shipments" ? "Shipments" : place.charAt(0).toUpperCase() + place.slice(1), href: "#" },
+                {
+                  label: place === "shipments" ? "Shipments" : place.charAt(0).toUpperCase() + place.slice(1),
+                  href: "#",
+                },
                 ...(row ? [{ label: row.id }] : [{ label: "All" }]),
               ]}
             />
           }
-          actions={<Button layout="cell" variant="quiet">Export</Button>}
+          actions={
+            <Button layout="cell" variant="quiet">
+              Export
+            </Button>
+          }
           aside={
             row ? (
               <Inspector aria-label={`Shipment ${row.id}`}>
-                <InspectorHeader code={row.id} title={row.dest} status={<Status kind={STATUS_TEXT[row.status][0]}>{STATUS_TEXT[row.status][1]}</Status>} onClose={() => setOpen(null)} />
-                <InspectorFacts items={[{ label: "Carrier", value: row.carrier }, { label: "ETA", value: "Thu 12 Nov" }]} />
+                <InspectorHeader
+                  code={row.id}
+                  title={row.dest}
+                  status={<Status kind={STATUS_TEXT[row.status][0]}>{STATUS_TEXT[row.status][1]}</Status>}
+                  onClose={() => setOpen(null)}
+                />
+                <InspectorFacts
+                  items={[
+                    { label: "Carrier", value: row.carrier },
+                    { label: "ETA", value: "Thu 12 Nov" },
+                  ]}
+                />
                 <InspectorBody>
                   <InspectorSection>Two legs. Customs cleared at Rotterdam on Monday.</InspectorSection>
                 </InspectorBody>
@@ -87,7 +115,10 @@ export function AppShellSpecimen() {
             <PanelHeader title="Shipments" code="64" />
             <ItemList layout="cell" aria-label="Shipments">
               {SHELL_ROWS.map((r) => (
-                <Item key={r.id} render={<button type="button" onClick={() => setOpen(r.id)} aria-pressed={open === r.id} />}>
+                <Item
+                  key={r.id}
+                  render={<button type="button" onClick={() => setOpen(r.id)} aria-pressed={open === r.id} />}
+                >
                   <ItemContent title={r.dest} description={r.carrier} />
                   <ItemMeta>{r.id}</ItemMeta>
                 </Item>
@@ -97,5 +128,5 @@ export function AppShellSpecimen() {
         </AppShell>
       </div>
     </div>
-  )
+  );
 }

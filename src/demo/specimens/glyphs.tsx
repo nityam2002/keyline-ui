@@ -1,4 +1,3 @@
-
 export const GLYPH = {
   undo: "M5.5 3.5 2.5 6.5l3 3M3 6.5h6.5a3.5 3.5 0 0 1 0 7H7",
   redo: "m10.5 3.5 3 3-3 3M13 6.5H6.5a3.5 3.5 0 0 0 0 7H9",
@@ -15,4 +14,4 @@ export const GLYPH = {
   minus: "M3 8h10",
   search: "M7 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM10.5 10.5l3.5 3.5",
   more: "M3 8h.5M8 8h.5M13 8h.5",
-}
+};

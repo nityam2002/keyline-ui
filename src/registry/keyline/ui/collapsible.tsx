@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react"
-import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible"
+import * as React from "react";
+import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /**
  * One disclosure, unframed, for a form or a panel body ("Advanced options", "Show 12 more").
@@ -17,26 +17,38 @@ import { cn } from "@/lib/utils"
  * Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.
  */
 function Collapsible({ className, ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
-  return <CollapsiblePrimitive.Root data-slot="collapsible" className={cn("kl-collapsible", className)} {...props} />
+  return <CollapsiblePrimitive.Root data-slot="collapsible" className={cn("kl-collapsible", className)} {...props} />;
 }
 
 type CollapsibleTriggerProps = React.ComponentProps<typeof CollapsiblePrimitive.Trigger> & {
   /** Trailing text in the Code voice: a count of what is hidden ("12"), a short status. */
-  meta?: React.ReactNode
-}
+  meta?: React.ReactNode;
+};
 
 function CollapsibleTrigger({ className, children, meta, ...props }: CollapsibleTriggerProps) {
   return (
-    <CollapsiblePrimitive.Trigger data-slot="collapsible-trigger" className={cn("kl-key kl-coll-trigger", className)} {...props}>
+    <CollapsiblePrimitive.Trigger
+      data-slot="collapsible-trigger"
+      className={cn("kl-key kl-coll-trigger", className)}
+      {...props}
+    >
       <span className="kl-coll-box" aria-hidden>
-        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+        <svg
+          viewBox="0 0 16 16"
+          width="12"
+          height="12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="square"
+        >
           <path d="m4 6 4 4 4-4" />
         </svg>
       </span>
       <span className="kl-coll-label">{children}</span>
       {meta != null ? <span className="kl-code kl-coll-meta">{meta}</span> : null}
     </CollapsiblePrimitive.Trigger>
-  )
+  );
 }
 
 function CollapsiblePanel({ className, children, ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Panel>) {
@@ -44,7 +56,7 @@ function CollapsiblePanel({ className, children, ...props }: React.ComponentProp
     <CollapsiblePrimitive.Panel data-slot="collapsible-panel" className="kl-coll-panel" {...props}>
       <div className={cn("kl-coll-body", className)}>{children as React.ReactNode}</div>
     </CollapsiblePrimitive.Panel>
-  )
+  );
 }
 
-export { Collapsible, CollapsibleTrigger, CollapsiblePanel }
+export { Collapsible, CollapsibleTrigger, CollapsiblePanel };

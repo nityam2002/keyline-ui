@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/keyline/ui/status"
+import { Badge } from "@/components/keyline/ui/status";
 
 const INVOICES = [
   { id: "INV-2207", client: "Scranton Business Park", amount: "$1,284.00", tone: "plain" as const, tag: "SENT" },
   { id: "INV-2208", client: "Lackawanna County", amount: "$9,610.00", tone: "signal" as const, tag: "NEW" },
   { id: "INV-2164", client: "Harper Collins", amount: "$2,450.00", tone: "attention" as const, tag: "OVERDUE" },
-]
+];
 
 export function InvoiceBadges() {
   return (
@@ -20,5 +20,5 @@ export function InvoiceBadges() {
         </li>
       ))}
     </ul>
-  )
+  );
 }

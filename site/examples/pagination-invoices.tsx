@@ -1,21 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Pagination } from "@/components/keyline/ui/pagination"
+import { useState } from "react";
+import { Pagination } from "@/components/keyline/ui/pagination";
 
-const CLIENTS = ["Lackawanna County", "Blue Cross of Pennsylvania", "Harper Collins", "Scranton Business Park", "Mount Airy Casino", "Penn Paper Supply", "Wilkes-Barre Library"]
-const PER = 4
-const TOTAL = 76
+const CLIENTS = [
+  "Lackawanna County",
+  "Blue Cross of Pennsylvania",
+  "Harper Collins",
+  "Scranton Business Park",
+  "Mount Airy Casino",
+  "Penn Paper Supply",
+  "Wilkes-Barre Library",
+];
+const PER = 4;
+const TOTAL = 76;
 
 // a stand-in for the page your server returns
 const invoices = (page: number) =>
   Array.from({ length: Math.min(PER, TOTAL - (page - 1) * PER) }, (_, i) => {
-    const n = (page - 1) * PER + i
-    return { id: `INV-${2207 - n}`, client: CLIENTS[(n * 3) % CLIENTS.length], amount: 180 + ((n * 437) % 9000) }
-  })
+    const n = (page - 1) * PER + i;
+    return { id: `INV-${2207 - n}`, client: CLIENTS[(n * 3) % CLIENTS.length], amount: 180 + ((n * 437) % 9000) };
+  });
 
 export function InvoiceArchive() {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
 
   return (
     <div className="grid gap-4">
@@ -30,5 +38,5 @@ export function InvoiceArchive() {
       </ul>
       <Pagination page={page} pageCount={Math.ceil(TOTAL / PER)} onPageChange={setPage} label="Invoice pages" />
     </div>
-  )
+  );
 }

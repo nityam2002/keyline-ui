@@ -4,148 +4,430 @@
      inner height, so glyph-only items are square at every density. */
   .kl-tb {
     --kl-tb-h: calc(var(--kl-ctl) - 2 * var(--kl-k2));
-    display: flex; align-items: stretch; width: max-content; max-width: 100%; min-width: 0;
-    min-height: var(--kl-ctl); background-color: var(--kl-cell); color: var(--kl-ink);
-    overflow-x: auto; overflow-y: hidden; overscroll-behavior-inline: contain;
-    scrollbar-width: thin; scrollbar-color: var(--kl-ink-3) transparent;
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    max-width: 100%;
+    min-width: 0;
+    min-height: var(--kl-ctl);
+    background-color: var(--kl-cell);
+    color: var(--kl-ink);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--kl-ink-3) transparent;
   }
   /* with a spacer the toolbar spans its container; as a cell it always fills its row */
-  .kl-tb:has(> .kl-tb-spacer), .kl-tb[data-kl-layout="cell"] { width: auto; }
-  .kl-tb[data-kl-layout="cell"] { --kl-tb-h: var(--kl-row); min-height: var(--kl-row); flex: 1 1 auto; }
+  .kl-tb:has(> .kl-tb-spacer),
+  .kl-tb[data-kl-layout="cell"] {
+    width: auto;
+  }
+  .kl-tb[data-kl-layout="cell"] {
+    --kl-tb-h: var(--kl-row);
+    min-height: var(--kl-row);
+    flex: 1 1 auto;
+  }
   /* a cell toolbar that doesn't fill its row closes its last item with an empty cell, so the item's end
      edge is drawn (by the filler's seam) and the frame's own edge is never doubled */
   /* overflow="menu": the toolbar spans its line (the space it may use is measured), never scrolls unless even
      the kept items (inputs, the primary) don't fit; a framed one closes its last item with the same filler */
-  .kl-tb[data-kl-overflow="menu"]:not([data-orientation="vertical"]) { width: auto; }
+  .kl-tb[data-kl-overflow="menu"]:not([data-orientation="vertical"]) {
+    width: auto;
+  }
   /* a palette with overflow="menu" takes the height its container gives it (min 0 so a flex column can
      shrink it); the items that don't fit move into More at its foot */
-  .kl-tb[data-orientation="vertical"][data-kl-overflow="menu"] { min-height: 0; max-height: 100%; overflow-y: hidden; }
+  .kl-tb[data-orientation="vertical"][data-kl-overflow="menu"] {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: hidden;
+  }
   .kl-tb:is([data-kl-layout="cell"], [data-kl-overflow="menu"]):not(:has(> .kl-tb-spacer)):not([data-kl-more])::after {
-    content: ""; flex: 1 0 0; border-inline-start: var(--kl-k1) solid var(--kl-seam);
+    content: "";
+    flex: 1 0 0;
+    border-inline-start: var(--kl-k1) solid var(--kl-seam);
     /* the seam lies over the last item's end pixel, so a filler squeezed to nothing (the items fill the line
        exactly) never stacks its seam on the frame's edge */
-    margin-inline-start: calc(-1 * var(--kl-k1)); position: relative;
+    margin-inline-start: calc(-1 * var(--kl-k1));
+    position: relative;
   }
   /* in a palette the filler sits below the last item: its seam is the block-start edge, never a side
      (an inline-start seam there runs down the frame's own edge and doubles it, left in LTR, right in RTL) */
-  .kl-tb[data-orientation="vertical"]:is([data-kl-layout="cell"], [data-kl-overflow="menu"]):not(:has(> .kl-tb-spacer)):not([data-kl-more])::after {
-    border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam);
-    margin-inline-start: 0; margin-block-start: calc(-1 * var(--kl-k1));
+  .kl-tb[data-orientation="vertical"]:is([data-kl-layout="cell"], [data-kl-overflow="menu"]):not(
+      :has(> .kl-tb-spacer)
+    ):not([data-kl-more])::after {
+    border-inline-start: 0;
+    border-block-start: var(--kl-k1) solid var(--kl-seam);
+    margin-inline-start: 0;
+    margin-block-start: calc(-1 * var(--kl-k1));
   }
   /* a palette holding every tool is sized by them: its filler is only the fit's 2px headroom, not a cell, so it
      draws no seam (a seam 2px inside the frame reads as a doubled bottom edge). With More it is a real cell. */
-  .kl-tb[data-orientation="vertical"][data-kl-overflow="menu"]:not(:has(> .kl-tb-overflow, > .kl-tb-spacer)):not([data-kl-more])::after { border-block-start: 0; margin-block-start: 0; }
+  .kl-tb[data-orientation="vertical"][data-kl-overflow="menu"]:not(:has(> .kl-tb-overflow, > .kl-tb-spacer)):not(
+      [data-kl-more]
+    )::after {
+    border-block-start: 0;
+    margin-block-start: 0;
+  }
 
   /* seams: every item after the first in the row, and inside a group, draws its start edge */
   .kl-tb > :not(.kl-more-fade) + :not(.kl-more-fade),
-  .kl-tb-group > :not(.kl-tb-band) + * { border-inline-start: var(--kl-k1) solid var(--kl-seam); }
+  .kl-tb-group > :not(.kl-tb-band) + * {
+    border-inline-start: var(--kl-k1) solid var(--kl-seam);
+  }
   /* a group meets its neighbours on a 2px keyline; so does an explicit separator (which owns that edge) */
-  .kl-tb > * + .kl-tb-group, .kl-tb > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) { border-inline-start: var(--kl-k2) solid var(--kl-line); }
-  .kl-tb > .kl-tb-sep.kl-tb-sep { flex: none; width: 0; align-self: stretch; border: 0; border-inline-start: var(--kl-k2) solid var(--kl-line); }
-  .kl-tb > .kl-tb-sep + .kl-tb-sep + *, .kl-tb > .kl-tb-sep + :not(.kl-more-fade) { border-inline-start: 0; }
+  .kl-tb > * + .kl-tb-group,
+  .kl-tb > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) {
+    border-inline-start: var(--kl-k2) solid var(--kl-line);
+  }
+  .kl-tb > .kl-tb-sep.kl-tb-sep {
+    flex: none;
+    width: 0;
+    align-self: stretch;
+    border: 0;
+    border-inline-start: var(--kl-k2) solid var(--kl-line);
+  }
+  .kl-tb > .kl-tb-sep + .kl-tb-sep + *,
+  .kl-tb > .kl-tb-sep + :not(.kl-more-fade) {
+    border-inline-start: 0;
+  }
 
-  .kl-tb-group { display: flex; align-items: stretch; flex: none; min-width: 0; }
-  .kl-tb-exclusive { position: relative; isolation: isolate; }
-  .kl-tb-band { position: absolute; z-index: -1; background-color: var(--kl-inverse); pointer-events: none; }
-  .kl-tb-spacer { flex: 1 1 0; min-width: var(--kl-gutter); }
+  .kl-tb-group {
+    display: flex;
+    align-items: stretch;
+    flex: none;
+    min-width: 0;
+  }
+  .kl-tb-exclusive {
+    position: relative;
+    isolation: isolate;
+  }
+  .kl-tb-band {
+    position: absolute;
+    z-index: -1;
+    background-color: var(--kl-inverse);
+    pointer-events: none;
+  }
+  .kl-tb-spacer {
+    flex: 1 1 0;
+    min-width: var(--kl-gutter);
+  }
 
   /* items */
   .kl-tb-item {
-    appearance: none; box-sizing: border-box; flex: none; display: flex; align-items: stretch; position: relative;
-    margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--kl-ink);
-    font: inherit; font-family: var(--kl-font); font-size: 14px; font-weight: var(--kl-weight-strong); line-height: 1.2;
-    white-space: nowrap; text-decoration: none; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    box-sizing: border-box;
+    flex: none;
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--kl-ink);
+    font: inherit;
+    font-family: var(--kl-font);
+    font-size: 14px;
+    font-weight: var(--kl-weight-strong);
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
-  .kl-tb-label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; padding-inline: calc(var(--kl-inset) + 2px); }
-  .kl-tb-item[data-kl-icon] { min-width: var(--kl-tb-h); }
-  .kl-tb-item[data-kl-icon] > .kl-tb-label { padding-inline: 0; }
-  .kl-tb-item svg { flex: none; }
+  .kl-tb-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    padding-inline: calc(var(--kl-inset) + 2px);
+  }
+  .kl-tb-item[data-kl-icon] {
+    min-width: var(--kl-tb-h);
+  }
+  .kl-tb-item[data-kl-icon] > .kl-tb-label {
+    padding-inline: 0;
+  }
+  .kl-tb-item svg {
+    flex: none;
+  }
   /* the first item clears the cut's corner (it never collapses into the bevel) */
-  .kl-tb[data-kl-layout="control"] :nth-child(1 of .kl-tb-item, .kl-tb-input):where(.kl-tb > *, .kl-tb > .kl-tb-group > *) { padding-inline-start: calc(var(--kl-c, 0px) * 0.35); }
+  .kl-tb[data-kl-layout="control"]
+    :nth-child(1 of .kl-tb-item, .kl-tb-input):where(.kl-tb > *, .kl-tb > .kl-tb-group > *) {
+    padding-inline-start: calc(var(--kl-c, 0px) * 0.35);
+  }
 
-  .kl-tb-item:hover:not([data-pressed], [data-popup-open], [data-disabled], [data-kl-covered], [data-kl-primary]) { background-color: var(--kl-tint); }
-  .kl-tb-item:active:not([data-disabled]):not([data-pressed]):not([data-kl-covered]) { background-color: var(--kl-press); }
-  .kl-tb-item:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-in); }
+  .kl-tb-item:hover:not([data-pressed], [data-popup-open], [data-disabled], [data-kl-covered], [data-kl-primary]) {
+    background-color: var(--kl-tint);
+  }
+  .kl-tb-item:active:not([data-disabled]):not([data-pressed]):not([data-kl-covered]) {
+    background-color: var(--kl-press);
+  }
+  .kl-tb-item:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: var(--kl-ring-in);
+  }
   /* busy is not out of service: a pending item keeps its look and runs the segment */
-  .kl-tb-item[data-disabled]:not([aria-busy]) { cursor: not-allowed; color: var(--kl-dis); background-image: var(--kl-hatch); }
+  .kl-tb-item[data-disabled]:not([aria-busy]) {
+    cursor: not-allowed;
+    color: var(--kl-dis);
+    background-image: var(--kl-hatch);
+  }
 
   /* primary: the row's one commit action */
-  .kl-tb-item[data-kl-primary] { background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); }
-  .kl-tb-item[data-kl-primary]:hover:not([data-disabled]) { background-color: var(--kl-cobalt-hi); }
+  .kl-tb-item[data-kl-primary] {
+    background-color: var(--kl-cobalt);
+    color: var(--kl-on-cobalt);
+  }
+  .kl-tb-item[data-kl-primary]:hover:not([data-disabled]) {
+    background-color: var(--kl-cobalt-hi);
+  }
   /* pressed commit goes deeper cobalt, as Button and SplitButton do; it outranks the generic grey press above */
-  .kl-tb-item[data-kl-primary]:active:not([data-disabled]):not([data-pressed]):not([data-kl-covered]) { background-color: var(--kl-cobalt-lo); }
-  .kl-tb-item[data-kl-primary]:focus-visible { outline-color: currentColor; }
+  .kl-tb-item[data-kl-primary]:active:not([data-disabled]):not([data-pressed]):not([data-kl-covered]) {
+    background-color: var(--kl-cobalt-lo);
+  }
+  .kl-tb-item[data-kl-primary]:focus-visible {
+    outline-color: currentColor;
+  }
   /* a disabled commit is out of service like any item: dis label on the hatch (on-cobalt white won the
      tie with the disabled rule, so "Assign carrier 0" was white on near-white in light and read as live in dark) */
-  .kl-tb-item[data-kl-primary][data-disabled] { background-color: var(--kl-cell); color: var(--kl-dis); }
+  .kl-tb-item[data-kl-primary][data-disabled] {
+    background-color: var(--kl-cell);
+    color: var(--kl-dis);
+  }
 
   /* independent toggle: the lamp fills with the flood (the lamp sits in the label, not on the item) */
-  .kl-tb-toggle[data-pressed] .kl-lamp { border-width: 5px; }
+  .kl-tb-toggle[data-pressed] .kl-lamp {
+    border-width: 5px;
+  }
 
   /* exclusive choice: the ink band is under the cell; a covered cell's text reads on the band */
-  .kl-tb-choice[data-kl-covered] { color: var(--kl-on-inverse); }
-  .kl-tb-choice[data-kl-covered]:focus-visible { outline-color: currentColor; }
+  .kl-tb-choice[data-kl-covered] {
+    color: var(--kl-on-inverse);
+  }
+  .kl-tb-choice[data-kl-covered]:focus-visible {
+    outline-color: currentColor;
+  }
 
   /* menu title: open is the inverse cell (Select's open caret, Menubar's open title) */
-  .kl-tb-menu[data-popup-open] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
-  .kl-tb-menu[data-popup-open]:focus-visible { outline-color: currentColor; }
+  .kl-tb-menu[data-popup-open] {
+    background-color: var(--kl-inverse);
+    color: var(--kl-on-inverse);
+  }
+  .kl-tb-menu[data-popup-open]:focus-visible {
+    outline-color: currentColor;
+  }
   /* the caret sits close to what it follows: the label, or the affix (a count), never across a divider */
-  .kl-tb-menu > .kl-tb-label:has(+ .kl-tb-caret) { padding-inline-end: 6px; }
-  .kl-tb-menu > .kl-tb-affix:has(+ .kl-tb-caret, + .kl-tb-done + .kl-tb-caret) { min-width: 0; padding-inline: calc(var(--kl-inset) - 2px) 6px; }
-  .kl-tb-caret { display: flex; align-items: center; padding-inline-end: calc(var(--kl-inset) - 2px); }
-  .kl-tb-menu-panel { min-width: max(13rem, var(--anchor-width)); }
+  .kl-tb-menu > .kl-tb-label:has(+ .kl-tb-caret) {
+    padding-inline-end: 6px;
+  }
+  .kl-tb-menu > .kl-tb-affix:has(+ .kl-tb-caret, + .kl-tb-done + .kl-tb-caret) {
+    min-width: 0;
+    padding-inline: calc(var(--kl-inset) - 2px) 6px;
+  }
+  .kl-tb-caret {
+    display: flex;
+    align-items: center;
+    padding-inline-end: calc(var(--kl-inset) - 2px);
+  }
+  .kl-tb-menu-panel {
+    min-width: max(13rem, var(--anchor-width));
+  }
 
   /* affix: a count or a shortcut, divided inside the item as ButtonAffix is */
-  .kl-tb-affix { display: flex; align-items: center; justify-content: center; min-width: var(--kl-tb-h); padding-inline: 8px; border-inline-start: var(--kl-k1) solid var(--kl-seam); font-weight: var(--kl-weight-display); font-variant-numeric: tabular-nums; }
+  .kl-tb-affix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--kl-tb-h);
+    padding-inline: 8px;
+    border-inline-start: var(--kl-k1) solid var(--kl-seam);
+    font-weight: var(--kl-weight-display);
+    font-variant-numeric: tabular-nums;
+  }
   /* at rest the affix divider is a seam, like the toolbar's own; on a filled cell (open, primary) it takes the cell's text colour so it stays visible */
-  .kl-tb-item:is([data-popup-open], [data-kl-primary]) > .kl-tb-affix { border-inline-start-color: currentColor; }
-  .kl-tb-affix:has(kbd), .kl-tb-affix.kl-code { font-family: var(--kl-font-mono); font-size: 11px; font-weight: 500; color: inherit; }
-  .kl-tb-affix kbd { font: inherit; }
+  .kl-tb-item:is([data-popup-open], [data-kl-primary]) > .kl-tb-affix {
+    border-inline-start-color: currentColor;
+  }
+  .kl-tb-affix:has(kbd),
+  .kl-tb-affix.kl-code {
+    font-family: var(--kl-font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: inherit;
+  }
+  .kl-tb-affix kbd {
+    font: inherit;
+  }
   /* the affix takes the item's colour in every state (open = inverse, primary = cobalt): a muted code inside it would vanish */
-  .kl-tb-affix .kl-code { color: inherit; }
+  .kl-tb-affix .kl-code {
+    color: inherit;
+  }
   /* a count carried into the overflow menu: after the label, in the count voice (a shortcut stays in the key cell) */
-  .kl-tb-menu-count { margin-inline-start: 8px; font-family: var(--kl-font-mono); font-size: 12px; font-variant-numeric: tabular-nums; color: var(--kl-ink-2); }
-  .kl-menu-item[data-highlighted] .kl-tb-menu-count { color: inherit; }
+  .kl-tb-menu-count {
+    margin-inline-start: 8px;
+    font-family: var(--kl-font-mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--kl-ink-2);
+  }
+  .kl-menu-item[data-highlighted] .kl-tb-menu-count {
+    color: inherit;
+  }
 
   /* signal (Button's): pending runs a segment on the bottom keyline; done inserts a ✓ cell, failed a ! cell
      at the start. The slots unfold from 0 width (kl-slot), so an idle item measures as before. */
-  .kl-tb-done > span, .kl-tb-fail > span { display: flex; height: 100%; }
-  .kl-tb-done > span > span, .kl-tb-fail > span > span { display: grid; place-items: center; width: var(--kl-tb-h); height: 100%; }
-  .kl-tb-done > span > span { background-color: var(--kl-yellow); color: var(--kl-on-yellow); border-inline-start: var(--kl-k1) solid currentColor; }
-  .kl-tb-fail > span > span { background-color: var(--kl-red); color: var(--kl-on-red); font-weight: var(--kl-weight-display); font-size: 15px; border-inline-end: var(--kl-k1) solid var(--kl-seam); }
-  .kl-tb-item[data-kl-primary] .kl-tb-done > span > span { border-inline-start-color: var(--kl-on-cobalt); }
-  .kl-tb-item .kl-pending { --kl-bw: 3px; inset-block-end: 0; }
-  .kl-tb-item[aria-busy="true"] { cursor: progress; }
-  .kl-tb-item[data-kl-primary][aria-busy="true"] { background-color: var(--kl-cobalt); color: var(--kl-on-cobalt); background-image: none; }
+  .kl-tb-done > span,
+  .kl-tb-fail > span {
+    display: flex;
+    height: 100%;
+  }
+  .kl-tb-done > span > span,
+  .kl-tb-fail > span > span {
+    display: grid;
+    place-items: center;
+    width: var(--kl-tb-h);
+    height: 100%;
+  }
+  .kl-tb-done > span > span {
+    background-color: var(--kl-yellow);
+    color: var(--kl-on-yellow);
+    border-inline-start: var(--kl-k1) solid currentColor;
+  }
+  .kl-tb-fail > span > span {
+    background-color: var(--kl-red);
+    color: var(--kl-on-red);
+    font-weight: var(--kl-weight-display);
+    font-size: 15px;
+    border-inline-end: var(--kl-k1) solid var(--kl-seam);
+  }
+  .kl-tb-item[data-kl-primary] .kl-tb-done > span > span {
+    border-inline-start-color: var(--kl-on-cobalt);
+  }
+  .kl-tb-item .kl-pending {
+    --kl-bw: 3px;
+    inset-block-end: 0;
+  }
+  .kl-tb-item[aria-busy="true"] {
+    cursor: progress;
+  }
+  .kl-tb-item[data-kl-primary][aria-busy="true"] {
+    background-color: var(--kl-cobalt);
+    color: var(--kl-on-cobalt);
+    background-image: none;
+  }
 
   /* link: navigation, not a command */
-  .kl-tb-link > .kl-tb-label { text-decoration: underline 1px; text-underline-offset: 4px; }
-  .kl-tb-link:hover > .kl-tb-label { text-decoration-thickness: 2px; }
+  .kl-tb-link > .kl-tb-label {
+    text-decoration: underline 1px;
+    text-underline-offset: 4px;
+  }
+  .kl-tb-link:hover > .kl-tb-label {
+    text-decoration-thickness: 2px;
+  }
 
   /* text input cell: its edge is the cell's (kl-edge) */
-  .kl-tb > .kl-tb-input, .kl-tb-group > .kl-tb-input { flex: 1 1 12rem; min-width: 8rem; min-height: 0; color: var(--kl-ink-2); }
-  .kl-tb-input > input { flex: 1; min-width: 0; align-self: stretch; margin: 0; padding: 0; border: 0; outline: 0; background: transparent; color: var(--kl-ink); font: inherit; font-family: var(--kl-font); font-size: 14px; }
-  .kl-tb-input > input::placeholder { color: var(--kl-ink-3); }
-  .kl-tb-input:has(input:disabled) { background-image: var(--kl-hatch); color: var(--kl-dis); }
+  .kl-tb > .kl-tb-input,
+  .kl-tb-group > .kl-tb-input {
+    flex: 1 1 12rem;
+    min-width: 8rem;
+    min-height: 0;
+    color: var(--kl-ink-2);
+  }
+  .kl-tb-input > input {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--kl-ink);
+    font: inherit;
+    font-family: var(--kl-font);
+    font-size: 14px;
+  }
+  .kl-tb-input > input::placeholder {
+    color: var(--kl-ink-3);
+  }
+  .kl-tb-input:has(input:disabled) {
+    background-image: var(--kl-hatch);
+    color: var(--kl-dis);
+  }
 
   /* vertical: a column of cells (a tool palette); groups meet on a 2px rule */
-  .kl-tb[data-orientation="vertical"] { flex-direction: column; width: max-content; overflow-x: hidden; overflow-y: auto; }
-  .kl-tb[data-orientation="vertical"] > .kl-tb-group { flex-direction: column; }
+  .kl-tb[data-orientation="vertical"] {
+    flex-direction: column;
+    width: max-content;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .kl-tb[data-orientation="vertical"] > .kl-tb-group {
+    flex-direction: column;
+  }
   .kl-tb[data-orientation="vertical"] > :not(.kl-more-fade) + :not(.kl-more-fade),
-  .kl-tb[data-orientation="vertical"] .kl-tb-group > :not(.kl-tb-band) + * { border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-seam); }
-  .kl-tb[data-orientation="vertical"] > * + .kl-tb-group, .kl-tb[data-orientation="vertical"] > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) { border-inline-start: 0; border-block-start: var(--kl-k2) solid var(--kl-line); }
-  .kl-tb[data-orientation="vertical"] > .kl-tb-sep.kl-tb-sep { width: auto; height: 0; border-inline-start: 0; border-block-start: var(--kl-k2) solid var(--kl-line); }
-  .kl-tb[data-orientation="vertical"] > .kl-tb-sep + :not(.kl-more-fade) { border-block-start: 0; }
-  .kl-tb[data-orientation="vertical"] .kl-tb-item { min-height: var(--kl-tb-h); }
-  .kl-tb[data-orientation="vertical"] .kl-tb-label { justify-content: flex-start; }
-  .kl-tb[data-orientation="vertical"] .kl-tb-item[data-kl-icon] > .kl-tb-label { justify-content: center; }
-  .kl-tb[data-orientation="vertical"][data-kl-layout="control"] :nth-child(1 of .kl-tb-item, .kl-tb-input):where(.kl-tb > *, .kl-tb > .kl-tb-group > *) { padding-inline-start: 0; padding-block-start: calc(var(--kl-c, 0px) * 0.35); }
+  .kl-tb[data-orientation="vertical"] .kl-tb-group > :not(.kl-tb-band) + * {
+    border-inline-start: 0;
+    border-block-start: var(--kl-k1) solid var(--kl-seam);
+  }
+  .kl-tb[data-orientation="vertical"] > * + .kl-tb-group,
+  .kl-tb[data-orientation="vertical"] > .kl-tb-group + :not(.kl-more-fade, .kl-tb-sep) {
+    border-inline-start: 0;
+    border-block-start: var(--kl-k2) solid var(--kl-line);
+  }
+  .kl-tb[data-orientation="vertical"] > .kl-tb-sep.kl-tb-sep {
+    width: auto;
+    height: 0;
+    border-inline-start: 0;
+    border-block-start: var(--kl-k2) solid var(--kl-line);
+  }
+  .kl-tb[data-orientation="vertical"] > .kl-tb-sep + :not(.kl-more-fade) {
+    border-block-start: 0;
+  }
+  .kl-tb[data-orientation="vertical"] .kl-tb-item {
+    min-height: var(--kl-tb-h);
+  }
+  .kl-tb[data-orientation="vertical"] .kl-tb-label {
+    justify-content: flex-start;
+  }
+  .kl-tb[data-orientation="vertical"] .kl-tb-item[data-kl-icon] > .kl-tb-label {
+    justify-content: center;
+  }
+  .kl-tb[data-orientation="vertical"][data-kl-layout="control"]
+    :nth-child(1 of .kl-tb-item, .kl-tb-input):where(.kl-tb > *, .kl-tb > .kl-tb-group > *) {
+    padding-inline-start: 0;
+    padding-block-start: calc(var(--kl-c, 0px) * 0.35);
+  }
 
   @media (forced-colors: active) {
-    .kl-tb-band { forced-color-adjust: none; background: Highlight; }
-    .kl-tb-choice[data-kl-covered] { forced-color-adjust: none; color: HighlightText; }
-    .kl-tb-item:is([data-pressed], [data-popup-open]) { outline: 3px solid Highlight; outline-offset: -4px; }
-    .kl-tb-item[data-kl-primary] { forced-color-adjust: none; background: ButtonText; color: ButtonFace; }
-    .kl-tb-done > span > span, .kl-tb-fail > span > span { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+    .kl-tb-band {
+      forced-color-adjust: none;
+      background: Highlight;
+    }
+    .kl-tb-choice[data-kl-covered] {
+      forced-color-adjust: none;
+      color: HighlightText;
+    }
+    .kl-tb-item:is([data-pressed], [data-popup-open]) {
+      outline: 3px solid Highlight;
+      outline-offset: -4px;
+    }
+    .kl-tb-item[data-kl-primary] {
+      forced-color-adjust: none;
+      background: ButtonText;
+      color: ButtonFace;
+    }
+    .kl-tb-done > span > span,
+    .kl-tb-fail > span > span {
+      forced-color-adjust: none;
+      background: Highlight;
+      color: HighlightText;
+    }
   }
 }

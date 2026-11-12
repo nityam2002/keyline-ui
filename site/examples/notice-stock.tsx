@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Notice } from "@/components/keyline/ui/notice"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Notice } from "@/components/keyline/ui/notice";
 
 export function PaperStock() {
-  const [state, setState] = useState<"low" | "ordered" | "gone">("low")
+  const [state, setState] = useState<"low" | "ordered" | "gone">("low");
 
   return (
     <div className="grid gap-3">
@@ -15,7 +15,9 @@ export function PaperStock() {
         tone={state === "low" ? "attention" : "done"}
         title={state === "low" ? "Letter paper is down to 30 cases" : "120 cases reordered from the mill"}
         description={
-          state === "low" ? "That covers two days of deliveries. Darryl needs a week's notice." : "They arrive Thursday. Darryl has the dock booked."
+          state === "low"
+            ? "That covers two days of deliveries. Darryl needs a week's notice."
+            : "They arrive Thursday. Darryl has the dock booked."
         }
         actions={
           state === "low" ? (
@@ -32,5 +34,5 @@ export function PaperStock() {
         </Button>
       ) : null}
     </div>
-  )
+  );
 }

@@ -1,24 +1,15 @@
 import * as ui from "../demo-ui";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import {
-Bar,
-BarChart,
-CartesianGrid,
-Line,
-LineChart,
-ReferenceLine,
-XAxis,
-YAxis,
-} from "recharts";
-import {
-ChartContainer,
-ChartFigure,
-ChartLegend,
-ChartLegendContent,
-ChartTooltip,
-ChartTooltipContent,
-type ChartConfig,
+  ChartContainer,
+  ChartFigure,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
 } from "@/registry/keyline/ui/chart";
-import { Panel,PanelBody,PanelHeader } from "@/registry/keyline/ui/panel";
+import { Panel, PanelBody, PanelHeader } from "@/registry/keyline/ui/panel";
 
 /* ------------------------------------------------------------------ *
  * 1. Chart (recharts)
@@ -72,12 +63,7 @@ function Throughput({ testid }: { testid?: string }) {
       labelHeader="Day"
     >
       <ChartContainer config={throughputConfig} className={ui.chart}>
-        <BarChart
-          data={THROUGHPUT}
-          margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-          barGap={2}
-          barCategoryGap="24%"
-        >
+        <BarChart data={THROUGHPUT} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} barGap={2} barCategoryGap="24%">
           <CartesianGrid vertical={false} />
           <XAxis dataKey="day" tickLine={false} tickMargin={8} />
           <YAxis tickLine={false} axisLine={false} width={36} />
@@ -99,7 +85,7 @@ export function ChartSpecimen() {
           <Throughput testid="ch-bars" />
         </PanelBody>
       </Panel>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] gap-4 min-w-0">
+      <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] gap-4">
         <Panel>
           <PanelBody>
             <ChartFigure
@@ -112,22 +98,11 @@ export function ChartSpecimen() {
               labelHeader="Week"
             >
               <ChartContainer config={dwellConfig} className={ui.chart}>
-                <LineChart
-                  data={DWELL}
-                  margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
-                >
+                <LineChart data={DWELL} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
                   <CartesianGrid vertical={false} />
                   <XAxis dataKey="week" tickLine={false} tickMargin={8} />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    width={32}
-                    domain={[0, 60]}
-                  />
-                  <ReferenceLine
-                    y={40}
-                    label={{ value: "Target 40", position: "insideTopRight" }}
-                  />
+                  <YAxis tickLine={false} axisLine={false} width={32} domain={[0, 60]} />
+                  <ReferenceLine y={40} label={{ value: "Target 40", position: "insideTopRight" }} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Line
                     dataKey="dwell"
@@ -153,11 +128,7 @@ export function ChartSpecimen() {
               labelKey="lane"
               labelHeader="Lane"
             >
-              <ChartContainer
-                config={statusConfig}
-                className={ui.chart}
-                data-kl-stack=""
-              >
+              <ChartContainer config={statusConfig} className={ui.chart} data-kl-stack="">
                 <BarChart
                   data={STATUS}
                   layout="vertical"
@@ -166,20 +137,10 @@ export function ChartSpecimen() {
                 >
                   <CartesianGrid horizontal={false} />
                   <XAxis type="number" tickLine={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="lane"
-                    tickLine={false}
-                    axisLine={false}
-                    width={48}
-                  />
+                  <YAxis type="category" dataKey="lane" tickLine={false} axisLine={false} width={48} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <ChartLegend content={<ChartLegendContent />} />
-                  <Bar
-                    dataKey="onTime"
-                    stackId="a"
-                    fill="var(--color-onTime)"
-                  />
+                  <Bar dataKey="onTime" stackId="a" fill="var(--color-onTime)" />
                   <Bar dataKey="late" stackId="a" fill="var(--color-late)" />
                 </BarChart>
               </ChartContainer>
@@ -188,20 +149,9 @@ export function ChartSpecimen() {
         </Panel>
       </div>
       <div className={ui.group} dir="rtl" data-testid="ch-rtl">
-        <h3 className={ui.cap}>
-          RTL: the days run from the inline start, the value axis sits at the
-          start edge
-        </h3>
-        <ChartContainer
-          config={throughputConfig}
-          className={ui.chart}
-          aria-label="المنصات يوميًا"
-        >
-          <BarChart
-            data={THROUGHPUT}
-            margin={{ top: 8, right: 0, bottom: 0, left: 8 }}
-            barGap={2}
-          >
+        <h3 className={ui.cap}>RTL: the days run from the inline start, the value axis sits at the start edge</h3>
+        <ChartContainer config={throughputConfig} className={ui.chart} aria-label="المنصات يوميًا">
+          <BarChart data={THROUGHPUT} margin={{ top: 8, right: 0, bottom: 0, left: 8 }} barGap={2}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="day" tickLine={false} tickMargin={8} />
             <YAxis tickLine={false} axisLine={false} width={36} />

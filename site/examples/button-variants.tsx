@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
 
-type Decision = "approved" | "receipt" | "skipped" | "rejected" | null
+type Decision = "approved" | "receipt" | "skipped" | "rejected" | null;
 
 export function ExpenseReview() {
-  const [decision, setDecision] = useState<Decision>(null)
+  const [decision, setDecision] = useState<Decision>(null);
   const result = {
     approved: "Approved. Accounting pays it with Friday's run.",
     receipt: "Kevin has been asked for the receipt.",
     skipped: "Skipped. It comes back to the top of tomorrow’s queue.",
     rejected: "Rejected. Kevin gets a note from Angela.",
-  }
+  };
 
   return (
     <div className="grid gap-4">
@@ -35,5 +35,5 @@ export function ExpenseReview() {
         {decision ? result[decision] : "Waiting for a decision."}
       </p>
     </div>
-  )
+  );
 }

@@ -14,12 +14,7 @@ import {
 } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import {
-  dockGeometry,
-  scopeProps,
-  useDomDirection,
-  useKeylineScope,
-} from "../lib/keyline-scope";
+import { dockGeometry, scopeProps, useDomDirection, useKeylineScope } from "../lib/keyline-scope";
 import { floodFromPointer } from "../lib/keyline-motion";
 import { SelectContent, SelectItem, SelectRoot } from "./select";
 import {
@@ -74,13 +69,7 @@ const Chevron = ({
 );
 
 /** The day cell's button: Keyline's flood, hatch, notch and today mark, read from DayPicker's modifiers. */
-function DayButton({
-  day,
-  modifiers,
-  className,
-  children,
-  ...props
-}: DayButtonProps) {
+function DayButton({ day, modifiers, className, children, ...props }: DayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
   const focused = modifiers["focused"];
   React.useEffect(() => {
@@ -94,15 +83,11 @@ function DayButton({
       {...props}
       // the flood (and its seed under a held press) starts where the day was pressed
       onPointerDown={(e) => {
-        props.onPointerDown?.(e)
-        if (!m["disabled"]) floodFromPointer(e)
+        props.onPointerDown?.(e);
+        if (!m["disabled"]) floodFromPointer(e);
       }}
       aria-current={m["today"] ? "date" : undefined}
-      className={cn(
-        "kl-day kl-flood",
-        m["kl_ink"] && !m["disabled"] && "kl-sig-ink",
-        className,
-      )}
+      className={cn("kl-day kl-flood", m["kl_ink"] && !m["disabled"] && "kl-sig-ink", className)}
       data-kl-flood="manual"
       data-kl-on={flag(m["kl_on"] && !m["disabled"])}
       data-preview={flag(m["kl_preview"])}
@@ -123,17 +108,8 @@ function DayButton({
  * Select: typeahead, arrows, Home/End, Escape back to the cell). DayPicker hands over its options and a
  * native-select change handler; the chosen value is passed back in that shape.
  */
-function Dropdown({
-  options = [],
-  value,
-  onChange,
-  disabled,
-  "aria-label": ariaLabel,
-}: DropdownProps) {
-  const items = React.useMemo(
-    () => Object.fromEntries(options.map((o) => [String(o.value), o.label])),
-    [options],
-  );
+function Dropdown({ options = [], value, onChange, disabled, "aria-label": ariaLabel }: DropdownProps) {
+  const items = React.useMemo(() => Object.fromEntries(options.map((o) => [String(o.value), o.label])), [options]);
   const choose = (v: string | null) => {
     if (v != null)
       onChange?.({
@@ -237,10 +213,8 @@ function useDayPicker({
   );
   // ten years either side of what is shown, unless bounded: the year dropdown's span
   const y = anchorMonth.getFullYear();
-  const startMonth =
-    min ?? new Date(Math.min(y, today.getFullYear()) - 10, 0, 1);
-  const endMonth =
-    max ?? new Date(Math.max(y, today.getFullYear()) + 10, 11, 31);
+  const startMonth = min ?? new Date(Math.min(y, today.getFullYear()) - 10, 0, 1);
+  const endMonth = max ?? new Date(Math.max(y, today.getFullYear()) + 10, 11, 31);
   const disabled: Matcher[] = [];
   if (isDateUnavailable) disabled.push((d: Date) => !!isDateUnavailable(d));
   if (min) disabled.push({ before: sod(min) });
@@ -277,20 +251,11 @@ function useDayPicker({
       labelWeekday: (d: Date) => f.wdLong.format(d),
       labelDayButton: (d: Date, m: Modifiers) => {
         const why = isDateUnavailable?.(d);
-        const out =
-          min && d < sod(min)
-            ? "before the first date"
-            : max && d > sod(max)
-              ? "after the last date"
-              : "";
+        const out = min && d < sod(min) ? "before the first date" : max && d > sod(max) ? "after the last date" : "";
         return [
           f.full.format(d),
           label(d, m),
-          why
-            ? `unavailable${typeof why === "string" ? ` (${why})` : ""}`
-            : out
-              ? `unavailable (${out})`
-              : "",
+          why ? `unavailable${typeof why === "string" ? ` (${why})` : ""}` : out ? `unavailable (${out})` : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -379,14 +344,10 @@ function RangeCalendar({
           kl_in: inR,
           kl_on: inR,
           kl_preview: (d: Date) => !!preview && inR(d),
-          kl_end: (d: Date) =>
-            !!shown && (sameDay(d, shown.from) || sameDay(d, shown.to)),
-          kl_ink: (d: Date) =>
-            !!shown && (sameDay(d, shown.from) || sameDay(d, shown.to)),
-          kl_cont_prev: (d: Date) =>
-            inR(d) && col(d) === 0 && !!shown && d > shown.from,
-          kl_cont_next: (d: Date) =>
-            inR(d) && col(d) === 6 && !!shown && d < shown.to,
+          kl_end: (d: Date) => !!shown && (sameDay(d, shown.from) || sameDay(d, shown.to)),
+          kl_ink: (d: Date) => !!shown && (sameDay(d, shown.from) || sameDay(d, shown.to)),
+          kl_cont_prev: (d: Date) => inR(d) && col(d) === 0 && !!shown && d > shown.from,
+          kl_cont_next: (d: Date) => inR(d) && col(d) === 6 && !!shown && d < shown.to,
         }}
         onDayClick={(d, m) => {
           if (m["disabled"]) return;
@@ -444,16 +405,9 @@ function DateRangePicker({
   const n = countAvailable(value, cal.isDateUnavailable);
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <div
-        data-slot="date-range"
-        data-kl-layout={layout}
-        className={cn("kl-field", className)}
-      >
+      <div data-slot="date-range" data-kl-layout={layout} className={cn("kl-field", className)}>
         {marker}
-        <span
-          className={cn("kl-field-label", layout === "cell" && "kl-sr")}
-          id={id}
-        >
+        <span className={cn("kl-field-label", layout === "cell" && "kl-sr")} id={id}>
           {label}
         </span>
         <Popover.Trigger
@@ -475,11 +429,7 @@ function DateRangePicker({
             </svg>
           </span>
           <span className="kl-dr-value" id={`${id}v`}>
-            {value ? (
-              formatRange(value, cal.locale)
-            ) : (
-              <span className="kl-dr-ph">Any date</span>
-            )}
+            {value ? formatRange(value, cal.locale) : <span className="kl-dr-ph">Any date</span>}
           </span>
           <span className="kl-dr-n">
             <b>{n}</b>
@@ -499,11 +449,7 @@ function DateRangePicker({
             ref={popup}
             className="kl-attached kl-dock kl-dock-fit kl-dr-panel"
             style={dock.style}
-            initialFocus={() =>
-              popup.current?.querySelector<HTMLElement>(
-                '[role="grid"] [tabindex="0"]',
-              ) ?? true
-            }
+            initialFocus={() => popup.current?.querySelector<HTMLElement>('[role="grid"] [tabindex="0"]') ?? true}
           >
             <RangeCalendar
               value={value}
@@ -520,11 +466,7 @@ function DateRangePicker({
                 <span className="kl-code">{n === 1 ? "DAY" : "DAYS"}</span>
               </div>
               <div className="kl-cal-caption">
-                {caption
-                  ? caption(value)
-                  : value
-                    ? formatRange(value, cal.locale)
-                    : "No range"}
+                {caption ? caption(value) : value ? formatRange(value, cal.locale) : "No range"}
               </div>
             </div>
             {presets.length ? (

@@ -1,9 +1,9 @@
-import * as ui from "../demo-ui"
-import { Button } from "@/registry/keyline/ui/button"
-import { Segmented,SegmentedItem } from "@/registry/keyline/ui/segmented"
-import { Tooltip } from "@/registry/keyline/ui/tooltip"
-import { Popover,PopoverTrigger,PopoverContent,PopoverHeader,PopoverBody } from "@/registry/keyline/ui/popover"
-import { DirectionProvider } from "@/registry/keyline/ui/direction"
+import * as ui from "../demo-ui";
+import { Button } from "@/registry/keyline/ui/button";
+import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
+import { Tooltip } from "@/registry/keyline/ui/tooltip";
+import { Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody } from "@/registry/keyline/ui/popover";
+import { DirectionProvider } from "@/registry/keyline/ui/direction";
 
 export function DirectionSpecimen() {
   return (
@@ -32,5 +32,5 @@ export function DirectionSpecimen() {
         </DirectionProvider>
       ))}
     </div>
-  )
+  );
 }

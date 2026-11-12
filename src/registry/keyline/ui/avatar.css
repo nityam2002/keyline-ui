@@ -5,85 +5,221 @@
      anywhere: the square IS the character, and it does not change with --kl-cut. Nothing is drawn over
      the face: status lives on the avatar's floor, as its bottom keyline. */
   .kl-avatar {
-    --kl-av: 32px; --kl-av-fs: 13px; --kl-av-st: 3px;
-    position: relative; flex: none; display: inline-grid; box-sizing: border-box; overflow: hidden;
-    width: var(--kl-av); height: var(--kl-av); vertical-align: middle;
-    border: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-tint); color: var(--kl-ink);
-    font-family: var(--kl-font); user-select: none;
+    --kl-av: 32px;
+    --kl-av-fs: 13px;
+    --kl-av-st: 3px;
+    position: relative;
+    flex: none;
+    display: inline-grid;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: var(--kl-av);
+    height: var(--kl-av);
+    vertical-align: middle;
+    border: var(--kl-k1) solid var(--kl-line);
+    background-color: var(--kl-tint);
+    color: var(--kl-ink);
+    font-family: var(--kl-font);
+    user-select: none;
   }
-  .kl-avatar > * { grid-area: 1 / 1; }
-  .kl-avatar[data-size="sm"] { --kl-av: 24px; --kl-av-fs: 10px; }
-  .kl-avatar[data-size="lg"] { --kl-av: 40px; --kl-av-fs: 15px; }
-  .kl-avatar[data-size="xl"] { --kl-av: 56px; --kl-av-fs: 20px; --kl-av-st: 4px; }
+  .kl-avatar > * {
+    grid-area: 1 / 1;
+  }
+  .kl-avatar[data-size="sm"] {
+    --kl-av: 24px;
+    --kl-av-fs: 10px;
+  }
+  .kl-avatar[data-size="lg"] {
+    --kl-av: 40px;
+    --kl-av-fs: 15px;
+  }
+  .kl-avatar[data-size="xl"] {
+    --kl-av: 56px;
+    --kl-av-fs: 20px;
+    --kl-av-st: 4px;
+  }
   /* as a cell: a square that fills the cell's width, centred in it, never a slab stretched to the row */
-  .kl-avatar[data-kl-layout="cell"] { width: 100%; height: auto; aspect-ratio: 1; align-self: center; border: 0; --kl-av-fs: 18px; }
+  .kl-avatar[data-kl-layout="cell"] {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    align-self: center;
+    border: 0;
+    --kl-av-fs: 18px;
+  }
 
   /* the photo: portrait crops keep the face (upper third) in a square; it rises from the bottom keyline
      when it arrives late (Unfold); reduced motion (--kl-t-unfold: 0) makes it a cut */
   .kl-avatar-img {
-    width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block;
-    clip-path: inset(0); transition: clip-path var(--kl-t-unfold) var(--kl-ease-out), filter var(--kl-t-unflood) linear;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    display: block;
+    clip-path: inset(0);
+    transition:
+      clip-path var(--kl-t-unfold) var(--kl-ease-out),
+      filter var(--kl-t-unflood) linear;
   }
-  .kl-avatar-img[data-starting-style] { clip-path: inset(100% 0 0 0); }
+  .kl-avatar-img[data-starting-style] {
+    clip-path: inset(100% 0 0 0);
+  }
   /* initials: the UI voice at strong weight, centred on the cap height (not the line box), so "MN" and
      "李" sit in the optical middle of the square */
   .kl-avatar-fb {
-    display: grid; place-items: center; width: 100%; height: 100%; min-width: 0;
-    font-size: var(--kl-av-fs); font-weight: var(--kl-weight-strong); line-height: 1; letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums; white-space: nowrap; text-box: trim-both cap alphabetic;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    font-size: var(--kl-av-fs);
+    font-weight: var(--kl-weight-strong);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-box: trim-both cap alphabetic;
   }
-  .kl-avatar-fb svg { width: calc(var(--kl-av-fs) + 4px); height: calc(var(--kl-av-fs) + 4px); }
+  .kl-avatar-fb svg {
+    width: calc(var(--kl-av-fs) + 4px);
+    height: calc(var(--kl-av-fs) + 4px);
+  }
 
   /* GROUP: cells of one keyline frame on shared seams (C1). Every face stays whole. */
   .kl-avatar-group {
-    --kl-av: 32px; --kl-av-fs: 13px;
-    display: inline-flex; align-items: stretch; width: fit-content; max-width: 100%; vertical-align: middle;
-    border: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-cell);
+    --kl-av: 32px;
+    --kl-av-fs: 13px;
+    display: inline-flex;
+    align-items: stretch;
+    width: fit-content;
+    max-width: 100%;
+    vertical-align: middle;
+    border: var(--kl-k1) solid var(--kl-line);
+    background-color: var(--kl-cell);
   }
-  .kl-avatar-group[data-size="sm"] { --kl-av: 24px; --kl-av-fs: 10px; }
-  .kl-avatar-group[data-size="lg"] { --kl-av: 40px; --kl-av-fs: 15px; }
-  .kl-avatar-group[data-size="xl"] { --kl-av: 56px; --kl-av-fs: 20px; }
+  .kl-avatar-group[data-size="sm"] {
+    --kl-av: 24px;
+    --kl-av-fs: 10px;
+  }
+  .kl-avatar-group[data-size="lg"] {
+    --kl-av: 40px;
+    --kl-av-fs: 15px;
+  }
+  .kl-avatar-group[data-size="xl"] {
+    --kl-av: 56px;
+    --kl-av-fs: 20px;
+  }
   /* inside the group the frame owns the outer edge; each later cell owns the seam before it */
   /* the group's size governs its cells (an avatar's own default size would otherwise win) */
-  .kl-avatar-group > .kl-avatar[data-size] { --kl-av: inherit; --kl-av-fs: inherit; }
-  .kl-avatar-group > .kl-avatar { border: 0; width: calc(var(--kl-av) - 2 * var(--kl-k1)); height: calc(var(--kl-av) - 2 * var(--kl-k1)); }
-  .kl-avatar-group > :not(:first-child) { border-inline-start: var(--kl-k1) solid var(--kl-seam); }
-  .kl-avatar-count {
-    flex: none; display: grid; place-items: center; box-sizing: border-box;
-    min-width: calc(var(--kl-av) - 2 * var(--kl-k1)); padding-inline: 6px;
-    background-color: var(--kl-cell); color: var(--kl-ink);
-    font: var(--kl-weight-strong) var(--kl-av-fs, 13px) / 1 var(--kl-font); font-variant-numeric: tabular-nums; white-space: nowrap;
-    direction: ltr; unicode-bidi: isolate; /* "+10" keeps its sign first in RTL */
+  .kl-avatar-group > .kl-avatar[data-size] {
+    --kl-av: inherit;
+    --kl-av-fs: inherit;
   }
-  :where(button).kl-avatar-count { border-block: 0; border-inline-end: 0; margin: 0; cursor: pointer; }
-  :where(button).kl-avatar-count:hover { background-color: var(--kl-tint); }
-  :where(button).kl-avatar-count:active { background-color: var(--kl-press); }
-  .kl-avatar-count:focus-visible { outline-offset: var(--kl-ring-in); }
-  .kl-avatar-count[data-popup-open] { background-color: var(--kl-inverse); color: var(--kl-on-inverse); }
+  .kl-avatar-group > .kl-avatar {
+    border: 0;
+    width: calc(var(--kl-av) - 2 * var(--kl-k1));
+    height: calc(var(--kl-av) - 2 * var(--kl-k1));
+  }
+  .kl-avatar-group > :not(:first-child) {
+    border-inline-start: var(--kl-k1) solid var(--kl-seam);
+  }
+  .kl-avatar-count {
+    flex: none;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-width: calc(var(--kl-av) - 2 * var(--kl-k1));
+    padding-inline: 6px;
+    background-color: var(--kl-cell);
+    color: var(--kl-ink);
+    font: var(--kl-weight-strong) var(--kl-av-fs, 13px) / 1 var(--kl-font);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    direction: ltr;
+    unicode-bidi: isolate; /* "+10" keeps its sign first in RTL */
+  }
+  :where(button).kl-avatar-count {
+    border-block: 0;
+    border-inline-end: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  :where(button).kl-avatar-count:hover {
+    background-color: var(--kl-tint);
+  }
+  :where(button).kl-avatar-count:active {
+    background-color: var(--kl-press);
+  }
+  .kl-avatar-count:focus-visible {
+    outline-offset: var(--kl-ring-in);
+  }
+  .kl-avatar-count[data-popup-open] {
+    background-color: var(--kl-inverse);
+    color: var(--kl-on-inverse);
+  }
 
   /* STATUS: the avatar's floor is a signal keyline. Each kind has its own line shape as well as its own
      colour (they survive grayscale and forced colours): active solid cobalt, away dashed, needs attention
      solid red with the whole frame red, done a double line, offline no line and the photo in grayscale.
      Declared after the group so a cell in a group keeps its floor. */
-  .kl-avatar[data-status] { border-block-end: var(--kl-av-st) solid var(--kl-line); }
-  .kl-avatar[data-status="normal"] { border-block-end-color: var(--kl-cobalt); }
-  .kl-avatar[data-status="waiting"] { border-block-end-style: dashed; border-block-end-color: var(--kl-ink-2); }
-  .kl-avatar[data-status="done"] { border-block-end-style: double; border-block-end-color: var(--kl-ink); border-block-end-width: max(var(--kl-av-st), 3px); }
-  .kl-avatar[data-status="attention"] { border-block-end-color: var(--kl-red); }
-  .kl-avatar[data-status="attention"]:not([data-kl-layout="cell"]) { border-color: var(--kl-red); }
-  /* in a group or as a cell there is no own frame to turn red: an inner keyline draws it */
-  .kl-avatar-group > .kl-avatar[data-status="attention"]::after, .kl-avatar[data-kl-layout="cell"][data-status="attention"]::after {
-    content: ""; position: absolute; inset: 0; border: var(--kl-k1) solid var(--kl-red); pointer-events: none;
+  .kl-avatar[data-status] {
+    border-block-end: var(--kl-av-st) solid var(--kl-line);
   }
-  .kl-avatar[data-status="none"] { border-block-end-width: var(--kl-k1); }
-  .kl-avatar[data-status="none"] .kl-avatar-img { filter: grayscale(1) contrast(0.9); }
-  .kl-avatar[data-status="none"] .kl-avatar-fb { color: var(--kl-ink-3); }
-  .kl-avatar-group > .kl-avatar[data-status="none"], .kl-avatar[data-kl-layout="cell"][data-status="none"] { border-block-end: 0; }
+  .kl-avatar[data-status="normal"] {
+    border-block-end-color: var(--kl-cobalt);
+  }
+  .kl-avatar[data-status="waiting"] {
+    border-block-end-style: dashed;
+    border-block-end-color: var(--kl-ink-2);
+  }
+  .kl-avatar[data-status="done"] {
+    border-block-end-style: double;
+    border-block-end-color: var(--kl-ink);
+    border-block-end-width: max(var(--kl-av-st), 3px);
+  }
+  .kl-avatar[data-status="attention"] {
+    border-block-end-color: var(--kl-red);
+  }
+  .kl-avatar[data-status="attention"]:not([data-kl-layout="cell"]) {
+    border-color: var(--kl-red);
+  }
+  /* in a group or as a cell there is no own frame to turn red: an inner keyline draws it */
+  .kl-avatar-group > .kl-avatar[data-status="attention"]::after,
+  .kl-avatar[data-kl-layout="cell"][data-status="attention"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--kl-k1) solid var(--kl-red);
+    pointer-events: none;
+  }
+  .kl-avatar[data-status="none"] {
+    border-block-end-width: var(--kl-k1);
+  }
+  .kl-avatar[data-status="none"] .kl-avatar-img {
+    filter: grayscale(1) contrast(0.9);
+  }
+  .kl-avatar[data-status="none"] .kl-avatar-fb {
+    color: var(--kl-ink-3);
+  }
+  .kl-avatar-group > .kl-avatar[data-status="none"],
+  .kl-avatar[data-kl-layout="cell"][data-status="none"] {
+    border-block-end: 0;
+  }
 
   @media (forced-colors: active) {
-    .kl-avatar, .kl-avatar-group { border-color: CanvasText; }
-    .kl-avatar[data-status] { border-block-end-color: CanvasText; }
-    .kl-avatar[data-status="attention"] { border-width: 2px; border-block-end-width: var(--kl-av-st); }
-    .kl-avatar[data-status="attention"]::after { border-color: CanvasText; }
+    .kl-avatar,
+    .kl-avatar-group {
+      border-color: CanvasText;
+    }
+    .kl-avatar[data-status] {
+      border-block-end-color: CanvasText;
+    }
+    .kl-avatar[data-status="attention"] {
+      border-width: 2px;
+      border-block-end-width: var(--kl-av-st);
+    }
+    .kl-avatar[data-status="attention"]::after {
+      border-color: CanvasText;
+    }
   }
 }

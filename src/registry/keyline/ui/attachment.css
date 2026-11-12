@@ -1,86 +1,275 @@
 @layer components {
   .kl-att {
     --kl-att-x: var(--kl-msg-x, var(--kl-inset));
-    display: flex; align-items: stretch; min-width: 0; width: fit-content; max-width: 100%; min-height: 48px;
-    background-color: var(--kl-cell); color: var(--kl-ink);
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    width: fit-content;
+    max-width: 100%;
+    min-height: 48px;
+    background-color: var(--kl-cell);
+    color: var(--kl-ink);
   }
   /* seams between cells (zero-specificity selector, so states and the tile layout restyle them plainly) */
-  .kl-att > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger)) { border-inline-start: var(--kl-k1) solid var(--kl-line); }
-  .kl-att[data-state="idle"] { border-color: var(--kl-line-soft); }
-  .kl-att[data-state="idle"] > * { border-color: var(--kl-line-soft); }
-  .kl-att[data-state="error"] { border-color: var(--kl-red); }
+  .kl-att > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger)) {
+    border-inline-start: var(--kl-k1) solid var(--kl-line);
+  }
+  .kl-att[data-state="idle"] {
+    border-color: var(--kl-line-soft);
+  }
+  .kl-att[data-state="idle"] > * {
+    border-color: var(--kl-line-soft);
+  }
+  .kl-att[data-state="error"] {
+    border-color: var(--kl-red);
+  }
 
   /* a file in a message: a cell of its bubble. It fills the bubble's width; seams in the bubble's seam tone */
-  .kl-att[data-kl-layout="cell"] { width: auto; align-self: stretch; background-color: transparent; }
-  .kl-att[data-kl-layout="cell"][data-state="error"] { border-color: var(--kl-seam); } /* the red ! cell and bar say it; the bubble keeps its seams */
-  .kl-att[data-kl-layout="cell"] > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger)) { border-inline-start-color: var(--kl-seam); }
+  .kl-att[data-kl-layout="cell"] {
+    width: auto;
+    align-self: stretch;
+    background-color: transparent;
+  }
+  .kl-att[data-kl-layout="cell"][data-state="error"] {
+    border-color: var(--kl-seam);
+  } /* the red ! cell and bar say it; the bubble keeps its seams */
+  .kl-att[data-kl-layout="cell"]
+    > :where(:not(.kl-att-bar, .kl-pending, .kl-att-trigger) + :not(.kl-att-bar, .kl-pending, .kl-att-trigger)) {
+    border-inline-start-color: var(--kl-seam);
+  }
 
   /* the media cell; in a message its glyph starts on the text's leading edge */
-  .kl-att-media { position: relative; display: grid; place-items: center; flex: none; width: 44px; overflow: hidden; color: var(--kl-ink-2); }
+  .kl-att-media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    overflow: hidden;
+    color: var(--kl-ink-2);
+  }
   /* the 16px glyphs carry 3px of their own side bearing: the cell starts their ink, not their box, on the text edge */
-  .kl-att[data-kl-layout="cell"] .kl-att-media { width: calc(2 * var(--kl-att-x) + 10px); justify-items: start; padding-inline-start: calc(var(--kl-att-x) - 3px); }
-  .kl-att[data-kl-layout="cell"] .kl-att-media > img { justify-self: stretch; margin-inline-start: calc(3px - var(--kl-att-x)); }
-  .kl-att-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .kl-att[data-state="uploading"] .kl-att-media > img, .kl-att[data-state="processing"] .kl-att-media > img { opacity: 0.6; }
+  .kl-att[data-kl-layout="cell"] .kl-att-media {
+    width: calc(2 * var(--kl-att-x) + 10px);
+    justify-items: start;
+    padding-inline-start: calc(var(--kl-att-x) - 3px);
+  }
+  .kl-att[data-kl-layout="cell"] .kl-att-media > img {
+    justify-self: stretch;
+    margin-inline-start: calc(3px - var(--kl-att-x));
+  }
+  .kl-att-media > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .kl-att[data-state="uploading"] .kl-att-media > img,
+  .kl-att[data-state="processing"] .kl-att-media > img {
+    opacity: 0.6;
+  }
 
   /* the outcome lands in the media cell, flooding up from the bottom keyline the bar ran along */
   .kl-att-mark {
-    position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
-    font-weight: var(--kl-weight-display, 800); font-size: 15px;
-    background-color: var(--kl-yellow); color: var(--kl-on-yellow);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    font-weight: var(--kl-weight-display, 800);
+    font-size: 15px;
+    background-color: var(--kl-yellow);
+    color: var(--kl-on-yellow);
     clip-path: circle(0px at 50% 100%);
     transition: clip-path var(--kl-t-unflood) var(--kl-ease-in);
   }
-  .kl-att-mark[data-kind="error"] { background-color: var(--kl-red); color: var(--kl-on-red); }
-  .kl-att[data-mark] .kl-att-mark { clip-path: circle(150% at 50% 100%); transition: clip-path var(--kl-t-flood) var(--kl-ease-out); }
+  .kl-att-mark[data-kind="error"] {
+    background-color: var(--kl-red);
+    color: var(--kl-on-red);
+  }
+  .kl-att[data-mark] .kl-att-mark {
+    clip-path: circle(150% at 50% 100%);
+    transition: clip-path var(--kl-t-flood) var(--kl-ease-out);
+  }
 
-  .kl-att-body { display: grid; align-content: center; justify-items: start; gap: 2px; min-width: 0; padding: 6px calc(var(--kl-inset) + 2px) 7px var(--kl-inset); }
-  .kl-att-body { min-inline-size: 20ch; }
-  .kl-att[data-kl-layout="cell"] .kl-att-body { flex: 1 1 auto; }
-  .kl-att-title { display: flex; min-width: 0; max-width: min(100%, 32ch); font-size: 13px; font-weight: var(--kl-weight-strong); line-height: 1.25; }
-  .kl-att-stem { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .kl-att-ext { flex: none; white-space: nowrap; }
+  .kl-att-body {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 2px;
+    min-width: 0;
+    padding: 6px calc(var(--kl-inset) + 2px) 7px var(--kl-inset);
+  }
+  .kl-att-body {
+    min-inline-size: 20ch;
+  }
+  .kl-att[data-kl-layout="cell"] .kl-att-body {
+    flex: 1 1 auto;
+  }
+  .kl-att-title {
+    display: flex;
+    min-width: 0;
+    max-width: min(100%, 32ch);
+    font-size: 13px;
+    font-weight: var(--kl-weight-strong);
+    line-height: 1.25;
+  }
+  .kl-att-stem {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .kl-att-ext {
+    flex: none;
+    white-space: nowrap;
+  }
   /* the detail never sets the width (the name does): a percentage or a reason cannot make the frame jump */
-  .kl-att-desc { contain: inline-size; justify-self: stretch; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 11px/1.25 var(--kl-font-mono); color: var(--kl-ink-2); font-variant-numeric: tabular-nums; text-align: start; }
-  .kl-att[data-state="error"] .kl-att-desc { color: var(--kl-red-text); white-space: normal; }
+  .kl-att-desc {
+    contain: inline-size;
+    justify-self: stretch;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font: 500 11px/1.25 var(--kl-font-mono);
+    color: var(--kl-ink-2);
+    font-variant-numeric: tabular-nums;
+    text-align: start;
+  }
+  .kl-att[data-state="error"] .kl-att-desc {
+    color: var(--kl-red-text);
+    white-space: normal;
+  }
 
-  .kl-att-actions { flex: none; position: relative; z-index: 2; }
-  .kl-att-action { all: unset; box-sizing: border-box; display: grid; place-items: center; width: 40px; color: var(--kl-ink-2); cursor: pointer; }
-  .kl-att-action:hover { background-color: var(--kl-tint); color: var(--kl-ink); }
-  .kl-att[data-kl-layout="cell"] .kl-att-action:hover { background-color: var(--kl-press); }
-  .kl-att-action:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: calc(var(--kl-ring) * -1); }
+  .kl-att-actions {
+    flex: none;
+    position: relative;
+    z-index: 2;
+  }
+  .kl-att-action {
+    all: unset;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    color: var(--kl-ink-2);
+    cursor: pointer;
+  }
+  .kl-att-action:hover {
+    background-color: var(--kl-tint);
+    color: var(--kl-ink);
+  }
+  .kl-att[data-kl-layout="cell"] .kl-att-action:hover {
+    background-color: var(--kl-press);
+  }
+  .kl-att-action:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: calc(var(--kl-ring) * -1);
+  }
 
-  .kl-att-trigger { all: unset; position: absolute; inset: 0; z-index: 1; cursor: pointer; }
-  .kl-att-trigger:focus-visible { outline: var(--kl-ring) solid var(--kl-focus); outline-offset: var(--kl-ring-out); }
-  .kl-att[data-kl-layout="cell"] > .kl-att-trigger:focus-visible { outline-offset: calc(var(--kl-ring) * -1); }
-  .kl-att:has(> .kl-att-trigger:hover) { background-color: var(--kl-tint); }
-  .kl-att[data-kl-layout="cell"]:has(> .kl-att-trigger:hover) { background-color: var(--kl-press); }
-  .kl-att:has(> .kl-att-trigger:active) { background-color: var(--kl-press); }
+  .kl-att-trigger {
+    all: unset;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
+  .kl-att-trigger:focus-visible {
+    outline: var(--kl-ring) solid var(--kl-focus);
+    outline-offset: var(--kl-ring-out);
+  }
+  .kl-att[data-kl-layout="cell"] > .kl-att-trigger:focus-visible {
+    outline-offset: calc(var(--kl-ring) * -1);
+  }
+  .kl-att:has(> .kl-att-trigger:hover) {
+    background-color: var(--kl-tint);
+  }
+  .kl-att[data-kl-layout="cell"]:has(> .kl-att-trigger:hover) {
+    background-color: var(--kl-press);
+  }
+  .kl-att:has(> .kl-att-trigger:active) {
+    background-color: var(--kl-press);
+  }
 
   /* PROGRESS: the bottom keyline fills (a scaled segment, so it runs on the compositor), inside the frame, so it
      reads as the line thickening. It keeps its length when the upload fails and turns red; a retry resumes it. */
-  .kl-att-bar { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 1; height: 3px; overflow: hidden; pointer-events: none; }
-  .kl-att > .kl-pending { --kl-bw: 3px; inset-block-end: 0; }
-  .kl-att-bar > span {
-    display: block; height: 100%; background-color: var(--kl-yellow); transform-origin: left;
-    transition: transform var(--kl-t-unfold) var(--kl-ease-out), background-color var(--kl-t-flood) linear;
+  .kl-att-bar {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 1;
+    height: 3px;
+    overflow: hidden;
+    pointer-events: none;
   }
-  .kl-att-bar:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) > span { transform-origin: right; }
-  .kl-att[data-state="error"] .kl-att-bar > span { background-color: var(--kl-red); }
+  .kl-att > .kl-pending {
+    --kl-bw: 3px;
+    inset-block-end: 0;
+  }
+  .kl-att-bar > span {
+    display: block;
+    height: 100%;
+    background-color: var(--kl-yellow);
+    transform-origin: left;
+    transition:
+      transform var(--kl-t-unfold) var(--kl-ease-out),
+      background-color var(--kl-t-flood) linear;
+  }
+  .kl-att-bar:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) > span {
+    transform-origin: right;
+  }
+  .kl-att[data-state="error"] .kl-att-bar > span {
+    background-color: var(--kl-red);
+  }
 
   /* compact: the composer row */
-  .kl-att[data-size="compact"] { min-height: 36px; }
-  .kl-att[data-size="compact"] .kl-att-media { width: 34px; }
-  .kl-att[data-size="compact"] .kl-att-body { padding-block: 3px 4px; }
-  .kl-att[data-size="compact"] .kl-att-action { width: 32px; }
+  .kl-att[data-size="compact"] {
+    min-height: 36px;
+  }
+  .kl-att[data-size="compact"] .kl-att-media {
+    width: 34px;
+  }
+  .kl-att[data-size="compact"] .kl-att-body {
+    padding-block: 3px 4px;
+  }
+  .kl-att[data-size="compact"] .kl-att-action {
+    width: 32px;
+  }
   /* tile: media above the name */
-  .kl-att[data-size="tile"] { flex-direction: column; width: 136px; }
-  .kl-att[data-size="tile"] > :not(:first-child, .kl-att-bar, .kl-pending, .kl-att-trigger, .kl-att-actions) { border-inline-start: 0; border-block-start: var(--kl-k1) solid var(--kl-line); }
-  .kl-att[data-size="tile"] .kl-att-media { width: 100%; aspect-ratio: 4 / 3; }
-  .kl-att[data-size="tile"] .kl-att-actions { position: absolute; inset-block-start: 0; inset-inline-end: 0; border: 0; border-inline-start: var(--kl-k1) solid var(--kl-line); border-block-end: var(--kl-k1) solid var(--kl-line); background-color: var(--kl-raised); }
-  .kl-att[data-size="tile"] .kl-att-action { height: 28px; width: 28px; }
+  .kl-att[data-size="tile"] {
+    flex-direction: column;
+    width: 136px;
+  }
+  .kl-att[data-size="tile"] > :not(:first-child, .kl-att-bar, .kl-pending, .kl-att-trigger, .kl-att-actions) {
+    border-inline-start: 0;
+    border-block-start: var(--kl-k1) solid var(--kl-line);
+  }
+  .kl-att[data-size="tile"] .kl-att-media {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+  .kl-att[data-size="tile"] .kl-att-actions {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    border: 0;
+    border-inline-start: var(--kl-k1) solid var(--kl-line);
+    border-block-end: var(--kl-k1) solid var(--kl-line);
+    background-color: var(--kl-raised);
+  }
+  .kl-att[data-size="tile"] .kl-att-action {
+    height: 28px;
+    width: 28px;
+  }
   @media (forced-colors: active) {
-    .kl-att-bar > span { background-color: Highlight; }
-    .kl-att-mark { forced-color-adjust: none; background-color: Mark; color: MarkText; }
+    .kl-att-bar > span {
+      background-color: Highlight;
+    }
+    .kl-att-mark {
+      forced-color-adjust: none;
+      background-color: Mark;
+      color: MarkText;
+    }
   }
 }

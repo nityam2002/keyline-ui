@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Panel, PanelBody, PanelGrid, PanelHeader } from "@/components/keyline/ui/panel"
-import { Status } from "@/components/keyline/ui/status"
+import { Panel, PanelBody, PanelGrid, PanelHeader } from "@/components/keyline/ui/panel";
+import { Status } from "@/components/keyline/ui/status";
 
 export function BranchBoard() {
   return (
@@ -26,5 +26,5 @@ export function BranchBoard() {
         </PanelBody>
       </Panel>
     </PanelGrid>
-  )
+  );
 }

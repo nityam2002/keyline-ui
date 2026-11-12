@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react"
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
+import * as React from "react";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 /* A bubble is one message: a control-weight frame (2px, no radius; the control cut only on the first of a run)
    holding a column of cells, the text and then any files (Attachment layout="cell").
@@ -16,25 +16,32 @@ import { cn } from "@/lib/utils"
    - pending: the message is on its way; the Signal segment runs inside the bottom keyline until it lands.
    Reactions sit on the bottom keyline as a small frame of their own. */
 
-type Tone = "plain" | "tint" | "attention"
+type Tone = "plain" | "tint" | "attention";
 
 function BubbleGroup({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="bubble-group" className={cn("kl-bubble-group", className)} {...props} />
+  return <div data-slot="bubble-group" className={cn("kl-bubble-group", className)} {...props} />;
 }
 
 type BubbleProps = React.ComponentProps<"div"> & {
-  tone?: Tone
+  tone?: Tone;
   /** Sending: the pending segment runs along the bottom keyline (a static hatch under reduced motion). */
-  pending?: boolean
-}
+  pending?: boolean;
+};
 
 function Bubble({ tone = "plain", pending, className, children, ...props }: BubbleProps) {
   return (
-    <div data-slot="bubble" data-tone={tone} data-pending={pending ? "" : undefined} aria-busy={pending || undefined} className={cn("kl-ctl kl-bubble", className)} {...props}>
+    <div
+      data-slot="bubble"
+      data-tone={tone}
+      data-pending={pending ? "" : undefined}
+      aria-busy={pending || undefined}
+      className={cn("kl-ctl kl-bubble", className)}
+      {...props}
+    >
       {children}
       {pending ? <span className="kl-pending kl-bubble-pend" aria-hidden /> : null}
     </div>
-  )
+  );
 }
 
 /** The text cell. Render it as a button or link (`render`) when the message itself acts (open a thread). */
@@ -62,12 +69,12 @@ function BubbleContent({ className, render, children, ...props }: useRender.Comp
       },
       props,
     ),
-  })
+  });
 }
 
 /** Reactions on the bubble's bottom keyline: a row of small cells ("👍 2"). Buttons inside are fine. */
 function BubbleReactions({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="bubble-reactions" className={cn("kl-cells kl-bubble-rx", className)} {...props} />
+  return <div data-slot="bubble-reactions" className={cn("kl-cells kl-bubble-rx", className)} {...props} />;
 }
 
-export { BubbleGroup, Bubble, BubbleContent, BubbleReactions }
+export { BubbleGroup, Bubble, BubbleContent, BubbleReactions };

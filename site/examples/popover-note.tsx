@@ -1,13 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/keyline/ui/button"
-import { Field, FieldFrame, FieldLabel, FieldTextarea } from "@/components/keyline/ui/field"
-import { Popover, PopoverBody, PopoverClose, PopoverContent, PopoverFooter, PopoverHeader, PopoverTrigger } from "@/components/keyline/ui/popover"
+import { useState } from "react";
+import { Button } from "@/components/keyline/ui/button";
+import { Field, FieldFrame, FieldLabel, FieldTextarea } from "@/components/keyline/ui/field";
+import {
+  Popover,
+  PopoverBody,
+  PopoverClose,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+} from "@/components/keyline/ui/popover";
 
 export function DeliveryNote() {
-  const [note, setNote] = useState("Loading dock is round the back.")
-  const [draft, setDraft] = useState(note)
+  const [note, setNote] = useState("Loading dock is round the back.");
+  const [draft, setDraft] = useState(note);
 
   return (
     <div className="grid gap-3 text-[14px]">
@@ -29,7 +37,9 @@ export function DeliveryNote() {
             </PopoverBody>
             <PopoverFooter>
               <PopoverClose render={<Button layout="cell" />}>Cancel</PopoverClose>
-              <PopoverClose render={<Button layout="cell" variant="primary" onClick={() => setNote(draft.trim())} />}>Save note</PopoverClose>
+              <PopoverClose render={<Button layout="cell" variant="primary" onClick={() => setNote(draft.trim())} />}>
+                Save note
+              </PopoverClose>
             </PopoverFooter>
           </PopoverContent>
         </Popover>
@@ -38,5 +48,5 @@ export function DeliveryNote() {
         {note ? `Note: ${note}` : "No delivery note."}
       </p>
     </div>
-  )
+  );
 }

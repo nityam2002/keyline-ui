@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Minus, MousePointer2, Move, Plus, Ruler } from "lucide-react"
-import { useState } from "react"
-import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarToggleGroup } from "@/components/keyline/ui/toolbar"
+import { Minus, MousePointer2, Move, Plus, Ruler } from "lucide-react";
+import { useState } from "react";
+import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarToggleGroup } from "@/components/keyline/ui/toolbar";
 
 export function FloorPlanTools() {
-  const [tool, setTool] = useState<string[]>(["pointer"])
-  const [zoom, setZoom] = useState(100)
+  const [tool, setTool] = useState<string[]>(["pointer"]);
+  const [zoom, setZoom] = useState(100);
 
   return (
     <div className="flex items-start gap-3">
@@ -38,5 +38,5 @@ export function FloorPlanTools() {
         Tool: {tool[0]} · zoom {zoom}%
       </p>
     </div>
-  )
+  );
 }

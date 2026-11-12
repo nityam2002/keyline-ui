@@ -1,21 +1,65 @@
 @layer components {
-  .kl-segmented { display: inline-flex; max-width: 100%; overflow-x: auto; position: relative; isolation: isolate; background-color: var(--kl-cell); min-height: var(--kl-ctl); }
-  .kl-segmented-band { position: absolute; z-index: -1; background-color: var(--kl-inverse); pointer-events: none; }
-  .kl-segmented-item {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding-inline: 14px; font-weight: var(--kl-weight-strong); font-size: 14px; white-space: nowrap; cursor: pointer;
-    color: var(--kl-ink); background: transparent;
+  .kl-segmented {
+    display: inline-flex;
+    max-width: 100%;
+    overflow-x: auto;
+    position: relative;
+    isolation: isolate;
+    background-color: var(--kl-cell);
+    min-height: var(--kl-ctl);
   }
-  .kl-segmented-item:hover:not([data-checked]):not([data-disabled]) { background-color: var(--kl-tint); }
-  .kl-segmented-item[data-kl-covered] { color: var(--kl-on-inverse); }
-  .kl-segmented-item:focus-visible { outline-offset: var(--kl-ring-in); }
-  .kl-segmented-item[data-disabled] { cursor: not-allowed; color: var(--kl-dis); background-image: var(--kl-hatch); }
+  .kl-segmented-band {
+    position: absolute;
+    z-index: -1;
+    background-color: var(--kl-inverse);
+    pointer-events: none;
+  }
+  .kl-segmented-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 14px;
+    font-weight: var(--kl-weight-strong);
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: var(--kl-ink);
+    background: transparent;
+  }
+  .kl-segmented-item:hover:not([data-checked]):not([data-disabled]) {
+    background-color: var(--kl-tint);
+  }
+  .kl-segmented-item[data-kl-covered] {
+    color: var(--kl-on-inverse);
+  }
+  .kl-segmented-item:focus-visible {
+    outline-offset: var(--kl-ring-in);
+  }
+  .kl-segmented-item[data-disabled] {
+    cursor: not-allowed;
+    color: var(--kl-dis);
+    background-image: var(--kl-hatch);
+  }
   /* a disabled choice that is still the chosen one keeps its label legible on the band (was 1.77:1 in dark) */
-  .kl-segmented-item[data-disabled][data-kl-covered] { color: var(--kl-on-inverse); }
-  .kl-segmented-compact { min-height: 28px; --kl-cut-size: var(--kl-cut-nested); }
-  .kl-segmented-compact .kl-segmented-item { padding-inline: 10px; font-size: 13px; }
+  .kl-segmented-item[data-disabled][data-kl-covered] {
+    color: var(--kl-on-inverse);
+  }
+  .kl-segmented-compact {
+    min-height: 28px;
+    --kl-cut-size: var(--kl-cut-nested);
+  }
+  .kl-segmented-compact .kl-segmented-item {
+    padding-inline: 10px;
+    font-size: 13px;
+  }
   @media (forced-colors: active) {
-    .kl-segmented-band { forced-color-adjust: none; background: Highlight; }
-    .kl-segmented-item[data-kl-covered] { forced-color-adjust: none; color: HighlightText; }
+    .kl-segmented-band {
+      forced-color-adjust: none;
+      background: Highlight;
+    }
+    .kl-segmented-item[data-kl-covered] {
+      forced-color-adjust: none;
+      color: HighlightText;
+    }
   }
 }

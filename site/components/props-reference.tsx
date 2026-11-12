@@ -1,31 +1,40 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TableFrame, TableScroll, Table, TableHead, TableBody, TableRow, TableHeaderCell, TableCell } from "@/components/keyline/ui/table"
+import * as React from "react";
+import {
+  TableFrame,
+  TableScroll,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableCell,
+} from "@/components/keyline/ui/table";
 
 /** A union wraps between members, never inside one: `"horizontal" |` then `"vertical"`. */
 function unionParts(type: string) {
-  const parts = type.split(" | ")
+  const parts = type.split(" | ");
   return parts.map((t, i) => (
     <React.Fragment key={i}>
       <span className="whitespace-nowrap">{i < parts.length - 1 ? `${t} |` : t}</span>
       {i < parts.length - 1 ? " " : null}
     </React.Fragment>
-  ))
+  ));
 }
 
 export type Prop = {
-  name: string
+  name: string;
   /** the type as written in TypeScript, e.g. "scroll" | "menu" */
-  type: string
-  default: string
-  description: React.ReactNode
-}
+  type: string;
+  default: string;
+  description: React.ReactNode;
+};
 
 // Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes a
 // block: name and default on one line, the type under them, the description below.
-const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:py-1"
-const CODE = "bg-transparent p-0 font-kl-mono"
+const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:py-1";
+const CODE = "bg-transparent p-0 font-kl-mono";
 
 /** Props set in Keyline's own Table: one row per prop, the code columns in the Code voice. */
 export function PropsReference({ label, props }: { label: string; props: Prop[] }) {
@@ -55,7 +64,9 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
                   <TableCell className={`${CELL} max-[721px]:col-span-full`}>
                     <code className={`${CODE} text-[13px] text-kl-ink-2`}>{unionParts(p.type)}</code>
                   </TableCell>
-                  <TableCell className={`${CELL} max-[721px]:col-start-2 max-[721px]:row-start-1 max-[721px]:pt-3 max-[721px]:text-end`}>
+                  <TableCell
+                    className={`${CELL} max-[721px]:col-start-2 max-[721px]:row-start-1 max-[721px]:pt-3 max-[721px]:text-end`}
+                  >
                     <span className="hidden text-[12px] text-kl-ink-3 max-[721px]:inline" aria-hidden="true">
                       Default{" "}
                     </span>
@@ -73,5 +84,5 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
         </TableScroll>
       </TableFrame>
     </div>
-  )
+  );
 }

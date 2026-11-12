@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { MenuItem } from "@/components/keyline/ui/menu"
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/components/keyline/ui/split-button"
+import { useState } from "react";
+import { MenuItem } from "@/components/keyline/ui/menu";
+import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/components/keyline/ui/split-button";
 
-const FORMATS = ["PDF", "CSV", "Excel"] as const
-type Format = (typeof FORMATS)[number]
+const FORMATS = ["PDF", "CSV", "Excel"] as const;
+type Format = (typeof FORMATS)[number];
 
 export function ExportReport() {
   // the action repeats the last format chosen from the menu
-  const [format, setFormat] = useState<Format>("PDF")
-  const [file, setFile] = useState<string | null>(null)
+  const [format, setFormat] = useState<Format>("PDF");
+  const [file, setFile] = useState<string | null>(null);
 
   const exportAs = (f: Format) => {
-    setFormat(f)
-    setFile(`scranton-q3-sales.${f === "Excel" ? "xlsx" : f.toLowerCase()}`)
-  }
+    setFormat(f);
+    setFile(`scranton-q3-sales.${f === "Excel" ? "xlsx" : f.toLowerCase()}`);
+  };
 
   return (
     <div className="grid gap-4">
@@ -39,5 +39,5 @@ export function ExportReport() {
         )}
       </p>
     </div>
-  )
+  );
 }

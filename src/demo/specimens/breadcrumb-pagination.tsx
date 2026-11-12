@@ -1,16 +1,22 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
-import { Panel,PanelHeader,PanelBody } from "@/registry/keyline/ui/panel"
-import { Breadcrumb } from "@/registry/keyline/ui/breadcrumb"
-import { Pagination } from "@/registry/keyline/ui/pagination"
+import * as React from "react";
+import * as ui from "../demo-ui";
+import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
+import { Breadcrumb } from "@/registry/keyline/ui/breadcrumb";
+import { Pagination } from "@/registry/keyline/ui/pagination";
 
 /* ------------------------------------------------------------------ */
 export function WayfindingSpecimen() {
-  const [page, setPage] = React.useState(5)
-  const [big, setBig] = React.useState(1)
+  const [page, setPage] = React.useState(5);
+  const [big, setBig] = React.useState(1);
   return (
     <div className={ui.stack}>
-      <Breadcrumb items={[{ label: "Network", href: "#/specimen" }, { label: "Rotterdam", href: "#/specimen" }, { label: "ECT Delta" }]} />
+      <Breadcrumb
+        items={[
+          { label: "Network", href: "#/specimen" },
+          { label: "Rotterdam", href: "#/specimen" },
+          { label: "ECT Delta" },
+        ]}
+      />
       <Breadcrumb
         items={[
           { label: "Network", href: "#/specimen" },
@@ -22,7 +28,14 @@ export function WayfindingSpecimen() {
         ]}
       />
       <div style={{ width: 360 }}>
-        <Breadcrumb items={[{ label: "Network", href: "#/specimen" }, { label: "Europe", href: "#/specimen" }, { label: "Rotterdam", href: "#/specimen" }, { label: "ECT Delta" }]} />
+        <Breadcrumb
+          items={[
+            { label: "Network", href: "#/specimen" },
+            { label: "Europe", href: "#/specimen" },
+            { label: "Rotterdam", href: "#/specimen" },
+            { label: "ECT Delta" },
+          ]}
+        />
       </div>
       <Pagination page={page} pageCount={20} onPageChange={setPage} />
       <Pagination page={big} pageCount={1250} onPageChange={setBig} label="Pagination, many pages" />
@@ -37,5 +50,5 @@ export function WayfindingSpecimen() {
         <Pagination layout="cell" page={page} pageCount={20} onPageChange={setPage} label="Pagination, in a panel" />
       </Panel>
     </div>
-  )
+  );
 }

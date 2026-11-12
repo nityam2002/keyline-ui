@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { TimeField } from "@/components/keyline/ui/time-field"
+import { useState } from "react";
+import { TimeField } from "@/components/keyline/ui/time-field";
 
-const show = (t: string) => new Date(`2026-01-01T${t}`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+const show = (t: string) =>
+  new Date(`2026-01-01T${t}`).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
 export function DockTime() {
-  const [time, setTime] = useState<string | null>("10:30")
+  const [time, setTime] = useState<string | null>("10:30");
 
   return (
     <div className="grid max-w-[320px] gap-3">
@@ -26,5 +27,5 @@ export function DockTime() {
         {time ? `Darryl will have the dock clear at ${show(time)}.` : "No arrival time yet."}
       </p>
     </div>
-  )
+  );
 }

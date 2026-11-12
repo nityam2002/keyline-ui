@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, Redo2, Underline, Undo2 } from "lucide-react"
-import { useState } from "react"
+import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, Redo2, Underline, Undo2 } from "lucide-react";
+import { useState } from "react";
 import {
   Toolbar,
   ToolbarButton,
@@ -11,15 +11,15 @@ import {
   ToolbarSpacer,
   ToolbarToggle,
   ToolbarToggleGroup,
-} from "@/components/keyline/ui/toolbar"
-import { Menu, MenuItem } from "@/components/keyline/ui/menu"
-import { Tooltip } from "@/components/keyline/ui/tooltip"
+} from "@/components/keyline/ui/toolbar";
+import { Menu, MenuItem } from "@/components/keyline/ui/menu";
+import { Tooltip } from "@/components/keyline/ui/tooltip";
 
 export function MemoEditor() {
-  const [style, setStyle] = useState<string[]>(["bold"])
-  const [align, setAlign] = useState<string[]>(["start"])
-  const [comments, setComments] = useState(true)
-  const [last, setLast] = useState("none")
+  const [style, setStyle] = useState<string[]>(["bold"]);
+  const [align, setAlign] = useState<string[]>(["start"]);
+  const [comments, setComments] = useState(true);
+  const [last, setLast] = useState("none");
 
   return (
     <>
@@ -80,8 +80,9 @@ export function MemoEditor() {
         </ToolbarButton>
       </Toolbar>
       <p role="status">
-        Last command: {last} · style {style.join(", ") || "none"} · align {align[0]} · comments {comments ? "on" : "off"}
+        Last command: {last} · style {style.join(", ") || "none"} · align {align[0]} · comments{" "}
+        {comments ? "on" : "off"}
       </p>
     </>
-  )
+  );
 }

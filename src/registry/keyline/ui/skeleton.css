@@ -2,22 +2,72 @@
   /* SKELETON: the table's loading cell outside the table. A k1 soft keyline box on the tint; a running
      segment (line-soft) while it waits. Heights follow the content they stand in for. */
   .kl-skeleton {
-    position: relative; overflow: hidden; display: block; box-sizing: border-box; max-width: 100%;
-    height: 10px; border: var(--kl-k1) solid var(--kl-line-soft); background-color: var(--kl-tint);
+    position: relative;
+    overflow: hidden;
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    height: 10px;
+    border: var(--kl-k1) solid var(--kl-line-soft);
+    background-color: var(--kl-tint);
   }
-  .kl-skeleton[data-shape="line"] { width: 100%; margin-block: 4px; }
+  .kl-skeleton[data-shape="line"] {
+    width: 100%;
+    margin-block: 4px;
+  }
   /* sized by the type it stands in for: put it where the number goes (inside .kl-count, a stat value) */
-  .kl-skeleton[data-shape="value"] { display: inline-block; vertical-align: baseline; width: 4ch; height: 0.8em; }
-  .kl-skeleton[data-shape="control"] { width: 100%; height: var(--kl-ctl); border-width: var(--kl-k2); }
-  .kl-skeleton[data-shape="block"] { width: 100%; height: 96px; }
-  .kl-skeleton-lines { display: grid; gap: 6px; min-width: 0; }
-  .kl-skeleton-lines > .kl-skeleton { margin-block: 0; }
-  .kl-skeleton::after { content: ""; position: absolute; inset-block: 0; left: 0; width: 30%; background-color: var(--kl-line-soft); animation: kl-run-30 1100ms linear infinite var(--kl-run-dir, normal); }
-  [data-kl-motion="reduce"] .kl-skeleton::after { animation: none; display: none; }
-  @media (prefers-reduced-motion: reduce) { .kl-skeleton::after { animation: none; display: none; } }
-  .kl-skeleton-group { min-width: 0; }
+  .kl-skeleton[data-shape="value"] {
+    display: inline-block;
+    vertical-align: baseline;
+    width: 4ch;
+    height: 0.8em;
+  }
+  .kl-skeleton[data-shape="control"] {
+    width: 100%;
+    height: var(--kl-ctl);
+    border-width: var(--kl-k2);
+  }
+  .kl-skeleton[data-shape="block"] {
+    width: 100%;
+    height: 96px;
+  }
+  .kl-skeleton-lines {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+  .kl-skeleton-lines > .kl-skeleton {
+    margin-block: 0;
+  }
+  .kl-skeleton::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 30%;
+    background-color: var(--kl-line-soft);
+    animation: kl-run-30 1100ms linear infinite var(--kl-run-dir, normal);
+  }
+  [data-kl-motion="reduce"] .kl-skeleton::after {
+    animation: none;
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kl-skeleton::after {
+      animation: none;
+      display: none;
+    }
+  }
+  .kl-skeleton-group {
+    min-width: 0;
+  }
   @media (forced-colors: active) {
-    .kl-skeleton { border-color: GrayText; background: Canvas; }
-    .kl-skeleton::after { display: none; }
+    .kl-skeleton {
+      border-color: GrayText;
+      background: Canvas;
+    }
+    .kl-skeleton::after {
+      display: none;
+    }
   }
 }

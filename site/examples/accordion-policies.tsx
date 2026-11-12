@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from "@/components/keyline/ui/accordion"
+import { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from "@/components/keyline/ui/accordion";
 
 const POLICIES = [
   {
@@ -21,7 +21,7 @@ const POLICIES = [
     meta: "Up to 12%",
     body: "Reps can take up to 8% off an order of 100 cases without asking. Anything past that, up to 12%, needs Michael's signature, which he'll give if you ask nicely.",
   },
-]
+];
 
 export function BranchPolicies() {
   return (
@@ -35,5 +35,5 @@ export function BranchPolicies() {
         </AccordionItem>
       ))}
     </Accordion>
-  )
+  );
 }

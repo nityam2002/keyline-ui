@@ -1,104 +1,208 @@
 // Resizable (react-resizable-panels v4 in Keyline's look): separator name, value and bounds, keys, double-click
 // reset, drag, the thick line on hover and in the focus colour, the grip, nested vertical groups, buttons on the
 // imperative API, RTL, narrow.
-import { test } from "./fixtures.mjs"
+import { test } from "./fixtures.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
-test.use({ only: ["navigation-menu","resizable"] })
+test.use({ only: ["navigation-menu", "resizable"] });
 
-const now = (h) => h.evaluate((e) => Number(e.getAttribute("aria-valuenow")))
-const width = (l) => l.evaluate((e) => e.getBoundingClientRect().width)
-const until = (p, fn, arg, timeout = 4000) => p.waitForFunction(fn, arg, { timeout }).catch(() => {})
+const now = (h) => h.evaluate((e) => Number(e.getAttribute("aria-valuenow")));
+const width = (l) => l.evaluate((e) => e.getBoundingClientRect().width);
+const until = (p, fn, arg, timeout = 4000) => p.waitForFunction(fn, arg, { timeout }).catch(() => {});
 
-test("resizable: the work group (separator, keys, focus, hover, drag, double-click, nested)", async ({ open, ok, eng }) => {
-  const tab = eng === "webkit" ? "Alt+Tab" : "Tab"
-  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" })
-  const work = p.getByTestId("rz-work")
-  await work.scrollIntoViewIfNeeded()
-  const h = work.getByRole("separator", { name: "Manifests" })
-  ok("resizable: the seam is a named separator, vertical, value 32 of 0–50", (await h.count()) === 1 && (await h.getAttribute("aria-orientation")) === "vertical" && (await now(h)) === 32 && (await h.getAttribute("aria-valuemin")) === "0" && (await h.getAttribute("aria-valuemax")) === "50", null)
-  const list = p.locator(`[id="${await h.getAttribute("aria-controls")}"]`)
-  ok("resizable: aria-controls names the list panel", (await list.textContent()).includes("MAEU 7781204"), null)
-  const geo = await work.evaluate((w) => { const g = w.querySelector(".kl-rz").getBoundingClientRect(), s = w.querySelector(".kl-rz-handle").getBoundingClientRect(), a = w.querySelector("[data-panel]").getBoundingClientRect(); return { g: g.width, a: a.width, seam: s.width, gap: s.left - a.right } })
-  ok("resizable: the list takes 32% of the room, the seam is one 1px keyline touching it", Math.abs(geo.a / (geo.g - 1) - 0.32) < 0.01 && geo.seam === 1 && Math.abs(geo.gap) < 0.5, geo)
-  const look = () => h.evaluate((e) => { const a = getComputedStyle(e, "::after"); return { state: e.getAttribute("data-separator"), o: a.opacity, w: a.width, bg: a.backgroundColor } })
-  ok("resizable: at rest only the 1px seam shows", (await look()).o === "0", await look())
+test("resizable: the work group (separator, keys, focus, hover, drag, double-click, nested)", async ({
+  open,
+  ok,
+  eng,
+}) => {
+  const tab = eng === "webkit" ? "Alt+Tab" : "Tab";
+  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" });
+  const work = p.getByTestId("rz-work");
+  await work.scrollIntoViewIfNeeded();
+  const h = work.getByRole("separator", { name: "Manifests" });
+  ok(
+    "resizable: the seam is a named separator, vertical, value 32 of 0–50",
+    (await h.count()) === 1 &&
+      (await h.getAttribute("aria-orientation")) === "vertical" &&
+      (await now(h)) === 32 &&
+      (await h.getAttribute("aria-valuemin")) === "0" &&
+      (await h.getAttribute("aria-valuemax")) === "50",
+    null,
+  );
+  const list = p.locator(`[id="${await h.getAttribute("aria-controls")}"]`);
+  ok("resizable: aria-controls names the list panel", (await list.textContent()).includes("MAEU 7781204"), null);
+  const geo = await work.evaluate((w) => {
+    const g = w.querySelector(".kl-rz").getBoundingClientRect(),
+      s = w.querySelector(".kl-rz-handle").getBoundingClientRect(),
+      a = w.querySelector("[data-panel]").getBoundingClientRect();
+    return { g: g.width, a: a.width, seam: s.width, gap: s.left - a.right };
+  });
+  ok(
+    "resizable: the list takes 32% of the room, the seam is one 1px keyline touching it",
+    Math.abs(geo.a / (geo.g - 1) - 0.32) < 0.01 && geo.seam === 1 && Math.abs(geo.gap) < 0.5,
+    geo,
+  );
+  const look = () =>
+    h.evaluate((e) => {
+      const a = getComputedStyle(e, "::after");
+      return { state: e.getAttribute("data-separator"), o: a.opacity, w: a.width, bg: a.backgroundColor };
+    });
+  ok("resizable: at rest only the 1px seam shows", (await look()).o === "0", await look());
   // keyboard (the library's)
-  await h.focus()
-  const k0 = await now(h)
-  await p.keyboard.press("ArrowRight")
-  ok("resizable: ArrowRight grows the list", (await now(h)) > k0, [k0, await now(h)])
-  await p.keyboard.press("End")
-  ok("resizable: End stops at the list's maximum (50)", (await now(h)) === 50, await now(h))
-  await p.keyboard.press("Home")
-  ok("resizable: Home collapses the collapsible list (0)", (await now(h)) === 0, await now(h))
-  await p.keyboard.press("Enter")
-  ok("resizable: Enter restores it", (await now(h)) >= 20, await now(h))
-  await p.locator("#resizable").click({ position: { x: 2, y: 2 } })
-  await work.getByRole("separator").nth(1).focus(); await p.keyboard.press("Shift+" + tab)
-  const hEl = await h.elementHandle()
-  await until(p, (e) => { const a = getComputedStyle(e, "::after"); return e.matches(":focus-visible") && a.opacity === "1" && a.width === "3px" }, hEl, 2000)
-  const fv = await h.evaluate((e) => { const a = getComputedStyle(e, "::after"); return { on: e.matches(":focus-visible"), o: a.opacity, w: a.width } })
-  ok("resizable: keyboard focus draws the 3px line in the focus colour", fv.on && fv.o === "1" && fv.w === "3px", fv)
-  await h.blur()
+  await h.focus();
+  const k0 = await now(h);
+  await p.keyboard.press("ArrowRight");
+  ok("resizable: ArrowRight grows the list", (await now(h)) > k0, [k0, await now(h)]);
+  await p.keyboard.press("End");
+  ok("resizable: End stops at the list's maximum (50)", (await now(h)) === 50, await now(h));
+  await p.keyboard.press("Home");
+  ok("resizable: Home collapses the collapsible list (0)", (await now(h)) === 0, await now(h));
+  await p.keyboard.press("Enter");
+  ok("resizable: Enter restores it", (await now(h)) >= 20, await now(h));
+  await p.locator("#resizable").click({ position: { x: 2, y: 2 } });
+  await work.getByRole("separator").nth(1).focus();
+  await p.keyboard.press("Shift+" + tab);
+  const hEl = await h.elementHandle();
+  await until(
+    p,
+    (e) => {
+      const a = getComputedStyle(e, "::after");
+      return e.matches(":focus-visible") && a.opacity === "1" && a.width === "3px";
+    },
+    hEl,
+    2000,
+  );
+  const fv = await h.evaluate((e) => {
+    const a = getComputedStyle(e, "::after");
+    return { on: e.matches(":focus-visible"), o: a.opacity, w: a.width };
+  });
+  ok("resizable: keyboard focus draws the 3px line in the focus colour", fv.on && fv.o === "1" && fv.w === "3px", fv);
+  await h.blur();
   // pointer: hover, drag, double-click
-  const hb = await h.boundingBox()
-  const cx = hb.x + hb.width / 2, cy = hb.y + 40
-  await p.mouse.move(cx + 3, cy)
-  await until(p, (e) => { const a = getComputedStyle(e, "::after"); return e.getAttribute("data-separator") === "hover" && a.opacity === "1" && a.width === "3px" }, hEl, 2000)
-  const hv = await look()
-  ok("resizable: hover (the library's hit target, wider than the line) thickens the seam to 3px ink", hv.state === "hover" && hv.o === "1" && hv.w === "3px", hv)
-  const before = await width(list)
-  await p.mouse.down(); await p.mouse.move(cx - 40, cy, { steps: 4 }); await p.mouse.move(cx - 60, cy, { steps: 2 })
-  const dg = await h.evaluate((e) => [e.getAttribute("data-separator"), getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundColor === getComputedStyle(e).getPropertyValue("--kl-inverse").trim() || getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundImage === "none"])
-  ok("resizable: while dragging the seam is active and the grip inverts", dg[0] === "active" && dg[1], dg)
-  await p.mouse.up()
-  ok("resizable: dragging 60px towards the list shrinks it by about 60px", Math.abs(before - (await width(list)) - 60) <= 3, { before, after: await width(list) })
-  await p.mouse.dblclick(cx - 60, cy)
-  await until(p, (e) => e.getAttribute("aria-valuenow") === "32", hEl, 2000)
-  ok("resizable: double-click resets the list to its default (32)", (await now(h)) === 32, await now(h))
+  const hb = await h.boundingBox();
+  const cx = hb.x + hb.width / 2,
+    cy = hb.y + 40;
+  await p.mouse.move(cx + 3, cy);
+  await until(
+    p,
+    (e) => {
+      const a = getComputedStyle(e, "::after");
+      return e.getAttribute("data-separator") === "hover" && a.opacity === "1" && a.width === "3px";
+    },
+    hEl,
+    2000,
+  );
+  const hv = await look();
+  ok(
+    "resizable: hover (the library's hit target, wider than the line) thickens the seam to 3px ink",
+    hv.state === "hover" && hv.o === "1" && hv.w === "3px",
+    hv,
+  );
+  const before = await width(list);
+  await p.mouse.down();
+  await p.mouse.move(cx - 40, cy, { steps: 4 });
+  await p.mouse.move(cx - 60, cy, { steps: 2 });
+  const dg = await h.evaluate((e) => [
+    e.getAttribute("data-separator"),
+    getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundColor ===
+      getComputedStyle(e).getPropertyValue("--kl-inverse").trim() ||
+      getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundImage === "none",
+  ]);
+  ok("resizable: while dragging the seam is active and the grip inverts", dg[0] === "active" && dg[1], dg);
+  await p.mouse.up();
+  ok(
+    "resizable: dragging 60px towards the list shrinks it by about 60px",
+    Math.abs(before - (await width(list)) - 60) <= 3,
+    { before, after: await width(list) },
+  );
+  await p.mouse.dblclick(cx - 60, cy);
+  await until(p, (e) => e.getAttribute("aria-valuenow") === "32", hEl, 2000);
+  ok("resizable: double-click resets the list to its default (32)", (await now(h)) === 32, await now(h));
   // nested vertical group
-  const bare = work.getByRole("separator", { name: "Container detail" })
-  ok("resizable: the nested seam is horizontal and named", (await bare.getAttribute("aria-orientation")) === "horizontal", null)
-  await bare.focus(); const v0 = await now(bare); await p.keyboard.press("ArrowDown")
-  ok("resizable: ArrowDown grows the top panel", (await now(bare)) > v0, [v0, await now(bare)])
-  await bare.blur()
-  ok("resizable: onLayoutChanged reports the sizes (panel header code)", /^\d+ \/ \d+$/.test((await work.locator(".kl-code").first().textContent()).trim()), await work.locator(".kl-code").first().textContent())
-  ok("resizable: no page errors", p.errs.length === 0, p.errs)
-})
+  const bare = work.getByRole("separator", { name: "Container detail" });
+  ok(
+    "resizable: the nested seam is horizontal and named",
+    (await bare.getAttribute("aria-orientation")) === "horizontal",
+    null,
+  );
+  await bare.focus();
+  const v0 = await now(bare);
+  await p.keyboard.press("ArrowDown");
+  ok("resizable: ArrowDown grows the top panel", (await now(bare)) > v0, [v0, await now(bare)]);
+  await bare.blur();
+  ok(
+    "resizable: onLayoutChanged reports the sizes (panel header code)",
+    /^\d+ \/ \d+$/.test((await work.locator(".kl-code").first().textContent()).trim()),
+    await work.locator(".kl-code").first().textContent(),
+  );
+  ok("resizable: no page errors", p.errs.length === 0, p.errs);
+});
 
 test("resizable: buttons on the imperative API", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" })
+  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" });
   // the pointer alternative: buttons on the library's imperative API
-  const c = p.getByTestId("rz-controlled")
-  await c.scrollIntoViewIfNeeded()
-  const ch = c.getByRole("separator", { name: "Filters" })
-  const chEl = await ch.elementHandle()
-  await c.getByTestId("rz-collapse").click()
-  await until(p, (e) => e.getAttribute("aria-valuenow") === "0" && /Filters 0%/.test(document.querySelector("[data-testid=rz-readout]").textContent), chEl, 2000)
-  ok("resizable: a button collapses the filters (panelRef.collapse)", (await now(ch)) === 0 && /Filters 0%/.test(await c.getByTestId("rz-readout").textContent()), await c.getByTestId("rz-readout").textContent())
-  await c.getByTestId("rz-reset").click()
-  await until(p, (e) => e.getAttribute("aria-valuenow") === "25" && /Filters 25%/.test(document.querySelector("[data-testid=rz-readout]").textContent), chEl, 2000)
-  ok("resizable: a button resets 25 / 75 (groupRef.setLayout)", (await now(ch)) === 25 && /Filters 25%/.test(await c.getByTestId("rz-readout").textContent()), null)
-  ok("resizable: no page errors", p.errs.length === 0, p.errs)
-})
+  const c = p.getByTestId("rz-controlled");
+  await c.scrollIntoViewIfNeeded();
+  const ch = c.getByRole("separator", { name: "Filters" });
+  const chEl = await ch.elementHandle();
+  await c.getByTestId("rz-collapse").click();
+  await until(
+    p,
+    (e) =>
+      e.getAttribute("aria-valuenow") === "0" &&
+      /Filters 0%/.test(document.querySelector("[data-testid=rz-readout]").textContent),
+    chEl,
+    2000,
+  );
+  ok(
+    "resizable: a button collapses the filters (panelRef.collapse)",
+    (await now(ch)) === 0 && /Filters 0%/.test(await c.getByTestId("rz-readout").textContent()),
+    await c.getByTestId("rz-readout").textContent(),
+  );
+  await c.getByTestId("rz-reset").click();
+  await until(
+    p,
+    (e) =>
+      e.getAttribute("aria-valuenow") === "25" &&
+      /Filters 25%/.test(document.querySelector("[data-testid=rz-readout]").textContent),
+    chEl,
+    2000,
+  );
+  ok(
+    "resizable: a button resets 25 / 75 (groupRef.setLayout)",
+    (await now(ch)) === 25 && /Filters 25%/.test(await c.getByTestId("rz-readout").textContent()),
+    null,
+  );
+  ok("resizable: no page errors", p.errs.length === 0, p.errs);
+});
 
 test("resizable: RTL", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" })
-  const r = p.getByTestId("rz-rtl")
-  await r.scrollIntoViewIfNeeded()
-  const rh = r.getByRole("separator", { name: "Manifests" })
-  const rl = await r.evaluate((w) => { const a = w.querySelector("[data-panel]").getBoundingClientRect(), g = w.querySelector(".kl-rz").getBoundingClientRect(); return Math.abs(a.right - g.right) < 1 })
-  ok("resizable RTL: the list leads at the right", rl, null)
-  const rw0 = await width(r.locator("[data-panel]").first())
-  const rb = await rh.boundingBox()
-  await p.mouse.move(rb.x + 0.5, rb.y + 40); await p.mouse.down(); await p.mouse.move(rb.x - 40, rb.y + 40, { steps: 4 }); await p.mouse.up()
-  const rw1 = await width(r.locator("[data-panel]").first())
-  ok("resizable RTL: dragging the seam left (away from the list) grows the list", rw1 > rw0 + 30, { rw0, rw1 })
-  ok("resizable: no page errors", p.errs.length === 0, p.errs)
-})
+  const p = await open({ route: "specimen", q: "theme=light", ready: "#navigation-menu" });
+  const r = p.getByTestId("rz-rtl");
+  await r.scrollIntoViewIfNeeded();
+  const rh = r.getByRole("separator", { name: "Manifests" });
+  const rl = await r.evaluate((w) => {
+    const a = w.querySelector("[data-panel]").getBoundingClientRect(),
+      g = w.querySelector(".kl-rz").getBoundingClientRect();
+    return Math.abs(a.right - g.right) < 1;
+  });
+  ok("resizable RTL: the list leads at the right", rl, null);
+  const rw0 = await width(r.locator("[data-panel]").first());
+  const rb = await rh.boundingBox();
+  await p.mouse.move(rb.x + 0.5, rb.y + 40);
+  await p.mouse.down();
+  await p.mouse.move(rb.x - 40, rb.y + 40, { steps: 4 });
+  await p.mouse.up();
+  const rw1 = await width(r.locator("[data-panel]").first());
+  ok("resizable RTL: dragging the seam left (away from the list) grows the list", rw1 > rw0 + 30, { rw0, rw1 });
+  ok("resizable: no page errors", p.errs.length === 0, p.errs);
+});
 
 test("resizable: 390px, the group stays inside its panel", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", q: "theme=light", width: 390, height: 844, ready: "#navigation-menu" })
-  const rz = await p.getByTestId("rz-work").evaluate((w) => { const f = w.getBoundingClientRect(), g = w.querySelector(".kl-rz").getBoundingClientRect(); return g.right <= f.right + 0.5 })
-  ok("narrow: the resizable group stays inside its panel at 390px", rz, null)
-})
+  const p = await open({ route: "specimen", q: "theme=light", width: 390, height: 844, ready: "#navigation-menu" });
+  const rz = await p.getByTestId("rz-work").evaluate((w) => {
+    const f = w.getBoundingClientRect(),
+      g = w.querySelector(".kl-rz").getBoundingClientRect();
+    return g.right <= f.right + 0.5;
+  });
+  ok("narrow: the resizable group stays inside its panel at 390px", rz, null);
+});

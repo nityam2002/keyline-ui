@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { ChartNoAxesColumn, FileText, PartyPopper, Plus, UserRound, Warehouse } from "lucide-react"
-import { useState } from "react"
-import { Nav, NavIdentity, type NavGroup } from "@/components/keyline/ui/nav"
+import { ChartNoAxesColumn, FileText, PartyPopper, Plus, UserRound, Warehouse } from "lucide-react";
+import { useState } from "react";
+import { Nav, NavIdentity, type NavGroup } from "@/components/keyline/ui/nav";
 
 const GROUPS: NavGroup[] = [
   {
@@ -29,7 +29,7 @@ const GROUPS: NavGroup[] = [
       { value: "hr", label: "Human resources", disabled: true, icon: <Plus size={16} aria-hidden="true" /> },
     ],
   },
-]
+];
 
 const TITLES: Record<string, string> = {
   orders: "11 open orders, 2 held",
@@ -38,10 +38,10 @@ const TITLES: Record<string, string> = {
   "reports-quarter": "Quarter to date: 19,880 reams",
   warehouse: "88 pallets on the floor",
   parties: "Two parties this month. Angela has the budget.",
-}
+};
 
 export function OfficeSidebar() {
-  const [view, setView] = useState("orders")
+  const [view, setView] = useState("orders");
 
   return (
     <div className="grid gap-4 sm:grid-cols-[240px_1fr]">
@@ -56,5 +56,5 @@ export function OfficeSidebar() {
         {TITLES[view]}
       </p>
     </div>
-  )
+  );
 }

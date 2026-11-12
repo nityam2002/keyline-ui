@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Kbd, KbdGroup } from "@/components/keyline/ui/kbd"
+import { useEffect, useRef, useState } from "react";
+import { Kbd, KbdGroup } from "@/components/keyline/ui/kbd";
 
 const SHORTCUTS = [
   { id: "new", keys: ["N"], does: "New order" },
   { id: "find", keys: ["/"], does: "Find a client" },
   { id: "save", keys: ["Ctrl", "S"], does: "Save the order" },
   { id: "invoices", keys: ["G", "I"], sep: "then", does: "Go to invoices" },
-]
+];
 
 export function OrderShortcuts() {
-  const [hit, setHit] = useState<string | null>(null)
-  const pendingG = useRef(false)
-  const area = useRef<HTMLDivElement>(null)
+  const [hit, setHit] = useState<string | null>(null);
+  const pendingG = useRef(false);
+  const area = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = area.current
-    if (!el) return
+    const el = area.current;
+    if (!el) return;
     const onKey = (e: KeyboardEvent) => {
-      const k = e.key.toLowerCase()
-      let id: string | null = null
-      if ((e.ctrlKey || e.metaKey) && k === "s") id = "save"
-      else if (e.ctrlKey || e.metaKey || e.altKey) return
-      else if (pendingG.current && k === "i") id = "invoices"
-      else if (k === "n") id = "new"
-      else if (k === "/") id = "find"
-      pendingG.current = k === "g"
+      const k = e.key.toLowerCase();
+      let id: string | null = null;
+      if ((e.ctrlKey || e.metaKey) && k === "s") id = "save";
+      else if (e.ctrlKey || e.metaKey || e.altKey) return;
+      else if (pendingG.current && k === "i") id = "invoices";
+      else if (k === "n") id = "new";
+      else if (k === "/") id = "find";
+      pendingG.current = k === "g";
       if (id) {
-        e.preventDefault()
-        setHit(id)
+        e.preventDefault();
+        setHit(id);
       }
-    }
-    el.addEventListener("keydown", onKey)
-    return () => el.removeEventListener("keydown", onKey)
-  }, [])
+    };
+    el.addEventListener("keydown", onKey);
+    return () => el.removeEventListener("keydown", onKey);
+  }, []);
 
-  const done = SHORTCUTS.find((s) => s.id === hit)
+  const done = SHORTCUTS.find((s) => s.id === hit);
 
   return (
     <div
@@ -76,5 +76,5 @@ export function OrderShortcuts() {
         {done ? `${done.does}. In the real order screen that would happen now.` : "Click here, then press a shortcut."}
       </p>
     </div>
-  )
+  );
 }

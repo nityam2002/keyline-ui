@@ -1,14 +1,14 @@
 "use client";
 
-import * as React from "react"
-import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion"
+import * as React from "react";
+import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type AccordionProps<V> = React.ComponentProps<typeof AccordionPrimitive.Root<V>> & {
   /** control: its own 2px frame. cell: the rows sit directly in an enclosing frame (a panel body, an inspector). */
-  layout?: "control" | "cell"
-}
+  layout?: "control" | "cell";
+};
 
 /**
  * Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge,
@@ -31,44 +31,67 @@ type AccordionProps<V> = React.ComponentProps<typeof AccordionPrimitive.Root<V>>
  * pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.
  */
 function Accordion<V>({ className, layout = "control", ...props }: AccordionProps<V>) {
-  return <AccordionPrimitive.Root<V> data-slot="accordion" data-kl-layout={layout} className={cn("kl-ctl kl-accordion", className)} {...props} />
+  return (
+    <AccordionPrimitive.Root<V>
+      data-slot="accordion"
+      data-kl-layout={layout}
+      className={cn("kl-ctl kl-accordion", className)}
+      {...props}
+    />
+  );
 }
 
 function AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>) {
-  return <AccordionPrimitive.Item data-slot="accordion-item" className={cn("kl-acc-item", className)} {...props} />
+  return <AccordionPrimitive.Item data-slot="accordion-item" className={cn("kl-acc-item", className)} {...props} />;
 }
 
 type AccordionTriggerProps = React.ComponentProps<typeof AccordionPrimitive.Trigger> & {
-  description?: React.ReactNode
+  description?: React.ReactNode;
   /** Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does. */
-  meta?: React.ReactNode
+  meta?: React.ReactNode;
   /** Heading level of the header (default 3). */
-  level?: 2 | 3 | 4 | 5 | 6
-}
+  level?: 2 | 3 | 4 | 5 | 6;
+};
 
 function AccordionTrigger({ className, children, description, meta, level = 3, ...props }: AccordionTriggerProps) {
   return (
-    <AccordionPrimitive.Header data-slot="accordion-header" className="kl-acc-header" render={React.createElement(`h${level}`)}>
-      <AccordionPrimitive.Trigger data-slot="accordion-trigger" className={cn("kl-key kl-acc-trigger", className)} {...props}>
+    <AccordionPrimitive.Header
+      data-slot="accordion-header"
+      className="kl-acc-header"
+      render={React.createElement(`h${level}`)}
+    >
+      <AccordionPrimitive.Trigger
+        data-slot="accordion-trigger"
+        className={cn("kl-key kl-acc-trigger", className)}
+        {...props}
+      >
         <span className="kl-acc-title">
           <span>{children}</span>
           {description ? <small>{description}</small> : null}
         </span>
         {meta != null ? <span className="kl-acc-meta">{meta}</span> : null}
         <span className="kl-acc-caret" aria-hidden>
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square">
+          <svg
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="square"
+          >
             <path d="m4 6 4 4 4-4" />
           </svg>
         </span>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
-  )
+  );
 }
 
 type AccordionPanelProps = React.ComponentProps<typeof AccordionPrimitive.Panel> & {
   /** Drop the panel's inset, for content that brings its own cells (an item list, a key/value grid). */
-  flush?: boolean
-}
+  flush?: boolean;
+};
 
 function AccordionPanel({ className, children, flush, ...props }: AccordionPanelProps) {
   return (
@@ -77,7 +100,7 @@ function AccordionPanel({ className, children, flush, ...props }: AccordionPanel
         {children}
       </div>
     </AccordionPrimitive.Panel>
-  )
+  );
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionPanel }
+export { Accordion, AccordionItem, AccordionTrigger, AccordionPanel };
