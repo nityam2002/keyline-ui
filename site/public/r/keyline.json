@@ -310,7 +310,7 @@
       ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], .kl-skel ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
         "--kl-run-dir": "reverse"
       },
-      ":where( .kl-attached, .kl-select-panel, .kl-ms-list, .kl-cmd-list, [data-slot=\"popover-popup\"], .kl-tabs-list, [data-slot=\"segmented\"], [data-slot=\"toggle-group\"], .kl-nav-list )": {
+      ":where( .kl-attached, [data-slot=\"popover-popup\"], .kl-tabs-list, [data-slot=\"segmented\"], [data-slot=\"toggle-group\"], .kl-nav-list )": {
         "scrollbar-width": "thin",
         "scrollbar-color": "var(--kl-ink-3) transparent"
       },

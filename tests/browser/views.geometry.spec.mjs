@@ -24,7 +24,7 @@ const GEOMETRY = () => {
     rounded: [],
   };
   for (const el of document.querySelectorAll(
-    ".kl-cell, .kl-attached, .kl-ms-chip, .kl-check, [data-slot=toast-root], .kl-skel",
+    ".kl-cell, .kl-attached, [data-slot=combobox-chip], .kl-check, [data-slot=toast-root], .kl-skel",
   ))
     if (cutOf(el)) out.cutOnCells.push(name(el));
   for (const el of document.querySelectorAll(".kl-frame, .kl-ctl")) {

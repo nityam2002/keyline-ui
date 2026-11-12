@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Popover } from "@base-ui/react/popover";
 import { Select as SelectPrimitive } from "@base-ui/react/select";
+import { Field as FieldPrimitive } from "@base-ui/react/field";
 
 import {
   DayPicker,
@@ -16,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { dockGeometry, scopeProps, useDomDirection, useKeylineScope } from "../lib/keyline-scope";
 import { floodFromPointer } from "../lib/keyline-motion";
-import { SelectContent, SelectItem, SelectRoot } from "./select";
+import { SelectItem, SelectList, SelectPopup, SelectRoot } from "./select";
 import {
   between,
   countAvailable,
@@ -121,28 +122,36 @@ function Dropdown({ options = [], value, onChange, disabled, "aria-label": ariaL
   // field's control); only the trigger is the calendar's: the whole header cell is the button. Day-picker passes
   // every month with the ones out of bounds disabled, so it is a choice only when two can be chosen.
   return (
-    <SelectRoot<string>
-      layout="cell"
-      className="kl-cal-ddf"
-      items={items}
-      value={value == null ? null : String(value)}
-      onValueChange={choose}
+    <FieldPrimitive.Root
+      data-slot="select"
+      data-kl-layout="cell"
       disabled={disabled || options.filter((o) => !o.disabled).length < 2}
+      className="kl-field kl-cal-ddf"
     >
-      <SelectPrimitive.Trigger aria-label={ariaLabel} className="kl-cal-dd">
-        <SelectPrimitive.Value className="kl-cal-title" />
-        <SelectPrimitive.Icon className="kl-cal-chev">
-          <Chevron orientation="down" />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-      <SelectContent panelClassName="kl-cal-dd-panel">
-        {options.map((o) => (
-          <SelectItem key={o.value} value={String(o.value)} disabled={o.disabled}>
-            {o.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </SelectRoot>
+      <SelectRoot<string>
+        items={items}
+        value={value == null ? null : String(value)}
+        onValueChange={choose}
+        disabled={disabled || options.filter((o) => !o.disabled).length < 2}
+      >
+        <SelectPrimitive.Trigger aria-label={ariaLabel} className="kl-cal-dd">
+          <SelectPrimitive.Value className="kl-cal-title" />
+          <SelectPrimitive.Icon className="kl-cal-chev">
+            <Chevron orientation="down" />
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+        {/* a narrower minimum and a shorter list than a field's */}
+        <SelectPopup layout="cell" className="max-h-[min(var(--available-height),320px)] [--kl-dock-w:9rem]">
+          <SelectList>
+            {options.map((o) => (
+              <SelectItem key={o.value} value={String(o.value)} disabled={o.disabled}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectList>
+        </SelectPopup>
+      </SelectRoot>
+    </FieldPrimitive.Root>
   );
 }
 

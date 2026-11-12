@@ -40,9 +40,9 @@ test("dock (control): calendar and select list in the booking dialog", async ({ 
   await idle(p);
   const carrier = dlg.locator("[data-slot=select] [role=combobox]");
   await carrier.click();
-  await p.locator(".kl-select-panel").last().waitFor();
+  await p.locator("[data-slot=select-popup]").last().waitFor();
   await idle(p);
-  g = await geo(p, carrier, ".kl-select-panel");
+  g = await geo(p, carrier, "[data-slot=select-popup]");
   ok(
     "dock (control): select list overlaps the k2 edge and spans the trigger exactly",
     g.overlap === 2 && g.dl === 0 && g.dr === 0,
@@ -77,11 +77,11 @@ for (const dir of ["ltr", "rtl"]) {
       .waitFor({ state: "detached" })
       .catch(() => {});
     await idle(p);
-    const msT = p.locator(".kl-sx-carriers .kl-ms-frame").first();
-    await p.locator(".kl-sx-carriers .kl-ms-trigger").first().click();
-    await p.locator(".kl-ms-panel").last().waitFor();
+    const msT = p.locator(".kl-sx-carriers [data-slot=combobox-input-group]").first();
+    await p.locator(".kl-sx-carriers [data-slot=combobox-trigger]").first().click();
+    await p.locator("[data-slot=combobox-popup]").last().waitFor();
     await idle(p);
-    g = await geo(p, msT, ".kl-ms-panel");
+    g = await geo(p, msT, "[data-slot=combobox-popup]");
     ok(
       `dock (cell, ${dir}): multiselect list follows the same geometry`,
       g.overlap === 0 && g.dl === -2 && g.dr === 2,

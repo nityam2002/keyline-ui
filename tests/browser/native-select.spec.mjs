@@ -58,7 +58,7 @@ for (const q of ["theme=light", "theme=dark"]) {
       await sec.getByTestId("ns-submitted").textContent(),
     );
     const hit = await term.evaluate((s) => {
-      const c = s.parentElement.querySelector(".kl-nsel-caret").getBoundingClientRect();
+      const c = s.parentElement.querySelector("[data-slot=native-select-icon]").getBoundingClientRect();
       return document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2) === s;
     });
     ok(`${q}: a press on the caret cell reaches the select`, hit, null);
@@ -77,13 +77,13 @@ for (const q of ["theme=light", "theme=dark"]) {
       null,
     );
     const nar = await sec.getByTestId("ns-narrow").evaluate((el) => {
-      const f = el.querySelector(".kl-nsel-frame").getBoundingClientRect();
+      const f = el.querySelector("[data-slot=native-select-frame]").getBoundingClientRect();
       return [Math.round(f.width), Math.round(el.getBoundingClientRect().width)];
     });
     ok(`${q}: a long option stays inside a 220px column`, nar[0] <= nar[1], nar);
     const rtl = await sec.getByTestId("ns-rtl").evaluate((el) => {
-      const c = el.querySelector(".kl-nsel-caret").getBoundingClientRect(),
-        f = el.querySelector(".kl-nsel-frame").getBoundingClientRect();
+      const c = el.querySelector("[data-slot=native-select-icon]").getBoundingClientRect(),
+        f = el.querySelector("[data-slot=native-select-frame]").getBoundingClientRect();
       return [Math.round(c.left - f.left), Math.round(f.right - c.right)];
     });
     ok(`${q}: RTL: the caret cell is at the inline end (left)`, rtl[0] <= 3 && rtl[1] > 100, rtl);

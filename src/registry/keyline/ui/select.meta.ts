@@ -5,9 +5,8 @@ export default {
   type: "registry:ui",
   title: "Select",
   description:
-    "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts (SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectSeparator).",
+    "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts named as Base UI names them (SelectRoot, SelectTrigger, SelectValue, SelectPopup, SelectItem, SelectGroup, SelectSeparator …).",
   files: [{ path: "src/registry/keyline/ui/select.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/select.css",
   dependencies: ["@base-ui/react"],
   registryDependencies: [
     "@keyline-ui/keyline",
@@ -15,5 +14,6 @@ export default {
     "@keyline-ui/keyline-scope",
     "@keyline-ui/options",
     "@keyline-ui/field",
+    "@keyline-ui/keyline-render",
   ],
 } satisfies KeylineItem;

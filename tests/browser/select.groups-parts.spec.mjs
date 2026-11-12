@@ -9,12 +9,12 @@ const READY = "#slider .kl-slider";
 
 test("select groups: headings, rules, keyboard across groups", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const sels = p.locator("#select .kl-select");
+  const sels = p.locator("#select [data-slot=select], #select [data-slot=field]");
   const grouped = sels.filter({ hasText: "Service level" });
   await grouped.scrollIntoViewIfNeeded();
   await grouped.locator("[role=combobox]").focus();
   await p.keyboard.press("Enter");
-  const panel = p.locator(".kl-select-panel").last();
+  const panel = p.locator("[data-slot=select-popup]").last();
   const groups = panel.locator("[role=group]");
   await groups.nth(2).waitFor();
   await idle(p);
@@ -45,10 +45,10 @@ test("select groups: headings, rules, keyboard across groups", async ({ open, ok
 
 test("select parts: items labels, separator, docking, choosing", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const sels = p.locator("#select .kl-select");
+  const sels = p.locator("#select [data-slot=select], #select [data-slot=field]");
   const parts = sels.filter({ hasText: "Escalate to (parts)" });
   await parts.scrollIntoViewIfNeeded();
-  const value = () => parts.locator("[role=combobox] .kl-select-value").innerText();
+  const value = () => parts.locator("[role=combobox] [data-slot=select-value]").innerText();
   ok(
     "select parts: the trigger prints the label from `items`, not the raw value",
     (await value()).trim() === "Shift lead",
@@ -56,12 +56,13 @@ test("select parts: items labels, separator, docking, choosing", async ({ open, 
   );
   await parts.locator("[role=combobox]").focus();
   await p.keyboard.press("Enter");
-  const pp = p.locator(".kl-select-panel").last();
-  await pp.locator(".kl-select-sep").waitFor();
+  const pp = p.locator("[data-slot=select-popup]").last();
+  await pp.locator("[data-slot=select-separator]").waitFor();
   await idle(p);
   ok(
     "select parts: a separator and two group headings render",
-    (await pp.locator(".kl-select-sep").count()) === 1 && (await pp.locator(".kl-select-group-label").count()) === 2,
+    (await pp.locator("[data-slot=select-separator]").count()) === 1 &&
+      (await pp.locator("[data-slot=select-group-label]").count()) === 2,
     null,
   );
   const tb = await box(parts.locator("[role=combobox]"));

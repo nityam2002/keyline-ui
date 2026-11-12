@@ -6,18 +6,15 @@
 @import "../registry/keyline/theme/keyline.css";
 @import "../registry/keyline/theme/keyline-shadcn.css";
 @import "../registry/keyline/ui/field.css";
-@import "../registry/keyline/ui/multiselect.css";
 @import "../registry/keyline/ui/date-range.css";
 @import "../registry/keyline/ui/checkbox.css";
 @import "../registry/keyline/ui/radio-group.css";
 @import "../registry/keyline/ui/switch.css";
-@import "../registry/keyline/ui/select.css";
 @import "../registry/keyline/ui/tabs.css";
 @import "../registry/keyline/ui/panel.css";
 @import "../registry/keyline/ui/nav.css";
 @import "../registry/keyline/ui/table.css";
 @import "../registry/keyline/ui/inspector.css";
-@import "../registry/keyline/ui/command.css";
 @import "../registry/keyline/ui/scroll-area.css";
 @import "../registry/keyline/ui/slider.css";
 @import "../registry/keyline/ui/accordion.css";
@@ -31,7 +28,6 @@
 @import "../registry/keyline/ui/checkbox-group.css";
 @import "../registry/keyline/ui/date-picker.css";
 @import "../registry/keyline/ui/otp-field.css";
-@import "../registry/keyline/ui/native-select.css";
 @import "../registry/keyline/ui/resizable.css";
 @import "../registry/keyline/ui/chart.css";
 @import "../registry/keyline/ui/carousel.css";

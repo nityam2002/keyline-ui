@@ -1718,7 +1718,9 @@ for (const [width, reduce] of run("inputs2")
   const ms = d.getByRole("combobox").first();
   await ms.fill("toby"); // pasted into the closed field
   await p
-    .locator(".kl-ms-status")
+    .locator(
+      "[data-slot=multiselect] [data-slot=combobox-status], [data-slot=combobox-popup] [data-slot=combobox-status]",
+    )
     .filter({ hasText: "1 match for “toby”" })
     .waitFor({ timeout: 3000 })
     .catch(() => {});

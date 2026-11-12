@@ -29,6 +29,25 @@ const USAGE = `<Select
   onValueChange={setRep}
 />`;
 
+const PARTS = `<Field>
+  <SelectRoot items={{ jan: "Jan Levinson", david: "David Wallace" }} defaultValue="jan">
+    <SelectLabel>Escalate to</SelectLabel>
+    <SelectTrigger>
+      <SelectValue placeholder="Nobody" />
+      <SelectIcon />
+    </SelectTrigger>
+    <SelectPopup>
+      <SelectList>
+        <SelectGroup>
+          <SelectGroupLabel>Corporate</SelectGroupLabel>
+          <SelectItem value="jan" code="VP">Jan Levinson</SelectItem>
+          <SelectItem value="david" code="CFO">David Wallace</SelectItem>
+        </SelectGroup>
+      </SelectList>
+    </SelectPopup>
+  </SelectRoot>
+</Field>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -48,7 +67,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        With <code>onValueChange</code>. Or start with <code>defaultValue</code>.
+        With <code>onValueChange</code>, which also gets Base UI&apos;s event details (the reason for the change, and
+        the event). Or start with <code>defaultValue</code>.
       </>
     ),
   },
@@ -74,6 +94,56 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  {
+    name: "container",
+    type: "Element | ref",
+    default: "<body>",
+    description:
+      "Where the list's portal renders. The list keeps the theme, density, motion and direction of the place it is written either way.",
+  },
+  {
+    name: "side \u00b7 align",
+    type: "Base UI side \u00b7 align",
+    default: '"bottom" \u00b7 "start"',
+    description: (
+      <>
+        On <code>SelectPopup</code>: where the list docks. It flips when there&apos;s no room.
+      </>
+    ),
+  },
+  {
+    name: "sideOffset \u00b7 alignOffset \u00b7 collisionPadding",
+    type: "number",
+    default: "the dock's \u00b7 the dock's \u00b7 12",
+    description: (
+      <>
+        On <code>SelectPopup</code>: the positioner&apos;s props, lifted onto the popup. By default the list shares the
+        trigger&apos;s edge.
+      </>
+    ),
+  },
+  {
+    name: "alignItemWithTrigger",
+    type: "boolean",
+    default: "false",
+    description: (
+      <>
+        On <code>SelectPopup</code>: <code>true</code> lays the list over the trigger with the chosen row on it, as
+        macOS does.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>SelectPopup</code>: where the portal renders, and props for Base UI&apos;s portal (such as{" "}
+        <code>keepMounted</code>).
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -85,7 +155,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "required", label: "Required" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function SelectPage() {
@@ -128,9 +204,30 @@ export default function SelectPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Select props" props={PROPS} />
       <p className="s-small">
-        For rows the options can&apos;t describe, compose the parts: <code>SelectRoot</code>, <code>SelectLabel</code>,{" "}
-        <code>SelectTrigger</code>, <code>SelectContent</code>, <code>SelectItem</code>, <code>SelectGroup</code> and{" "}
-        <code>SelectSeparator</code>. Built on <a href="https://base-ui.com/react/components/select">Base UI Select</a>.
+        Escape closes the list and keeps the value; type to jump to an option. Built on{" "}
+        <a href="https://base-ui.com/react/components/select">Base UI Select</a>; its other props pass through.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        For rows the options can&apos;t describe, compose the parts, named as Base UI names them:{" "}
+        <code>SelectRoot</code>, <code>SelectLabel</code>, <code>SelectTrigger</code>, <code>SelectValue</code>,{" "}
+        <code>SelectIcon</code>, <code>SelectPopup</code> (Base UI&apos;s Portal, Positioner and Popup in one part),{" "}
+        <code>SelectList</code>, <code>SelectItem</code> (with <code>description</code> and <code>code</code>),{" "}
+        <code>SelectItemText</code>, <code>SelectItemIndicator</code>, <code>SelectGroup</code>,{" "}
+        <code>SelectGroupLabel</code>, <code>SelectSeparator</code>, <code>SelectScrollUpArrow</code> and{" "}
+        <code>SelectScrollDownArrow</code>. Wrap them in a <code>Field</code> for the label, messages and form state.
+        Every part takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function
+        of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>select-trigger</code>,{" "}
+        <code>select-value</code>, <code>select-popup</code>, <code>select-item</code> and so on; the{" "}
+        <code>Select</code> field is <code>select</code>), and Base UI&apos;s state attributes:{" "}
+        <code>data-popup-open</code> on the trigger, <code>data-placeholder</code> on the value while nothing is chosen,{" "}
+        <code>data-selected</code> and <code>data-highlighted</code> on items, <code>data-disabled</code>, and{" "}
+        <code>data-side</code> and <code>data-align</code> on the popup.
       </p>
     </DocPage>
   );

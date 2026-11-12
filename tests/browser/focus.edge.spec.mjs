@@ -32,6 +32,7 @@ const state = (p) =>
     return {
       tag: a?.tagName,
       cls: String(a?.className || ""),
+      slot: a?.getAttribute("data-slot"),
       edge: edge
         ? String(edge.className)
             .split(" ")
@@ -106,53 +107,55 @@ for (const theme of ["light", "dark"]) {
   test(`focus edge (${theme}): select — open caret, pointer choice, Tab, arrows, Escape`, async ({ open, ok }) => {
     const p = await go(open, "specimen", theme);
     // 3. select: pointer choice returns focus to the trigger without an edge
-    const trig = p.locator(".kl-select-trigger:not([data-disabled])").first();
+    const trig = p.locator("[data-slot=select-trigger]:not([data-disabled])").first();
     await trig.scrollIntoViewIfNeeded();
     await trig.click();
-    await p.waitForSelector(".kl-select-opt");
+    await p.waitForSelector("[data-slot=select-item]");
     await idle(p);
     let s = await state(p);
-    const caretOpen = await trig.evaluate((t) => getComputedStyle(t.querySelector(".kl-select-caret")).backgroundColor);
+    const caretOpen = await trig.evaluate(
+      (t) => getComputedStyle(t.querySelector("[data-slot=select-icon]")).backgroundColor,
+    );
     ok(
       "select: open is shown by the caret cell, not an edge on the trigger",
       !(s.edge?.includes("select") && bandOn(s)) && caretOpen !== "rgba(0, 0, 0, 0)",
       { s, caretOpen },
     );
-    await p.locator(".kl-select-opt").nth(1).click();
-    await until(() => p.evaluate(() => document.activeElement?.classList.contains("kl-select-trigger")));
+    await p.locator("[data-slot=select-item]").nth(1).click();
+    await until(() => p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger"));
     await idle(p);
     s = await state(p);
     ok(
       "select: after a pointer choice, focus is on the trigger with no edge or ring",
-      s.cls.includes("kl-select-trigger") && !bandOn(s) && oneIndicator(s),
+      s.slot === "select-trigger" && !bandOn(s) && oneIndicator(s),
       s,
     );
     // keyboard: Tab off and back → edge; Enter opens, arrows move, Escape returns with edge
     await p.keyboard.press("Shift+Tab");
     await p.keyboard.press("Tab");
     s = await state(p);
-    ok("select: Tab to trigger shows the edge", s.cls.includes("kl-select-trigger") && bandOn(s) && oneIndicator(s), s);
+    ok("select: Tab to trigger shows the edge", s.slot === "select-trigger" && bandOn(s) && oneIndicator(s), s);
     await p.keyboard.press("Enter");
-    await p.waitForSelector(".kl-select-opt");
+    await p.waitForSelector("[data-slot=select-item]");
     await idle(p);
     await p.keyboard.press("ArrowDown");
-    const hl = await p.evaluate(() => !!document.querySelector(".kl-select-opt[data-highlighted]"));
+    const hl = await p.evaluate(() => !!document.querySelector("[data-slot=select-item][data-highlighted]"));
     ok("select: arrows move the ink cursor in the popup", hl, hl);
     await p.keyboard.press("Escape");
-    await until(() => p.evaluate(() => document.activeElement?.classList.contains("kl-select-trigger")));
+    await until(() => p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger"));
     await idle(p);
     s = await state(p);
-    ok(
-      "select: Escape restores focus to the trigger with the edge",
-      s.cls.includes("kl-select-trigger") && bandOn(s),
-      s,
-    );
+    ok("select: Escape restores focus to the trigger with the edge", s.slot === "select-trigger" && bandOn(s), s);
   });
 
   test(`focus edge (${theme}): multiselect — input, popup navigation, chip focus`, async ({ open, ok }) => {
     const p = await go(open, "specimen", theme);
     // 4. multiselect: click input → edge + open caret; ArrowLeft to a chip → still one edge, chip is ink, no ring
-    const ms = p.locator(".kl-multiselect:not(:has([data-disabled])) .kl-ms-input").first();
+    const ms = p
+      .locator(
+        "[data-slot=multiselect]:not(:has([data-slot=combobox-input-group][data-disabled])) [data-slot=combobox-input]",
+      )
+      .first();
     await ms.scrollIntoViewIfNeeded();
     await ms.click();
     await idle(p);
@@ -164,12 +167,12 @@ for (const theme of ["light", "dark"]) {
     await p.keyboard.press("Escape");
     await idle(p);
     await p.keyboard.press("ArrowLeft");
-    await until(() => p.evaluate(() => document.activeElement?.classList.contains("kl-ms-chip")), 1000);
+    await until(() => p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "combobox-chip"), 1000);
     await idle(p);
     s = await state(p);
     const chip = await p.evaluate(() => {
       const a = document.activeElement;
-      return a?.classList.contains("kl-ms-chip") ? getComputedStyle(a).backgroundColor : null;
+      return a?.getAttribute("data-slot") === "combobox-chip" ? getComputedStyle(a).backgroundColor : null;
     });
     if (chip) {
       ok("multiselect: chip focus keeps one edge on the frame, no chip ring", bandOn(s) && oneIndicator(s), s);
@@ -177,7 +180,9 @@ for (const theme of ["light", "dark"]) {
         "multiselect: focused chip is the ink cursor, not yellow",
         chip !==
           (await p.evaluate(
-            () => getComputedStyle(document.querySelector(".kl-ms-chip:not(:focus)") || document.body).backgroundColor,
+            () =>
+              getComputedStyle(document.querySelector("[data-slot=combobox-chip]:not(:focus)") || document.body)
+                .backgroundColor,
           )),
         chip,
       );

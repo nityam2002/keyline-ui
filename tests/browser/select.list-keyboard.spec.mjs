@@ -16,8 +16,8 @@ test("select: narrow trigger truncates; list marks, wrapping, minimum width, cur
     .first();
   await narrow.scrollIntoViewIfNeeded();
   const tv = await narrow.evaluate((e) => {
-    const v = e.querySelector(".kl-select-value");
-    const c = e.querySelector(".kl-select-caret");
+    const v = e.querySelector("[data-slot=select-value]");
+    const c = e.querySelector("[data-slot=select-icon]");
     return {
       trunc: v.scrollWidth > v.clientWidth,
       ellipsis: getComputedStyle(v).textOverflow,
@@ -38,11 +38,13 @@ test("select: narrow trigger truncates; list marks, wrapping, minimum width, cur
     os.map((o) => ({
       sel: o.getAttribute("aria-selected") === "true",
       hi: o.hasAttribute("data-highlighted"),
-      glyph: o.querySelector(".kl-select-ind")?.textContent ?? "",
-      markVisible: getComputedStyle(o.querySelector(".kl-select-ind")).visibility === "visible",
-      label: o.querySelector(".kl-select-label"),
+      glyph: o.querySelector("[data-slot=select-item-indicator]")?.textContent ?? "",
+      markVisible: getComputedStyle(o.querySelector("[data-slot=select-item-indicator]")).visibility === "visible",
+      label: o.querySelector("[data-slot=select-item-label]"),
       h: o.getBoundingClientRect().height,
-      wraps: o.querySelector(".kl-select-label").scrollWidth <= o.querySelector(".kl-select-label").clientWidth,
+      wraps:
+        o.querySelector("[data-slot=select-item-label]").scrollWidth <=
+        o.querySelector("[data-slot=select-item-label]").clientWidth,
     })),
   );
   ok(
@@ -57,7 +59,7 @@ test("select: narrow trigger truncates; list marks, wrapping, minimum width, cur
     opts.every((o) => o.wraps) && opts[1].h > 50,
     opts.map((o) => o.h),
   );
-  const pnl = await p.locator(".kl-select-panel:visible").boundingBox();
+  const pnl = await p.locator("[data-slot=select-popup]:visible").boundingBox();
   ok(
     "select list: a clearly narrower owner (160px) gets the 15rem minimum, start-aligned, inside the viewport",
     Math.round(pnl.width) === 240 && pnl.x + pnl.width <= 1400,
@@ -73,7 +75,7 @@ test("select: narrow trigger truncates; list marks, wrapping, minimum width, cur
       sel: o.getAttribute("aria-selected") === "true",
       hi: o.hasAttribute("data-highlighted"),
       bg: getComputedStyle(o).backgroundColor,
-      mark: getComputedStyle(o.querySelector(".kl-select-ind")).borderTopColor,
+      mark: getComputedStyle(o.querySelector("[data-slot=select-item-indicator]")).borderTopColor,
       text: getComputedStyle(o).color,
     })),
   );
@@ -92,7 +94,7 @@ test("select: long list reopen, scrolling cursor, disabled option, typeahead, ch
   ok,
 }) => {
   const p = await specimen(open);
-  const panel = p.locator(".kl-select-panel:visible");
+  const panel = p.locator("[data-slot=select-popup]:visible");
   const ports = p
     .locator("[data-slot=select]")
     .filter({ hasText: "Port of loading" })
@@ -137,11 +139,11 @@ test("select: long list reopen, scrolling cursor, disabled option, typeahead, ch
   await p.keyboard.press("ArrowDown");
   for (let i = 0; i < 6; i++) await p.keyboard.press("ArrowDown");
   const skip = await p
-    .locator(".kl-select-panel:visible [data-highlighted]")
+    .locator("[data-slot=select-popup]:visible [data-highlighted]")
     .evaluate((o) => ({ label: o.textContent, disabled: o.hasAttribute("data-disabled") }));
   await p.keyboard.press("Enter");
   await p.waitForTimeout(250); // timing: "Enter on a disabled option does nothing" — the list must still be open after the time a choice takes
-  const still = { open: await p.locator(".kl-select-panel:visible").count(), value: await ports.textContent() };
+  const still = { open: await p.locator("[data-slot=select-popup]:visible").count(), value: await ports.textContent() };
   // Base UI keeps disabled options reachable (APG allows it, so they can be read); they can never be chosen
   ok(
     "long list: a disabled option can be reached and read, but Enter cannot choose it",
@@ -150,22 +152,22 @@ test("select: long list reopen, scrolling cursor, disabled option, typeahead, ch
   );
   await p.keyboard.type("Ro");
   await until(async () =>
-    /Rotterdam/.test(await p.locator(".kl-select-panel:visible [data-highlighted]").textContent()),
+    /Rotterdam/.test(await p.locator("[data-slot=select-popup]:visible [data-highlighted]").textContent()),
   );
   ok(
     "long list: typeahead moves the cursor",
-    /Rotterdam/.test(await p.locator(".kl-select-panel:visible [data-highlighted]").textContent()),
+    /Rotterdam/.test(await p.locator("[data-slot=select-popup]:visible [data-highlighted]").textContent()),
   );
   await p.keyboard.press("Enter");
   await until(
     async () =>
       /Rotterdam/.test(await ports.textContent()) &&
-      (await p.evaluate(() => document.activeElement.classList.contains("kl-select-trigger"))),
+      (await p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger")),
   );
   ok(
     "long list: Enter chooses and restores focus to the trigger",
     /Rotterdam/.test(await ports.textContent()) &&
-      (await p.evaluate(() => document.activeElement.classList.contains("kl-select-trigger"))),
+      (await p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger")),
   );
   const hidden = await p.evaluate(() => document.querySelector("input[name=port]")?.value);
   ok("long list: the form value follows the choice", hidden === "p3", hidden);

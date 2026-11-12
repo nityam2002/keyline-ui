@@ -143,8 +143,8 @@ test("participants: validate, values, slider validate, server errors, cells", as
   // regression: the centred Select value drew a text-high red seam beside the ! cell
   ok(
     "participants: an invalid Select value draws no seam beside the ! cell",
-    (await css(form.locator(".kl-select-value").first(), "border-inline-start-width")) === "0px",
-    await css(form.locator(".kl-select-value").first(), "border-inline-start-width"),
+    (await css(form.locator("[data-slot=select-value]").first(), "border-inline-start-width")) === "0px",
+    await css(form.locator("[data-slot=select-value]").first(), "border-inline-start-width"),
   );
 
   // cells

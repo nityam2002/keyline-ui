@@ -123,10 +123,6 @@
     flex: none;
     color: var(--kl-ink-2);
   }
-  .kl-cal-dd-panel {
-    --kl-dock-w: 9rem;
-    max-height: min(var(--available-height), 320px);
-  }
   @media (forced-colors: active) {
     .kl-cal-dd[data-popup-open] {
       forced-color-adjust: none;

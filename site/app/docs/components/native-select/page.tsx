@@ -112,7 +112,15 @@ export default function NativeSelectPage() {
       <PropsReference label="Native select props" props={PROPS} />
       <p className="s-small">
         Single choice only: for several, use Checkbox group. For a styled list with descriptions and codes, use Select.
-        Other <code>&lt;select&gt;</code> props, such as <code>autoComplete</code>, pass through.
+        Other <code>&lt;select&gt;</code> props, such as <code>autoComplete</code>, and its <code>ref</code> pass
+        through to the select; <code>className</code> goes to the field.
+      </p>
+      <p className="s-small">
+        It has no parts to compose: it is one <code>&lt;select&gt;</code> (Base UI&apos;s <code>Field.Control</code>) in
+        a field frame. Style it through its slots: <code>native-select</code> on the field, which carries Base UI&apos;s{" "}
+        <code>data-invalid</code>, <code>data-disabled</code>, <code>data-touched</code> and <code>data-dirty</code>;{" "}
+        <code>native-select-frame</code>; <code>native-select-control</code> on the select; and{" "}
+        <code>native-select-icon</code>, the caret cell drawn over its end.
       </p>
     </DocPage>
   );

@@ -446,12 +446,10 @@
   /* NATIVE SCROLLERS that a Base UI primitive owns (Select, Multiselect, Menu and Command lists scroll the
      highlighted option into view; tab, segmented, toggle and nav rows scroll sideways) stay native, so
      their refs, active-option scrolling and keyboard behaviour are untouched. They share the Scroll Area's
-     tones instead of its DOM: a thin bar, ink-3 thumb on the surface they sit on. */
+     tones instead of its DOM: a thin bar, ink-3 thumb on the surface they sit on. (Lists converted to utilities
+     write the same two declarations themselves: Combobox's and Command's.) */
   :where(
     .kl-attached,
-    .kl-select-panel,
-    .kl-ms-list,
-    .kl-cmd-list,
     [data-slot="popover-popup"],
     .kl-tabs-list,
     [data-slot="segmented"],

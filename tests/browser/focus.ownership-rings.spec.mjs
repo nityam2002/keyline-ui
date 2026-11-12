@@ -6,7 +6,15 @@ import { until, pick } from "./lib/flow.mjs";
 import { ringsOf, traverse } from "./lib/focus-rings.mjs";
 
 const playground = (open) => open({ route: "playground", width: 1400, height: 1000, ready: "[data-slot=preview]" });
-const activeHas = (p, cls) => until(() => p.evaluate((c) => !!document.activeElement?.classList.contains(c), cls));
+// the select trigger is found by its slot (its classes are utilities)
+const onTrigger = (p) => p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger");
+const activeHas = (p, cls) =>
+  until(() =>
+    p.evaluate(
+      (c) => !!(document.activeElement?.classList.contains(c) || document.activeElement?.matches(`[data-slot=${c}]`)),
+      cls,
+    ),
+  );
 
 test("focus ownership: pointer choices leave no ring; keyboard restores focus with one indicator", async ({
   open,
@@ -21,12 +29,12 @@ test("focus ownership: pointer choices leave no ring; keyboard restores focus wi
   const carrier = dlg.locator("[data-slot=select] [role=combobox]");
   await carrier.click();
   await p.getByRole("option", { name: /DSV Road/ }).click();
-  await activeHas(p, "kl-select-trigger");
+  await activeHas(p, "select-trigger");
   await idle(p);
   let r = await ringsOf(p);
   ok(
     "select: a pointer choice returns focus to the trigger without a ring",
-    /kl-select-trigger/.test(r.active) && r.rings.length === 0,
+    (await onTrigger(p)) && r.rings.length === 0,
     r,
   );
   await dlg.locator(".kl-dr-trigger").click();
@@ -58,12 +66,12 @@ test("focus ownership: pointer choices leave no ring; keyboard restores focus wi
   ok("select: keyboard opens the list with focus inside it", (await p.locator("[role=listbox]:visible").count()) === 1);
   await idle(p);
   await p.keyboard.press("Escape");
-  await activeHas(p, "kl-select-trigger");
+  await activeHas(p, "select-trigger");
   await idle(p);
   r = await ringsOf(p);
   ok(
     "select: Escape closes and restores focus to the trigger, one indicator (its edge)",
-    /kl-select-trigger/.test(r.active) && r.rings.length === 1 && r.rings[0].off === "edge",
+    (await onTrigger(p)) && r.rings.length === 1 && r.rings[0].off === "edge",
     r,
   );
   await dlg.locator("input").first().click();

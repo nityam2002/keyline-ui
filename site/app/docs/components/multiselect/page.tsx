@@ -26,6 +26,26 @@ const USAGE = `<Multiselect
   onValueChange={setTo}
 />`;
 
+const PARTS = `<ComboboxRoot items={people} multiple defaultValue={[]}>
+  <ComboboxInputGroup>
+    <ComboboxChips>
+      {chosen.map((p) => (
+        <ComboboxChip key={p} aria-label={p}>
+          <span>{p}</span>
+          <ComboboxChipRemove aria-label={\`Remove \${p}\`} />
+        </ComboboxChip>
+      ))}
+      <ComboboxInput aria-label="Send the memo to" />
+    </ComboboxChips>
+    <ComboboxTrigger aria-label="Show people" />
+  </ComboboxInputGroup>
+  <ComboboxPopup>
+    <ComboboxList>
+      {(p: string) => <ComboboxItem key={p} value={p}>{p}</ComboboxItem>}
+    </ComboboxList>
+  </ComboboxPopup>
+</ComboboxRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -46,7 +66,8 @@ const PROPS: Prop[] = [
     description: (
       <>
         The chosen options, whole: <code>{"{ value, label, description?, count?, disabled? }"}</code>. With{" "}
-        <code>onValueChange</code>, or start with <code>defaultValue</code>.
+        <code>onValueChange</code>, which also gets Base UI&apos;s event details (the reason for the change, and the
+        event). Or start with <code>defaultValue</code>.
       </>
     ),
   },
@@ -66,6 +87,20 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  { name: "placeholder", type: "string", default: '"Search…"', description: "Shown while nothing is chosen." },
+  {
+    name: "disabled",
+    type: "boolean",
+    default: "false",
+    description: "Out of service: hatched, and the list won't open.",
+  },
+  {
+    name: "container",
+    type: "Element | ref",
+    default: "<body>",
+    description:
+      "Where the list's portal renders. The list keeps the theme, density, motion and direction of the place it is written either way.",
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -76,7 +111,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function MultiselectPage() {
@@ -108,6 +149,25 @@ export default function MultiselectPage() {
       <p className="s-small">
         Backspace in an empty input removes the last token. For a short fixed list, Checkbox group shows every choice at
         once. Built on <a href="https://base-ui.com/react/components/combobox">Base UI Combobox</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Multiselect</code> is a preset over Combobox&apos;s parts with Base UI&apos;s <code>multiple</code>: the
+        chips, the input, the list and Clear are <code>ComboboxChips</code>, <code>ComboboxChip</code>,{" "}
+        <code>ComboboxChipRemove</code>, <code>ComboboxInput</code>, <code>ComboboxPopup</code>,{" "}
+        <code>ComboboxList</code>, <code>ComboboxItem</code> and <code>ComboboxClear</code>. To build your own, install
+        Combobox and compose them (placement props, <code>container</code> and <code>portalProps</code> go on{" "}
+        <code>ComboboxPopup</code>):
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        The field carries <code>data-slot=&quot;multiselect&quot;</code> and Base UI Field&apos;s{" "}
+        <code>data-disabled</code>; the count cell is <code>multiselect-count</code> (with <code>data-zero</code> while
+        nothing is chosen), and the list&apos;s head and foot are <code>multiselect-head</code> and{" "}
+        <code>multiselect-foot</code>. Everything else is Combobox&apos;s slots (<code>combobox-chip</code>,{" "}
+        <code>combobox-item</code>, …) with Base UI&apos;s <code>data-selected</code>, <code>data-highlighted</code>,{" "}
+        <code>data-disabled</code> and <code>data-popup-open</code>.
       </p>
     </DocPage>
   );

@@ -56,13 +56,13 @@ test("date range: picker focuses its grid, inherits the cut, focus returns", asy
 test("async multiselect: superseded request cannot win", async ({ open, ok }) => {
   const s = await page(open);
   const { p, col } = s;
-  const input = col("Async multiselect").locator(".kl-ms-input").first();
+  const input = col("Async multiselect").locator("[data-slot=combobox-input]").first();
   await input.click();
   await input.fill("err");
   await p.waitForTimeout(40); // timing: the second query must supersede the first while it is in flight
   await input.fill("DHL");
   await p.waitForTimeout(1100); // timing: kept, the aborted "err" request's response window must elapse before checking it never surfaced
-  const retry = await p.locator(".kl-ms-retry:visible").count();
+  const retry = await p.getByRole("button", { name: "Retry" }).count();
   ok("no failure from the aborted 'err' request", same(retry, 0), { actual: retry, expected: 0 });
   const opts = await p.locator("[role=listbox]:visible [role=option]").allTextContents();
   ok("options match the last query only", opts.length > 0 && opts.every((o) => /DHL/i.test(o)), opts);

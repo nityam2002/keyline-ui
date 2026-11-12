@@ -146,7 +146,7 @@ test("app: command menu", async ({ open, ok, eng }) => {
   const { p } = a;
   await p.locator("body").click({ position: { x: 5, y: 5 } });
   await p.keyboard.press(isMac && eng === "webkit" ? "Meta+k" : "Control+k");
-  await p.waitForSelector(".kl-cmd");
+  await p.waitForSelector("[data-slot=command]");
   await p.keyboard.type("show");
   await p.keyboard.press("Alt+Digit2");
   ok("Alt+2 runs the second result (a view switch)", (await a.selectedTab()) !== null);

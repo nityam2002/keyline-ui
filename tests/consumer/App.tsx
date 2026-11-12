@@ -78,7 +78,8 @@ import {
   SelectRoot,
   SelectLabel,
   SelectTrigger,
-  SelectContent,
+  SelectPopup,
+  SelectList,
   SelectItem,
   SelectGroup,
   SelectGroupLabel,
@@ -712,31 +713,35 @@ function CarrierRules() {
         <AccordionItem value="escalation">
           <AccordionTrigger meta={PEOPLE[owner]}>Escalation</AccordionTrigger>
           <AccordionPanel>
-            <SelectRoot value={owner} onValueChange={(v) => setOwner(v as keyof typeof PEOPLE)} items={PEOPLE}>
-              <SelectLabel>Escalate to</SelectLabel>
-              <SelectTrigger />
-              <SelectContent>
-                <SelectItem value="none" description="Alerts stay in the inbox">
-                  No escalation
-                </SelectItem>
-                <SelectSeparator />
-                <SelectGroup>
-                  <SelectGroupLabel>On shift</SelectGroupLabel>
-                  <SelectItem value="lead" code="L1">
-                    Shift lead
-                  </SelectItem>
-                  <SelectItem value="ops" code="L2">
-                    Operations manager
-                  </SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectGroupLabel>Off shift</SelectGroupLabel>
-                  <SelectItem value="dir" code="L3">
-                    Regional director
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </SelectRoot>
+            <Field>
+              <SelectRoot value={owner} onValueChange={(v) => setOwner(v as keyof typeof PEOPLE)} items={PEOPLE}>
+                <SelectLabel>Escalate to</SelectLabel>
+                <SelectTrigger />
+                <SelectPopup>
+                  <SelectList>
+                    <SelectItem value="none" description="Alerts stay in the inbox">
+                      No escalation
+                    </SelectItem>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectGroupLabel>On shift</SelectGroupLabel>
+                      <SelectItem value="lead" code="L1">
+                        Shift lead
+                      </SelectItem>
+                      <SelectItem value="ops" code="L2">
+                        Operations manager
+                      </SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectGroupLabel>Off shift</SelectGroupLabel>
+                      <SelectItem value="dir" code="L3">
+                        Regional director
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectList>
+                </SelectPopup>
+              </SelectRoot>
+            </Field>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

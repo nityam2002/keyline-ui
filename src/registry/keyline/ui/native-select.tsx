@@ -70,12 +70,16 @@ function NativeSelect({
       disabled={disabled}
       validate={validate}
       validationMode={validationMode}
-      className={cn("kl-field kl-nsel", className)}
+      className={cn("kl-field", className)}
     >
       <FieldPrimitive.Label className={cn("kl-field-label", layout === "cell" && "kl-sr")}>
         {label}
       </FieldPrimitive.Label>
-      <div data-kl-layout={layout} className="kl-ctl kl-cells kl-field-frame kl-edge kl-nsel-frame">
+      <div
+        data-kl-layout={layout}
+        data-slot="native-select-frame"
+        className="kl-ctl kl-cells kl-field-frame kl-edge relative cursor-pointer in-data-disabled:cursor-not-allowed"
+      >
         <span className="kl-slot kl-field-bang" aria-hidden>
           <span>
             <span>!</span>
@@ -84,9 +88,22 @@ function NativeSelect({
         <FieldPrimitive.Control
           render={<select />}
           required={required}
-          className="kl-nsel-select kl-edge-part"
+          className={cn(
+            "kl-edge-part m-0 w-0 min-w-0 flex-1 cursor-[inherit] appearance-none bg-transparent py-0 outline-0",
+            // the caret cell is drawn over the select's end: the text stops before it
+            "ps-(--kl-inset) pe-[calc(36px+var(--kl-inset))] text-ellipsis whitespace-nowrap text-inherit",
+            "font-(family-name:--kl-font) text-(length:--kl-text-lead)",
+            // the OS list follows the scheme of the scope it opens from: the nearest .dark, or where style queries
+            // exist, the nearest theme scope (--kl-dark)
+            "[color-scheme:light] in-[.dark]:[color-scheme:dark]",
+            "[@container_style(--kl-dark:_0)]:[color-scheme:light] [@container_style(--kl-dark:_1)]:[color-scheme:dark]",
+            // the placeholder option reads as a placeholder; the options in the list keep the ink
+            "has-[>option[value='']:checked]:text-kl-ink-3 [&_option]:text-kl-ink",
+            "data-disabled:text-kl-dis",
+          )}
           {...start}
           {...(props as object)}
+          data-slot="native-select-control"
         >
           {placeholder != null ? (
             <option value="" disabled={required}>
@@ -105,7 +122,13 @@ function NativeSelect({
               )
             : children}
         </FieldPrimitive.Control>
-        <span className="kl-nsel-caret" aria-hidden>
+        {/* the caret cell: over the select's end, out of pointer events so a press anywhere in the frame opens the
+            list */}
+        <span
+          data-slot="native-select-icon"
+          className="pointer-events-none absolute inset-y-0 end-0 z-1 box-border grid w-9 place-items-center text-kl-ink in-data-disabled:text-kl-dis"
+          aria-hidden
+        >
           <svg
             viewBox="0 0 16 16"
             width="16"

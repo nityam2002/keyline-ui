@@ -49,6 +49,16 @@ Menu and Combobox were converted this way first; their diffs are the worked exam
   the same cells: `grid-cols-[minmax(0,1fr)_auto]` with the label in column 1, the value in column 2, and the
   track `col-span-full`. A state the parts need that Base UI doesn't carry (`failed`) goes on the root as an
   attribute (`data-failed`) for a named group (`group-data-failed/progress:`), and through context for content.
+- **A preset over another component's parts** (`Multiselect` is Combobox with `multiple`) exports no parts of its
+  own. It imports the other component's parts, depends on that item in its meta, and restyles them only through
+  `className` on each part and slot variants from the row (`**:data-[slot=combobox-item-indicator]:…`), never by
+  forking them. Its own elements (a count cell, a list head) take `data-slot`s under its name. Its root is a Base
+  UI `Field.Root` with `Field.Label`, as the other component's field is, so the label stays the input's name
+  while the list is open. The part test runs the preset's keyboard, axe and style guards; the parts' contract
+  is the other component's test.
+- **Parts of a library that is not Base UI** (cmdk's `Command`) keep that library's names and props. They take no
+  `render` and no function `className`, so their part test checks what they do forward (props, ref, `className`,
+  `data-slot`) and runs `describeConformance` only over the parts Keyline renders itself (`CommandFooter`).
 - **A button that shows only an icon requires a name in its type**: `ComboboxClear` and `ComboboxChipRemove` take
   `{ "aria-label": string }`.
 
@@ -97,6 +107,9 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - Forced colours: `forced-colors:` with system colours (`forced-colors:bg-[Highlight]`).
 - A child styles itself from its part's state with a named group: `group/menu-item` on the row,
   `group-data-highlighted/menu-item:text-inherit` on the cell.
+- **A `font:` shorthand reset more than it set.** It put `font-variant-numeric` (and `font-style`) back to
+  `normal`, so a mono label or digit cell inside a tabular list needs `normal-nums not-italic` beside its font
+  utilities, or it inherits the list's tabular figures.
 - **Container breakpoints keep the stylesheet's inclusive bound.** A part that is its own size container
   (`@container/kl-empty`) writes its narrow rules as `[@container_kl-empty_(max-width:520px)]:…`.
   `@max-[520px]/kl-empty:` compiles to `width < 520px`, which moves the bound by a pixel.

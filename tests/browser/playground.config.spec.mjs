@@ -141,7 +141,7 @@ test("portal: the dialog and a select inside it carry the configuration", async 
     JSON.stringify(await tok(lb, Object.keys(want))) === JSON.stringify(want),
     await tok(lb, Object.keys(want)),
   );
-  const dark = await lb.evaluate((e) => getComputedStyle(e.closest(".kl-select-panel") ?? e).backgroundColor);
+  const dark = await lb.evaluate((e) => getComputedStyle(e.closest("[data-slot=select-popup]") ?? e).backgroundColor);
   const pageCell = await scope
     .locator(".kl-frame")
     .first()

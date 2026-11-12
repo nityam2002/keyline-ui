@@ -28,14 +28,52 @@ const USAGE = `<CommandDialog open={open} onOpenChange={setOpen}>
   </CommandList>
 </CommandDialog>`;
 
+const PARTS = `<Command label="Commands" loop>
+  <CommandInput placeholder="Type a command…" />
+  <CommandList>
+    <CommandEmpty query={q} />
+    <CommandGroup heading="Actions" code="A">
+      <CommandItem shortcut="N" onSelect={newOrder}>New order</CommandItem>
+    </CommandGroup>
+    <CommandSeparator />
+    <CommandGroup heading="Views">
+      <CommandItem meta="12" onSelect={showOverdue}>Show overdue</CommandItem>
+    </CommandGroup>
+  </CommandList>
+  <CommandFooter>
+    <span><Kbd>↵</Kbd> run</span>
+  </CommandFooter>
+</Command>`;
+
 const PROPS: Prop[] = [
   {
     name: "open \u00b7 onOpenChange",
-    type: "boolean \u00b7 (open) => void",
+    type: "boolean \u00b7 (open, eventDetails) => void",
     default: "\u2014",
     description: (
       <>
-        On <code>CommandDialog</code>. Bind your own shortcut to open it.
+        On <code>CommandDialog</code>. Bind your own shortcut to open it. <code>onOpenChange</code> also gets Base
+        UI&apos;s event details (the reason, such as <code>escape-key</code>, and the event).
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>CommandDialog</code>: where the dialog&apos;s portal renders, and props for Base UI&apos;s portal.
+      </>
+    ),
+  },
+  {
+    name: "className",
+    type: "string",
+    default: "\u2014",
+    description: (
+      <>
+        On <code>CommandDialog</code>: classes for the dialog&apos;s frame (Dialog&apos;s <code>DialogPopup</code>).
       </>
     ),
   },
@@ -119,7 +157,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function CommandPage() {
@@ -152,6 +196,25 @@ export default function CommandPage() {
       <p className="s-small">
         Filtering and keyboard are <a href="https://cmdk.paco.me">cmdk</a>&apos;s; the dialog is Base UI&apos;s.{" "}
         <code>CommandFooter</code> holds key hints.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as cmdk names them: <code>Command</code> (the menu, with the ⌥-digit keys),{" "}
+        <code>CommandInput</code>, <code>CommandList</code>, <code>CommandEmpty</code>, <code>CommandGroup</code> (with
+        an optional <code>code</code>), <code>CommandSeparator</code> and <code>CommandItem</code>, with Keyline&apos;s{" "}
+        <code>CommandFooter</code>. <code>CommandDialog</code> is <code>Command</code> in Dialog&apos;s{" "}
+        <code>DialogPopup</code>; compose <code>Command</code> yourself to put the menu in a popover or on a page.
+        cmdk&apos;s parts take its own props and a string <code>className</code>; <code>CommandFooter</code> also takes{" "}
+        <code>render</code> and a function <code>className</code> or <code>style</code>.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>command</code>, <code>command-input</code>,{" "}
+        <code>command-list</code>, <code>command-item</code>, <code>command-item-index</code> for the digit cell,{" "}
+        <code>command-footer</code>, …). The row under the cursor has cmdk&apos;s{" "}
+        <code>data-selected=&quot;true&quot;</code>, a disabled row <code>data-disabled=&quot;true&quot;</code>, and a
+        row that is running <code>data-kl-on</code> while it floods.
       </p>
     </DocPage>
   );

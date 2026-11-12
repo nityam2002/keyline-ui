@@ -854,7 +854,7 @@ for (const [eng, type, opts] of [
     eng,
     "lookup: the required native select starts on its placeholder and is invalid when empty",
     (await mlf.getByRole("combobox", { name: "Terminal" }).inputValue()) === "" &&
-      (await mlf.locator(".kl-nsel").getAttribute("data-invalid")) !== null,
+      (await mlf.locator("[data-slot=native-select]").getAttribute("data-invalid")) !== null,
   );
   await mlf.getByRole("combobox", { name: "Terminal" }).selectOption("ANR-PSA");
   const q19 = mlf.getByRole("textbox", { name: "Container or booking" });

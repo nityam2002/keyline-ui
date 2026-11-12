@@ -55,11 +55,12 @@ check date-picker date-picker Calendar ".kl-cal-dd"
 check avatar avatar AvatarGroup ".kl-key"
 check hover-card hover-card HoverCardPopup ".kl-positioner"
 check otp-field otp-field OtpField ".kl-field-bang"
-# Kbd and toggle need only the theme; native-select brings Field's frame and ! cell; command now brings kbd
+# Kbd and toggle need only the theme; native-select brings Field's frame and ! cell. Command has no CSS of its own
+# (its rows, footer and kbd tone are utilities in command.tsx); what it needs from CSS is the theme's flood
 check kbd kbd KbdGroup ".kl-sr"
 check toggle toggle Toggle ".kl-flood"
 check native-select native-select NativeSelect ".kl-field-bang"
-check command command CommandDialog '.kl-cmd-foot [data-slot="kbd"]'
+check command command CommandDialog ".kl-flood"
 # Resizable needs only the theme (and react-resizable-panels from npm); navigation-menu the theme's positioner and dock
 check resizable resizable ResizablePanelGroup ".kl-rz-grip"
 check navigation-menu navigation-menu NavigationMenu ".kl-positioner"
