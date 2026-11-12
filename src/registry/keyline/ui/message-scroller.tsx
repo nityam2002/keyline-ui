@@ -11,7 +11,7 @@ import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 
 import { cn } from "@/lib/utils";
 import { tokenMs } from "../lib/keyline-motion";
-import { ScrollAreaBars, ScrollAreaRoot, type ScrollbarVisibility } from "./scroll-area";
+import { ScrollAreaBars, ScrollAreaRoot, ScrollAreaViewport, type ScrollbarVisibility } from "./scroll-area";
 
 /* A conversation log that keeps to the newest message, on @shadcn/react's MessageScroller (as the reference):
    stick-to-end while new messages arrive, a held position when the reader has scrolled up, scroll kept
@@ -62,7 +62,7 @@ function MessageScrollerViewport({
       // is. The primitive reads intent from the viewport's wheel, so the press tells it that way, with no distance.
       onPointerDownCapture={(e) => {
         const vp = e.currentTarget.querySelector<HTMLElement>(".kl-ms-vp");
-        if (e.button !== 0 || !vp || !(e.target as Element).closest?.(".kl-scrollbar")) return;
+        if (e.button !== 0 || !vp || !(e.target as Element).closest?.('[data-slot="scroll-area-scrollbar"]')) return;
         if (vp.scrollHeight - vp.clientHeight - vp.scrollTop <= 2) {
           const bubbles = vp.querySelectorAll('[data-slot="bubble"]');
           const newest = bubbles[bubbles.length - 1];
@@ -79,16 +79,16 @@ function MessageScrollerViewport({
       }}
     >
       {/* the reader's props go to Base UI, which merges handlers with its own and hands everything to the primitive */}
-      <ScrollAreaPrimitive.Viewport
-        {...(props as React.ComponentProps<typeof ScrollAreaPrimitive.Viewport>)}
+      <ScrollAreaViewport
+        {...(props as React.ComponentProps<typeof ScrollAreaViewport>)}
         data-slot="message-scroller-viewport"
-        className={cn("kl-scroll-vp kl-ms-vp", className)}
+        className={cn("kl-ms-vp", className)}
         // the log stays a tab stop even before it overflows, as the primitive makes it
         tabIndex={tabIndex ?? 0}
         render={(p) => <Primitive.Viewport {...(p as React.ComponentProps<typeof Primitive.Viewport>)} />}
       >
         {children}
-      </ScrollAreaPrimitive.Viewport>
+      </ScrollAreaViewport>
       <ScrollAreaBars />
     </ScrollAreaRoot>
   );
@@ -324,7 +324,7 @@ function MessageScrollerButton({
         const vp = e.currentTarget.closest(".kl-ms")?.querySelector<HTMLElement>(".kl-ms-vp");
         // The jump and the bar are one response. Base UI shows the thumb for the reader's own scrolling only,
         // so while the jump they asked for travels, the bar shows it travelling, and fades with the usual idle after it lands.
-        const area = vp?.closest<HTMLElement>(".kl-scroll");
+        const area = vp?.closest<HTMLElement>('[data-slot="message-scroller-scroll"]');
         if (vp && area && !e.defaultPrevented) {
           area.setAttribute("data-kl-travel", "");
           let idle = 0;

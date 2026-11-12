@@ -8,7 +8,7 @@
   }
   /* overflow-anchor: none: the reader's place is held by one rule in every engine (message-scroller.tsx), not
      by Chrome's own anchoring on top of it */
-  /* The log scrolls in Keyline's Scroll Area (scroll-area.css draws the bar, its reveal and the focus ring
+  /* The log scrolls in Keyline's Scroll Area (scroll-area.tsx draws the bar, its reveal and the focus ring
      above it). A log nearly always overflows, so the bar's room is kept from the first message: the first message
      that overflows does not narrow the conversation (it did, by the native bar, with scrollbar-gutter). */
   .kl-ms-scroll {

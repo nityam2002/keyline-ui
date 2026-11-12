@@ -22,6 +22,19 @@ const USAGE = `<ScrollArea label="Today's activity" className="h-[260px]">
   …
 </ScrollArea>`;
 
+const PARTS = `<ScrollAreaRoot scrollbars="both" className="h-[260px]">
+  <ScrollAreaViewport role="region" aria-label="Yard map">
+    <ScrollAreaContent className="w-[960px]">…</ScrollAreaContent>
+  </ScrollAreaViewport>
+  <ScrollAreaScrollbar orientation="vertical">
+    <ScrollAreaThumb />
+  </ScrollAreaScrollbar>
+  <ScrollAreaScrollbar orientation="horizontal">
+    <ScrollAreaThumb />
+  </ScrollAreaScrollbar>
+  <ScrollAreaCorner />
+</ScrollAreaRoot>`;
+
 const PROPS: Prop[] = [
   {
     name: "label",
@@ -67,7 +80,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function ScrollAreaPage() {
@@ -100,6 +119,26 @@ export default function ScrollAreaPage() {
       <p className="s-small">
         Built on <a href="https://base-ui.com/react/components/scroll-area">Base UI Scroll Area</a>. This site&apos;s
         sidebar and code blocks scroll in it.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        To place the bars yourself, compose the parts, named as Base UI names them: <code>ScrollAreaRoot</code> (with{" "}
+        <code>scrollbars</code>, <code>track</code> and <code>scrollbarVisibility</code>),{" "}
+        <code>ScrollAreaViewport</code>, <code>ScrollAreaContent</code>, <code>ScrollAreaScrollbar</code>,{" "}
+        <code>ScrollAreaThumb</code> and <code>ScrollAreaCorner</code>. <code>ScrollAreaBars</code> renders the bars,
+        thumbs and corner the root&apos;s <code>scrollbars</code> asks for. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>scroll-area</code>,{" "}
+        <code>scroll-area-viewport</code>, <code>scroll-area-content</code>, <code>scroll-area-scrollbar</code>,{" "}
+        <code>scroll-area-thumb</code>, <code>scroll-area-corner</code>), and Base UI&apos;s state attributes:{" "}
+        <code>data-has-overflow-x</code> and <code>data-has-overflow-y</code> on the viewport,{" "}
+        <code>data-orientation</code> on a bar and its thumb, and <code>data-scrolling</code> while it scrolls. The root
+        mirrors its construction as <code>data-kl-bars</code>, <code>data-kl-track</code> and{" "}
+        <code>data-kl-reveal</code>.
       </p>
     </DocPage>
   );

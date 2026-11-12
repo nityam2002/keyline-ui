@@ -87,7 +87,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function ResizablePage() {
@@ -121,6 +127,20 @@ export default function ResizablePage() {
         Dragging needs another way in (WCAG 2.5.7): the example&apos;s Hide list button collapses the pane. Built on{" "}
         <a href="https://github.com/bvaughn/react-resizable-panels">react-resizable-panels</a>;{" "}
         <code>useDefaultLayout</code> remembers the layout.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>ResizablePanelGroup</code>, <code>ResizablePanel</code> and <code>ResizableHandle</code> are
+        react-resizable-panels&apos; <code>Group</code>, <code>Panel</code> and <code>Separator</code> in Keyline&apos;s
+        look; their other props pass through. They take a string <code>className</code> (on a panel it reaches the
+        library&apos;s inner element), and <code>elementRef</code> for the element.
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code>: <code>resizable</code>, <code>resizable-panel</code>,{" "}
+        <code>resizable-handle</code>, and <code>resizable-grip</code> on the grip. The library marks the seam&apos;s
+        state on the handle: <code>data-separator</code> (<code>hover</code>, <code>active</code>, <code>inactive</code>
+        ) and <code>aria-orientation</code>.
       </p>
     </DocPage>
   );

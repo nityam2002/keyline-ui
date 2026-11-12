@@ -24,7 +24,7 @@ test("forced colours: scroll region ring and select trigger ring use Highlight",
     .getByTestId("scope-preview")
     .locator("[data-slot=scroll-area]")
     .filter({ hasText: "Departed Hamburg hub" })
-    .locator(".kl-scroll-vp");
+    .locator("[data-slot=scroll-area-viewport]");
   await vp.focus();
   const saRing = await vp.evaluate((e) => getComputedStyle(e.parentElement, "::after").outlineColor);
   await fc.getByTestId("scope-preview").getByRole("button", { name: "Book pickup…" }).click();

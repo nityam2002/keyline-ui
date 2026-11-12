@@ -1423,7 +1423,8 @@
         "@base-ui/react@1.9.0"
       ],
       "registryDependencies": [
-        "@keyline-ui/keyline"
+        "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render"
       ]
     },
     {
@@ -1527,110 +1528,15 @@
           "target": "components/keyline/ui/inspector.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils",
+        "@keyline-ui/keyline-render",
         "@keyline-ui/scroll-area"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-insp": {
-            "display": "flex",
-            "flex-direction": "column",
-            "min-height": "0",
-            "overflow": "clip"
-          },
-          ".kl-insp-h": {
-            "flex": "none",
-            "border-block-end": "var(--kl-k3) solid var(--kl-line)"
-          },
-          ".kl-insp-t": {
-            "flex": "1",
-            "display": "grid",
-            "gap": "3px",
-            "padding": "10px 14px 12px calc(14px + var(--kl-c-room, 0px))",
-            "min-width": "0"
-          },
-          ".kl-insp-t h2": {
-            "margin": "0",
-            "font-family": "var(--kl-font-mono)",
-            "font-size": "24px",
-            "font-weight": "var(--kl-weight-strong)",
-            "line-height": "1.1"
-          },
-          ".kl-insp-x": {
-            "flex": "none",
-            "width": "46px",
-            "justify-content": "center"
-          },
-          ".kl-insp-kv": {
-            "flex": "none",
-            "display": "grid",
-            "grid-template-columns": "1fr 1fr",
-            "margin": "0",
-            "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-kv > div": {
-            "display": "grid",
-            "gap": "2px",
-            "padding": "8px 14px",
-            "min-width": "0"
-          },
-          ".kl-insp-kv > div:nth-child(even)": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-kv > div:nth-child(n + 3)": {
-            "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-kv dd": {
-            "margin": "0",
-            "font-weight": "var(--kl-weight-strong)",
-            "overflow-wrap": "anywhere"
-          },
-          ".kl-insp-scroll": {
-            "flex": "1 1 auto",
-            "min-height": "0"
-          },
-          ".kl-insp-scroll > .kl-scroll-vp": {
-            "overscroll-behavior": "contain"
-          },
-          ".kl-insp-s": {
-            "padding": "12px 14px 14px",
-            "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-row": {
-            "display": "grid",
-            "grid-template-columns": "minmax(0, 1fr) minmax(0, 1fr)",
-            "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-row > .kl-insp-s": {
-            "border-block-end": "0"
-          },
-          ".kl-insp-row > .kl-insp-s + .kl-insp-s": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp > [data-slot=\"notice-root\"]": {
-            "flex": "none"
-          },
-          ".kl-insp > [data-slot=\"notice-root\"][data-open]": {
-            "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-insp-a": {
-            "flex": "none",
-            "border-block-start": "var(--kl-k3) solid var(--kl-line)",
-            "background-color": "var(--kl-cell)"
-          },
-          ".kl-insp-a > *": {
-            "flex": "1"
-          },
-          ".kl-insp-a > button.kl-cell": {
-            "justify-content": "center",
-            "font-weight": "var(--kl-weight-strong)",
-            "min-height": "48px"
-          }
-        }
-      }
+      ]
     },
     {
       "name": "item",
@@ -3860,117 +3766,14 @@
           "target": "components/keyline/ui/panel.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
-        "utils"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-panel": {
-            "display": "flex",
-            "flex-direction": "column",
-            "min-width": "0",
-            "min-height": "0"
-          },
-          ".kl-panel > *": {
-            "flex": "none"
-          },
-          ".kl-panel-h": {
-            "border-block-end": "var(--kl-k3) solid var(--kl-line)",
-            "min-height": "52px"
-          },
-          ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-h": {
-            "border-block-end-width": "var(--kl-k1)"
-          },
-          ".kl-panel-t": {
-            "flex": "1",
-            "min-width": "0",
-            "display": "grid",
-            "align-content": "center",
-            "gap": "2px",
-            "padding": "10px var(--kl-inset) 10px calc(var(--kl-inset) + 2px + var(--kl-c-room, 0px))"
-          },
-          ".kl-panel-t h2, .kl-panel-t h3, .kl-panel-t h4": {
-            "margin": "0",
-            "font-size": "16px",
-            "font-weight": "var(--kl-weight-strong)",
-            "line-height": "1.25"
-          },
-          ".kl-panel-t p": {
-            "margin": "0",
-            "font-size": "13px",
-            "color": "var(--kl-ink-2)"
-          },
-          ".kl-panel-x": {
-            "flex": "none",
-            "display": "flex",
-            "align-items": "center",
-            "gap": "var(--kl-gutter)",
-            "padding-inline": "var(--kl-inset)"
-          },
-          ".kl-panel-x:has(> [data-kl-layout=\"cell\"])": {
-            "padding": "0",
-            "gap": "0",
-            "align-items": "stretch"
-          },
-          ".kl-panel-x > [data-kl-layout=\"cell\"] + [data-kl-layout=\"cell\"]": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-panel-b": {
-            "flex": "1 1 auto",
-            "min-height": "0",
-            "display": "grid",
-            "gap": "var(--kl-gutter)",
-            "align-content": "start",
-            "padding": "calc(var(--kl-inset) + 4px)"
-          },
-          ".kl-panel-b[data-flush]": {
-            "padding": "0",
-            "gap": "0"
-          },
-          ".kl-panel > [data-kl-layout=\"cell\"] + :is(.kl-panel-b, [data-kl-layout=\"cell\"])": {
-            "border-block-start": "var(--kl-k1) solid var(--kl-line)"
-          },
-          ".kl-panel-f": {
-            "border-block-start": "var(--kl-k3) solid var(--kl-line)",
-            "margin-block-start": "auto"
-          },
-          ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-f": {
-            "border-block-start-width": "var(--kl-k1)"
-          },
-          ".kl-panel-f > *": {
-            "flex": "1 1 0",
-            "min-width": "0"
-          },
-          ".kl-panel-f > .kl-cell": {
-            "flex": "1 1 auto",
-            "font-size": "13px",
-            "color": "var(--kl-ink-2)"
-          },
-          ".kl-panel-grid": {
-            "display": "grid",
-            "grid-template-columns": "repeat(auto-fit, minmax(min(var(--kl-pg-min, 240px), 100%), 1fr))",
-            "gap": "var(--kl-k1)"
-          },
-          ".kl-panel-grid > *": {
-            "background-color": "var(--kl-cell)",
-            "min-width": "0",
-            "box-shadow": "0 0 0 var(--kl-k1) var(--kl-seam)"
-          },
-          ".kl-panel-grid > [data-span=\"2\"]": {
-            "grid-column": "span 2"
-          },
-          "@media (max-width: 640px)": {
-            ".kl-panel-grid > [data-span]": {
-              "grid-column": "auto"
-            }
-          },
-          ".kl-panel-grid > :first-child": {
-            "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
-          }
-        }
-      }
+        "utils",
+        "@keyline-ui/keyline-render"
+      ]
     },
     {
       "name": "popover",
@@ -4208,100 +4011,7 @@
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils"
-      ],
-      "css": {
-        "@layer components": {
-          ".kl-rz-panel": {
-            "min-width": "0",
-            "min-height": "0"
-          },
-          ".kl-rz-handle": {
-            "position": "relative",
-            "z-index": "1",
-            "flex": "none",
-            "width": "var(--kl-k1)",
-            "background-color": "var(--kl-line)",
-            "outline": "0"
-          },
-          ".kl-rz-handle[aria-orientation=\"horizontal\"]": {
-            "width": "auto",
-            "height": "var(--kl-k1)"
-          },
-          ".kl-rz-handle::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset-block": "0",
-            "left": "50%",
-            "width": "var(--kl-k3)",
-            "translate": "-50% 0",
-            "background-color": "var(--kl-ink)",
-            "opacity": "0",
-            "pointer-events": "none"
-          },
-          ".kl-rz-handle[aria-orientation=\"horizontal\"]::after": {
-            "inset-block": "auto",
-            "top": "50%",
-            "left": "0",
-            "right": "0",
-            "width": "auto",
-            "height": "var(--kl-k3)",
-            "translate": "0 -50%"
-          },
-          ".kl-rz-handle:is([data-separator=\"hover\"], [data-separator=\"active\"])::after": {
-            "opacity": "1"
-          },
-          ".kl-rz-handle:focus-visible::after": {
-            "opacity": "1",
-            "background-color": "var(--kl-focus)"
-          },
-          ".kl-rz-grip": {
-            "position": "absolute",
-            "z-index": "1",
-            "top": "50%",
-            "left": "50%",
-            "translate": "-50% -50%",
-            "box-sizing": "border-box",
-            "width": "14px",
-            "height": "28px",
-            "border": "var(--kl-k1) solid var(--kl-line)",
-            "background-color": "var(--kl-cell)",
-            "background-image": "linear-gradient(var(--kl-ink-2), var(--kl-ink-2)), linear-gradient(var(--kl-ink-2), var(--kl-ink-2))",
-            "background-repeat": "no-repeat",
-            "background-size": "1px 12px",
-            "background-position": "4px 50%,\n      7px 50%",
-            "pointer-events": "none"
-          },
-          ".kl-rz-handle[aria-orientation=\"horizontal\"] > .kl-rz-grip": {
-            "width": "28px",
-            "height": "14px",
-            "background-size": "12px 1px",
-            "background-position": "50% 4px,\n      50% 7px"
-          },
-          ".kl-rz-handle[data-separator=\"hover\"] > .kl-rz-grip": {
-            "border-color": "var(--kl-ink)"
-          },
-          ".kl-rz-handle[data-separator=\"active\"] > .kl-rz-grip": {
-            "background-color": "var(--kl-inverse)",
-            "border-color": "var(--kl-inverse)",
-            "background-image": "none"
-          },
-          ".kl-rz-handle:focus-visible > .kl-rz-grip": {
-            "border": "var(--kl-ring) solid var(--kl-focus)"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-rz-handle": {
-              "background-color": "CanvasText"
-            },
-            ".kl-rz-handle::after": {
-              "background-color": "Highlight",
-              "forced-color-adjust": "none"
-            },
-            ".kl-rz-grip": {
-              "border-color": "CanvasText"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "name": "scroll-area",
@@ -4317,238 +4027,15 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react@1.9.0"
+        "@base-ui/react@1.9.0",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils",
+        "@keyline-ui/keyline-render",
         "@keyline-ui/keyline-scope"
-      ],
-      "css": {
-        "@layer components": {
-          ".kl-scroll": {
-            "--kl-sb": "12px",
-            "--kl-t-reveal": "90ms",
-            "--kl-t-conceal": "300ms",
-            "--kl-reveal-hold": "400ms",
-            "--kl-t-grip": "120ms",
-            "position": "relative",
-            "isolation": "isolate",
-            "display": "flex",
-            "flex-direction": "column",
-            "min-width": "0",
-            "min-height": "0",
-            "overflow": "hidden"
-          },
-          "[data-kl-motion=\"reduce\"] .kl-scroll, .kl-scroll[data-kl-motion=\"reduce\"]": {
-            "--kl-t-reveal": "0ms",
-            "--kl-t-conceal": "0ms",
-            "--kl-t-grip": "0ms"
-          },
-          "@media (prefers-reduced-motion: reduce)": {
-            ".kl-scroll": {
-              "--kl-t-reveal": "0ms",
-              "--kl-t-conceal": "0ms",
-              "--kl-t-grip": "0ms"
-            }
-          },
-          ".kl-scroll-vp": {
-            "flex": "1 1 auto",
-            "min-height": "0",
-            "min-width": "0",
-            "outline": "0"
-          },
-          ".kl-scroll[data-has-overflow-y]:not([data-kl-bars=\"horizontal\"]) > .kl-scroll-vp": {
-            "padding-inline-end": "var(--kl-sb)"
-          },
-          ".kl-scroll[data-has-overflow-x]:not([data-kl-bars=\"vertical\"]) > .kl-scroll-vp": {
-            "padding-block-end": "var(--kl-sb)"
-          },
-          ".kl-scrollbar": {
-            "z-index": "1",
-            "box-sizing": "border-box",
-            "display": "flex",
-            "padding": "2px",
-            "background-color": "var(--kl-cell)"
-          },
-          ".kl-scrollbar[data-orientation=\"vertical\"]": {
-            "width": "var(--kl-sb)",
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-scrollbar[data-orientation=\"horizontal\"]": {
-            "flex-direction": "column",
-            "height": "var(--kl-sb)",
-            "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"vertical\"]": {
-            "padding-block": "0",
-            "margin-block": "2px"
-          },
-          ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"horizontal\"]": {
-            "padding-inline": "0",
-            "margin-inline": "2px"
-          },
-          ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "z-index": "-1",
-            "background-color": "var(--kl-cell)",
-            "border": "0 solid var(--kl-seam)"
-          },
-          ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"vertical\"]::after": {
-            "inset-block": "-2px",
-            "inset-inline": "calc(-1 * var(--kl-k1)) 0",
-            "border-inline-start-width": "var(--kl-k1)"
-          },
-          ".kl-scroll:not([data-kl-track=\"rail\"]) > .kl-scrollbar[data-orientation=\"horizontal\"]::after": {
-            "inset-inline": "-2px",
-            "inset-block": "calc(-1 * var(--kl-k1)) 0",
-            "border-block-start-width": "var(--kl-k1)"
-          },
-          ".kl-scroll-thumb": {
-            "position": "relative",
-            "flex": "1 1 auto",
-            "background-color": "var(--kl-ink-3)",
-            "transform-origin": "center",
-            "transition": "opacity var(--kl-t-conceal) linear var(--kl-reveal-hold),\n      scale var(--kl-t-grip) var(--kl-ease-out),\n      background-color var(--kl-t-grip) linear"
-          },
-          ".kl-scroll-thumb::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset": "-6px -2px"
-          },
-          ".kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb::after": {
-            "inset": "-2px -6px"
-          },
-          ".kl-scrollbar:hover > .kl-scroll-thumb": {
-            "background-color": "var(--kl-ink-2)"
-          },
-          ".kl-scrollbar:active > .kl-scroll-thumb": {
-            "background-color": "var(--kl-ink)"
-          },
-          ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar > .kl-scroll-thumb": {
-            "opacity": "0",
-            "scale": "calc(4 / 7) 1"
-          },
-          ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
-            "scale": "1 calc(4 / 7)"
-          },
-          ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:is([data-scrolling], :active) > .kl-scroll-thumb, .kl-scroll[data-kl-reveal=\"scroll\"][data-kl-travel] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
-            "opacity": "1",
-            "transition-duration": "var(--kl-t-reveal), var(--kl-t-grip), var(--kl-t-grip)",
-            "transition-delay": "0s"
-          },
-          ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:active > .kl-scroll-thumb": {
-            "scale": "1"
-          },
-          "@media (hover: hover)": {
-            ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar:hover > .kl-scroll-thumb": {
-              "opacity": "1",
-              "scale": "1",
-              "transition-duration": "var(--kl-t-reveal), var(--kl-t-grip), var(--kl-t-grip)",
-              "transition-delay": "0s"
-            },
-            ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar:hover > .kl-scroll-thumb": {
-              "scale": "1"
-            }
-          },
-          "@media (prefers-contrast: more)": {
-            ".kl-scroll[data-kl-reveal=\"scroll\"] > .kl-scrollbar > .kl-scroll-thumb": {
-              "opacity": "1 !important",
-              "scale": "none !important",
-              "transition": "background-color var(--kl-t-grip) linear"
-            }
-          },
-          ".kl-scroll-corner": {
-            "z-index": "1",
-            "box-sizing": "border-box",
-            "background-color": "var(--kl-cell)",
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)",
-            "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar": {
-            "background-color": "transparent",
-            "border": "0",
-            "padding": "0",
-            "justify-content": "center",
-            "align-items": "flex-start"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar::before": {
-            "content": "\"\"",
-            "position": "absolute",
-            "z-index": "-1",
-            "background-color": "var(--kl-line-soft)"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"vertical\"]::before": {
-            "inset-block": "0",
-            "inset-inline-start": "calc(50% - var(--kl-k1) / 2)",
-            "width": "var(--kl-k1)"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"]::before": {
-            "inset-inline": "0",
-            "inset-block-start": "calc(50% - var(--kl-k1) / 2)",
-            "height": "var(--kl-k1)"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
-            "flex": "none",
-            "width": "6px",
-            "transform-origin": "center"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
-            "flex": "none",
-            "height": "6px",
-            "transform-origin": "center"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar > .kl-scroll-thumb::after": {
-            "inset": "-6px -3px"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb::after": {
-            "inset": "-3px -6px"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"vertical\"] > .kl-scroll-thumb": {
-            "scale": "0.5 1"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar[data-orientation=\"horizontal\"] > .kl-scroll-thumb": {
-            "scale": "1 0.5"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"][data-kl-reveal=\"scroll\"] > .kl-scrollbar:active > .kl-scroll-thumb": {
-            "scale": "1"
-          },
-          ".kl-scroll[data-kl-track=\"rail\"] > .kl-scroll-corner": {
-            "background-color": "transparent",
-            "border": "0"
-          },
-          ".kl-scroll:has(> .kl-scroll-vp:focus-visible)::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset": "0",
-            "z-index": "2",
-            "pointer-events": "none",
-            "outline": "var(--kl-ring) solid var(--kl-focus)",
-            "outline-offset": "var(--kl-ring-in)"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-scrollbar, .kl-scrollbar::after, .kl-scroll-corner": {
-              "border-color": "CanvasText"
-            },
-            ".kl-scroll-thumb, .kl-scroll[data-kl-reveal] > .kl-scrollbar > .kl-scroll-thumb": {
-              "forced-color-adjust": "none",
-              "background": "CanvasText",
-              "opacity": "1 !important",
-              "scale": "none !important",
-              "transition": "none"
-            },
-            ".kl-scroll[data-kl-track=\"rail\"] > .kl-scrollbar::before": {
-              "forced-color-adjust": "none",
-              "background": "GrayText"
-            },
-            ".kl-scroll:has(> .kl-scroll-vp:focus-visible)::after": {
-              "outline": "3px solid Highlight",
-              "outline-offset": "-4px"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "name": "scroll-edges",
@@ -5178,7 +4665,7 @@
             "flex": "1 1 auto",
             "min-height": "0"
           },
-          ".kl-tf-scroll > .kl-scroll-vp": {
+          ".kl-tf-scroll > [data-slot=\"scroll-area-viewport\"]": {
             "overscroll-behavior": "contain"
           },
           ".kl-table": {

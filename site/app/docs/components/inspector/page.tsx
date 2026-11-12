@@ -60,6 +60,17 @@ const PROPS: Prop[] = [
     description: "A labelled cell, and a row that puts two short sections side by side.",
   },
   {
+    name: "InspectorBody",
+    type: "Scroll area",
+    default: "\u2014",
+    description: (
+      <>
+        The scrolling body: a Scroll area. <code>className</code> and <code>style</code> reach the scroll area;{" "}
+        <code>contentClassName</code> lays out what it holds.
+      </>
+    ),
+  },
+  {
     name: "InspectorActions",
     type: "div",
     default: "\u2014",
@@ -79,7 +90,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function InspectorPage() {
@@ -112,6 +129,20 @@ export default function InspectorPage() {
       <p className="s-small">
         In an AppShell, pass it as <code>aside</code> and it becomes a sheet on narrow screens; the App shell page shows
         that.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Inspector</code>, <code>InspectorHeader</code>, <code>InspectorFacts</code>, <code>InspectorBody</code>,{" "}
+        <code>InspectorSection</code>, <code>InspectorRow</code> and <code>InspectorActions</code> are the parts;
+        Keyline renders each one. Every part but <code>InspectorBody</code> takes <code>render</code>; every part takes
+        a <code>className</code> or <code>style</code> that may be a function (of an empty state: the parts have none).
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>inspector</code>, <code>inspector-header</code>
+        , <code>inspector-facts</code>, <code>inspector-body</code>, <code>inspector-section</code>,{" "}
+        <code>inspector-row</code>, <code>inspector-actions</code>; inside the header, <code>inspector-heading</code>,{" "}
+        <code>inspector-title</code> and <code>inspector-close</code>; each fact is <code>inspector-fact</code>).
       </p>
     </DocPage>
   );

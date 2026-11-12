@@ -92,6 +92,7 @@ const TOC: TocGroup[] = [
     items: [
       { id: "one-frame-for-a-board", label: "One frame for a board" },
       { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
     ],
   },
 ];
@@ -138,6 +139,22 @@ export default function PanelPage() {
       <PropsReference label="Panel props" props={PROPS} />
       <p className="s-small">
         Resizable, Scroll area and Item pages put their content in a Panel body with <code>flush</code>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Panel</code>, <code>PanelHeader</code>, <code>PanelBody</code>, <code>PanelFooter</code> and{" "}
+        <code>PanelGrid</code> are the parts; Keyline renders each one. Every part takes <code>render</code> (to render
+        a different element, a <code>form</code> for a <code>PanelBody</code> say), and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state (<code>layout</code> on <code>Panel</code>,{" "}
+        <code>flush</code> on <code>PanelBody</code>).
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>panel</code>, <code>panel-header</code>,{" "}
+        <code>panel-body</code>, <code>panel-footer</code>, <code>panel-grid</code>; inside the header,{" "}
+        <code>panel-heading</code>, <code>panel-title</code>, <code>panel-description</code> and{" "}
+        <code>panel-actions</code>), and its state: <code>data-kl-layout</code> on <code>Panel</code>,{" "}
+        <code>data-flush</code> on a flush <code>PanelBody</code>.
       </p>
     </DocPage>
   );

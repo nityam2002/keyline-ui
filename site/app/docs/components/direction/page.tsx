@@ -28,7 +28,7 @@ const PROPS: Prop[] = [
     name: "useDirection",
     type: '() => "ltr" | "rtl"',
     default: "\u2014",
-    description: "Reads the direction from Base UI&apos;s provider.",
+    description: "Reads the direction from Base UI\u2019s provider.",
   },
 ];
 
@@ -40,7 +40,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function DirectionPage() {
@@ -73,6 +79,13 @@ export default function DirectionPage() {
       <p className="s-small">
         Wrap the app once, or only a region whose language differs from the page. Without it, Keyline still follows the
         DOM&apos;s <code>dir</code>; only the side Base UI places a popup on needs the provider.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>DirectionProvider</code> is one part; Keyline renders it. It takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state (<code>direction</code>). It
+        carries <code>data-slot=&quot;direction&quot;</code> and the <code>dir</code> it was given.
       </p>
     </DocPage>
   );

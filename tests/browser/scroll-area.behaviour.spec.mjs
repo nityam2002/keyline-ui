@@ -11,10 +11,10 @@ async function setup(open) {
   await act.scrollIntoViewIfNeeded();
   const sa = () =>
     act.evaluate((e) => {
-      const vp = e.querySelector(".kl-scroll-vp"),
-        c = e.querySelector(".kl-scroll-content"),
-        bar = e.querySelector(".kl-scrollbar"),
-        th = bar?.querySelector(".kl-scroll-thumb");
+      const vp = e.querySelector("[data-slot=scroll-area-viewport]"),
+        c = e.querySelector("[data-slot=scroll-area-content]"),
+        bar = e.querySelector("[data-slot=scroll-area-scrollbar]"),
+        th = bar?.querySelector("[data-slot=scroll-area-thumb]");
       return {
         oy: e.hasAttribute("data-has-overflow-y"),
         tab: vp.tabIndex,
@@ -40,13 +40,13 @@ test("scroll area: bar, padding, tab order, PageDown, focus ring", async ({ open
     s,
   );
   ok("scroll area: the overflowing viewport is in the tab order", s.tab === 0, s.tab);
-  await act.locator(".kl-scroll-vp").focus();
+  await act.locator("[data-slot=scroll-area-viewport]").focus();
   await p.keyboard.press("PageDown");
   await until(async () => (await sa()).top > 0);
   s = await sa();
   ok("scroll area: keyboard scrolls the viewport natively (PageDown)", s.top > 0, s.top);
-  await act.locator(".kl-scroll-vp").evaluate((e) => e.blur());
-  await act.locator(".kl-scroll-vp").focus();
+  await act.locator("[data-slot=scroll-area-viewport]").evaluate((e) => e.blur());
+  await act.locator("[data-slot=scroll-area-viewport]").focus();
   const ringOk = await act.evaluate((e) => {
     const a = getComputedStyle(e, "::after");
     return { style: a.outlineStyle, z: a.zIndex, off: a.outlineOffset };
@@ -61,14 +61,14 @@ test("scroll area: bar, padding, tab order, PageDown, focus ring", async ({ open
 
 test("scroll area: wheel, thumb drag, track press", async ({ open, ok }) => {
   const { p, act, sa } = await setup(open);
-  await act.locator(".kl-scroll-vp").evaluate((e) => (e.scrollTop = 0));
+  await act.locator("[data-slot=scroll-area-viewport]").evaluate((e) => (e.scrollTop = 0));
   const bb = await act.boundingBox();
   await p.mouse.move(bb.x + 40, bb.y + 60);
   await p.mouse.wheel(0, 160);
   await until(async () => (await sa()).top > 0);
   let s = await sa();
   ok("scroll area: the wheel scrolls the viewport", s.top > 0, s.top);
-  await act.locator(".kl-scroll-vp").evaluate((e) => (e.scrollTop = 0));
+  await act.locator("[data-slot=scroll-area-viewport]").evaluate((e) => (e.scrollTop = 0));
   await until(async () => {
     const v = await sa();
     return v.top === 0 && v.thumb && v.thumb.y - v.bar.y < 1;
@@ -130,11 +130,11 @@ test("scroll area: dialog in a short viewport scrolls only its body", async ({ o
   await p.setViewportSize({ width: 900, height: 520 });
   const measure = () =>
     dlg.evaluate((d) => {
-      const vp = d.querySelector("[data-slot=dialog-body] .kl-scroll-vp");
+      const vp = d.querySelector("[data-slot=dialog-body] > [data-slot=scroll-area-viewport]");
       return {
         frame: d.scrollHeight - d.clientHeight,
         body: vp.scrollHeight - vp.clientHeight,
-        bar: !!d.querySelector("[data-slot=dialog-body] .kl-scrollbar"),
+        bar: !!d.querySelector("[data-slot=dialog-body] > [data-slot=scroll-area-scrollbar]"),
       };
     });
   await idle(p);

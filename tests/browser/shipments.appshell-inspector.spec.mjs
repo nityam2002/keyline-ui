@@ -21,7 +21,7 @@ test("block wide (1440): Inspector as the shell's aside, Notice when filtered ou
   const row = a.locator(".kl-sx-open").nth(2);
   const id = (await row.textContent()).trim();
   await row.click();
-  const aside = a.locator(".kl-shell-aside .kl-insp");
+  const aside = a.locator(".kl-shell-aside [data-slot=inspector]");
   await aside.waitFor({ state: "visible" }).catch(() => {});
   ok("block: inspecting a row opens the Inspector inline as the shell's aside", await aside.isVisible(), null);
   const crumb = a.locator('.kl-shell-h [aria-current="page"]');
@@ -85,7 +85,7 @@ test("block medium (1024): the Inspector is an end sheet", async ({ open, ok }) 
   ok(
     "block medium: the Inspector opens in an end sheet (dialog) and takes focus",
     (await dlg.isVisible()) &&
-      (await dlg.locator(".kl-insp").count()) === 1 &&
+      (await dlg.locator("[data-slot=inspector]").count()) === 1 &&
       (await m.evaluate(() => !!document.activeElement.closest('[role="dialog"]'))),
     null,
   );

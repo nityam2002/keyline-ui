@@ -71,8 +71,10 @@ check kbd kbd KbdGroup ".kl-sr"
 check toggle toggle Toggle ".kl-flood"
 check native-select native-select NativeSelect ".kl-field-bang"
 check command command CommandDialog ".kl-flood"
-# Resizable needs only the theme (and react-resizable-panels from npm); navigation-menu the theme's positioner and dock
-check resizable resizable ResizablePanelGroup ".kl-rz-grip"
+# Resizable has no CSS of its own (react-resizable-panels comes from npm): its seam and grip are utilities in
+# resizable.tsx, which must arrive (the build below checks they are generated). Navigation-menu needs the theme's
+# positioner and dock
+check resizable resizable ResizablePanelGroup "file:src/components/keyline/ui/resizable.tsx"
 check navigation-menu navigation-menu NavigationMenu ".kl-positioner"
 printf 'import "./index.css"\n' > src/main.tsx
 npx tsc -p tsconfig.json
@@ -95,5 +97,8 @@ built "the calendar's day size" '\[--kl-day\:44px\]'
 built "the date-time picker's slot grid" '4.5em'
 # the tab's count width (its data-has-count:min-w-[104px] utility) is in no installed file but tabs.tsx
 built "the tab's count width" 'data-has-count\:min-w-\[104px\]'
+# the resizable grip's states key on its handle's named group (group/resizable-handle), which is in no installed file
+# but resizable.tsx
+built "the resizable grip's states" '/resizable-handle'
 echo "isolated: ${fails} missing"
 exit $fails

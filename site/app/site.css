@@ -52,24 +52,17 @@
     height: 100dvh;
   }
   /* the rail lives in the sheet's own inset, which already keeps it clear of the frame: the page gives up no
-     width for it (ScrollArea's default reserves the bar's width; it has no prop to place the bar in a gutter
-     the content already leaves, so the site states it here). On a phone the inset is 8px, so is the bar. */
-  .s-page.s-page[data-has-overflow-y] > .s-page-vp {
-    padding-inline-end: 0;
-  }
-  @media (max-width: 720px) {
-    .s-page.s-page {
-      --kl-sb: var(--s-pad);
-    }
-  }
+     width for it, and on a phone the bar is as wide as the inset (8px). ScrollArea's default reserves the bar's
+     width and has no prop to place the bar in a gutter the content already leaves, so PageScroll states both
+     through its classes (page-scroll.tsx). */
   /* its rail runs between the sheet's crop lines (the frame's top and bottom edges), not viewport edge to edge.
      Base UI pins the bar top: 0 inline; block margins inset it, and the thumb is sized from the shorter track */
-  .s-page > .kl-scrollbar[data-orientation="vertical"] {
+  .s-page > [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
     margin-block: var(--s-pad);
   }
   /* on a docs sheet it runs level with the shell's columns (index, page, aside): they start below the sticky
      header (the sheet's inset, the header's 46px, one gutter: AppShell's --kl-shell-cols-top) and end one inset up */
-  .s-page:has(.s-shell) > .kl-scrollbar[data-orientation="vertical"] {
+  .s-page:has(.s-shell) > [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
     margin-block-start: calc(var(--s-pad) + 46px + var(--kl-gutter, 12px));
   }
 

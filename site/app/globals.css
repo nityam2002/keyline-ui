@@ -4,15 +4,11 @@
 /* The real Keyline theme and the CSS of the items this site renders, exactly as the registry ships them (the registry is the source). */
 @import "../../src/registry/keyline/theme/keyline.css";
 @import "../../src/registry/keyline/ui/toolbar.css";
-@import "../../src/registry/keyline/ui/scroll-area.css";
 @import "../../src/registry/keyline/ui/table.css";
 @import "../../src/registry/keyline/ui/nav.css";
 @import "../../src/registry/keyline/ui/app-shell.css";
-@import "../../src/registry/keyline/ui/panel.css";
 @import "../../src/registry/keyline/ui/chart.css";
 @import "../../src/registry/keyline/ui/carousel.css";
-@import "../../src/registry/keyline/ui/resizable.css";
-@import "../../src/registry/keyline/ui/inspector.css";
 @import "../../src/registry/keyline/ui/attachment.css";
 @import "../../src/registry/keyline/ui/bubble.css";
 @import "../../src/registry/keyline/ui/message.css";

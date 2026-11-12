@@ -21,10 +21,10 @@ export const ringsOf = (p) =>
       const band = e.classList?.contains("kl-edge") ? getComputedStyle(e, "::before") : null;
       if (band && band.content !== "none" && !/rgba\(0, 0, 0, 0\)|transparent/.test(band.borderTopColor))
         out.push({ d, cls: "kl-edge", off: "edge", color: band.borderTopColor });
-      // a ring drawn by a pseudo element of the scroll area root
+      // a ring drawn by a pseudo element of the scroll area root (the root mirrors its bars as data-kl-bars)
       const after = getComputedStyle(e, "::after");
-      if (e.classList?.contains("kl-scroll") && after.outlineStyle !== "none" && parseFloat(after.outlineWidth) > 0)
-        out.push({ d, cls: "kl-scroll::after", off: after.outlineOffset });
+      if (e.hasAttribute?.("data-kl-bars") && after.outlineStyle !== "none" && parseFloat(after.outlineWidth) > 0)
+        out.push({ d, cls: "scroll-area::after", off: after.outlineOffset });
     }
     return { active: String(a?.className || a?.tagName).slice(0, 60), rings: out };
   });
@@ -48,7 +48,7 @@ export async function traverse(p, rootSel, max = 260) {
       const rings = [];
       for (let e = a, d = 0; e && d < 6; e = e.parentElement, d++) {
         const cs = getComputedStyle(e);
-        const pseudo = e.classList.contains("kl-scroll") ? getComputedStyle(e, "::after") : null;
+        const pseudo = e.hasAttribute("data-kl-bars") ? getComputedStyle(e, "::after") : null;
         const src =
           cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0
             ? cs

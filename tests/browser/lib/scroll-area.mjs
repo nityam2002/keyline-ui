@@ -3,7 +3,9 @@
 /* a scroll area's state: per bar, the thumb's opacity, scale and tone, and the geometry nothing may change */
 export const state = (loc) =>
   loc.evaluate((root) => {
-    const vp = root.querySelector(":scope > [data-id$=-viewport], :scope > .kl-scroll-vp") || root.firstElementChild;
+    const vp =
+      root.querySelector(":scope > [data-slot=scroll-area-viewport], :scope > [data-slot=message-scroller-viewport]") ||
+      root.firstElementChild;
     const bars = {};
     for (const bar of root.querySelectorAll(":scope > [data-orientation]")) {
       const t = bar.firstElementChild;
@@ -15,7 +17,7 @@ export const state = (loc) =>
         bg: cs.backgroundColor,
         origin: cs.transformOrigin,
         scrolling: bar.hasAttribute("data-scrolling"),
-        // the cell the reader sees: the bar's box plus the travel-axis margins its ::after fills (scroll-area.css)
+        // the cell the reader sees: the bar's box plus the travel-axis margins its ::after fills (scroll-area.tsx)
         bar: (() => {
           const b = r(bar),
             bs = getComputedStyle(bar),
@@ -45,8 +47,7 @@ export const state = (loc) =>
       vpRect: vp.getBoundingClientRect().toJSON(),
       content,
       bars,
-      corner:
-        !!root.querySelector(":scope > .kl-scroll-corner, :scope > [data-id$=corner]") || root.children.length > 3,
+      corner: !!root.querySelector(":scope > [data-slot=scroll-area-corner]") || root.children.length > 3,
       dir: getComputedStyle(root).direction,
     };
   });

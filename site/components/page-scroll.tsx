@@ -43,7 +43,13 @@ export function PageScroll({ children }: { children: React.ReactNode }) {
     };
   }, []);
   return (
-    <ScrollArea track="rail" className="s-page" viewportClassName="s-page-vp" data-testid="page-scroll">
+    <ScrollArea
+      track="rail"
+      // the rail sits in the sheet's inset: the page gives up no width for it, and on a phone it is the inset's width
+      className="s-page [@media(max-width:720px)]:[--kl-sb:var(--s-pad)]"
+      viewportClassName="s-page-vp data-has-overflow-y:pe-0"
+      data-testid="page-scroll"
+    >
       {children}
     </ScrollArea>
   );

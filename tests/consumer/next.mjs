@@ -108,7 +108,14 @@ for (const [eng, type, opts] of [
     parseFloat(G["border-top-width"]) >= 2 && /Atkinson/.test(G["font-family"]),
     G,
   );
-  ok(eng, "dialog: focus moves inside", await dlg.evaluate((d) => d.contains(document.activeElement)));
+  // Base UI moves focus in on a frame after the dialog shows: wait for it (it fails if focus never arrives)
+  const inside = await p
+    .waitForFunction(() => document.querySelector('[role="dialog"]')?.contains(document.activeElement))
+    .then(
+      () => true,
+      () => false,
+    );
+  ok(eng, "dialog: focus moves inside", inside);
   await p.keyboard.press("Escape");
   await dlg.waitFor({ state: "hidden" });
   ok(

@@ -7,6 +7,6 @@ export default {
   description:
     "Region frame with header, body and footer cells; PanelGrid joins panels into one frame with shared keylines.",
   files: [{ path: "src/registry/keyline/ui/panel.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/panel.css",
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  dependencies: ["@base-ui/react"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

@@ -31,8 +31,8 @@ test("resizable: the work group (separator, keys, focus, hover, drag, double-cli
   const list = p.locator(`[id="${await h.getAttribute("aria-controls")}"]`);
   ok("resizable: aria-controls names the list panel", (await list.textContent()).includes("MAEU 7781204"), null);
   const geo = await work.evaluate((w) => {
-    const g = w.querySelector(".kl-rz").getBoundingClientRect(),
-      s = w.querySelector(".kl-rz-handle").getBoundingClientRect(),
+    const g = w.querySelector("[data-slot=resizable]").getBoundingClientRect(),
+      s = w.querySelector("[data-slot=resizable-handle]").getBoundingClientRect(),
       a = w.querySelector("[data-panel]").getBoundingClientRect();
     return { g: g.width, a: a.width, seam: s.width, gap: s.left - a.right };
   });
@@ -103,9 +103,9 @@ test("resizable: the work group (separator, keys, focus, hover, drag, double-cli
   await p.mouse.move(cx - 60, cy, { steps: 2 });
   const dg = await h.evaluate((e) => [
     e.getAttribute("data-separator"),
-    getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundColor ===
+    getComputedStyle(e.querySelector("[data-slot=resizable-grip]")).backgroundColor ===
       getComputedStyle(e).getPropertyValue("--kl-inverse").trim() ||
-      getComputedStyle(e.querySelector(".kl-rz-grip")).backgroundImage === "none",
+      getComputedStyle(e.querySelector("[data-slot=resizable-grip]")).backgroundImage === "none",
   ]);
   ok("resizable: while dragging the seam is active and the grip inverts", dg[0] === "active" && dg[1], dg);
   await p.mouse.up();
@@ -182,7 +182,7 @@ test("resizable: RTL", async ({ open, ok }) => {
   const rh = r.getByRole("separator", { name: "Manifests" });
   const rl = await r.evaluate((w) => {
     const a = w.querySelector("[data-panel]").getBoundingClientRect(),
-      g = w.querySelector(".kl-rz").getBoundingClientRect();
+      g = w.querySelector("[data-slot=resizable]").getBoundingClientRect();
     return Math.abs(a.right - g.right) < 1;
   });
   ok("resizable RTL: the list leads at the right", rl, null);
@@ -201,7 +201,7 @@ test("resizable: 390px, the group stays inside its panel", async ({ open, ok }) 
   const p = await open({ route: "specimen", q: "theme=light", width: 390, height: 844, ready: "#navigation-menu" });
   const rz = await p.getByTestId("rz-work").evaluate((w) => {
     const f = w.getBoundingClientRect(),
-      g = w.querySelector(".kl-rz").getBoundingClientRect();
+      g = w.querySelector("[data-slot=resizable]").getBoundingClientRect();
     return g.right <= f.right + 0.5;
   });
   ok("narrow: the resizable group stays inside its panel at 390px", rz, null);

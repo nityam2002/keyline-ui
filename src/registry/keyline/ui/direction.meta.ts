@@ -8,5 +8,5 @@ export default {
     "DirectionProvider: sets a subtree's writing direction for both the DOM (Keyline's CSS and DOM-reading components) and Base UI (the sides tooltips, popovers and menus take; arrow keys). useDirection reads it.",
   files: [{ path: "src/registry/keyline/ui/direction.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline"],
+  registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

@@ -62,7 +62,7 @@ test("accordion (single): headings, caret column, single mode, panel position, T
 
 test("accordion (multiple, cell): opening one keeps the other open", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const inner = p.locator("#disclosure .kl-panel [data-slot=accordion]");
+  const inner = p.locator("#disclosure [data-slot=panel] [data-slot=accordion]");
   await inner.scrollIntoViewIfNeeded();
   const it = inner.locator("[data-slot=accordion-trigger]");
   ok(
