@@ -1,0 +1,207 @@
+// Base UI's wrapper contract, asserted for each exported part (after base-ui's describeConformance). A Keyline
+// part is a Base UI part with Keyline's look, so it must accept everything the Base UI part accepts:
+//
+//   forwards-props       unknown props reach the DOM element
+//   ref                  `ref` reaches the element
+//   render-element       `render={<el />}` replaces the element and keeps the part's props
+//   render-function      `render={(props) => <el {...props} />}` does the same
+//   render-merges        the render element's ref and className merge with the part's own
+//   class-name           a string `className` is applied
+//   class-name-state     a function `className` receives the part's state, and its result is applied
+//   style-state          a function `style` receives the part's state, and its result is applied
+//   data-slot            the element carries the part's `data-slot`
+//   native-button        `nativeButton={false}` with a non-button render element keeps button semantics
+//
+// Failures recorded in known-failures.ts run as expected failures.
+import * as React from "react";
+import { describe, expect, it, test } from "vitest";
+import { render } from "vitest-browser-react";
+
+import { knownFailures } from "./known-failures";
+
+export const ASSERTIONS = [
+  "forwards-props",
+  "ref",
+  "render-element",
+  "render-function",
+  "render-merges",
+  "class-name",
+  "class-name-state",
+  "style-state",
+  "data-slot",
+  "native-button",
+] as const;
+export type Assertion = (typeof ASSERTIONS)[number];
+
+interface ConformantProps {
+  render?: React.ReactElement | ((props: Record<string, unknown>) => React.ReactNode) | undefined;
+  ref?: React.Ref<unknown> | undefined;
+  className?: string | ((state: unknown) => string | undefined) | undefined;
+  style?: React.CSSProperties | ((state: unknown) => React.CSSProperties | undefined) | undefined;
+  nativeButton?: boolean | undefined;
+  "data-testid"?: string | undefined;
+  [prop: string]: unknown;
+}
+
+export interface Part {
+  /** The part with the fewest props that renders it. */
+  element: React.ReactElement<ConformantProps>;
+  /** The element the forwarded ref is an instance of. */
+  refInstanceof: abstract new (...args: never[]) => unknown;
+  /** The part's `data-slot`. */
+  slot: string;
+  /** The part renders a button and accepts `nativeButton`. */
+  button?: boolean | undefined;
+  /** Puts the part in the context it needs (its Root, a Provider); defaults to rendering it alone. */
+  wrap?: ((part: React.ReactNode) => React.ReactNode) | undefined;
+}
+
+const TEST_ID = "part";
+
+function mount(part: Part, props: ConformantProps) {
+  const element = React.cloneElement(part.element, props);
+  return render(<main>{part.wrap ? part.wrap(element) : element}</main>);
+}
+
+function byTestId(id: string): HTMLElement {
+  const el = document.querySelector<HTMLElement>(`[data-testid="${id}"]`);
+  if (!el) throw new Error(`no element with data-testid="${id}"`);
+  return el;
+}
+
+/** Runs the contract over every part of `component`; `parts` is keyed by the exported part name. */
+export function describeConformance(component: string, parts: Record<string, Part>): void {
+  const known = knownFailures[component] ?? {};
+
+  describe(`${component}: Base UI wrapper contract`, () => {
+    test("known failures name only parts and assertions that exist", () => {
+      for (const [name, assertions] of Object.entries(known)) {
+        expect(Object.keys(parts), `known-failures.ts lists ${component}.${name}, which is not tested`).toContain(name);
+        for (const a of assertions) expect(ASSERTIONS, `unknown assertion ${a}`).toContain(a);
+      }
+    });
+
+    for (const [name, part] of Object.entries(parts)) {
+      describe(name, () => {
+        const listed = known[name] ?? [];
+        const check = (assertion: Assertion, body: () => Promise<void>) =>
+          (listed.includes(assertion) ? it.fails : it)(assertion, body);
+        // a button part renders its replacement as a button; nativeButton={false} with a div is tested apart
+        const Element = part.button ? "button" : "div";
+        const native = part.button ? { nativeButton: true } : {};
+
+        check("forwards-props", async () => {
+          await mount(part, { "data-testid": TEST_ID, lang: "fr", "data-probe": "kept" });
+          const el = byTestId(TEST_ID);
+          expect(el.getAttribute("lang")).toBe("fr");
+          expect(el.getAttribute("data-probe")).toBe("kept");
+        });
+
+        check("ref", async () => {
+          const ref = React.createRef<unknown>();
+          await mount(part, { ref });
+          expect(ref.current).toBeInstanceOf(part.refInstanceof);
+        });
+
+        check("render-element", async () => {
+          await mount(part, {
+            ...native,
+            "data-probe": "kept",
+            render: <Element data-testid={TEST_ID} data-own="own" />,
+          });
+          const el = byTestId(TEST_ID);
+          expect(el.tagName).toBe(Element.toUpperCase());
+          expect(el.getAttribute("data-probe")).toBe("kept");
+          expect(el.getAttribute("data-own")).toBe("own");
+          expect(el.getAttribute("data-slot")).toBe(part.slot);
+        });
+
+        check("render-function", async () => {
+          await mount(part, {
+            ...native,
+            "data-probe": "kept",
+            render: (props) => <Element {...props} data-testid={TEST_ID} />,
+          });
+          const el = byTestId(TEST_ID);
+          expect(el.tagName).toBe(Element.toUpperCase());
+          expect(el.getAttribute("data-probe")).toBe("kept");
+          expect(el.getAttribute("data-slot")).toBe(part.slot);
+        });
+
+        check("render-merges", async () => {
+          let partRef: unknown = null;
+          let renderRef: unknown = null;
+          await mount(part, {
+            ...native,
+            "data-testid": TEST_ID,
+            className: "from-part",
+            ref: (el: unknown) => {
+              partRef = el;
+            },
+            render: (
+              <Element
+                className="from-render"
+                ref={(el: unknown) => {
+                  renderRef = el;
+                }}
+              />
+            ),
+          });
+          const el = byTestId(TEST_ID);
+          expect(el.classList.contains("from-part")).toBe(true);
+          expect(el.classList.contains("from-render")).toBe(true);
+          expect(partRef).toBe(el);
+          expect(renderRef).toBe(el);
+        });
+
+        check("class-name", async () => {
+          await mount(part, { "data-testid": TEST_ID, className: "from-part" });
+          expect(byTestId(TEST_ID).classList.contains("from-part")).toBe(true);
+        });
+
+        check("class-name-state", async () => {
+          let received: unknown;
+          await mount(part, {
+            "data-testid": TEST_ID,
+            className: (state: unknown) => {
+              received = state;
+              return "from-state";
+            },
+          });
+          expect(typeof received).toBe("object");
+          expect(received).not.toBeNull();
+          expect(byTestId(TEST_ID).classList.contains("from-state")).toBe(true);
+        });
+
+        check("style-state", async () => {
+          let received: unknown;
+          await mount(part, {
+            "data-testid": TEST_ID,
+            style: (state: unknown) => {
+              received = state;
+              return { outlineOffset: "7px" };
+            },
+          });
+          expect(typeof received).toBe("object");
+          expect(received).not.toBeNull();
+          expect(byTestId(TEST_ID).style.outlineOffset).toBe("7px");
+        });
+
+        check("data-slot", async () => {
+          await mount(part, { "data-testid": TEST_ID });
+          expect(byTestId(TEST_ID).getAttribute("data-slot")).toBe(part.slot);
+        });
+
+        if (part.button) {
+          check("native-button", async () => {
+            await mount(part, { nativeButton: false, render: <div data-testid={TEST_ID} /> });
+            const el = byTestId(TEST_ID);
+            expect(el.tagName).toBe("DIV");
+            expect(el.getAttribute("role")).toBe("button");
+            expect(el.tabIndex).toBe(0);
+          });
+        }
+      });
+    }
+  });
+}

@@ -48,56 +48,61 @@ for (const [form, lead, trail] of [
   ["ms", "100ms", "220ms"],
   ["s (minified)", ".1s", ".22s"],
 ]) {
-  test(`motion tokens: the Stretch band travels with its tokens in ${form}`, async ({ open, ok }) => {
-    const p = await open({ route: "specimen", width: 1440, height: 900, ready: "[data-kl-stretch]" });
-    const host = p
-      .locator("[data-kl-stretch]")
-      .filter({ has: p.locator(":scope > [data-kl-band]:not([hidden])") })
-      .first();
-    await host.evaluate(
-      (el, [l, t]) => {
-        el.style.setProperty("--kl-stretch-lead", l);
-        el.style.setProperty("--kl-stretch-trail", t);
-      },
-      [lead, trail],
-    );
-    const items = host.locator("[data-kl-item]");
-    // the item farthest from the band, so the travel is long enough to watch
-    const target = await host.evaluate((el) => {
-      const b = window.__klBand(el.querySelector(":scope > [data-kl-band]"));
-      const its = [...el.querySelectorAll("[data-kl-item]")].filter((i) => i.closest("[data-kl-stretch]") === el);
-      let best = 0,
-        far = -1;
-      its.forEach((i, k) => {
-        const d = Math.abs(i.getBoundingClientRect().left - b.left) + Math.abs(i.getBoundingClientRect().top - b.top);
-        if (d > far) {
-          far = d;
-          best = k;
-        }
-      });
-      return best;
-    });
-    const landed = () =>
-      host.evaluate((el, k) => {
+  // @timing: "still travelling two frames after the press" depends on frame pacing, which other workers' load stretches
+  test(
+    `motion tokens: the Stretch band travels with its tokens in ${form}`,
+    { tag: "@timing" },
+    async ({ open, ok }) => {
+      const p = await open({ route: "specimen", width: 1440, height: 900, ready: "[data-kl-stretch]" });
+      const host = p
+        .locator("[data-kl-stretch]")
+        .filter({ has: p.locator(":scope > [data-kl-band]:not([hidden])") })
+        .first();
+      await host.evaluate(
+        (el, [l, t]) => {
+          el.style.setProperty("--kl-stretch-lead", l);
+          el.style.setProperty("--kl-stretch-trail", t);
+        },
+        [lead, trail],
+      );
+      const items = host.locator("[data-kl-item]");
+      // the item farthest from the band, so the travel is long enough to watch
+      const target = await host.evaluate((el) => {
         const b = window.__klBand(el.querySelector(":scope > [data-kl-band]"));
-        const it = [...el.querySelectorAll("[data-kl-item]")]
-          .filter((i) => i.closest("[data-kl-stretch]") === el)
-          [k].getBoundingClientRect();
-        return (
-          Math.abs(b.left - it.left) <= 2 &&
-          Math.abs(b.right - it.right) <= 2 &&
-          Math.abs(b.top - it.top) <= 2 &&
-          Math.abs(b.bottom - it.bottom) <= 2
-        );
-      }, target);
-    await items.nth(target).click();
-    await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
-    const early = await landed();
-    await p.waitForTimeout(700); // timing: past the 220ms trail settle, with margin for a loaded runner
-    const late = await landed();
-    ok(`stretch (${form}): two frames after the press the band is still travelling, then it lands`, !early && late, {
-      early,
-      late,
-    });
-  });
+        const its = [...el.querySelectorAll("[data-kl-item]")].filter((i) => i.closest("[data-kl-stretch]") === el);
+        let best = 0,
+          far = -1;
+        its.forEach((i, k) => {
+          const d = Math.abs(i.getBoundingClientRect().left - b.left) + Math.abs(i.getBoundingClientRect().top - b.top);
+          if (d > far) {
+            far = d;
+            best = k;
+          }
+        });
+        return best;
+      });
+      const landed = () =>
+        host.evaluate((el, k) => {
+          const b = window.__klBand(el.querySelector(":scope > [data-kl-band]"));
+          const it = [...el.querySelectorAll("[data-kl-item]")]
+            .filter((i) => i.closest("[data-kl-stretch]") === el)
+            [k].getBoundingClientRect();
+          return (
+            Math.abs(b.left - it.left) <= 2 &&
+            Math.abs(b.right - it.right) <= 2 &&
+            Math.abs(b.top - it.top) <= 2 &&
+            Math.abs(b.bottom - it.bottom) <= 2
+          );
+        }, target);
+      await items.nth(target).click();
+      await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      const early = await landed();
+      await p.waitForTimeout(700); // timing: past the 220ms trail settle, with margin for a loaded runner
+      const late = await landed();
+      ok(`stretch (${form}): two frames after the press the band is still travelling, then it lands`, !early && late, {
+        early,
+        late,
+      });
+    },
+  );
 }

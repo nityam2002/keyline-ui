@@ -6,7 +6,7 @@ Node.js 24 (`.nvmrc`) and pnpm, at the version pinned in `package.json` (`corepa
 
 ```sh
 pnpm install
-pnpm exec playwright install chrome webkit     # the browser tests use Chrome and Playwright's WebKit; on Linux add --with-deps
+pnpm exec playwright install chrome chromium firefox webkit     # on Linux add --with-deps
 ```
 
 `pnpm-workspace.yaml` holds two supply-chain settings. `minimumReleaseAge` keeps any package version published in
@@ -35,8 +35,9 @@ document those items.
   **specimen** per component in `src/demo/specimens/`. The browser tests run against it.
 - **`site/`** is the documentation site (`pnpm site:dev`): a page and examples per component, built with
   Keyline's own components.
-- **`tests/`** holds unit tests (`tests/**/*.test.ts`), browser specs (`tests/browser/`, see its
-  [README](../tests/browser/README.md)) and consumer checks (`tests/consumer/`), which install items into fresh
+- **`tests/`** holds unit tests (`tests/**/*.test.ts`), part tests (`tests/parts/`) and page specs
+  (`tests/browser/`; its [README](../tests/browser/README.md) covers both), compile-only type tests
+  (`tests/types/`) and consumer checks (`tests/consumer/`), which install items into fresh
   projects.
 - **`docs/`** holds [usage.md](../docs/usage.md) for people installing Keyline, [design.md](../docs/design.md) for
   the design model every component follows, and [releasing.md](../docs/releasing.md) for publishing a version.
@@ -44,8 +45,8 @@ document those items.
 ## Making a change
 
 1. Edit the component in `src/registry/keyline/` and watch its specimen in `pnpm dev`.
-2. Run the specs for what you touched: `pnpm exec playwright test <name>` runs every spec whose file name matches,
-   in both engines. Each run builds its own snapshot of the app, so edits made while it runs are not tested.
+2. Run the tests for what you touched: `pnpm test:parts <name>` runs its part tests and
+   `pnpm exec playwright test <name>` every page spec whose file name matches, in every engine. Each run builds its own snapshot of the app, so edits made while it runs are not tested.
 3. Look at it across modes when the change is visible. `pnpm capture -- <data-testid>` screenshots one element
    in light, dark, compact, RTL, narrow and reduced-motion configurations in both engines, and writes the images to
    `.artifacts/captures/`. The specs assert on geometry, styles and the accessibility tree rather than pixels, so
@@ -62,8 +63,9 @@ document those items.
      out of `src/registry/`. A rule is either an error or off, and turning one off needs the reason beside it.
    - `pnpm format:check`: oxfmt, configured in `.oxfmtrc.json`. Fix it with `pnpm format`.
    - `pnpm test`: unit tests, including the install commands in the docs, the built registry and the lint guard.
-   - `pnpm registry:build`, every browser spec (`pnpm test:browser`) and the CSS-order check
-     (`pnpm test:css-order`).
+   - `pnpm test:types`: compile-only type tests for the generic parts.
+   - `pnpm registry:build`, every part test (`pnpm test:parts`), every page spec (`pnpm test:browser`) and the
+     CSS-order check (`pnpm test:css-order`). Neither browser runner retries a failed test.
 
 Two slower checks run when they apply:
 
@@ -84,7 +86,9 @@ A new component is done when it has all of these:
 - an entry in `src/registry/manifest.mjs`, with `site/public/r/` rebuilt
 - a specimen in `src/demo/specimens/`, wired into `src/demo/App.tsx`
 - a page and example in `site/`
-- browser specs in `tests/browser/` covering behaviour, keyboard, focus and the accessibility tree in both engines
+- a part test in `tests/parts/` running the conformance suite and axe over every exported part, with any failure it
+  cannot fix yet recorded in `tests/parts/known-failures.ts`
+- page specs in `tests/browser/` covering behaviour, keyboard, focus and the accessibility tree in every engine
 
 ## Rules, and why
 

@@ -192,14 +192,38 @@ test("item: rows are real controls; the link row is a link", async ({ open, ok }
 test("reduced motion: the sheet opens without animation", async ({ open, ok }) => {
   const { p, scope, press } = await setup(open);
   await pick(p, "Motion", "Reduced");
+  await idle(p);
+  // Every animation and transition that starts while the sheet opens is recorded as it starts, so how long one
+  // lasts does not decide whether it is seen. A zero-duration one has finished by its start event and is not
+  // recorded. The Configuration panel sits outside the reduced scope by design (the Motion picker's band travels;
+  // picking scrolls the panel, whose thumb holds on a timer and then fades), so its motion is left out.
+  await p.evaluate(() => {
+    const seen = /** @type {string[]} */ ([]);
+    /** @param {AnimationEvent | TransitionEvent} e */
+    const record = (e) => {
+      const el = /** @type {Element} */ (e.target);
+      if (el.closest('aside[aria-label="Configuration"]')) return;
+      const name = "animationName" in e ? e.animationName : e.propertyName;
+      const live = el
+        .getAnimations()
+        .filter((a) => (/** @type {any} */ (a).animationName ?? /** @type {any} */ (a).transitionProperty) === name)
+        .filter((a) => Number(a.effect?.getComputedTiming().activeDuration ?? 0) > 0);
+      if (!live.length) return;
+      const where = el.closest("[data-slot=sheet-content], [data-slot=sheet], [data-testid=scope-preview], main");
+      seen.push(
+        `${name} on ${el.getAttribute("data-slot") ?? el.className} in ${where?.getAttribute("data-slot") ?? where?.getAttribute("data-testid") ?? where?.tagName ?? "page"}`,
+      );
+    };
+    document.addEventListener("animationstart", record, true);
+    document.addEventListener("transitionrun", record, true);
+    /** @type {any} */ (window).__motion = seen;
+  });
   const details = scope.getByRole("button", { name: "Carrier details" });
   await press(details);
-  await p.waitForTimeout(350); // timing: samples running animations 350 ms after Enter
-  const anim = await p.evaluate(
-    () =>
-      document.getAnimations().filter((a) => a.playState === "running" && (a.effect?.getTiming().duration ?? 0) > 0)
-        .length,
-  );
-  ok("reduced motion: opening the sheet runs no animation", anim === 0, anim);
+  const sheet = p.getByRole("dialog");
+  await sheet.waitFor();
+  await idle(p);
+  const anim = await p.evaluate(() => /** @type {any} */ (window).__motion);
+  ok("reduced motion: opening the sheet runs no animation", anim.length === 0, anim);
   ok("no page errors", p.errs.length === 0, p.errs);
 });

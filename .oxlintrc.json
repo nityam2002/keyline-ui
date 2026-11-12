@@ -16,8 +16,9 @@
   "rules": {
     "react/rules-of-hooks": "error",
     "react/exhaustive-deps": "error",
-    // A destructured prop left out of a rest spread (`{ day, ...props }`) is how a component keeps it off the DOM.
-    "no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+    // A destructured prop left out of a rest spread (`{ day, ...props }`) is how a component keeps it off the DOM;
+    // a parameter named `_x` is one a signature requires but the body does not read.
+    "no-unused-vars": ["error", { "ignoreRestSiblings": true, "argsIgnorePattern": "^_" }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
     // React Compiler diagnostics. Keyline's components are not compiled with React Compiler, and consumers'
     // builds decide that for themselves; rules-of-hooks and exhaustive-deps cover hook correctness.

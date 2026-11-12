@@ -35,7 +35,7 @@ single keyline, and every state change happens inside a cell.
 - **Your code.** Like any shadcn registry, Keyline copies each component's source into your project, so it is
   yours to read and change. There is no runtime package to keep up with.
 - **Accessible foundations.** Interactive parts are built on Base UI primitives, which handle keyboard, focus and
-  ARIA; Keyline's browser tests check them in Chrome and WebKit.
+  ARIA; Keyline's browser tests check them in Chrome, Firefox and WebKit.
 - **Lives beside shadcn.** Components install under `components/keyline/`, next to shadcn's `components/ui/`, and
   their styles only touch Keyline's own classes. An opt-in theme brings stock shadcn components into the same
   look when you want it.

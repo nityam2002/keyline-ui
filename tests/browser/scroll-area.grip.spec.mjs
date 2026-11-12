@@ -141,15 +141,17 @@ test("scroll area grip: track presses near the end, near the start and mid; a tr
     await frames(p);
     const bar = (await state(v)).bars.vertical.bar;
     const mid = bar.y + bar.height * 0.6;
-    const pressAt = v.evaluate(
-      (root) =>
-        new Promise((res) =>
-          root.addEventListener("pointerdown", (e) => res(e.clientY), { once: true, capture: true }),
-        ),
-    );
+    // the listener is installed (awaited) before the press: a listener added concurrently can miss it under load
+    await v.evaluate((root) => {
+      delete root.dataset.pressY;
+      root.addEventListener("pointerdown", (e) => (root.dataset.pressY = String(e.clientY)), {
+        once: true,
+        capture: true,
+      });
+    });
     await p.mouse.move(bar.x + 6, mid);
     await p.mouse.down();
-    const y = await pressAt;
+    const y = Number(await v.evaluate((root) => root.dataset.pressY));
     await until(v, (ops, root) => root.firstElementChild.scrollTop > 1, 1000);
     await frames(p);
     const [, tcy] = center((await state(v)).bars.vertical.thumb);

@@ -29,6 +29,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm test
+      - run: pnpm test:types
       - name: Registry is up to date
         run: |
           pnpm registry:build
@@ -39,7 +40,9 @@ jobs:
           fi
       - run: pnpm build
       - run: pnpm site:build
-      - run: pnpm exec playwright install --with-deps chrome webkit
+      # Chrome for the page specs; Playwright's own Chromium, Firefox and WebKit for the part tests and specs
+      - run: pnpm exec playwright install --with-deps chrome chromium firefox webkit
+      - run: pnpm test:parts
       - run: pnpm test:browser
       - run: pnpm test:css-order
       - name: Upload test report and traces

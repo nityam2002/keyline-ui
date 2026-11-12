@@ -1,18 +1,55 @@
 # Browser specs
 
-Playwright Test specs, one file per component or behaviour (`<component>[.<aspect>].spec.mjs`), run in Chrome
-(the installed Chrome channel) and WebKit against a development-mode build of the demo app (`src/demo/`).
+Two kinds of browser test, for two questions.
+
+- **Part tests** (`tests/parts/<component>.browser.test.tsx`, Vitest browser mode) ask whether each exported part
+  honours its contract on its own. They mount one part at a time, imported through `@/components/keyline/*` as a
+  consumer would, run the Base UI wrapper contract (`describeConformance` in `tests/parts/conformance.tsx`) and axe
+  over it, and count renders where that matters. Every component gets one, listing all of its exported parts.
+- **Page specs** (`tests/browser/<component>[.<aspect>].spec.mjs`, Playwright Test) ask whether a component works in
+  a page: keyboard paths, focus, motion, geometry across density, direction and theme, and flows that cross
+  components. They run against a development-mode build of the demo app (`src/demo/`).
+
+When a check needs only the part and its props, write it as a part test; when it needs a page, a layout or a real
+input sequence across components, write a page spec.
 
 ```sh
-pnpm test:browser                               # every spec, both engines (builds and serves the app itself)
-pnpm exec playwright test toolbar menu          # specs whose file name matches
+pnpm test:parts                                 # every part test in Chromium, Firefox and WebKit
+pnpm test:parts button                          # part tests whose file name matches
+pnpm test:browser                               # every page spec, every engine (builds and serves the app itself)
+pnpm exec playwright test toolbar menu          # page specs whose file name matches
 pnpm exec playwright test --project=chromium    # one engine, without the @timing pass
 ```
 
-A failed test is retried once with a trace, kept under `.artifacts/playwright/` (open a trace with
-`pnpm exec playwright show-trace <file>`). A test that fails and then passes on its one retry is reported as flaky.
+Neither runner retries. A test that passes only sometimes has a cause, and the cause gets fixed
+(.github/CONTRIBUTING.md, "Fix the cause"). A failed page spec keeps its trace under `.artifacts/playwright/` (open it
+with `pnpm exec playwright show-trace <file>`).
 
-## Writing a spec
+## Writing a part test
+
+```tsx
+import "./render-count"; // first: it must load before react-dom
+
+import { Button, ButtonAffix } from "@/components/keyline/ui/button";
+
+import { describeConformance } from "./conformance";
+
+describeConformance("button", {
+  Button: { element: <Button>Save</Button>, refInstanceof: HTMLButtonElement, slot: "button", button: true },
+  ButtonAffix: { element: <ButtonAffix>3</ButtonAffix>, refInstanceof: HTMLSpanElement, slot: "button-affix" },
+});
+```
+
+- A part that needs context (a Menu item inside its Root and Popup) passes `wrap`, which renders it in place.
+- An assertion a part fails today goes in `tests/parts/known-failures.ts` and runs as an expected failure, so the
+  list can only shrink: when a fix makes it pass, the suite fails until the entry is removed.
+- `expectNoAxeViolations()` (`tests/parts/axe.ts`) runs axe over the document; mount inside `<main>`.
+- `countRenders()` (`tests/parts/render-count.ts`) counts commits per component name, for parts whose cost is
+  their re-renders.
+- Generic parts also get a compile-only file in `tests/types/` (`pnpm test:types`), asserting how the value type flows
+  to callbacks with `expectType`.
+
+## Writing a page spec
 
 ```js
 import { test, settle, idle, stable } from "./fixtures.mjs"
@@ -28,7 +65,7 @@ test("toolbar: arrows move focus, Home and End jump", async ({ open, ok, eng }) 
   independent block; steps that build on each other's page state stay inside one test.
 - `ok(name, cond, detail)` is a soft assertion: every check in a test runs and is printed; any failure fails the
   test. Never loosen a condition or a tolerance when moving a check.
-- `eng` is `"chromium"` or `"webkit"`. Engine-specific branches stay explicit (`if (eng === "chromium")`) —
+- `eng` is `"chromium"`, `"firefox"` or `"webkit"`. Engine-specific branches stay explicit (`if (eng === "chromium")`) —
   `test.skip` is only for a combination that cannot exist (an emulation the engine lacks), with the reason.
 - Waiting: `settle(p)` (fonts + two frames), `idle(p)` (no finite animation running), `stable(locator)` (its box
   stops moving), or a Playwright wait on the observable state (`locator.waitFor`, `expect.poll`,
