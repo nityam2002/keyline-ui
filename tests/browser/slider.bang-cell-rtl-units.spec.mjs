@@ -9,7 +9,7 @@ test("slider: ! cell in both layouts; °C and negatives in RTL", async ({ open, 
   const sec = p.getByTestId("specimen-slider");
   await sec.scrollIntoViewIfNeeded();
   const slOf = () =>
-    sec.locator(".kl-slider").evaluateAll((xs) =>
+    sec.locator("[data-slot=slider]").evaluateAll((xs) =>
       xs.map((s) => ({
         inv: s.hasAttribute("data-invalid"),
         cell: s.getAttribute("data-kl-layout") === "cell",
@@ -54,7 +54,11 @@ test("slider: ! cell in both layouts; °C and negatives in RTL", async ({ open, 
       };
       return at(0) < at(1);
     };
-    const els = [...root.querySelectorAll(".kl-slider-out:not(.kl-slider-sizer) > bdi.kl-code, .kl-number-unit bdi")];
+    const els = [
+      ...root.querySelectorAll(
+        "[data-slot=slider-readout]:not([data-kl-sizer]) > bdi:last-child, [data-slot=number-field-unit] bdi",
+      ),
+    ];
     return els.map(order).filter((x) => x !== null);
   });
   ok(
@@ -64,7 +68,7 @@ test("slider: ! cell in both layouts; °C and negatives in RTL", async ({ open, 
   );
   const neg = await sec
     .getByTestId("slider-rtl")
-    .locator(".kl-number-input")
+    .locator("[data-slot=number-field-input]")
     .evaluate((x) => [getComputedStyle(x).unicodeBidi, x.value]);
   ok(
     "RTL: a negative number is laid out as its own paragraph (−18 keeps its sign first)",

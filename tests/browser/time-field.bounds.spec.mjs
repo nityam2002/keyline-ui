@@ -42,7 +42,7 @@ test("time bounds: arrows wrap inside, typed outside is invalid, 12-hour, min on
   // typing outside is allowed and flagged
   await hrs.click();
   await p.keyboard.type("0500");
-  const field = sec.locator(".kl-time").first();
+  const field = sec.locator("[data-slot=time-field]").first();
   await until(async () => /05:00/.test(await log.textContent()) && (await field.getAttribute("data-invalid")) !== null);
   ok("typed 05:00 is stored (typing is not blocked)", /05:00/.test(await log.textContent()), await log.textContent());
   ok(
@@ -74,7 +74,7 @@ test("time bounds: arrows wrap inside, typed outside is invalid, 12-hour, min on
     await log.textContent(),
   );
   const early = sec.getByRole("group", { name: "Earliest only" });
-  const earlyF = sec.locator(".kl-time").nth(2);
+  const earlyF = sec.locator("[data-slot=time-field]").nth(2);
   await early.getByRole("spinbutton", { name: "Hours" }).click();
   await p.keyboard.press("ArrowUp");
   const ev = async () => (await partsOf(early)).map((x) => x[1]).join(":");

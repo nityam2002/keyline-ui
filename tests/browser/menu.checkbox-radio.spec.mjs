@@ -6,7 +6,7 @@ import { until } from "./lib/probe.mjs";
 test.use({ only: ["number", "menu-choices"] });
 
 test("menu: checkbox and radio items, in a Menu and a ContextMenu", async ({ open, ok }) => {
-  const p = await open({ ready: "#number .kl-number" });
+  const p = await open({ ready: "#number [data-slot=number-field]" });
   const m = p.locator("#menu-choices");
   await m.scrollIntoViewIfNeeded();
   const trig = p.getByRole("button", { name: "View options" });

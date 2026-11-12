@@ -9,125 +9,16 @@
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/field"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/number-field.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { NumberField as NumberFieldPrimitive } from \"@base-ui/react/number-field\";\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\";\n\nimport { cn } from \"@/lib/utils\";\nimport { FieldMessages, type FieldParticipantProps } from \"./field\";\n\ntype NumberFieldProps = Omit<\n  React.ComponentProps<typeof NumberFieldPrimitive.Root>,\n  \"children\" | \"className\" | \"render\"\n> & {\n  /** Visible label (visually hidden with layout=\"cell\"). */\n  label: React.ReactNode;\n  /** Unit printed in an affix cell after the number, in the Code voice (\"kg\", \"%\", \"pallets\"). */\n  unit?: React.ReactNode;\n  /** Stepper cells (− and +). Off for a field where stepping makes no sense (an order number, a postcode is not a number field at all). */\n  steppers?: boolean;\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */\n  layout?: \"control\" | \"cell\";\n  placeholder?: string;\n  decrementLabel?: string;\n  incrementLabel?: string;\n  className?: string;\n} & FieldParticipantProps;\n\nconst Minus = () => (\n  <svg\n    viewBox=\"0 0 16 16\"\n    width=\"14\"\n    height=\"14\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"2\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d=\"M3.5 8h9\" />\n  </svg>\n);\nconst Plus = () => (\n  <svg\n    viewBox=\"0 0 16 16\"\n    width=\"14\"\n    height=\"14\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"2\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d=\"M3.5 8h9M8 3.5v9\" />\n  </svg>\n);\n\n/**\n * A number in a field frame, with stepper cells:\n *\n *   Pallets\n *   ┌────┬──────────────────────┬─────┬────┐\n *   │ −  │                   24 │ PLT │ +  │   decrement · input (end-aligned, tabular) · unit · increment\n *   └────┴──────────────────────┴─────┴────┘\n *\n * - It is a Field: the same frame, focus edge, inserted ! cell when invalid, hatch when disabled.\n * - The steppers are key cells (contents travel 1px on press). Base UI repeats while held, and disables\n *   the step that would leave [min, max]: that cell is hatched, the other stays live.\n * - Arrow Up/Down step, Shift+Arrow takes `largeStep`, Alt+Arrow `smallStep`, Page Up/Down the large step,\n *   Home/End jump to min/max. Typing is parsed in the field's locale; the value commits on blur or Enter.\n * - The steppers are not in the Tab order (Base UI): the input is the one stop, the keys do the stepping.\n * - A cell narrower than 176px folds its steppers into one stacked end cell (+ over −), so neighbouring\n *   cells never collide.\n * - Formatting (`format`, `locale`) is Base UI's Intl.NumberFormat; the unit cell is a label, not part of\n *   the value.\n */\nfunction NumberField({\n  label,\n  unit,\n  description,\n  error,\n  invalid,\n  steppers = true,\n  layout = \"control\",\n  placeholder,\n  decrementLabel = \"Decrease\",\n  incrementLabel = \"Increase\",\n  orientation,\n  validate,\n  validationMode,\n  className,\n  name,\n  disabled,\n  ...props\n}: NumberFieldProps) {\n  return (\n    <FieldPrimitive.Root\n      data-slot=\"number-field\"\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={name}\n      invalid={invalid}\n      disabled={disabled}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field kl-number\", className)}\n    >\n      <FieldPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>\n        {label}\n      </FieldPrimitive.Label>\n      <NumberFieldPrimitive.Root name={name} disabled={disabled} {...props}>\n        <NumberFieldPrimitive.Group\n          data-kl-layout={layout}\n          className=\"kl-ctl kl-cells kl-field-frame kl-edge kl-number-frame\"\n        >\n          <span className=\"kl-slot kl-field-bang\" aria-hidden>\n            <span>\n              <span>!</span>\n            </span>\n          </span>\n          {steppers ? (\n            <NumberFieldPrimitive.Decrement aria-label={decrementLabel} className=\"kl-cell kl-key kl-number-step\">\n              <Minus />\n            </NumberFieldPrimitive.Decrement>\n          ) : null}\n          <NumberFieldPrimitive.Input\n            placeholder={placeholder}\n            data-align=\"end\"\n            className=\"kl-field-input kl-number-input\"\n          />\n          {unit != null ? (\n            <span className=\"kl-field-affix kl-number-unit\">\n              {/* isolated, so a unit led by a neutral character (\"°C\") keeps its order in RTL */}\n              <bdi>{unit}</bdi>\n            </span>\n          ) : null}\n          {steppers ? (\n            <NumberFieldPrimitive.Increment aria-label={incrementLabel} className=\"kl-cell kl-key kl-number-step\">\n              <Plus />\n            </NumberFieldPrimitive.Increment>\n          ) : null}\n        </NumberFieldPrimitive.Group>\n      </NumberFieldPrimitive.Root>\n      <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n    </FieldPrimitive.Root>\n  );\n}\n\nexport { NumberField, type NumberFieldProps };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { NumberField as NumberFieldPrimitive } from \"@base-ui/react/number-field\";\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { type PartProps, resolveClassName, resolveStyle } from \"../lib/keyline-render\";\nimport { FieldMessages, type FieldParticipantProps } from \"./field\";\n\n/*\n * Number field, as Base UI's parts (NumberFieldRoot, NumberFieldGroup, NumberFieldDecrement, NumberFieldInput,\n * NumberFieldIncrement), Keyline's NumberFieldUnit, and NumberField, the field built from them.\n *\n *   Pallets\n *   ┌────┬──────────────────────┬─────┬────┐\n *   │ −  │                   24 │ PLT │ +  │   decrement · input (end-aligned, tabular) · unit · increment\n *   └────┴──────────────────────┴─────┴────┘\n *\n * The group is a Field frame (kl-field-frame in the theme): the same focus edge, inserted ! cell when invalid and\n * hatch when disabled. The steppers are key cells, as tall as the frame and square in a control; in a cell they keep\n * the row height.\n *\n * NARROW CELLS. A NumberField with layout=\"cell\" measures itself (an inline-size container named kl-nf, safe: its\n * width never comes from its contents) and, narrower than 176px, folds its steppers into one stacked cell at the end\n * (+ over −), so two or three number cells in a narrow panel never run into each other. Both stay visible and\n * clickable; the tab order is unchanged, and the arrows still step.\n */\n\ntype Layout = \"control\" | \"cell\";\n\nconst Minus = () => (\n  <svg\n    viewBox=\"0 0 16 16\"\n    width=\"14\"\n    height=\"14\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"2\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d=\"M3.5 8h9\" />\n  </svg>\n);\nconst Plus = () => (\n  <svg\n    viewBox=\"0 0 16 16\"\n    width=\"14\"\n    height=\"14\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"2\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d=\"M3.5 8h9M8 3.5v9\" />\n  </svg>\n);\n\n/**\n * Base UI's NumberField.Root: value, `min`/`max`, `step` (`largeStep`, `smallStep`), `format` and `locale`\n * (Intl.NumberFormat), hold-to-repeat, form value (`name`). `onValueChange` gets Base UI's event details last.\n */\nfunction NumberFieldRoot({ className, ...props }: NumberFieldPrimitive.Root.Props): React.ReactElement {\n  return (\n    <NumberFieldPrimitive.Root className={resolveClassName(\"\", className)} {...props} data-slot=\"number-field-root\" />\n  );\n}\n\nconst group = cn(\n  \"kl-ctl kl-cells kl-field-frame kl-edge\",\n  // room for four digits whatever the frame's width; a cell (often one of several in a row) pads less\n  \"[--kl-number-pad:var(--kl-inset)] data-[kl-layout=cell]:[--kl-number-pad:8px]\",\n  // a narrow cell: the steppers fold into one stacked end cell\n  \"[@container_kl-nf_(max-width:176px)]:data-[kl-layout=cell]:grid\",\n  \"[@container_kl-nf_(max-width:176px)]:data-[kl-layout=cell]:grid-cols-[auto_minmax(0,1fr)_auto_var(--kl-row)]\",\n  \"[@container_kl-nf_(max-width:176px)]:data-[kl-layout=cell]:grid-rows-[1fr_1fr]\",\n);\n\n/** One cell of a narrow cell layout that spans both rows. */\nconst spans =\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:row-[1/span_2]\";\n\n/**\n * The frame of cells: the attention cell (inserted at its start, open while the field is invalid), then its children.\n * `layout=\"cell\"`: the frame is a cell of an enclosing frame (no border of its own).\n */\nfunction NumberFieldGroup({\n  layout = \"control\",\n  className,\n  children,\n  ...props\n}: NumberFieldPrimitive.Group.Props & { layout?: Layout }): React.ReactElement {\n  return (\n    <NumberFieldPrimitive.Group\n      data-kl-layout={layout}\n      className={resolveClassName(group, className)}\n      {...props}\n      data-slot=\"number-field-group\"\n    >\n      <span\n        className={cn(\n          \"kl-slot kl-field-bang\",\n          spans,\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:col-start-1\",\n        )}\n        aria-hidden\n      >\n        <span>\n          <span>!</span>\n        </span>\n      </span>\n      {children}\n    </NumberFieldPrimitive.Group>\n  );\n}\n\nconst step = cn(\n  \"kl-cell kl-key min-h-0 w-[calc(var(--kl-ctl)-2*var(--kl-bw,0px))] flex-none cursor-pointer justify-center p-0 text-kl-ink\",\n  // square as wide as the frame is tall inside its own border; a cell keeps the row height\n  \"[[data-slot=number-field-group][data-kl-layout=cell]>&]:w-(--kl-row)\",\n  \"active:not-disabled:not-data-disabled:bg-kl-press\",\n  \"focus-visible:outline-(length:--kl-ring) focus-visible:outline-offset-(--kl-ring-in) focus-visible:outline-kl-focus\",\n  \"focus-visible:outline-solid\",\n  // the step that would leave [min, max] is out of service; the other stays live\n  \"disabled:cursor-not-allowed disabled:bg-(image:--kl-hatch) disabled:text-kl-dis\",\n  \"data-disabled:cursor-not-allowed data-disabled:bg-(image:--kl-hatch) data-disabled:text-kl-dis\",\n  // the whole field out of service: the frame is hatched, not each step\n  \"[[data-slot=number-field-group][data-disabled]>&]:bg-none\",\n  \"forced-colors:disabled:text-[GrayText] forced-colors:data-disabled:text-[GrayText]\",\n  // narrow cell: both steppers in the end column, each carrying the seam to the value\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:col-start-4\",\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:w-auto\",\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:border-s-(length:--kl-k1)\",\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:border-s-kl-line\",\n  \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:[&_svg]:size-3\",\n);\n\n/** The − key cell. Base UI repeats while held and disables it at `min`; it is not in the Tab order. */\nfunction NumberFieldDecrement({\n  className,\n  children,\n  ...props\n}: NumberFieldPrimitive.Decrement.Props): React.ReactElement {\n  return (\n    <NumberFieldPrimitive.Decrement\n      className={resolveClassName(\n        cn(\n          step,\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:row-start-2\",\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:border-t-(length:--kl-k1)\",\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:border-t-kl-seam\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"number-field-decrement\"\n    >\n      {children ?? <Minus />}\n    </NumberFieldPrimitive.Decrement>\n  );\n}\n\n/** The + key cell. Base UI repeats while held and disables it at `max`; it is not in the Tab order. */\nfunction NumberFieldIncrement({\n  className,\n  children,\n  ...props\n}: NumberFieldPrimitive.Increment.Props): React.ReactElement {\n  return (\n    <NumberFieldPrimitive.Increment\n      className={resolveClassName(\n        cn(\n          step,\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:row-start-1\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"number-field-increment\"\n    >\n      {children ?? <Plus />}\n    </NumberFieldPrimitive.Increment>\n  );\n}\n\n/**\n * The input cell: end-aligned with tabular figures, so the digits stay put while the value steps. A number keeps its\n * sign where it belongs in RTL (\"-18\", not \"18-\"): the text is laid out as its own paragraph while the alignment\n * still follows the page.\n */\nfunction NumberFieldInput({ className, ...props }: NumberFieldPrimitive.Input.Props): React.ReactElement {\n  return (\n    <NumberFieldPrimitive.Input\n      data-align=\"end\"\n      className={resolveClassName(\n        cn(\n          \"kl-field-input box-border min-w-[calc(4ch+2*var(--kl-number-pad,var(--kl-inset)))] px-[var(--kl-number-pad,var(--kl-inset))]\",\n          \"tabular-nums [unicode-bidi:plaintext]\",\n          spans,\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:col-start-2\",\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:w-full\",\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:min-w-0\",\n          \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:border-s-0\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"number-field-input\"\n    />\n  );\n}\n\ntype EmptyState = Record<string, never>;\nconst EMPTY: EmptyState = {};\n\n/**\n * The unit cell after the input, in the Code voice (\"kg\", \"%\", \"pallets\"). It is a label, not part of the value; the\n * seam between it and the input is the soft one, so the two read as one value. Its content is isolated, so a unit led\n * by a neutral character (\"°C\") keeps its order in RTL.\n */\nfunction NumberFieldUnit({ render, className, style, children, ...props }: PartProps<\"span\", EmptyState>) {\n  const own = {\n    \"data-slot\": \"number-field-unit\",\n    className: resolveClassName(\n      cn(\n        \"kl-field-affix border-s-(length:--kl-k1) border-s-kl-seam [[data-slot=number-field-input]+&]:border-s-kl-line-soft\",\n        \"[[data-slot=number-field-group][data-disabled]>&]:text-kl-dis\",\n        spans,\n        \"[@container_kl-nf_(max-width:176px)]:[[data-slot=number-field-group][data-kl-layout=cell]>&]:col-start-3\",\n      ),\n      className,\n    )(EMPTY),\n    style: resolveStyle(undefined, style)(EMPTY),\n    children: <bdi>{children}</bdi>,\n  };\n  return useRender({ defaultTagName: \"span\", render, state: EMPTY, props: mergeProps<\"span\">(props, own) });\n}\n\n/* ------------------------------------------------------------------ the field */\n\ntype NumberFieldProps = Omit<NumberFieldPrimitive.Root.Props, \"children\" | \"className\" | \"render\"> & {\n  /** Visible label (visually hidden with layout=\"cell\"). */\n  label: React.ReactNode;\n  /** Unit printed in an affix cell after the number, in the Code voice (\"kg\", \"%\", \"pallets\"). */\n  unit?: React.ReactNode;\n  /** Stepper cells (− and +). Off for a field where stepping makes no sense (an order number, a postcode is not a number field at all). */\n  steppers?: boolean;\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */\n  layout?: Layout;\n  placeholder?: string;\n  decrementLabel?: string;\n  incrementLabel?: string;\n  className?: string;\n} & FieldParticipantProps;\n\n/**\n * A number in a field frame, with stepper cells, built from the parts above.\n *\n * - Arrow Up/Down step, Shift+Arrow takes `largeStep`, Alt+Arrow `smallStep`, Page Up/Down the large step,\n *   Home/End jump to min/max. Typing is parsed in the field's locale; the value commits on blur or Enter.\n * - The steppers are not in the Tab order (Base UI): the input is the one stop, the keys do the stepping.\n * - It is a Base UI Field: a Form collects the value under `name`, and `validate`, `invalid` and the Form's `errors`\n *   print under the frame.\n */\nfunction NumberField({\n  label,\n  unit,\n  description,\n  error,\n  invalid,\n  steppers = true,\n  layout = \"control\",\n  placeholder,\n  decrementLabel = \"Decrease\",\n  incrementLabel = \"Increase\",\n  orientation,\n  validate,\n  validationMode,\n  className,\n  name,\n  disabled,\n  ...props\n}: NumberFieldProps) {\n  return (\n    <FieldPrimitive.Root\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={name}\n      invalid={invalid}\n      disabled={disabled}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field data-[kl-layout=cell]:@container/kl-nf data-[kl-layout=cell]:min-w-0\", className)}\n      data-slot=\"number-field\"\n    >\n      <FieldPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>\n        {label}\n      </FieldPrimitive.Label>\n      <NumberFieldRoot name={name} disabled={disabled} {...props}>\n        <NumberFieldGroup layout={layout}>\n          {steppers ? <NumberFieldDecrement aria-label={decrementLabel} /> : null}\n          <NumberFieldInput placeholder={placeholder} />\n          {unit != null ? <NumberFieldUnit>{unit}</NumberFieldUnit> : null}\n          {steppers ? <NumberFieldIncrement aria-label={incrementLabel} /> : null}\n        </NumberFieldGroup>\n      </NumberFieldRoot>\n      <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n    </FieldPrimitive.Root>\n  );\n}\n\nexport {\n  NumberField,\n  NumberFieldRoot,\n  NumberFieldGroup,\n  NumberFieldDecrement,\n  NumberFieldInput,\n  NumberFieldIncrement,\n  NumberFieldUnit,\n  type NumberFieldProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/number-field.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-number-step": {
-        "flex": "none",
-        "justify-content": "center",
-        "padding": "0",
-        "width": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 0px))",
-        "min-height": "0",
-        "color": "var(--kl-ink)",
-        "cursor": "pointer"
-      },
-      ".kl-number-frame[data-kl-layout=\"cell\"] .kl-number-step": {
-        "width": "var(--kl-row)"
-      },
-      ".kl-number-step:active:not(:disabled):not([data-disabled])": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-number-step:is(:disabled, [data-disabled])": {
-        "color": "var(--kl-dis)",
-        "background-image": "var(--kl-hatch)",
-        "cursor": "not-allowed"
-      },
-      ".kl-number-step:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-in)"
-      },
-      ".kl-number-frame": {
-        "--kl-number-pad": "var(--kl-inset)"
-      },
-      ".kl-number-frame[data-kl-layout=\"cell\"]": {
-        "--kl-number-pad": "8px"
-      },
-      ".kl-number-frame .kl-number-input": {
-        "font-variant-numeric": "tabular-nums",
-        "padding-inline": "var(--kl-number-pad)",
-        "min-width": "calc(4ch + 2 * var(--kl-number-pad))",
-        "box-sizing": "border-box"
-      },
-      ".kl-number-unit": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam) !important"
-      },
-      ".kl-number-input + .kl-number-unit": {
-        "border-inline-start-color": "var(--kl-line-soft) !important"
-      },
-      ".kl-field[data-disabled] .kl-number-step": {
-        "color": "var(--kl-dis)",
-        "cursor": "not-allowed",
-        "background-image": "none"
-      },
-      ".kl-field[data-disabled] .kl-number-unit": {
-        "color": "var(--kl-dis)"
-      },
-      ".kl-field[data-invalid] .kl-number-frame": {
-        "border-color": "var(--kl-red)"
-      },
-      ".kl-field.kl-number[data-kl-layout=\"cell\"]": {
-        "container": "kl-nf / inline-size",
-        "min-width": "0"
-      },
-      "@container kl-nf (max-width: 176px)": {
-        ".kl-number-frame[data-kl-layout=\"cell\"]": {
-          "display": "grid",
-          "grid-template-columns": "auto minmax(0, 1fr) auto var(--kl-row)",
-          "grid-template-rows": "1fr 1fr"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > *": {
-          "grid-row": "1 / span 2"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-field-bang": {
-          "grid-column": "1"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-input": {
-          "grid-column": "2",
-          "width": "100%",
-          "min-width": "0",
-          "border-inline-start": "0"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-unit": {
-          "grid-column": "3"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step.kl-number-step": {
-          "grid-column": "4",
-          "width": "auto",
-          "border-inline-start": "var(--kl-k1) solid var(--kl-line)"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step:last-child": {
-          "grid-row": "1"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] > .kl-number-step:not(:last-child)": {
-          "grid-row": "2",
-          "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-        },
-        ".kl-number-frame[data-kl-layout=\"cell\"] .kl-number-step svg": {
-          "width": "12px",
-          "height": "12px"
-        }
-      },
-      "@media (forced-colors: active)": {
-        ".kl-number-step:is(:disabled, [data-disabled])": {
-          "color": "GrayText"
-        }
-      },
-      ".kl-number-unit bdi": {
-        "unicode-bidi": "isolate"
-      },
-      ".kl-number-input": {
-        "unicode-bidi": "plaintext"
-      }
-    }
-  },
   "type": "registry:ui"
 }

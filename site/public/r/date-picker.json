@@ -39,8 +39,7 @@
         "font-weight": "var(--kl-weight-strong)",
         "color": "var(--kl-ink-2)"
       },
-      ".kl-dtp-time > .kl-time": {
-        "flex": "1 1 auto",
+      ".kl-dtp-time > [data-slot=\"time-field\"]": {
         "min-width": "0"
       },
       ".kl-dtp-done": {

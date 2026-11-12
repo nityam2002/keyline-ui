@@ -112,11 +112,11 @@ test("participants: validate, values, slider validate, server errors, cells", as
   await submit();
   await until(() => chilled.isVisible());
   ok("participants: Slider validate fails above 8 °C with its message", await chilled.isVisible(), null);
-  const slider = form.locator(".kl-slider").first();
+  const slider = form.locator("[data-slot=slider]").first();
   ok(
     "participants: the invalid Slider frame turns red",
-    (await css(slider.locator(".kl-slider-frame"), "border-top-color")) === (await css(slider, "--kl-red")).trim() ||
-      (await slider.getAttribute("data-invalid")) !== null,
+    (await css(slider.locator("[data-slot=slider-frame]"), "border-top-color")) ===
+      (await css(slider, "--kl-red")).trim() || (await slider.getAttribute("data-invalid")) !== null,
     null,
   );
   await thumb.focus();

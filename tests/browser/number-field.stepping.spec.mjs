@@ -5,11 +5,11 @@ import { near, box, css, until } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["number", "wayfinding", "participants"] });
 
-const READY = "#number .kl-number";
+const READY = "#number [data-slot=number-field]";
 
 test("number: keyboard and stepper steps, clamping, formatting, invalid, paired slider", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const n = p.locator("#number .kl-number");
+  const n = p.locator("#number [data-slot=number-field]");
   const pallets = n.nth(0);
   await pallets.scrollIntoViewIfNeeded();
   const input = pallets.getByLabel("Pallets", { exact: true });
@@ -28,7 +28,7 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
     (await input.inputValue()) === "33",
     await input.inputValue(),
   );
-  const inc = pallets.locator(".kl-number-step").nth(1);
+  const inc = pallets.locator("[data-slot=number-field-decrement], [data-slot=number-field-increment]").nth(1);
   ok(
     "number: at max the + cell is out of service (hatched)",
     (await inc.evaluate(
@@ -37,14 +37,14 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
     )) && (await css(inc, "background-image")) !== "none",
     await css(inc, "background-image"),
   );
-  const frame = pallets.locator(".kl-number-frame");
+  const frame = pallets.locator("[data-slot=number-field-group]");
   ok(
     "number: keyboard focus is the frame's own edge (commit colour), no outline",
     (await css(frame, "border-top-color")) ===
       (await p.evaluate(
         () =>
           getComputedStyle(document.documentElement).getPropertyValue("--kl-focus").trim() &&
-          getComputedStyle(document.querySelector("#number .kl-number-frame")).borderTopColor,
+          getComputedStyle(document.querySelector("#number [data-slot=number-field-group]")).borderTopColor,
       )) && (await css(frame, "outline-style")) === "none",
     null,
   );
@@ -55,22 +55,28 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
   ok("number: typed value commits on blur (30)", (await input.inputValue()) === "30", await input.inputValue());
   ok(
     "number: steppers are not Tab stops",
-    (await pallets.locator(".kl-number-step").first().getAttribute("tabindex")) === "-1",
+    (await pallets
+      .locator("[data-slot=number-field-decrement], [data-slot=number-field-increment]")
+      .first()
+      .getAttribute("tabindex")) === "-1",
     null,
   );
-  await pallets.locator(".kl-number-step").first().click();
+  await pallets.locator("[data-slot=number-field-decrement], [data-slot=number-field-increment]").first().click();
   ok("number: pressing − steps down (30 → 29)", (await input.inputValue()) === "29", await input.inputValue());
-  const atMin = n.nth(1).locator(".kl-number-step").first();
+  const atMin = n.nth(1).locator("[data-slot=number-field-decrement], [data-slot=number-field-increment]").first();
   ok(
     "number: at min the − cell is hatched, + stays live",
     (await css(atMin, "background-image")) !== "none" &&
-      (await css(n.nth(1).locator(".kl-number-step").nth(1), "background-image")) === "none",
+      (await css(
+        n.nth(1).locator("[data-slot=number-field-decrement], [data-slot=number-field-increment]").nth(1),
+        "background-image",
+      )) === "none",
     null,
   );
   ok(
     "number: locale currency formatting (de-DE, EUR)",
-    (await n.nth(2).locator(".kl-number-input").inputValue()).replace(/\s/g, " ") === "12.500,00 €",
-    await n.nth(2).locator(".kl-number-input").inputValue(),
+    (await n.nth(2).locator("[data-slot=number-field-input]").inputValue()).replace(/\s/g, " ") === "12.500,00 €",
+    await n.nth(2).locator("[data-slot=number-field-input]").inputValue(),
   );
   const bad = n.nth(3);
   const bang = await box(bad.locator(".kl-field-bang"));
@@ -78,13 +84,21 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
     "number: invalid inserts the ! cell before the − and shows its message",
     bang.width > 20 &&
       (await bad.locator("[data-slot=field-error]").isVisible()) &&
-      (await bad.locator(".kl-field-bang").evaluate((e) => e.nextElementSibling.classList.contains("kl-number-step"))),
+      (await bad
+        .locator(".kl-field-bang")
+        .evaluate((e) =>
+          ["number-field-decrement", "number-field-increment"].includes(e.nextElementSibling.getAttribute("data-slot")),
+        )),
     bang,
   );
-  ok("number: disabled disables the input", await n.nth(4).locator(".kl-number-input").isDisabled(), null);
+  ok(
+    "number: disabled disables the input",
+    await n.nth(4).locator("[data-slot=number-field-input]").isDisabled(),
+    null,
+  );
   // paired with a slider: one value
-  const reefer = n.nth(5).locator(".kl-number-input");
-  const slider = p.locator("#number .kl-slider input[type=range]");
+  const reefer = n.nth(5).locator("[data-slot=number-field-input]");
+  const slider = p.locator("#number [data-slot=slider] input[type=range]");
   await reefer.focus();
   await p.keyboard.press("ArrowUp");
   await until(async () => (await slider.getAttribute("aria-valuenow")) === "4.5");
@@ -94,7 +108,9 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
     (await reefer.inputValue()) === "4.5" && sliderVal === "4.5",
     [await reefer.inputValue(), sliderVal],
   );
-  const cellIn = p.locator("#number .kl-number-frame[data-kl-layout=cell] .kl-number-input").first();
+  const cellIn = p
+    .locator("#number [data-slot=number-field-group][data-kl-layout=cell] [data-slot=number-field-input]")
+    .first();
   ok(
     "number: a cell-layout field shows its whole value (no clipping)",
     await cellIn.evaluate((e) => e.scrollWidth <= e.clientWidth + 1),
@@ -106,8 +122,12 @@ test("number: keyboard and stepper steps, clamping, formatting, invalid, paired 
 test("number: compact steppers stay square (rtl, cut off, compact)", async ({ open, ok }) => {
   const q = await open({ q: "dir=rtl&cut=off&density=compact", ready: READY });
   await q.locator("#wayfinding").scrollIntoViewIfNeeded();
-  const step = q.locator("#number .kl-number .kl-number-step").first();
-  const frame = q.locator("#number .kl-number .kl-number-frame").first();
+  const step = q
+    .locator(
+      "#number [data-slot=number-field] :is([data-slot=number-field-decrement], [data-slot=number-field-increment])",
+    )
+    .first();
+  const frame = q.locator("#number [data-slot=number-field] [data-slot=number-field-group]").first();
   ok(
     "compact: steppers stay square to the (shorter) frame",
     near((await box(step)).width, (await box(frame)).height - 4, 1.5),
@@ -123,9 +143,11 @@ test("number cells: in a narrow row the steppers stack; with room they are flat"
   await panel.scrollIntoViewIfNeeded();
   const geo = () =>
     panel.evaluate((pn) => {
-      const steps = [...pn.querySelectorAll(".kl-number-step")].map((x) => x.getBoundingClientRect());
-      const frames = [...pn.querySelectorAll(".kl-number-frame")].map((x) => x.getBoundingClientRect());
-      const inputs = [...pn.querySelectorAll(".kl-number-input")].map(
+      const steps = [
+        ...pn.querySelectorAll("[data-slot=number-field-decrement], [data-slot=number-field-increment]"),
+      ].map((x) => x.getBoundingClientRect());
+      const frames = [...pn.querySelectorAll("[data-slot=number-field-group]")].map((x) => x.getBoundingClientRect());
+      const inputs = [...pn.querySelectorAll("[data-slot=number-field-input]")].map(
         (x) => x.scrollWidth <= x.clientWidth + 1 && x.getBoundingClientRect().width > 30,
       );
       return {
@@ -154,8 +176,8 @@ test("number cells: in a narrow row the steppers stack; with room they are flat"
   await inc.click();
   ok(
     "number cells: the stacked + still steps",
-    (await panel.locator(".kl-number-input").first().inputValue()) === "121",
-    await panel.locator(".kl-number-input").first().inputValue(),
+    (await panel.locator("[data-slot=number-field-input]").first().inputValue()) === "121",
+    await panel.locator("[data-slot=number-field-input]").first().inputValue(),
   );
   await panel.evaluate((pn) => (pn.style.width = "640px"));
   await until(async () => !(await geo()).stacked);

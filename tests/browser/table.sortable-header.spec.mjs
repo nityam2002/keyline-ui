@@ -6,7 +6,7 @@ import { box, css } from "./lib/probe.mjs";
 test.use({ only: ["number", "sort"] });
 
 test("sort: aria-sort, band, press cycle, end-aligned mark, empty result", async ({ open, ok }) => {
-  const p = await open({ ready: "#number .kl-number" });
+  const p = await open({ ready: "#number [data-slot=number-field]" });
   const s = p.locator("#sort");
   await s.scrollIntoViewIfNeeded();
   const th = (name) => s.locator("th", { hasText: name });

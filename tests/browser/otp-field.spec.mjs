@@ -12,10 +12,10 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     const p = await open({ route: "specimen", q, ready: "#otp" });
     const f = p.getByTestId("otp-verify");
     await f.scrollIntoViewIfNeeded();
-    const slots = f.locator("input.kl-otp-slot");
+    const slots = f.locator("[data-slot=otp-field-input]");
     ok(
       `${q}: six slots, split 3 + 3 by one join cell`,
-      (await slots.count()) === 6 && (await f.locator(".kl-otp-join").count()) === 1,
+      (await slots.count()) === 6 && (await f.locator("[data-slot=otp-field-separator]").count()) === 1,
       null,
     );
     ok(
@@ -24,7 +24,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
         .getByRole("textbox", { name: "Verification code" })
         .evaluate(
           (x) =>
-            x.classList.contains("kl-otp-slot") &&
+            x.getAttribute("data-slot") === "otp-field-input" &&
             /Sent to/.test(
               document.getElementById(x.getAttribute("aria-describedby")?.split(" ")[0] ?? "")?.textContent ?? "",
             ),
@@ -57,13 +57,13 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await until(
       p,
       () =>
-        document.querySelector("[data-testid=otp-verify] .kl-otp-frame")?.getAttribute("aria-busy") === "true" &&
-        !!document.querySelector("[data-testid=otp-verify] .kl-pending"),
+        document.querySelector("[data-testid=otp-verify] [data-slot=otp-field-frame]")?.getAttribute("aria-busy") ===
+          "true" && !!document.querySelector("[data-testid=otp-verify] .kl-pending"),
     );
     // one snapshot of the pending state (it lasts about a second; separate round trips can outrun it under load)
     const pend = await f.evaluate((f) => ({
-      busy: f.querySelector(".kl-otp-frame").getAttribute("aria-busy"),
-      ro: f.querySelector("input.kl-otp-slot").readOnly,
+      busy: f.querySelector("[data-slot=otp-field-frame]").getAttribute("aria-busy"),
+      ro: f.querySelector("[data-slot=otp-field-input]").readOnly,
       seg: f.querySelectorAll(".kl-pending").length,
       status: f.querySelector("[role=status]").textContent,
     }));
@@ -80,7 +80,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
         f.hasAttribute("data-invalid") &&
         /doesn't match/.test(f.querySelector("[data-slot=field-error]")?.textContent ?? "") &&
         f.querySelector(".kl-field-bang")?.getBoundingClientRect().width > 20 &&
-        a?.classList.contains("kl-otp-slot") &&
+        a?.getAttribute("data-slot") === "otp-field-input" &&
         !a.getAttribute("aria-label") &&
         a.selectionEnd - a.selectionStart === 1
       );
@@ -97,7 +97,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
       (await p.evaluate(() => {
         const a = document.activeElement;
         return (
-          a?.classList.contains("kl-otp-slot") &&
+          a?.getAttribute("data-slot") === "otp-field-input" &&
           !a.getAttribute("aria-label") &&
           a.selectionEnd - a.selectionStart === 1
         );
@@ -116,25 +116,29 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await until(
       p,
       () =>
-        [...document.querySelectorAll("[data-testid=otp-verify] input.kl-otp-slot")].map((x) => x.value).join("") ===
-        "246810",
+        [...document.querySelectorAll("[data-testid=otp-verify] [data-slot=otp-field-input]")]
+          .map((x) => x.value)
+          .join("") === "246810",
     );
     ok(`${q}: paste fills every slot (spaces dropped)`, (await val(slots)) === "246810", await val(slots));
     ok(`${q}: a new attempt clears the failed state`, (await f.getAttribute("data-invalid")) === null, null);
     await until(
       p,
       () =>
-        document.querySelector("[data-testid=otp-verify] .kl-otp-done")?.getAttribute("data-open") === "" &&
+        document.querySelector("[data-testid=otp-verify] [data-slot=otp-field-done]")?.getAttribute("data-open") ===
+          "" &&
         /Code verified/.test(document.querySelector("[data-testid=otp-verify] [role=status]")?.textContent ?? ""),
     );
     await until(
       p,
-      () => document.querySelector("[data-testid=otp-verify] .kl-otp-done").getBoundingClientRect().width > 20,
+      () =>
+        document.querySelector("[data-testid=otp-verify] [data-slot=otp-field-done]").getBoundingClientRect().width >
+        20,
     );
     ok(
       `${q}: done: a ✓ cell is inserted and announced`,
-      (await f.locator(".kl-otp-done").getAttribute("data-open")) === "" &&
-        (await f.locator(".kl-otp-done").evaluate((x) => x.getBoundingClientRect().width)) > 20 &&
+      (await f.locator("[data-slot=otp-field-done]").getAttribute("data-open")) === "" &&
+        (await f.locator("[data-slot=otp-field-done]").evaluate((x) => x.getBoundingClientRect().width)) > 20 &&
         /Code verified/.test(await f.locator("[role=status]").textContent()),
       null,
     );
@@ -149,17 +153,17 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await until(p, () => {
       const f = document.querySelector("[data-testid=otp-form]");
       return (
-        f.querySelector(".kl-otp")?.hasAttribute("data-invalid") &&
+        f.querySelector("[data-slot=otp-field]")?.hasAttribute("data-invalid") &&
         f.querySelectorAll("[data-slot=field-error]").length === 1
       );
     });
     ok(
       `${q}: Form: an empty required code is invalid with a message`,
-      (await form.locator(".kl-otp").getAttribute("data-invalid")) !== null &&
+      (await form.locator("[data-slot=otp-field]").getAttribute("data-invalid")) !== null &&
         (await form.locator("[data-slot=field-error]").count()) === 1,
       null,
     );
-    const rslots = form.locator("input.kl-otp-slot");
+    const rslots = form.locator("[data-slot=otp-field-input]");
     await rslots.first().click();
     await p.keyboard.type("abcdefgh");
     ok(
@@ -202,7 +206,7 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
   const r = p.getByTestId("otp-rtl");
   await r.scrollIntoViewIfNeeded();
   const xs = await r
-    .locator("input.kl-otp-slot")
+    .locator("[data-slot=otp-field-input]")
     .evaluateAll((xs) => xs.map((x) => Math.round(x.getBoundingClientRect().left)));
   const bang = await r.locator(".kl-field-bang").boundingBox();
   ok(
@@ -213,15 +217,15 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
   ok("RTL: the ! cell is at the page's start (right of the slots)", bang.x >= xs[xs.length - 1], { bang, xs });
   // narrow
   const n = p.getByTestId("otp-narrow");
-  const fw = (await n.locator(".kl-otp-frame").boundingBox()).width;
+  const fw = (await n.locator("[data-slot=otp-field-frame]").boundingBox()).width;
   ok("230px column: the frame fits (slots give way)", fw <= 230.5, fw);
   // every OTP on the page: cells inside the frame, every character's ink inside its slot with room to spare
-  const geo = await p.locator(".kl-otp-frame").evaluateAll((frames) =>
+  const geo = await p.locator("[data-slot=otp-field-frame]").evaluateAll((frames) =>
     frames.map((fr) => {
       const f = fr.getBoundingClientRect(),
         bw = parseFloat(getComputedStyle(fr).borderRightWidth);
       const inner = [f.left + bw, f.right - bw];
-      const cells = [...fr.querySelectorAll(".kl-otp-slot, .kl-otp-join")];
+      const cells = [...fr.querySelectorAll("[data-slot=otp-field-input], [data-slot=otp-field-separator]")];
       const outside = cells.filter((c) => {
         const r = c.getBoundingClientRect();
         return r.left < inner[0] - 0.5 || r.right > inner[1] + 0.5;
@@ -230,7 +234,7 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
       let tight = 0,
         minRoom = 99,
         minSlot = 99;
-      for (const s of fr.querySelectorAll("input.kl-otp-slot")) {
+      for (const s of fr.querySelectorAll("[data-slot=otp-field-input]")) {
         const cs = getComputedStyle(s),
           r = s.getBoundingClientRect();
         minSlot = Math.min(minSlot, r.width);
@@ -244,7 +248,7 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
         if (room < 4) tight++;
       }
       return {
-        label: fr.closest(".kl-otp")?.querySelector("label")?.textContent,
+        label: fr.closest("[data-slot=otp-field]")?.querySelector("label")?.textContent,
         frameW: Math.round(f.width),
         parentW: Math.round(fr.parentElement.getBoundingClientRect().width),
         outside,
@@ -278,24 +282,28 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
   // cell layout fills the footer cell
   const c = p.getByTestId("otp-cell");
   const cw = await c
-    .locator(".kl-otp")
+    .locator("[data-slot=otp-field]")
     .evaluate((x) => [
       x.getBoundingClientRect().width,
-      [...x.querySelectorAll(".kl-otp-slot")].reduce((a, s) => a + s.getBoundingClientRect().width, 0),
+      [...x.querySelectorAll("[data-slot=otp-field-input]")].reduce((a, s) => a + s.getBoundingClientRect().width, 0),
     ]);
   ok("cell layout: the slots fill the cell (no dead space)", cw[1] >= cw[0] - 4, cw);
   ok(
     "disabled: every slot is disabled",
     await p
       .getByRole("textbox", { name: "Disabled" })
-      .evaluate((x) => [...x.closest(".kl-otp").querySelectorAll("input.kl-otp-slot")].every((s) => s.disabled)),
+      .evaluate((x) =>
+        [...x.closest("[data-slot=otp-field]").querySelectorAll("[data-slot=otp-field-input]")].every(
+          (s) => s.disabled,
+        ),
+      ),
     null,
   );
   ok(
     "masked: slots are password inputs",
     (await p
-      .locator(".kl-otp", { hasText: "Terminal PIN" })
-      .locator("input.kl-otp-slot")
+      .locator("[data-slot=otp-field]", { hasText: "Terminal PIN" })
+      .locator("[data-slot=otp-field-input]")
       .first()
       .getAttribute("type")) === "password",
     null,
@@ -303,13 +311,14 @@ test("otp field: RTL, narrow, every OTP's geometry, cell layout, disabled, maske
   // dialog: verify inside a dialog, which closes after done
   await p.getByRole("button", { name: "Release shipment…" }).click();
   const dlg = p.getByRole("dialog");
-  await dlg.locator("input.kl-otp-slot").first().waitFor({ state: "visible" });
-  await dlg.locator("input.kl-otp-slot").first().focus();
+  await dlg.locator("[data-slot=otp-field-input]").first().waitFor({ state: "visible" });
+  await dlg.locator("[data-slot=otp-field-input]").first().focus();
   ok(
     "dialog: focus can start in the code's first slot",
     await p.evaluate(
       () =>
-        !!document.activeElement?.closest("[role=dialog]") && document.activeElement.classList.contains("kl-otp-slot"),
+        !!document.activeElement?.closest("[role=dialog]") &&
+        document.activeElement.getAttribute("data-slot") === "otp-field-input",
     ),
     null,
   );

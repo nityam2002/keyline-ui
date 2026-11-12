@@ -90,6 +90,13 @@ function dayPeriods(locale?: string): { names: [string, string]; first: boolean 
   }
 }
 
+/** An hour, minute or day-period cell: exactly two tabular digits wide, so the frame never changes width while the time
+ *  steps or is typed. The part being edited takes the cursor tint, so it is clear which one the arrows will move. */
+const partClass = cn(
+  "kl-field-input box-border w-[calc(2ch+2*10px)] flex-none px-2.5 text-center tabular-nums caret-kl-ink",
+  "placeholder:text-kl-ink-3 focus:bg-kl-tint",
+);
+
 /**
  * A time of day in one field frame: two spin-button cells (three for a 12-hour clock) and a zone affix.
  *
@@ -399,13 +406,13 @@ function TimeField({
         justFocused.current = false;
         pad2OnBlur(part);
       },
-      className: "kl-field-input kl-time-part",
+      className: partClass,
     };
   };
   const period =
     cycle === 12 ? (
       // the input and a hidden sizer per name share one grid cell, so the cell is as wide as the longer name
-      <span className="kl-time-period">
+      <span data-slot="time-field-period" className="grid flex-none *:[grid-area:1/1]">
         <input
           ref={refs[2]}
           {...common}
@@ -420,10 +427,16 @@ function TimeField({
           value={parts[2] === "" ? "" : periods.names[parts[2] === "am" ? 0 : 1]}
           onKeyDown={periodKey}
           onChange={(e) => typePeriod(e.target.value)}
-          className="kl-field-input kl-time-part kl-time-pm"
+          data-slot="time-field-period-input"
+          className={cn(partClass, "w-0 min-w-full px-2")}
         />
         {periods.names.map((n) => (
-          <span key={n} className="kl-time-pm kl-time-sizer" aria-hidden>
+          <span
+            key={n}
+            data-slot="time-field-period-sizer"
+            className="invisible box-border px-2 font-(--kl-weight-strong) whitespace-nowrap"
+            aria-hidden
+          >
             {n}
           </span>
         ))}
@@ -435,7 +448,6 @@ function TimeField({
   useDescribedByMirror(frameRef, '[role="spinbutton"]');
   return (
     <FieldPrimitive.Root
-      data-slot="time-field"
       data-kl-layout={layout}
       data-kl-orientation={orientation}
       data-kl-cycle={cycle}
@@ -444,7 +456,12 @@ function TimeField({
       invalid={invalid}
       validate={required$}
       validationMode={validationMode}
-      className={cn("kl-field kl-time", className)}
+      className={cn(
+        // as a cell it hugs its parts, so a neighbouring cell (a date) takes the room
+        "kl-field group/time-field justify-items-start data-[kl-layout=cell]:flex-none data-[kl-layout=cell]:justify-items-stretch",
+        className,
+      )}
+      data-slot="time-field"
     >
       <span id={labelId} className={cn("kl-field-label", layout === "cell" && "kl-sr")}>
         {label}
@@ -457,7 +474,8 @@ function TimeField({
         role="group"
         aria-labelledby={labelId}
         data-kl-layout={layout}
-        className="kl-ctl kl-cells kl-field-frame kl-edge kl-time-frame"
+        data-slot="time-field-frame"
+        className="kl-ctl kl-cells kl-field-frame kl-edge w-max max-w-full data-[kl-layout=cell]:w-auto"
         onClick={(e) => e.target === e.currentTarget && focusPart(order[0])}
       >
         <span className="kl-slot kl-field-bang" aria-hidden>
@@ -467,17 +485,30 @@ function TimeField({
         </span>
         {/* a clock time reads in clock order in every script, so the value is one LTR cell (in RTL the
             ! cell and zone still follow the page; Tab still goes through the parts in clock order) */}
-        <span className="kl-time-value" dir="ltr">
+        <span data-slot="time-field-value" className="flex flex-none items-stretch *:border-0" dir="ltr">
           {periods.first ? period : null}
           <input ref={refs[0]} id={id} {...spinProps(0)} />
-          <span className="kl-time-join" aria-hidden>
+          <span
+            data-slot="time-field-join"
+            className={cn(
+              "grid flex-none place-items-center px-px text-[15px] font-(--kl-weight-strong) text-kl-ink-2",
+              "group-data-disabled/time-field:text-kl-dis",
+            )}
+            aria-hidden
+          >
             :
           </span>
           <input ref={refs[1]} {...spinProps(1)} />
           {periods.first ? null : period}
         </span>
         {zone != null ? (
-          <span className="kl-field-affix kl-time-zone">
+          <span
+            data-slot="time-field-zone"
+            className={cn(
+              // a zone keeps its own order in RTL ("°C" would otherwise read "C°"): the <bdi> isolates it
+              "kl-field-affix border-s-(length:--kl-k1) border-s-kl-line-soft group-data-disabled/time-field:text-kl-dis",
+            )}
+          >
             <bdi>{zone}</bdi>
           </span>
         ) : null}

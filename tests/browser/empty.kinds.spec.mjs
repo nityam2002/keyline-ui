@@ -5,7 +5,7 @@ import { near, box, css, until } from "./lib/probe.mjs";
 test.use({ only: ["number", "empty"] });
 
 test("empty: kinds, roles, retry recovery, narrow band, cell", async ({ open, ok }) => {
-  const p = await open({ ready: "#number .kl-number" });
+  const p = await open({ ready: "#number [data-slot=number-field]" });
   const e = p.locator("#empty");
   await e.scrollIntoViewIfNeeded();
   const first = e.locator("[data-slot=empty]").first();

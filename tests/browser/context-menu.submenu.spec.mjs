@@ -7,7 +7,7 @@ test.use({ only: ["slider", "context"] });
 
 for (const dir of ["ltr", "rtl"]) {
   test(`context menu (${dir}): pointer opening, submenu by keyboard, Escape`, async ({ open, ok }) => {
-    const q = await open({ q: `dir=${dir}`, ready: "#slider .kl-slider" });
+    const q = await open({ q: `dir=${dir}`, ready: "#slider [data-slot=slider]" });
     const rows = q.locator(`#context [data-slot=item-list] [tabindex="0"]`); // the rows are Items rendered as the trigger
     await rows.nth(0).evaluate((el) => {
       el.scrollIntoView({ block: "start" });

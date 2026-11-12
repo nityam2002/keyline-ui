@@ -20,6 +20,19 @@ const IMPORT = `import { Slider } from "@/components/keyline/ui/slider"`;
 
 const USAGE = `<Slider label="Discount" unit="%" min={0} max={15} value={pct} onValueChange={setPct} />`;
 
+const PARTS = `<SliderRoot defaultValue={12} min={0} max={40} step={0.5}>
+  <SliderLabel>Axle load</SliderLabel>
+  <SliderFrame>
+    <SliderControl>
+      <SliderTrack>
+        <SliderIndicator />
+        <SliderThumb aria-label="Axle load" className={(state) => (state.dragging ? "cursor-grabbing" : undefined)} />
+      </SliderTrack>
+    </SliderControl>
+    <SliderValue />
+  </SliderFrame>
+</SliderRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the slider and every thumb. Required." },
   {
@@ -28,8 +41,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        Two numbers make a range with two thumbs. With <code>onValueChange</code>, or start with{" "}
-        <code>defaultValue</code>.
+        Two numbers make a range with two thumbs. With <code>onValueChange</code>, which also gets Base UI&apos;s event
+        details (the reason for the change, and the event). Or start with <code>defaultValue</code>.
       </>
     ),
   },
@@ -93,7 +106,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "range", label: "Range" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function SliderPage() {
@@ -138,6 +157,26 @@ export default function SliderPage() {
       <p className="s-small">
         Arrow keys step, Page Up and Down take a larger step, Home and End jump to the ends. In a right-to-left page the
         scale mirrors. Built on <a href="https://base-ui.com/react/components/slider">Base UI Slider</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>SliderRoot</code>, <code>SliderLabel</code>,{" "}
+        <code>SliderControl</code>, <code>SliderTrack</code> (the rail), <code>SliderIndicator</code> (the filled run),{" "}
+        <code>SliderThumb</code> and <code>SliderValue</code> (the readout). <code>SliderFrame</code> is Keyline&apos;s:
+        the control frame of cells, with the ! cell at its start. <code>Slider</code> is built from them. Every part
+        takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its
+        state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>slider</code>, <code>slider-label</code>,{" "}
+        <code>slider-frame</code>, <code>slider-control</code>, <code>slider-track</code>, <code>slider-indicator</code>
+        , <code>slider-thumb</code>, <code>slider-value</code>; the readout&apos;s text is <code>slider-readout</code>),
+        and Base UI&apos;s state attributes: <code>data-dragging</code>, <code>data-disabled</code>,{" "}
+        <code>data-invalid</code> and <code>data-orientation</code>. The root has <code>data-kl-layout</code>;{" "}
+        <code>Slider</code> adds <code>data-kl-rail=&quot;painted&quot;</code> when <code>railStyle</code> paints the
+        rail.
       </p>
     </DocPage>
   );

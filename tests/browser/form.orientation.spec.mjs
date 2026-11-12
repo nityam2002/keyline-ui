@@ -5,7 +5,7 @@ import { near, box, until } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["number", "form"] });
 
-const READY = "#number .kl-number";
+const READY = "#number [data-slot=number-field]";
 
 test("form: orientation, label column, validation, server error, success", async ({ open, ok }) => {
   const p = await open({ ready: READY });

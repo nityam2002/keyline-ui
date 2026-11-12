@@ -5,7 +5,7 @@ import { near, box } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["number", "wayfinding"] });
 
-const READY = "#number .kl-number";
+const READY = "#number [data-slot=number-field]";
 
 test("pagination: paging, fixed width, ends, many pages, loading, links, narrow, Tab", async ({ open, ok, eng }) => {
   const p = await open({ ready: READY });

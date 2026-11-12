@@ -126,7 +126,13 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - **Utilities beat `@layer components`.** A parent component that is not converted yet and overrides a converted
   part's property moves that rule into `@layer utilities`, keyed on attributes (`[data-slot="button"]
   [data-kl-layout="cell"]`), with a comment saying why. It goes back when the parent converts. A rule that doesn't
-  compete keeps its layer and only swaps its class selector for the attribute.
+  compete keeps its layer and only swaps its class selector for the attribute. Check first that the parent's rule
+  won before: one that already lost to the part's own rule (the date picker's `flex: 1` on its time cell, beaten by
+  Time field's cell rule) stays losing, so leave out the property it lost on rather than revive it.
+- **A specific old rule can have guarded a foundation one.** A component rule that beat a foundation state rule by
+  specificity (`.kl-otp .kl-otp-frame > .kl-otp-done:not([data-open])` over the disabled frame's
+  `.kl-field[data-disabled] .kl-field-frame > * + *` seams) becomes a utility (`not-data-open:border-s-transparent`),
+  which beats it by layer. The parity dump finds these: run the part's disabled and invalid states.
 - **A flood owns the filled state.** A `kl-flood` part (Toggle, ToggleGroupItem) sets its own background and text
   colour only while it is off (`not-data-pressed:bg-kl-cell`): a utility would beat the foundation's flood fill.
   Change the fill through its variables (`data-disabled:data-pressed:[--kl-fc:var(--kl-press)]`).

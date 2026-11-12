@@ -5,7 +5,7 @@ import { near, box, active, until } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["slider", "disclosure"] });
 
-const READY = "#slider .kl-slider";
+const READY = "#slider [data-slot=slider]";
 
 test("accordion (single): headings, caret column, single mode, panel position, Tab order", async ({ open, ok }) => {
   const p = await open({ ready: READY });
@@ -118,7 +118,7 @@ test("reduced motion: accordion panel and slider thumb do not transition", { tag
       .every((d) => parseFloat(d) === 0) &&
       (
         await q
-          .locator("#slider .kl-slider-thumb")
+          .locator("#slider [data-slot=slider-thumb]")
           .first()
           .evaluate((el) => getComputedStyle(el).transitionDuration)
       )

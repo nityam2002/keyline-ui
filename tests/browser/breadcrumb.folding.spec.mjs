@@ -5,7 +5,7 @@ import { box, css } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["number", "wayfinding"] });
 
-const READY = "#number .kl-number";
+const READY = "#number [data-slot=number-field]";
 
 test("breadcrumb: landmarks, current page, folding, … menu, narrow", async ({ open, ok }) => {
   const p = await open({ ready: READY });

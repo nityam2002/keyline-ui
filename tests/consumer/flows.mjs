@@ -704,7 +704,7 @@ for (const [eng, type, opts] of [
     eng,
     "dock booking: the slider's validate fails at 10 °C and opens its ! cell",
     (await db.getByText("Chilled goods ride at 8 °C or colder.").isVisible()) &&
-      (await db.locator(".kl-slider .kl-field-bang").evaluate((e) => e.getBoundingClientRect().width)) >= 28,
+      (await db.locator("[data-slot=slider] .kl-field-bang").evaluate((e) => e.getBoundingClientRect().width)) >= 28,
   );
   await temp.focus();
   for (let i = 0; i < 4; i++) await p.keyboard.press("ArrowLeft");

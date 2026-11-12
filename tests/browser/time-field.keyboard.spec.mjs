@@ -12,7 +12,7 @@ test("time: spin buttons, wrapping, PageUp, typing and auto-advance", async ({ o
   const p = await open({ ready: READY });
   const sec = p.locator("#time");
   await sec.scrollIntoViewIfNeeded();
-  const t0 = sec.locator(".kl-time").first();
+  const t0 = sec.locator("[data-slot=time-field]").first();
   const h = t0.getByRole("spinbutton", { name: "Hours" });
   const m = t0.getByRole("spinbutton", { name: "Minutes" });
   ok(
@@ -23,7 +23,7 @@ test("time: spin buttons, wrapping, PageUp, typing and auto-advance", async ({ o
     null,
   );
   ok("time: the group is named by the label", (await t0.getByRole("group", { name: "Pickup" }).count()) === 1, null);
-  const w0 = (await t0.locator(".kl-time-frame").boundingBox()).width;
+  const w0 = (await t0.locator("[data-slot=time-field-frame]").boundingBox()).width;
   await h.focus();
   await p.keyboard.press("ArrowUp");
   ok("time: ArrowUp steps the hour (14 → 15)", (await h.inputValue()) === "15", await h.inputValue());
@@ -44,7 +44,7 @@ test("time: spin buttons, wrapping, PageUp, typing and auto-advance", async ({ o
   ]);
   ok(
     "time: the frame keeps its width while typing",
-    near((await t0.locator(".kl-time-frame").boundingBox()).width, w0),
+    near((await t0.locator("[data-slot=time-field-frame]").boundingBox()).width, w0),
     [w0],
   );
   await h.focus();
@@ -67,7 +67,7 @@ test("time: 15-minute steps wrap; Backspace in empty minutes returns to hours", 
   const p = await open({ ready: READY });
   const sec = p.locator("#time");
   await sec.scrollIntoViewIfNeeded();
-  const cut = sec.locator(".kl-time").nth(1);
+  const cut = sec.locator("[data-slot=time-field]").nth(1);
   const cm = cut.getByRole("spinbutton", { name: "Minutes" });
   await cm.focus();
   await p.keyboard.press("ArrowUp");
@@ -89,18 +89,18 @@ test("time: invalid and disabled parts; a controlled range with a cross-field ru
   const p = await open({ ready: READY });
   const sec = p.locator("#time");
   await sec.scrollIntoViewIfNeeded();
-  const gate = sec.locator(".kl-time").nth(3);
+  const gate = sec.locator("[data-slot=time-field]").nth(3);
   ok(
     "time: invalid shows the message and marks the parts aria-invalid",
     (await gate.getByText("The terminal closes at 22:00.").isVisible()) &&
       (await gate.getByRole("spinbutton", { name: "Hours" }).getAttribute("aria-invalid")) === "true",
     null,
   );
-  const disabled = sec.locator(".kl-time").nth(4);
+  const disabled = sec.locator("[data-slot=time-field]").nth(4);
   ok("time: disabled parts are disabled", await disabled.getByRole("spinbutton", { name: "Hours" }).isDisabled(), null);
 
   const slot = sec.locator('.kl-cells:has(> [data-slot="date-picker"])');
-  const from = slot.locator(".kl-time").nth(0);
+  const from = slot.locator("[data-slot=time-field]").nth(0);
   await from.getByRole("spinbutton", { name: "Hours" }).focus();
   await p.keyboard.type("17");
   await p.keyboard.press("Tab");
@@ -134,12 +134,12 @@ test("rtl: a clock time reads hours then minutes; the zone sits at the end", asy
   const q = await open({ q: "dir=rtl&motion=reduce", ready: READY });
   // bring the scroll-edge rows into view first, so the time field sits where the checks expect it
   await q.locator("#edges .kl-tabs-list").first().scrollIntoViewIfNeeded();
-  const tf = q.locator("#time .kl-time").first();
+  const tf = q.locator("#time [data-slot=time-field]").first();
   const [hx, mx, zx] = await Promise.all(
     [
       tf.getByRole("spinbutton", { name: "Hours" }),
       tf.getByRole("spinbutton", { name: "Minutes" }),
-      tf.locator(".kl-time-zone"),
+      tf.locator("[data-slot=time-field-zone]"),
     ].map(async (l) => (await l.boundingBox()).x),
   );
   ok("rtl: the time reads hours then minutes left to right; the zone is at the end (left)", hx < mx && zx < hx, [

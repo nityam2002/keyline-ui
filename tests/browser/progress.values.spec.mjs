@@ -5,7 +5,7 @@ import { near, box, until } from "./lib/probe.mjs";
 test.use({ only: ["slider", "progress"] });
 
 test("progress: values, states, fill width, advance and recovery", async ({ open, ok }) => {
-  const q = await open({ ready: "#slider .kl-slider" });
+  const q = await open({ ready: "#slider [data-slot=slider]" });
   const bars = q.locator("#progress [role=progressbar]");
   await bars.first().scrollIntoViewIfNeeded();
   ok("progress: six bars with role progressbar", (await bars.count()) === 6, await bars.count());

@@ -27,6 +27,18 @@ const USAGE = `<OtpField
   onValueComplete={verify}
 />`;
 
+const PARTS = `<OtpFieldFrame units={6.5}>
+  <OtpFieldRoot length={6} aria-label="Sign-in code" onValueChange={(code, eventDetails) => setCode(code)}>
+    <OtpFieldInput />
+    <OtpFieldInput />
+    <OtpFieldInput />
+    <OtpFieldSeparator />
+    <OtpFieldInput />
+    <OtpFieldInput />
+    <OtpFieldInput />
+  </OtpFieldRoot>
+</OtpFieldFrame>`;
+
 const PROPS: Prop[] = [
   {
     name: "label",
@@ -101,7 +113,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function OtpFieldPage() {
@@ -129,6 +147,24 @@ export default function OtpFieldPage() {
       <p className="s-small">
         Pasting a whole code fills every cell; Backspace in an empty cell goes back one. Built on{" "}
         <a href="https://base-ui.com/react/components/otp-field">Base UI OTP Field</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>OtpFieldRoot</code>, <code>OtpFieldInput</code> (one cell) and{" "}
+        <code>OtpFieldSeparator</code> (the join between groups, drawn as a dash). <code>OtpFieldFrame</code> is
+        Keyline&apos;s: the control frame, with the ! cell at its start; its <code>units</code> is the code&apos;s width
+        in cells, a join counting half. <code>OtpField</code> is built from them, and its <code>onValueChange</code>{" "}
+        also gets Base UI&apos;s event details. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>otp-field-frame</code>, <code>otp-field-root</code>,{" "}
+        <code>otp-field-input</code>, <code>otp-field-separator</code>; <code>OtpField</code>&apos;s outer field is{" "}
+        <code>otp-field</code>, and its ✓ cell <code>otp-field-done</code>), and Base UI&apos;s state attributes:{" "}
+        <code>data-filled</code>, <code>data-disabled</code>, <code>data-readonly</code> and <code>data-invalid</code>.
+        The outer field has <code>data-signal</code> while a signal shows; the frame has <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

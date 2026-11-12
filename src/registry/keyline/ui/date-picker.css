@@ -14,9 +14,8 @@
     font-weight: var(--kl-weight-strong);
     color: var(--kl-ink-2);
   }
-  /* the time cell takes the room; its parts stay their fixed width */
-  .kl-dtp-time > .kl-time {
-    flex: 1 1 auto;
+  /* the time cell hugs its parts (TimeField as a cell is flex: none), so the row's spare room stays after it */
+  .kl-dtp-time > [data-slot="time-field"] {
     min-width: 0;
   }
   .kl-dtp-done {

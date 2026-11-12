@@ -5,7 +5,7 @@ import { near, box, until } from "./lib/probe.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
 test.use({ only: ["slider", "select"] });
 
-const READY = "#slider .kl-slider";
+const READY = "#slider [data-slot=slider]";
 
 test("select groups: headings, rules, keyboard across groups", async ({ open, ok }) => {
   const p = await open({ ready: READY });

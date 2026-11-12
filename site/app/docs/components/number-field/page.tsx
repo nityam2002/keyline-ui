@@ -20,6 +20,15 @@ const IMPORT = `import { NumberField } from "@/components/keyline/ui/number-fiel
 
 const USAGE = `<NumberField label="Reorder" unit="cases" min={1} value={cases} onValueChange={setCases} />`;
 
+const PARTS = `<NumberFieldRoot defaultValue={24} min={0} max={33}>
+  <NumberFieldGroup>
+    <NumberFieldDecrement aria-label="Fewer pallets" />
+    <NumberFieldInput aria-label="Pallets" />
+    <NumberFieldUnit>PLT</NumberFieldUnit>
+    <NumberFieldIncrement aria-label="More pallets" />
+  </NumberFieldGroup>
+</NumberFieldRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -28,7 +37,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        With <code>onValueChange</code>, or start with <code>defaultValue</code>. Typing commits on blur or Enter.
+        With <code>onValueChange</code>, which also gets Base UI&apos;s event details (the reason for the change, and
+        the event). Or start with <code>defaultValue</code>. Typing commits on blur or Enter.
       </>
     ),
   },
@@ -102,7 +112,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "currency", label: "Currency" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function NumberFieldPage() {
@@ -148,6 +164,24 @@ export default function NumberFieldPage() {
         Home and End jump to <code>min</code> and <code>max</code>. Holding a stepper repeats. Built on{" "}
         <a href="https://base-ui.com/react/components/number-field">Base UI Number Field</a>; its other props pass
         through.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>NumberFieldRoot</code>, <code>NumberFieldGroup</code> (the
+        frame, with the ! cell at its start), <code>NumberFieldDecrement</code>, <code>NumberFieldInput</code> and{" "}
+        <code>NumberFieldIncrement</code>. <code>NumberFieldUnit</code> is Keyline&apos;s: the unit cell after the
+        input. <code>NumberField</code> is built from them; Base UI&apos;s scrub area is not used. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> (<code>number-field-root</code>, <code>number-field-group</code>,{" "}
+        <code>number-field-decrement</code>, <code>number-field-input</code>, <code>number-field-unit</code>,{" "}
+        <code>number-field-increment</code>; <code>NumberField</code>&apos;s outer field is <code>number-field</code>
+        ), and Base UI&apos;s state attributes: <code>data-disabled</code>, <code>data-readonly</code>,{" "}
+        <code>data-required</code>, <code>data-invalid</code> and <code>data-scrubbing</code>. The group has{" "}
+        <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );

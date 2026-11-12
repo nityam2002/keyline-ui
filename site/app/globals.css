@@ -11,10 +11,6 @@
 @import "../../src/registry/keyline/ui/breadcrumb.css";
 @import "../../src/registry/keyline/ui/app-shell.css";
 @import "../../src/registry/keyline/ui/panel.css";
-@import "../../src/registry/keyline/ui/slider.css";
-@import "../../src/registry/keyline/ui/number-field.css";
-@import "../../src/registry/keyline/ui/otp-field.css";
-@import "../../src/registry/keyline/ui/time-field.css";
 @import "../../src/registry/keyline/ui/date-range.css";
 @import "../../src/registry/keyline/ui/date-picker.css";
 @import "../../src/registry/keyline/ui/chart.css";

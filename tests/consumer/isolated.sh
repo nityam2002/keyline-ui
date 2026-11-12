@@ -76,5 +76,14 @@ npx vite build >/dev/null
 # the choice row's utilities come from the installed checkbox.tsx (Tailwind scans it): its group-active/choice-row
 # press rule is in no other file
 if grep -qF 'choice-row' dist/assets/*.css; then echo "  ✓ build: the choice row's rules generated"; else echo "  ✖ build: no choice-row rules in the CSS"; fails=$((fails + 1)); fi
+# the fields' own rules are utilities in their installed .tsx files too: the number field's narrow fold (its kl-nf
+# container), the time field's part width (two digits and their padding) and the OTP slot's width (--kl-otp-u) are in
+# no other installed file
+built() { # label, text the generated CSS must contain
+  if grep -qF -- "$2" dist/assets/*.css; then echo "  ✓ build: $1 generated"; else echo "  ✖ build: $1 missing from the CSS"; fails=$((fails + 1)); fi
+}
+built "the number field's narrow fold" 'kl-nf'
+built "the time field's part width" 'calc(2ch'
+built "the OTP slot's width" '--kl-otp-u'
 echo "isolated: ${fails} missing"
 exit $fails

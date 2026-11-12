@@ -138,8 +138,8 @@ test("12-hour: lone 0, locale periods, ko order, disabled, invalid", async ({ op
   ok("12-hour: a lone 0 is cleared on leaving (not padded to an invalid 00)", parts[0][1] === "", parts);
   ok(
     "12-hour en-GB: the period is named by the locale (am/pm)",
-    (await empty.locator(".kl-time-sizer").allTextContents()).join(",") === "am,pm",
-    await empty.locator(".kl-time-sizer").allTextContents(),
+    (await empty.locator("[data-slot=time-field-period-sizer]").allTextContents()).join(",") === "am,pm",
+    await empty.locator("[data-slot=time-field-period-sizer]").allTextContents(),
   );
   const ko = await partsOf(sec.getByRole("group", { name: "Gate (12-hour, ko)" }));
   ok(

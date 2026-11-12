@@ -6,13 +6,13 @@ import { near, box, active, until } from "./lib/probe.mjs";
 test.use({ only: ["slider", "combobox"] });
 
 test("combobox: filter, choose, clear, async error and recovery", async ({ open, ok }) => {
-  const p = await open({ ready: "#slider .kl-slider" });
+  const p = await open({ ready: "#slider [data-slot=slider]" });
   const cbs = p.locator("#combobox [data-slot=combobox]");
   const term = cbs.nth(0);
   // scroll the specimen to the slider first so the combobox
   // sits high enough for the full list to open below (opened lower, the list flips above and stays there after
   // filtering, and the docking check measures the flipped side)
-  await p.locator("#slider .kl-slider").first().scrollIntoViewIfNeeded();
+  await p.locator("#slider [data-slot=slider]").first().scrollIntoViewIfNeeded();
   await term.scrollIntoViewIfNeeded();
   const input = term.locator("input[role=combobox]");
   ok(

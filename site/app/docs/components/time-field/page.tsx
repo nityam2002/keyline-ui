@@ -96,7 +96,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function TimeFieldPage() {
@@ -128,6 +134,16 @@ export default function TimeFieldPage() {
       <p className="s-small">
         Backspace in an empty part goes back to the one before; leaving a part pads it (&ldquo;7&rdquo; becomes
         &ldquo;07&rdquo;). In a right-to-left page the time keeps clock order.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        Base UI has no time field, so <code>TimeField</code> has no parts to compose: it is one component, built on Base
+        UI&apos;s Field. Style it with <code>className</code> on the field, and reach inside by <code>data-slot</code>:{" "}
+        <code>time-field</code>, <code>time-field-frame</code>, <code>time-field-value</code>,{" "}
+        <code>time-field-join</code>, <code>time-field-period</code> (with <code>time-field-period-input</code>), and{" "}
+        <code>time-field-zone</code>. Each part of the time is a <code>spinbutton</code>. The field has Base UI&apos;s{" "}
+        <code>data-disabled</code> and <code>data-invalid</code>, and <code>data-kl-layout</code>.
       </p>
     </DocPage>
   );
