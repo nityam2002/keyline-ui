@@ -209,7 +209,7 @@ for (const theme of ["light", "dark"]) {
   test(`focus edge (${theme}): date trigger and field group part`, async ({ open, ok }) => {
     const p = await go(open, "specimen", theme);
     // 6. date picker: keyboard open, Escape restores focus to its trigger with the edge
-    const dt = p.locator(".kl-dr-trigger").first();
+    const dt = p.locator(":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])").first();
     await dt.scrollIntoViewIfNeeded();
     await dt.focus();
     await p.keyboard.press("Shift+Tab");
@@ -220,10 +220,18 @@ for (const theme of ["light", "dark"]) {
     await until(() => p.evaluate(() => !!document.activeElement?.closest("[role=grid], [role=dialog]")));
     await idle(p);
     await p.keyboard.press("Escape");
-    await until(() => p.evaluate(() => document.activeElement?.classList.contains("kl-dr-trigger")));
+    await until(() =>
+      p.evaluate(() =>
+        document.activeElement?.matches(":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])"),
+      ),
+    );
     await idle(p);
     s = await state(p);
-    ok("date trigger: Escape returns focus with the edge", s.cls.includes("kl-dr-trigger") && bandOn(s), s);
+    ok(
+      "date trigger: Escape returns focus with the edge",
+      /^date-(picker|range)-trigger$/.test(s.slot) && bandOn(s),
+      s,
+    );
     // 7. field group part: the part gets the band, the group frame does not draw one too
     const part = p.locator(".kl-field-part input").first();
     if (await part.count()) {

@@ -27,6 +27,19 @@ const USAGE = `<DatePicker
   isDateUnavailable={(d) => d.getDay() % 6 === 0 && "no weekend deliveries"}
 />`;
 
+const PARTS = `<DatePickerRoot>
+  <DatePickerTrigger aria-label="Deliver on">
+    <DatePickerAffix />
+    <DatePickerValue placeholder="Choose a date">{date ? format(date) : null}</DatePickerValue>
+  </DatePickerTrigger>
+  <DatePickerPopup>
+    <Calendar value={date} onValueChange={setDate} />
+    <DatePickerPresets>
+      <DatePickerPreset onClick={() => setDate(tomorrow)}>Tomorrow</DatePickerPreset>
+    </DatePickerPresets>
+  </DatePickerPopup>
+</DatePickerRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -86,7 +99,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "day-and-time", label: "Day and time" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function DatePickerPage() {
@@ -133,6 +152,27 @@ export default function DatePickerPage() {
         <code>hourCycle</code>, <code>slots</code>, <code>minTime</code>, <code>maxTime</code>, <code>required</code>{" "}
         and <code>error</code>. Built on <a href="https://daypicker.dev">React DayPicker</a> and{" "}
         <a href="https://base-ui.com/react/components/popover">Base UI Popover</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>DatePicker</code> is built from parts you can compose yourself. <code>DatePickerRoot</code> is Base
+        UI&apos;s Popover root, <code>DatePickerTrigger</code> its trigger drawn as a field frame (with{" "}
+        <code>layout</code>), <code>DatePickerPopup</code> its Portal, Positioner and Popup in one part, docked to the
+        trigger (with the placement props, <code>layout</code>, <code>container</code> and <code>portalProps</code>),
+        and <code>DatePickerClose</code> its close button, a key cell. <code>DatePickerAffix</code> (the calendar
+        glyph&apos;s cell), <code>DatePickerValue</code> (with <code>placeholder</code>), <code>DatePickerPresets</code>{" "}
+        and <code>DatePickerPreset</code> are Keyline&apos;s. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>date-picker-trigger</code>,{" "}
+        <code>date-picker-value</code>, <code>date-picker-popup</code>, <code>date-picker-preset</code> and so on; the
+        fields are <code>date-picker</code> and <code>date-time-picker</code>, the grid <code>calendar</code>). The
+        trigger has <code>data-kl-layout</code> and Base UI&apos;s <code>data-popup-open</code>; the popup{" "}
+        <code>data-side</code> and <code>data-align</code>. A day carries <code>data-today</code>,{" "}
+        <code>data-unavailable</code> and <code>data-kl-on</code> when chosen.
       </p>
     </DocPage>
   );

@@ -156,7 +156,7 @@ test("date-time picker: time before day, 12-hour trigger, disabled, cell layout"
       [...r.children].map((c) => ({
         inv: c.hasAttribute("data-invalid"),
         bang: c.querySelector(".kl-field-bang").getBoundingClientRect().width,
-        ell: getComputedStyle(c.querySelector(".kl-dtp-text")).textOverflow,
+        ell: getComputedStyle(c.querySelector("[data-slot=date-time-picker-text]")).textOverflow,
       })),
     );
   const cell = await poll(cellOf, (c) => c[1].inv && c[1].bang >= 28 && !c[0].inv && c[0].bang === 0, 2000);
@@ -196,7 +196,7 @@ test("date-time picker in a Form: required, default time, validate, server error
   const bang = await poll(
     () =>
       form
-        .locator(".kl-dtp")
+        .locator("[data-slot=date-time-picker]")
         .first()
         .evaluate((f) => [
           f.hasAttribute("data-invalid"),
@@ -258,7 +258,9 @@ test("date-time picker: portal carries compact density and RTL; RTL keys", async
     .last()
     .evaluate((d) => [
       getComputedStyle(d).getPropertyValue("--kl-day").trim(),
-      d.querySelector(".kl-dtp-time-label") ? getComputedStyle(d.querySelector(".kl-dtp-time-label")).display : null,
+      d.querySelector("[data-slot=date-time-picker-time-label]")
+        ? getComputedStyle(d.querySelector("[data-slot=date-time-picker-time-label]")).display
+        : null,
       getComputedStyle(d).direction,
     ]);
   ok(
@@ -277,7 +279,7 @@ test("date-time picker: portal carries compact density and RTL; RTL keys", async
     .locator("[role=dialog]")
     .last()
     .evaluate((d) => {
-      const r = d.querySelector(".kl-dtp-time");
+      const r = d.querySelector("[data-slot=date-time-picker-time]");
       return r.scrollWidth <= r.clientWidth + 1;
     });
   ok("compact: the time row fits the 7-day panel", fit, null);

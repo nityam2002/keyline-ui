@@ -53,9 +53,11 @@ check tabs tabs Tabs ".kl-more-fade"
 check checkbox-group checkbox-group CheckboxGroup "file:src/components/keyline/ui/checkbox.tsx"
 # Table now composes toolbar (filter tokens in a toolbar), so its CSS must come with it
 check table table TableSortHeader ".kl-tb-item"
-# The date picker ships its own CSS (the time row); time-field is already here
-check date-picker date-picker DateTimePicker ".kl-dtp-time"
-check date-picker date-picker Calendar ".kl-cal-dd"
+# The date picker has no CSS of its own: its trigger and ! cell are the field's (theme). The calendar's look is utilities
+# in date-range.tsx and its dates come from lib/calendar.ts; no item added before it installs either, so both must
+# arrive with it (the build below checks the utilities are generated)
+check date-picker date-picker DateTimePicker "file:src/components/keyline/ui/date-range.tsx"
+check date-picker date-picker Calendar "file:src/components/keyline/lib/calendar.ts"
 # Avatar needs only the theme (its count's key travel); hover-card the theme's positioner; otp-field the field's frame
 # and ! cell (theme)
 check avatar avatar AvatarGroup ".kl-key"
@@ -85,5 +87,9 @@ built() { # label, text the generated CSS must contain
 built "the number field's narrow fold" 'kl-nf'
 built "the time field's part width" 'calc(2ch'
 built "the OTP slot's width" '--kl-otp-u'
+# the calendar's day size (its [--kl-day:44px] utility) is in no installed file but date-range.tsx, which date-picker
+# installs; the date-time picker's slot grid (a 4.5em minimum column) in none but date-picker.tsx
+built "the calendar's day size" '\[--kl-day\:44px\]'
+built "the date-time picker's slot grid" '4.5em'
 echo "isolated: ${fails} missing"
 exit $fails

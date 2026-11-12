@@ -22,6 +22,21 @@ const USAGE = `const [range, setRange] = useState<DateRange | null>(null)
 
 <DateRangePicker label="Vacation" locale="en-US" value={range} onValueChange={setRange} />`;
 
+const PARTS = `<DateRangeRoot>
+  <DateRangeTrigger aria-label="Vacation">
+    <DateRangeAffix />
+    <DateRangeValue placeholder="Any date">{range ? formatRange(range) : null}</DateRangeValue>
+    <DateRangeCount>{countAvailable(range)}</DateRangeCount>
+  </DateRangeTrigger>
+  <DateRangePopup>
+    <RangeCalendar value={range} onValueChange={setRange} />
+    <DateRangeFooter>
+      <DateRangeTotal>{countAvailable(range)} days</DateRangeTotal>
+      <DateRangeCaption>Vacation</DateRangeCaption>
+    </DateRangeFooter>
+  </DateRangePopup>
+</DateRangeRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -79,7 +94,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function DateRangePage() {
@@ -112,6 +133,27 @@ export default function DateRangePage() {
         Choose the first day, then the last; moving between them previews the range, and Escape drops a half-made one.
         Also exported: <code>RangeCalendar</code>, <code>formatRange</code> and <code>countAvailable</code>. Built on{" "}
         <a href="https://daypicker.dev">React DayPicker</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>DateRangePicker</code> is built from parts you can compose yourself. <code>DateRangeRoot</code> is Base
+        UI&apos;s Popover root, <code>DateRangeTrigger</code> its trigger drawn as a field frame (with{" "}
+        <code>layout</code>), and <code>DateRangePopup</code> its Portal, Positioner and Popup in one part, docked to
+        the trigger (with the placement props, <code>layout</code>, <code>container</code> and <code>portalProps</code>
+        ). <code>DateRangeAffix</code>, <code>DateRangeValue</code> (with <code>placeholder</code>),{" "}
+        <code>DateRangeCount</code>, <code>DateRangeFooter</code>, <code>DateRangeTotal</code>,{" "}
+        <code>DateRangeCaption</code>, <code>DateRangePresets</code> and <code>DateRangePreset</code> are
+        Keyline&apos;s. Every part takes <code>render</code>, and a <code>className</code> or <code>style</code> that
+        may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>date-range-trigger</code>,{" "}
+        <code>date-range-value</code>, <code>date-range-popup</code> and so on; the field is <code>date-range</code>,
+        the grid <code>range-calendar</code>). The trigger has <code>data-kl-layout</code> and Base UI&apos;s{" "}
+        <code>data-popup-open</code>. A day carries <code>data-in-range</code>, <code>data-end</code>,{" "}
+        <code>data-preview</code> while a range is previewed, <code>data-today</code> and <code>data-unavailable</code>.
       </p>
     </DocPage>
   );

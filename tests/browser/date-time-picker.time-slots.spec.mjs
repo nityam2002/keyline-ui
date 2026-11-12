@@ -24,9 +24,10 @@ test("slots: unavailable days, the slot group, choosing, held day, reopen, form 
   const ts = p.getByTestId("ts-pick");
   const log = () => p.getByTestId("ts-log").innerText();
   const dlg = p.locator("[role=dialog]").last();
-  const dayBtn = (n) => dlg.locator(`button.kl-day[aria-label*=", ${n} November 2026"]`);
-  const slot = (t) => dlg.locator(".kl-dtp-slots [role=radio]").filter({ hasText: new RegExp(`^${t}$`) });
-  const status = () => dlg.locator(".kl-dtp-slot-status").innerText();
+  const dayBtn = (n) => dlg.locator(`[role=gridcell] button[aria-label*=", ${n} November 2026"]`);
+  const slot = (t) =>
+    dlg.locator("[data-slot=date-time-picker-slots] [role=radio]").filter({ hasText: new RegExp(`^${t}$`) });
+  const status = () => dlg.locator("[data-slot=date-time-picker-slot-status]").innerText();
   await ts.scrollIntoViewIfNeeded();
   await ts.getByRole("button").first().click();
   await dialogOpen(p);
@@ -42,8 +43,8 @@ test("slots: unavailable days, the slot group, choosing, held day, reopen, form 
   );
   ok(
     "slots: before a day, no slots; the area and the row ask for a day",
-    (await dlg.locator(".kl-dtp-slots [role=radio]").count()) === 0 &&
-      /Choose a day to see its times/.test(await dlg.locator(".kl-dtp-slots").innerText()) &&
+    (await dlg.locator("[data-slot=date-time-picker-slots] [role=radio]").count()) === 0 &&
+      /Choose a day to see its times/.test(await dlg.locator("[data-slot=date-time-picker-slots]").innerText()) &&
       /Choose a day/.test(await status()),
     await status(),
   );
@@ -64,7 +65,7 @@ test("slots: unavailable days, the slot group, choosing, held day, reopen, form 
   ok(
     "slots: choosing a day shows its times as one radio group named with the day",
     (await group.count()) === 1 && (await group.getByRole("radio").count()) === 16,
-    await dlg.locator(".kl-dtp-slots").getAttribute("aria-label"),
+    await dlg.locator("[data-slot=date-time-picker-slots]").getAttribute("aria-label"),
   );
   ok(
     "slots: a booked slot is disabled and named with its reason",
@@ -169,11 +170,11 @@ test("slots 12-hour: slot names in the locale's 12-hour form", async ({ open, ok
   await t12.scrollIntoViewIfNeeded();
   await t12.getByRole("button").first().click();
   await dialogOpen(p);
-  await dlg.locator('button.kl-day[aria-label*="November 10, 2026"]').click();
+  await dlg.locator('[role=gridcell] button[aria-label*="November 10, 2026"]').click();
   const names12 = await poll(
     () =>
       dlg
-        .locator(".kl-dtp-slots [role=radio]")
+        .locator("[data-slot=date-time-picker-slots] [role=radio]")
         .evaluateAll((r) => r.slice(0, 3).map((x) => x.getAttribute("aria-label"))),
     (n) => n.length === 3,
     2000,
@@ -217,8 +218,8 @@ test("slots: without slots, a typed booked time is invalid", async ({ open, ok }
   );
   ok(
     "slots: the trigger is aria-invalid while the field's message shows",
-    (await typed.locator(".kl-dr-trigger").getAttribute("aria-invalid")) === "true" &&
-      (await p.getByTestId("ts-pick").locator(".kl-dr-trigger").getAttribute("aria-invalid")) === null,
+    (await typed.locator("[data-slot=date-picker-trigger]").getAttribute("aria-invalid")) === "true" &&
+      (await p.getByTestId("ts-pick").locator("[data-slot=date-picker-trigger]").getAttribute("aria-invalid")) === null,
   );
   ok("no page errors", p.errs.length === 0, p.errs);
 });

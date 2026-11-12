@@ -35,7 +35,7 @@ test("cal: naming, month/year dropdowns, picking, keyboard, next month", async (
   );
   ok(
     "cal: Monday-first weekday headers (hidden from AT by the library; each day's name carries its weekday)",
-    (await cal.locator(".kl-cal-wd").first().textContent()) === "Mon" &&
+    (await cal.locator("[role=grid] th").first().textContent()) === "Mon" &&
       /^Monday, 2 November/.test(await day(/, 2 November 2026/).getAttribute("aria-label")),
     null,
   );
@@ -44,14 +44,20 @@ test("cal: naming, month/year dropdowns, picking, keyboard, next month", async (
     (await day(/, 7 November 2026/).getAttribute("aria-current")) === "date",
     null,
   );
-  const w0 = await cal.evaluate((c) => c.querySelector(".kl-cal").getBoundingClientRect().width);
+  const w0 = await cal.evaluate(
+    (c) => c.querySelector("[data-slot=calendar], [data-slot=range-calendar]").getBoundingClientRect().width,
+  );
   await pickOpt(p, cal, "Year", "2028");
   await pickOpt(p, cal, "Month", "October");
   await until(async () => (await label()) === "October 2028");
   ok("dropdowns: choosing October and 2028 shows that month", (await label()) === "October 2028", await label());
   ok(
     "dropdowns: the width does not move between months",
-    Math.abs((await cal.evaluate((c) => c.querySelector(".kl-cal").getBoundingClientRect().width)) - w0) < 0.5,
+    Math.abs(
+      (await cal.evaluate(
+        (c) => c.querySelector("[data-slot=calendar], [data-slot=range-calendar]").getBoundingClientRect().width,
+      )) - w0,
+    ) < 0.5,
     null,
   );
   await day(/, 7 October 2028/).click();
@@ -104,7 +110,7 @@ test("range: Sunday-first, hover and arrow preview, Escape, commit, notches", as
   // range calendar (en-US, Sunday first)
   const rc = p.getByTestId("jump-range");
   const rday = (n) => rc.getByRole("button", { name: new RegExp(`, November ${n}, 2026`) });
-  ok("range: Sunday-first headers", (await rc.locator(".kl-cal-wd").first().textContent()) === "Sun", null);
+  ok("range: Sunday-first headers", (await rc.locator("[role=grid] th").first().textContent()) === "Sun", null);
   await rday(5).click();
   await rday(17).hover();
   await until(
@@ -213,20 +219,20 @@ test("rtl: direction, right-to-left days, narrow weekday names, ArrowLeft is nex
   const rtl = p.getByTestId("jump-rtl");
   ok(
     "rtl: the calendar takes the DOM direction",
-    (await rtl.locator(".kl-cal-root").getAttribute("dir")) === "rtl",
+    (await rtl.locator("[data-slot=calendar] > div").getAttribute("dir")) === "rtl",
     null,
   );
   const xs = await rtl
-    .locator("button.kl-day")
+    .locator("[role=gridcell] button")
     .evaluateAll((ds) => [ds[0].getBoundingClientRect().left, ds[1].getBoundingClientRect().left]);
   ok("rtl: days run right to left", xs[0] > xs[1], xs);
-  const heads = await rtl.locator(".kl-cal-wd").allTextContents();
+  const heads = await rtl.locator("[role=grid] th").allTextContents();
   ok(
     "rtl: long weekday names fall back to the narrow form",
     heads.every((h) => [...h].length <= 3),
     heads,
   );
-  await rtl.locator("button.kl-day").nth(6).click();
+  await rtl.locator("[role=gridcell] button").nth(6).click();
   const before = (await active(p)).name;
   await p.keyboard.press("ArrowLeft");
   const after = (await active(p)).name;
@@ -234,7 +240,7 @@ test("rtl: direction, right-to-left days, narrow weekday names, ArrowLeft is nex
     "rtl: ArrowLeft moves to the next day",
     before !== after &&
       (await rtl
-        .locator("button.kl-day")
+        .locator("[role=gridcell] button")
         .nth(7)
         .evaluate((x) => x === document.activeElement)),
     [before, after],
@@ -263,7 +269,7 @@ test("picker: focus in the grid, year dropdown inside the popover, Escape return
       (await dlg.getByRole("grid").getAttribute("aria-label")) === "November 2027",
     null,
   );
-  await dlg.locator("button.kl-day").first().focus();
+  await dlg.locator("[role=gridcell] button").first().focus();
   await p.keyboard.press("Escape");
   await until(
     async () =>

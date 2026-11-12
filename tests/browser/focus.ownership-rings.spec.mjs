@@ -37,27 +37,30 @@ test("focus ownership: pointer choices leave no ring; keyboard restores focus wi
     (await onTrigger(p)) && r.rings.length === 0,
     r,
   );
-  await dlg.locator(".kl-dr-trigger").click();
+  await dlg.locator("[data-slot=date-picker-trigger]").click();
   await p.locator("[role=gridcell] button[aria-label*='12 November']").click();
-  await activeHas(p, "kl-dr-trigger");
+  await activeHas(p, "date-picker-trigger");
   await idle(p);
   r = await ringsOf(p);
   ok(
     "date picker: a pointer choice returns focus to the trigger without a ring",
-    /kl-dr-trigger/.test(r.active) && r.rings.length === 0,
+    (await p.evaluate(() => document.activeElement?.getAttribute("data-slot"))) === "date-picker-trigger" &&
+      r.rings.length === 0,
     r,
   );
-  await dlg.locator(".kl-dr-trigger").focus();
+  await dlg.locator("[data-slot=date-picker-trigger]").focus();
   await p.keyboard.press("Enter");
   await until(() => p.evaluate(() => !!document.activeElement?.closest("[role=grid]")));
   await idle(p);
   await p.keyboard.press("Escape");
-  await activeHas(p, "kl-dr-trigger");
+  await activeHas(p, "date-picker-trigger");
   await idle(p);
   r = await ringsOf(p);
   ok(
     "date picker: Escape returns focus to the trigger, with one indicator: its own edge",
-    /kl-dr-trigger/.test(r.active) && r.rings.length === 1 && r.rings[0].off === "edge",
+    (await p.evaluate(() => document.activeElement?.getAttribute("data-slot"))) === "date-picker-trigger" &&
+      r.rings.length === 1 &&
+      r.rings[0].off === "edge",
     r,
   );
   await carrier.focus();

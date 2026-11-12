@@ -53,8 +53,16 @@ test("key: specimen families answer the press before release", async ({ open, ok
       "table index cell",
       "[data-slot=checkbox]",
     ],
-    ["button.kl-dr-trigger[data-kl-layout=control]", "date field trigger", ""],
-    ["button.kl-dr-trigger[data-kl-layout=cell]", "date cell trigger", ""],
+    [
+      "button:is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])[data-kl-layout=control]",
+      "date field trigger",
+      "",
+    ],
+    [
+      "button:is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])[data-kl-layout=cell]",
+      "date cell trigger",
+      "",
+    ],
   ];
   for (const [sel, name, part] of families) {
     const snap = (e, part) => getComputedStyle(part ? e.querySelector(part) : e).backgroundColor;

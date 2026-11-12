@@ -630,7 +630,9 @@ for (const [eng, type, opts] of [
     eng,
     "dock booking: the empty required slot fails with its message, and its ! cell opens",
     (await db.getByText("Choose a date and time.").isVisible()) &&
-      (await db.locator(".kl-dtp .kl-field-bang").evaluate((e) => e.getBoundingClientRect().width)) >= 28,
+      (await db
+        .locator("[data-slot=date-time-picker] .kl-field-bang")
+        .evaluate((e) => e.getBoundingClientRect().width)) >= 28,
   );
   await db.getByRole("button", { name: /^Slot( |$)/ }).click();
   await p.waitForTimeout(350);
@@ -660,7 +662,7 @@ for (const [eng, type, opts] of [
     "dock booking: day buttons carry en-US names and Keyline's flood",
     await pop
       .getByRole("button", { name: /^Tuesday, November 10, 2026$/ })
-      .evaluate((e) => e.classList.contains("kl-day") && e.classList.contains("kl-flood")),
+      .evaluate((e) => e.closest("[role=gridcell]") !== null && e.classList.contains("kl-flood")),
   );
   await pop.getByRole("button", { name: /November 10, 2026/ }).click();
   await pop.getByRole("spinbutton", { name: "Hours" }).click();

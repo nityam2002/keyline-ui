@@ -23,10 +23,14 @@ test("dock (control): calendar and select list in the booking dialog", async ({ 
   const dlg = p.getByRole("dialog").filter({ hasText: "Book a pickup" });
   await dlg.waitFor();
   await idle(p);
-  await dlg.locator(".kl-dr-trigger").click();
-  await p.locator(".kl-dr-panel").last().waitFor();
+  await dlg.locator(":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])").click();
+  await p.locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup])").last().waitFor();
   await idle(p);
-  let g = await geo(p, dlg.locator(".kl-dr-trigger"), ".kl-dr-panel");
+  let g = await geo(
+    p,
+    dlg.locator(":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])"),
+    ":is([data-slot=date-picker-popup],[data-slot=date-range-popup])",
+  );
   ok(
     "dock (control, wide owner): calendar overlaps the trigger's k2 edge, start-aligned, ends in a clear T (>= 48px short)",
     g.overlap === 2 && g.dl === 0 && g.dr <= -48,
@@ -34,7 +38,7 @@ test("dock (control): calendar and select list in the booking dialog", async ({ 
   );
   await p.keyboard.press("Escape");
   await p
-    .locator(".kl-dr-panel:visible")
+    .locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup]):visible")
     .waitFor({ state: "detached" })
     .catch(() => {});
   await idle(p);
@@ -61,11 +65,11 @@ for (const dir of ["ltr", "rtl"]) {
       ready: ".kl-sx-eta",
     });
     await idle(p);
-    const eta = p.locator(".kl-sx-eta .kl-dr-trigger").first();
+    const eta = p.locator(".kl-sx-eta :is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])").first();
     await eta.click();
-    await p.locator(".kl-dr-panel").last().waitFor();
+    await p.locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup])").last().waitFor();
     await idle(p);
-    let g = await geo(p, eta, ".kl-dr-panel");
+    let g = await geo(p, eta, ":is([data-slot=date-picker-popup],[data-slot=date-range-popup])");
     ok(
       `dock (cell, ${dir}): calendar sits on the keyline below the cell and covers both side keylines (snapped to the cell)`,
       g.overlap === 0 && g.dl === -2 && g.dr === 2,
@@ -73,7 +77,7 @@ for (const dir of ["ltr", "rtl"]) {
     );
     await p.keyboard.press("Escape");
     await p
-      .locator(".kl-dr-panel:visible")
+      .locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup]):visible")
       .waitFor({ state: "detached" })
       .catch(() => {});
     await idle(p);
@@ -95,18 +99,27 @@ test("390×700: a calendar with no room on either side stays inside the viewport
   open,
   ok,
 }) => {
-  const phone = await open({ route: "app", width: 390, height: 700, ready: ".kl-dr-trigger" });
-  const dt = phone.locator(".kl-dr-trigger:visible").first();
+  const phone = await open({
+    route: "app",
+    width: 390,
+    height: 700,
+    ready: ":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])",
+  });
+  const dt = phone.locator(":is([data-slot=date-picker-trigger],[data-slot=date-range-trigger]):visible").first();
   // centre the trigger so neither side has room for the panel, whatever the page chrome above it
   await dt.evaluate((e) => e.scrollIntoView({ block: "center" }));
   await dt.click();
-  await phone.locator(".kl-dr-panel:visible").waitFor();
+  await phone.locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup]):visible").waitFor();
   await idle(phone);
-  await stable(phone.locator(".kl-dr-panel:visible")).catch(() => {});
-  const fit = await phone.locator(".kl-dr-panel:visible").evaluate((e) => {
-    const r = e.getBoundingClientRect();
-    return { l: r.left, r: r.right, b: r.bottom, scrolls: e.scrollHeight > e.clientHeight };
-  });
+  await stable(phone.locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup]):visible")).catch(
+    () => {},
+  );
+  const fit = await phone
+    .locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup]):visible")
+    .evaluate((e) => {
+      const r = e.getBoundingClientRect();
+      return { l: r.left, r: r.right, b: r.bottom, scrolls: e.scrollHeight > e.clientHeight };
+    });
   ok(
     "390×700: a calendar with no room on either side stays inside the viewport and scrolls inside",
     fit.l >= 0 && fit.r <= 390 && fit.b <= 700 - 11.5 && fit.scrolls,

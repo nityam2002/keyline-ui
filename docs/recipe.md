@@ -133,6 +133,12 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   specificity (`.kl-otp .kl-otp-frame > .kl-otp-done:not([data-open])` over the disabled frame's
   `.kl-field[data-disabled] .kl-field-frame > * + *` seams) becomes a utility (`not-data-open:border-s-transparent`),
   which beats it by layer. The parity dump finds these: run the part's disabled and invalid states.
+- **And the other way: an old rule could have lost to a foundation state rule.** The date picker's trigger set
+  `cursor: pointer`, which lost to the disabled field's `cursor: not-allowed` (`.kl-field[data-disabled]
+  .kl-field-frame`, more specific). As a utility, `cursor-pointer` wins by layer, so the part states the state's
+  value itself (`data-disabled:cursor-not-allowed`). The disabled dump finds these too.
+- **Some utilities compile to the flex keyword.** `content-start` is `align-content: flex-start`, not `start`; an
+  old `align-content: start` stays `[align-content:start]`. Check the dump for keyword changes as well as lengths.
 - **A flood owns the filled state.** A `kl-flood` part (Toggle, ToggleGroupItem) sets its own background and text
   colour only while it is off (`not-data-pressed:bg-kl-cell`): a utility would beat the foundation's flood fill.
   Change the fill through its variables (`data-disabled:data-pressed:[--kl-fc:var(--kl-press)]`).

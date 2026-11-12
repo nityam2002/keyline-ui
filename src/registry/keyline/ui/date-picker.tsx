@@ -9,8 +9,19 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { dockGeometry, scopeProps, useKeylineScope } from "../lib/keyline-scope";
+import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
 import { sameDay, sod, type Unavailable } from "../lib/calendar";
-import { useDayPicker, type Bounds } from "./date-range";
+import {
+  CalendarGlyph,
+  calendarStyles,
+  gridDay,
+  pickerStyles,
+  useDayPicker,
+  usePart,
+  useRefs,
+  type Bounds,
+  type EmptyState,
+} from "./date-range";
 import { FieldMessages, useDescribedByMirror, type FieldParticipantProps } from "./field";
 import { TimeField, timeOutside } from "./time-field";
 
@@ -57,7 +68,7 @@ function Calendar({
     label: () => "",
   });
   return (
-    <div ref={wrap} data-slot="calendar" className={cn("kl-cal", className)}>
+    <div ref={wrap} data-slot="calendar" className={cn(calendarStyles.root, className)}>
       <DayPicker
         {...props}
         mode="single"
@@ -77,6 +88,157 @@ function Calendar({
   );
 }
 
+/* ------------------------------------------------------------------ parts */
+
+type Layout = "control" | "cell";
+
+/** Base UI's Popover.Root: open state and its event details pass through untouched. */
+const DatePickerRoot = Popover.Root;
+
+/** The trigger: a field frame of cells (pass the affix and the value; a Field's ! cell first). `layout="cell"`: a
+ * cell of an enclosing frame. The look is DateRangePicker's (`pickerStyles`). */
+function DatePickerTrigger({
+  layout = "control",
+  className,
+  ...props
+}: Popover.Trigger.Props & { layout?: Layout }): React.ReactElement {
+  return (
+    <Popover.Trigger
+      data-kl-layout={layout}
+      className={resolveClassName(pickerStyles.trigger, className)}
+      {...props}
+      data-slot="date-picker-trigger"
+    />
+  );
+}
+
+/** The calendar glyph's cell at the trigger's start (hidden from assistive tech). Children replace the glyph. */
+function DatePickerAffix({ children, ...props }: PartProps<"span", EmptyState>): React.ReactElement {
+  return usePart("span", "date-picker-affix", pickerStyles.affix, props, {
+    "aria-hidden": true,
+    children: children ?? <CalendarGlyph />,
+  });
+}
+
+/** The value cell: the chosen day, or the placeholder. */
+function DatePickerValue({
+  placeholder,
+  children,
+  ...props
+}: PartProps<"span", EmptyState> & {
+  /** Shown, in the placeholder's ink, while there are no children. */
+  placeholder?: React.ReactNode;
+}): React.ReactElement {
+  return usePart("span", "date-picker-value", pickerStyles.value, props, {
+    children:
+      children ??
+      (placeholder != null ? (
+        <span data-slot="date-picker-placeholder" className={pickerStyles.placeholder}>
+          {placeholder}
+        </span>
+      ) : null),
+  });
+}
+
+type PopupProps = Popover.Popup.Props &
+  Pick<Popover.Positioner.Props, "anchor" | "side" | "align" | "sideOffset" | "alignOffset" | "collisionPadding"> & {
+    /** The frame the popup docks to: `cell` when the trigger has `layout="cell"`. */
+    layout?: Layout;
+    /** Where the portal renders (defaults to <body>). */
+    container?: Popover.Portal.Props["container"];
+    /** Props for Base UI's Popover.Portal. */
+    portalProps?: Omit<Popover.Portal.Props, "container" | "children">;
+  };
+
+/**
+ * The calendar's surface: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props
+ * lifted. It docks to the trigger (seven days wide, or the trigger's width when the two are within --kl-snap) and
+ * carries the configuration (density, motion, theme, dir) of the place it is written. Focus lands on the grid's day.
+ */
+function DatePickerPopup({
+  layout = "control",
+  anchor,
+  side,
+  align = "start",
+  sideOffset,
+  alignOffset,
+  collisionPadding = 12,
+  container,
+  portalProps,
+  className,
+  style,
+  initialFocus,
+  ref,
+  ...props
+}: PopupProps): React.ReactElement {
+  const dock = dockGeometry(layout);
+  const [marker, scope, probe] = useKeylineScope(false, container);
+  const own = React.useRef<HTMLDivElement>(null);
+  const refs = useRefs(own, ref);
+  return (
+    <>
+      {marker}
+      <Popover.Portal container={container} {...portalProps}>
+        {probe}
+        <Popover.Positioner
+          anchor={anchor}
+          side={side}
+          align={align}
+          sideOffset={sideOffset ?? dock.sideOffset}
+          alignOffset={alignOffset ?? dock.alignOffset}
+          collisionPadding={collisionPadding}
+          {...scopeProps(scope, { className: "kl-positioner" })}
+        >
+          <Popover.Popup
+            ref={refs}
+            className={resolveClassName(pickerStyles.popup, className)}
+            style={resolveStyle(dock.style, style)}
+            initialFocus={initialFocus ?? (() => gridDay(own.current))}
+            {...props}
+            data-slot="date-picker-popup"
+          />
+        </Popover.Positioner>
+      </Popover.Portal>
+    </>
+  );
+}
+
+/** A row of quick choices under the calendar. */
+function DatePickerPresets(props: PartProps<"div", EmptyState>): React.ReactElement {
+  return usePart("div", "date-picker-presets", pickerStyles.presets, props);
+}
+
+/** One quick choice: a key cell (its label travels under a press). */
+function DatePickerPreset({ children, ...props }: PartProps<"button", EmptyState>): React.ReactElement {
+  return usePart(
+    "button",
+    "date-picker-preset",
+    pickerStyles.preset,
+    { type: "button", ...props },
+    {
+      children: <span>{children}</span>,
+    },
+  );
+}
+
+/** Closes the popup (DateTimePicker's Done): a key cell at the end of a row. */
+function DatePickerClose({ className, children, ...props }: Popover.Close.Props): React.ReactElement {
+  return (
+    <Popover.Close
+      className={resolveClassName(
+        "kl-cell kl-key flex-none justify-center px-(--kl-inset) text-[13px] font-(--kl-weight-strong)",
+        className,
+      )}
+      {...props}
+      data-slot="date-picker-close"
+    >
+      <span>{children}</span>
+    </Popover.Close>
+  );
+}
+
+/* ------------------------------------------------------------------ the fields */
+
 type DatePickerProps = Omit<CalendarProps, "onEscape" | "value" | "onValueChange"> & {
   /** The chosen day. Controlled with `value` + `onValueChange`, or uncontrolled from `defaultValue`. */
   value?: Date | null;
@@ -87,30 +249,16 @@ type DatePickerProps = Omit<CalendarProps, "onEscape" | "value" | "onValueChange
   /** Quick choices shown as a row of cells under the calendar ("Today", "Next Monday"). */
   presets?: { label: string; date: () => Date }[];
   /** control: its own 2px frame. cell: a cell of an enclosing frame; the label is visually hidden. */
-  layout?: "control" | "cell";
+  layout?: Layout;
   /** Submitted with a form, as YYYY-MM-DD. */
   name?: string;
-  container?: React.ComponentProps<typeof Popover.Portal>["container"];
+  container?: Popover.Portal.Props["container"];
 };
 
 const iso = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-const CalendarGlyph = () => (
-  <svg
-    viewBox="0 0 16 16"
-    width="16"
-    height="16"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="square"
-  >
-    <path d="M2.5 3.5h11v10h-11zM2.5 7h11M5.5 2v3M10.5 2v3" />
-  </svg>
-);
-
-/** Trigger field (calendar affix · formatted date) + the calendar docked to the field frame. */
+/** Trigger field (calendar affix · formatted date) + the calendar docked to the field frame, built from the parts. */
 function DatePicker({
   label,
   value: valueProp,
@@ -131,9 +279,6 @@ function DatePicker({
     onChange?.(d);
   };
   const [open, setOpen] = React.useState(false);
-  const dock = dockGeometry(layout);
-  const [marker, scope] = useKeylineScope(open, container);
-  const popup = React.useRef<HTMLDivElement>(null);
   const id = React.useId();
   const fmt = new Intl.DateTimeFormat(cal.locale ?? "en-GB", {
     weekday: "short",
@@ -146,54 +291,32 @@ function DatePicker({
     setOpen(false);
   };
   return (
-    <Popover.Root open={open} onOpenChange={setOpen}>
+    <DatePickerRoot open={open} onOpenChange={setOpen}>
       <div data-slot="date-picker" data-kl-layout={layout} className={cn("kl-field", className)}>
-        {marker}
         <span className={cn("kl-field-label", layout === "cell" && "kl-sr")} id={id}>
           {label}
         </span>
-        <Popover.Trigger
-          aria-labelledby={`${id} ${id}v`}
-          data-kl-layout={layout}
-          className="kl-ctl kl-cells kl-field-frame kl-edge kl-dr-trigger"
-        >
-          <span className="kl-field-affix" aria-hidden>
-            <CalendarGlyph />
-          </span>
-          <span className="kl-dr-value" id={`${id}v`}>
-            {value ? fmt.format(value) : <span className="kl-dr-ph">{placeholder}</span>}
-          </span>
-        </Popover.Trigger>
+        <DatePickerTrigger aria-labelledby={`${id} ${id}v`} layout={layout}>
+          <DatePickerAffix />
+          <DatePickerValue id={`${id}v`} placeholder={placeholder}>
+            {value ? fmt.format(value) : null}
+          </DatePickerValue>
+        </DatePickerTrigger>
         {name ? <input type="hidden" name={name} value={value ? iso(value) : ""} /> : null}
+        <DatePickerPopup layout={layout} container={container} aria-labelledby={id}>
+          <Calendar value={value} onValueChange={pick} onEscape={() => setOpen(false)} {...cal} />
+          {presets.length ? (
+            <DatePickerPresets>
+              {presets.map((p) => (
+                <DatePickerPreset key={p.label} onClick={() => pick(p.date())}>
+                  {p.label}
+                </DatePickerPreset>
+              ))}
+            </DatePickerPresets>
+          ) : null}
+        </DatePickerPopup>
       </div>
-      <Popover.Portal container={container}>
-        <Popover.Positioner
-          sideOffset={dock.sideOffset}
-          alignOffset={dock.alignOffset}
-          align="start"
-          collisionPadding={12}
-          {...scopeProps(scope, { className: "kl-positioner" })}
-        >
-          <Popover.Popup
-            ref={popup}
-            className="kl-attached kl-dock kl-dock-fit kl-dr-panel"
-            style={dock.style}
-            initialFocus={() => popup.current?.querySelector<HTMLElement>('[role="grid"] [tabindex="0"]') ?? true}
-          >
-            <Calendar value={value} onValueChange={pick} onEscape={() => setOpen(false)} {...cal} />
-            {presets.length ? (
-              <div className="kl-cells kl-cal-presets">
-                {presets.map((p) => (
-                  <button key={p.label} type="button" className="kl-cell kl-key" onClick={() => pick(p.date())}>
-                    <span>{p.label}</span>
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
+    </DatePickerRoot>
   );
 }
 
@@ -231,12 +354,12 @@ type DateTimePickerProps = Omit<CalendarProps, "onEscape" | "value" | "onValueCh
     zone?: React.ReactNode;
     timeLabel?: string;
     doneLabel?: string;
-    layout?: "control" | "cell";
+    layout?: Layout;
     /** Submitted with a form as local "YYYY-MM-DDTHH:MM" (or "" when empty). */
     name?: string;
     required?: boolean;
     disabled?: boolean;
-    container?: React.ComponentProps<typeof Popover.Portal>["container"];
+    container?: Popover.Portal.Props["container"];
   };
 
 const hhmm = (d: Date) => `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
@@ -313,13 +436,10 @@ function DateTimePicker({
   const defaultTime =
     minTime && defaultTimeProp < minTime ? minTime : maxTime && defaultTimeProp > maxTime ? maxTime : defaultTimeProp;
   const [open, setOpen] = React.useState(false);
-  const dock = dockGeometry(layout);
-  const [marker, scope] = useKeylineScope(open, container);
-  const popup = React.useRef<HTMLDivElement>(null);
   const id = React.useId();
   // the trigger is what focus lands on, so it carries the description and error
   const rootRef = React.useRef<HTMLDivElement>(null);
-  useDescribedByMirror(rootRef, ".kl-dr-trigger");
+  useDescribedByMirror(rootRef, '[data-slot="date-picker-trigger"]');
   const locale = cal.locale ?? "en-GB";
   // date and time formatted apart and joined with a comma: engines join them differently ("at" in WebKit)
   const fmtDay = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
@@ -394,10 +514,9 @@ function DateTimePicker({
       invalid={invalid}
       validate={check}
       validationMode={validationMode}
-      className={cn("kl-field kl-dtp", className)}
+      className={cn("kl-field", className)}
     >
-      <Popover.Root open={open} onOpenChange={show}>
-        {marker}
+      <DatePickerRoot open={open} onOpenChange={show}>
         <span className={cn("kl-field-label", layout === "cell" && "kl-sr")} id={id}>
           {label}
         </span>
@@ -405,13 +524,12 @@ function DateTimePicker({
             built-in range/unavailable checks), so the trigger is marked invalid whenever the message shows */}
         <FieldPrimitive.Validity>
           {(fv) => (
-            <Popover.Trigger
+            <DatePickerTrigger
               aria-labelledby={`${id} ${id}v`}
               aria-invalid={invalid || fv.validity.valid === false || undefined}
               aria-required={required || undefined}
               disabled={disabled}
-              data-kl-layout={layout}
-              className="kl-ctl kl-cells kl-field-frame kl-edge kl-dr-trigger"
+              layout={layout}
               onKeyDown={(e) => {
                 if ((e.key === "Delete" || e.key === "Backspace") && value && !required && !open) {
                   e.preventDefault();
@@ -424,108 +542,116 @@ function DateTimePicker({
                   <span>!</span>
                 </span>
               </span>
-              <span className="kl-field-affix" aria-hidden>
-                <CalendarGlyph />
-              </span>
-              <span className="kl-dr-value" id={`${id}v`}>
+              <DatePickerAffix />
+              {/* a long value (a narrow cell, a long locale format) ends in an ellipsis; the trigger's name reads it
+                  whole. The gap is the cell's, not a margin on the zone: a <bdi> takes its own direction (LTR for
+                  "CET"), so its logical margin would land on the far side in RTL */}
+              <DatePickerValue id={`${id}v`} placeholder={placeholder} className="min-w-0 gap-2">
                 {value ? (
                   <>
-                    <span className="kl-dtp-text">{fmt.format(value)}</span>
+                    <span data-slot="date-time-picker-text" className="min-w-0 truncate">
+                      {fmt.format(value)}
+                    </span>
                     {zone != null ? (
                       <>
                         {" "}
-                        <bdi className="kl-code kl-dtp-zone">{zone}</bdi>
+                        <bdi data-slot="date-time-picker-zone" className="kl-code">
+                          {zone}
+                        </bdi>
                       </>
                     ) : null}
                   </>
-                ) : (
-                  <span className="kl-dr-ph">{placeholder}</span>
-                )}
-              </span>
-            </Popover.Trigger>
+                ) : null}
+              </DatePickerValue>
+            </DatePickerTrigger>
           )}
         </FieldPrimitive.Validity>
         <FieldPrimitive.Control type="hidden" value={local} onValueChange={() => {}} />
         <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />
-        <Popover.Portal container={container}>
-          <Popover.Positioner
-            sideOffset={dock.sideOffset}
-            alignOffset={dock.alignOffset}
-            align="start"
-            collisionPadding={12}
-            {...scopeProps(scope, { className: "kl-positioner" })}
+        <DatePickerPopup layout={layout} container={container} aria-labelledby={id}>
+          <Calendar
+            value={day}
+            onValueChange={pickDay}
+            onEscape={() => show(false)}
+            {...cal}
+            isDateUnavailable={isDateUnavailable}
+          />
+          {presets.length ? (
+            <DatePickerPresets>
+              {presets.map((p) => (
+                <DatePickerPreset key={p.label} onClick={() => pickPreset(p.date())}>
+                  {p.label}
+                </DatePickerPreset>
+              ))}
+            </DatePickerPresets>
+          ) : null}
+          {slots ? (
+            <Slots
+              day={day}
+              times={day ? slotsFor(day) : []}
+              why={why}
+              value={day && !heldDay && value ? hhmm(value) : null}
+              onPick={pickSlot}
+              show={showT}
+              label={day ? `${timeLabel}, ${fmtDay.format(day)}` : timeLabel}
+            />
+          ) : null}
+          {/* the time row: one run of cells, a label cell, the TimeField as a cell (it hugs its parts, so the
+                  row's spare room stays after it) and Done. Compact: seven 34px days leave no room for the label
+                  cell; the time cell is still named */}
+          <div
+            data-slot="date-time-picker-time"
+            className="kl-cells min-h-(--kl-row) border-t-(length:--kl-k1) border-t-kl-seam *:data-[slot=time-field]:min-w-0"
           >
-            <Popover.Popup
-              ref={popup}
-              aria-labelledby={id}
-              className="kl-attached kl-dock kl-dock-fit kl-dr-panel kl-dtp-panel"
-              style={dock.style}
-              initialFocus={() => popup.current?.querySelector<HTMLElement>('[role="grid"] [tabindex="0"]') ?? true}
+            <span
+              data-slot="date-time-picker-time-label"
+              className="kl-cell flex-none text-[13px] font-(--kl-weight-strong) text-kl-ink-2 in-data-[kl-density=compact]:hidden"
+              aria-hidden
             >
-              <Calendar
-                value={day}
-                onValueChange={pickDay}
-                onEscape={() => show(false)}
-                {...cal}
-                isDateUnavailable={isDateUnavailable}
+              {timeLabel}
+            </span>
+            {slots ? (
+              <span
+                data-slot="date-time-picker-slot-status"
+                className="kl-cell flex-auto text-[15px] font-(--kl-weight-strong) whitespace-nowrap"
+                aria-live="polite"
+              >
+                {!day ? "Choose a day" : heldDay || !value ? "Choose a time" : fmtTime.format(value)}
+                {zone != null && day && !heldDay && value ? (
+                  <bdi data-slot="date-time-picker-zone" className="kl-code">
+                    {zone}
+                  </bdi>
+                ) : null}
+              </span>
+            ) : (
+              <TimeField
+                layout="cell"
+                label={timeLabel}
+                value={time}
+                onValueChange={pickTime}
+                hourCycle={hourCycle}
+                minuteStep={minuteStep}
+                locale={cal.locale}
+                zone={zone}
+                min={minTime}
+                max={maxTime}
+                rangeMessage={rangeMessage}
               />
-              {presets.length ? (
-                <div className="kl-cells kl-cal-presets">
-                  {presets.map((p) => (
-                    <button key={p.label} type="button" className="kl-cell kl-key" onClick={() => pickPreset(p.date())}>
-                      <span>{p.label}</span>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-              {slots ? (
-                <Slots
-                  day={day}
-                  times={day ? slotsFor(day) : []}
-                  why={why}
-                  value={day && !heldDay && value ? hhmm(value) : null}
-                  onPick={pickSlot}
-                  show={showT}
-                  label={day ? `${timeLabel}, ${fmtDay.format(day)}` : timeLabel}
-                />
-              ) : null}
-              <div className="kl-cells kl-dtp-time">
-                <span className="kl-cell kl-dtp-time-label" aria-hidden>
-                  {timeLabel}
-                </span>
-                {slots ? (
-                  <span className="kl-cell kl-dtp-slot-status" aria-live="polite">
-                    {!day ? "Choose a day" : heldDay || !value ? "Choose a time" : fmtTime.format(value)}
-                    {zone != null && day && !heldDay && value ? (
-                      <bdi className="kl-code kl-dtp-zone">{zone}</bdi>
-                    ) : null}
-                  </span>
-                ) : (
-                  <TimeField
-                    layout="cell"
-                    label={timeLabel}
-                    value={time}
-                    onValueChange={pickTime}
-                    hourCycle={hourCycle}
-                    minuteStep={minuteStep}
-                    locale={cal.locale}
-                    zone={zone}
-                    min={minTime}
-                    max={maxTime}
-                    rangeMessage={rangeMessage}
-                  />
-                )}
-                <Popover.Close className="kl-cell kl-key kl-dtp-done">
-                  <span>{doneLabel}</span>
-                </Popover.Close>
-              </div>
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+            )}
+            <DatePickerClose>{doneLabel}</DatePickerClose>
+          </div>
+        </DatePickerPopup>
+      </DatePickerRoot>
     </FieldPrimitive.Root>
   );
 }
+
+/** The slots' grid: cells on the calendar's seams, four rows tall whatever the day offers, scrolling past that. */
+const slotsGrid = cn(
+  "grid h-[calc(4*var(--kl-day))] grid-cols-[repeat(auto-fill,minmax(max(4.5em,calc(25%-var(--kl-k1))),1fr))]",
+  "[align-content:start] gap-(--kl-k1) overflow-y-auto overscroll-contain border-t-(length:--kl-k1) border-t-kl-seam",
+  "[scrollbar-width:thin]",
+);
 
 /**
  * The day's offered times as one radio group of cells (Base UI RadioGroup): arrows move and choose,
@@ -552,12 +678,21 @@ function Slots({
   // one fixed height whatever the day offers, so choosing a day never resizes (or flips) the popup
   if (!day || !times.length)
     return (
-      <p className="kl-dtp-slots kl-dtp-slots-none">
+      <p
+        data-slot="date-time-picker-slots"
+        className={cn(slotsGrid, "m-0 place-items-center px-(--kl-inset) text-center text-[13px] text-kl-ink-2")}
+      >
         {day ? "No times on this day." : "Choose a day to see its times."}
       </p>
     );
   return (
-    <RadioGroup aria-label={label} value={value} onValueChange={(t) => onPick(t as string)} className="kl-dtp-slots">
+    <RadioGroup
+      aria-label={label}
+      value={value}
+      onValueChange={(t) => onPick(t as string)}
+      data-slot="date-time-picker-slots"
+      className={slotsGrid}
+    >
       {times.map((t) => {
         const r = why(day, t);
         return (
@@ -566,12 +701,20 @@ function Slots({
             value={t}
             disabled={!!r}
             aria-label={r ? `${show(t)}, unavailable${typeof r === "string" ? ` (${r})` : ""}` : show(t)}
-            className={cn("kl-day kl-flood kl-dtp-slot", !r && "kl-sig-ink")}
+            data-slot="date-time-picker-slot"
+            className={cn(
+              calendarStyles.day,
+              // each slot draws the seams on its end and foot into the grid gap, so a short last row ends cleanly
+              "[box-shadow:var(--kl-k1)_var(--kl-k1)_0_0_var(--kl-line-soft)]",
+              "kl-rtl:[box-shadow:calc(-1*var(--kl-k1))_var(--kl-k1)_0_0_var(--kl-line-soft)]",
+              "font-(family-name:--kl-font-mono) text-[13px] tabular-nums",
+              !r && "kl-sig-ink",
+            )}
             data-kl-flood="manual"
             data-kl-on={value === t ? "" : undefined}
             data-unavailable={r ? "" : undefined}
           >
-            <span>{show(t)}</span>
+            <span className={calendarStyles.dayLabel}>{show(t)}</span>
           </Radio.Root>
         );
       })}
@@ -579,4 +722,19 @@ function Slots({
   );
 }
 
-export { Calendar, DatePicker, DateTimePicker, type DatePickerProps, type DateTimePickerProps };
+export {
+  Calendar,
+  DatePicker,
+  DateTimePicker,
+  DatePickerRoot,
+  DatePickerTrigger,
+  DatePickerAffix,
+  DatePickerValue,
+  DatePickerPopup,
+  DatePickerPresets,
+  DatePickerPreset,
+  DatePickerClose,
+  type CalendarProps,
+  type DatePickerProps,
+  type DateTimePickerProps,
+};

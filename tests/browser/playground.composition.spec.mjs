@@ -114,7 +114,7 @@ test("date picker: grid keyboard, unavailable days, form value, inside the booki
   const dlg = p.getByRole("dialog").filter({ hasText: "Book a pickup" });
   await dlg.waitFor();
   await idle(p);
-  const trigger = dlg.locator("[data-slot=date-picker] .kl-dr-trigger");
+  const trigger = dlg.locator("[data-slot=date-picker-trigger]");
   await press(trigger);
   const grid = p.locator("[role=grid]").last();
   await grid.waitFor();
@@ -128,17 +128,17 @@ test("date picker: grid keyboard, unavailable days, form value, inside the booki
   ok("date picker: ArrowRight moves one day", /10 November 2026/.test(await focusedText(p)), await focusedText(p));
   await p.keyboard.press("ArrowDown");
   ok("date picker: ArrowDown moves one week", /17 November 2026/.test(await focusedText(p)), await focusedText(p));
-  const sunday = grid.locator("button.kl-day[aria-label*='15 November 2026']");
+  const sunday = grid.locator("[role=gridcell] button[aria-label*='15 November 2026']");
   ok(
     "date picker: an unavailable day says why",
     (await sunday.isDisabled()) && /unavailable \(Depot closed\)/.test(await sunday.getAttribute("aria-label")),
     await sunday.getAttribute("aria-label"),
   );
   await p.keyboard.press("Enter");
-  await until(async () => !(await grid.isVisible()) && (await focusIn(p, ".kl-dr-trigger")));
+  await until(async () => !(await grid.isVisible()) && (await focusIn(p, "[data-slot=date-picker-trigger]")));
   ok(
     "date picker: Enter chooses, closes and returns focus to the trigger",
-    !(await grid.isVisible()) && (await focusIn(p, ".kl-dr-trigger")),
+    !(await grid.isVisible()) && (await focusIn(p, "[data-slot=date-picker-trigger]")),
     await focusedText(p),
   );
   ok(
