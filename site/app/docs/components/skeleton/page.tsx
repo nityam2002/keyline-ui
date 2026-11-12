@@ -109,7 +109,14 @@ export default function SkeletonPage() {
 
       <h2 id="props">Props</h2>
       <PropsReference label="Skeleton props" props={PROPS} />
-      <p className="s-small">Lines take a fixed pattern of widths, so a skeleton looks the same on every load.</p>
+      <p className="s-small">
+        Parts: <code>Skeleton</code> (a <code>span</code>) and <code>SkeletonGroup</code> (a <code>div</code>). A
+        skeleton carries <code>data-slot=&quot;skeleton&quot;</code> and <code>data-shape</code> (<code>lines</code> for
+        a stack, whose lines are <code>data-slot=&quot;skeleton-line&quot;</code>); the group{" "}
+        <code>data-slot=&quot;skeleton-group&quot;</code> and <code>aria-busy</code> while busy. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+        Lines take a fixed pattern of widths, so a skeleton looks the same on every load.
+      </p>
     </DocPage>
   );
 }

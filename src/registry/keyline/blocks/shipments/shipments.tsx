@@ -69,6 +69,7 @@ import {
   type SortDirection,
 } from "../../ui/table";
 import { Status } from "../../ui/status";
+import { Kbd } from "../../ui/kbd";
 import { Nav, NavIdentity, type NavItem } from "../../ui/nav";
 import { AppShell } from "../../ui/app-shell";
 import { Breadcrumb } from "../../ui/breadcrumb";
@@ -1331,13 +1332,13 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
         </CommandList>
         <CommandFooter>
           <span>
-            <kbd className="kl-kbd">↑↓</kbd> move
+            <Kbd>↑↓</Kbd> move
           </span>
           <span>
-            <kbd className="kl-kbd">↵</kbd> run
+            <Kbd>↵</Kbd> run
           </span>
           <span>
-            <kbd className="kl-kbd">⌥1–9</kbd> run by number
+            <Kbd>⌥1–9</Kbd> run by number
           </span>
         </CommandFooter>
       </CommandDialog>

@@ -666,212 +666,14 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react@1.9.0"
+        "@base-ui/react@1.9.0",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render",
         "utils"
-      ],
-      "css": {
-        "@layer components": {
-          ".kl-avatar": {
-            "--kl-av": "32px",
-            "--kl-av-fs": "13px",
-            "--kl-av-st": "3px",
-            "position": "relative",
-            "flex": "none",
-            "display": "inline-grid",
-            "box-sizing": "border-box",
-            "overflow": "hidden",
-            "width": "var(--kl-av)",
-            "height": "var(--kl-av)",
-            "vertical-align": "middle",
-            "border": "var(--kl-k1) solid var(--kl-line)",
-            "background-color": "var(--kl-tint)",
-            "color": "var(--kl-ink)",
-            "font-family": "var(--kl-font)",
-            "user-select": "none"
-          },
-          ".kl-avatar > *": {
-            "grid-area": "1 / 1"
-          },
-          ".kl-avatar[data-size=\"sm\"]": {
-            "--kl-av": "24px",
-            "--kl-av-fs": "10px"
-          },
-          ".kl-avatar[data-size=\"lg\"]": {
-            "--kl-av": "40px",
-            "--kl-av-fs": "15px"
-          },
-          ".kl-avatar[data-size=\"xl\"]": {
-            "--kl-av": "56px",
-            "--kl-av-fs": "20px",
-            "--kl-av-st": "4px"
-          },
-          ".kl-avatar[data-kl-layout=\"cell\"]": {
-            "width": "100%",
-            "height": "auto",
-            "aspect-ratio": "1",
-            "align-self": "center",
-            "border": "0",
-            "--kl-av-fs": "18px"
-          },
-          ".kl-avatar-img": {
-            "width": "100%",
-            "height": "100%",
-            "object-fit": "cover",
-            "object-position": "50% 30%",
-            "display": "block",
-            "clip-path": "inset(0)",
-            "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out),\n      filter var(--kl-t-unflood) linear"
-          },
-          ".kl-avatar-img[data-starting-style]": {
-            "clip-path": "inset(100% 0 0 0)"
-          },
-          ".kl-avatar-fb": {
-            "display": "grid",
-            "place-items": "center",
-            "width": "100%",
-            "height": "100%",
-            "min-width": "0",
-            "font-size": "var(--kl-av-fs)",
-            "font-weight": "var(--kl-weight-strong)",
-            "line-height": "1",
-            "letter-spacing": "0.02em",
-            "font-variant-numeric": "tabular-nums",
-            "white-space": "nowrap",
-            "text-box": "trim-both cap alphabetic"
-          },
-          ".kl-avatar-fb svg": {
-            "width": "calc(var(--kl-av-fs) + 4px)",
-            "height": "calc(var(--kl-av-fs) + 4px)"
-          },
-          ".kl-avatar-group": {
-            "--kl-av": "32px",
-            "--kl-av-fs": "13px",
-            "display": "inline-flex",
-            "align-items": "stretch",
-            "width": "fit-content",
-            "max-width": "100%",
-            "vertical-align": "middle",
-            "border": "var(--kl-k1) solid var(--kl-line)",
-            "background-color": "var(--kl-cell)"
-          },
-          ".kl-avatar-group[data-size=\"sm\"]": {
-            "--kl-av": "24px",
-            "--kl-av-fs": "10px"
-          },
-          ".kl-avatar-group[data-size=\"lg\"]": {
-            "--kl-av": "40px",
-            "--kl-av-fs": "15px"
-          },
-          ".kl-avatar-group[data-size=\"xl\"]": {
-            "--kl-av": "56px",
-            "--kl-av-fs": "20px"
-          },
-          ".kl-avatar-group > .kl-avatar[data-size]": {
-            "--kl-av": "inherit",
-            "--kl-av-fs": "inherit"
-          },
-          ".kl-avatar-group > .kl-avatar": {
-            "border": "0",
-            "width": "calc(var(--kl-av) - 2 * var(--kl-k1))",
-            "height": "calc(var(--kl-av) - 2 * var(--kl-k1))"
-          },
-          ".kl-avatar-group > :not(:first-child)": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-avatar-count": {
-            "flex": "none",
-            "display": "grid",
-            "place-items": "center",
-            "box-sizing": "border-box",
-            "min-width": "calc(var(--kl-av) - 2 * var(--kl-k1))",
-            "padding-inline": "6px",
-            "background-color": "var(--kl-cell)",
-            "color": "var(--kl-ink)",
-            "font": "var(--kl-weight-strong) var(--kl-av-fs, 13px) / 1 var(--kl-font)",
-            "font-variant-numeric": "tabular-nums",
-            "white-space": "nowrap",
-            "direction": "ltr",
-            "unicode-bidi": "isolate"
-          },
-          ":where(button).kl-avatar-count": {
-            "border-block": "0",
-            "border-inline-end": "0",
-            "margin": "0",
-            "cursor": "pointer"
-          },
-          ":where(button).kl-avatar-count:hover": {
-            "background-color": "var(--kl-tint)"
-          },
-          ":where(button).kl-avatar-count:active": {
-            "background-color": "var(--kl-press)"
-          },
-          ".kl-avatar-count:focus-visible": {
-            "outline-offset": "var(--kl-ring-in)"
-          },
-          ".kl-avatar-count[data-popup-open]": {
-            "background-color": "var(--kl-inverse)",
-            "color": "var(--kl-on-inverse)"
-          },
-          ".kl-avatar[data-status]": {
-            "border-block-end": "var(--kl-av-st) solid var(--kl-line)"
-          },
-          ".kl-avatar[data-status=\"normal\"]": {
-            "border-block-end-color": "var(--kl-cobalt)"
-          },
-          ".kl-avatar[data-status=\"waiting\"]": {
-            "border-block-end-style": "dashed",
-            "border-block-end-color": "var(--kl-ink-2)"
-          },
-          ".kl-avatar[data-status=\"done\"]": {
-            "border-block-end-style": "double",
-            "border-block-end-color": "var(--kl-ink)",
-            "border-block-end-width": "max(var(--kl-av-st), 3px)"
-          },
-          ".kl-avatar[data-status=\"attention\"]": {
-            "border-block-end-color": "var(--kl-red)"
-          },
-          ".kl-avatar[data-status=\"attention\"]:not([data-kl-layout=\"cell\"])": {
-            "border-color": "var(--kl-red)"
-          },
-          ".kl-avatar-group > .kl-avatar[data-status=\"attention\"]::after, .kl-avatar[data-kl-layout=\"cell\"][data-status=\"attention\"]::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset": "0",
-            "border": "var(--kl-k1) solid var(--kl-red)",
-            "pointer-events": "none"
-          },
-          ".kl-avatar[data-status=\"none\"]": {
-            "border-block-end-width": "var(--kl-k1)"
-          },
-          ".kl-avatar[data-status=\"none\"] .kl-avatar-img": {
-            "filter": "grayscale(1) contrast(0.9)"
-          },
-          ".kl-avatar[data-status=\"none\"] .kl-avatar-fb": {
-            "color": "var(--kl-ink-3)"
-          },
-          ".kl-avatar-group > .kl-avatar[data-status=\"none\"], .kl-avatar[data-kl-layout=\"cell\"][data-status=\"none\"]": {
-            "border-block-end": "0"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-avatar, .kl-avatar-group": {
-              "border-color": "CanvasText"
-            },
-            ".kl-avatar[data-status]": {
-              "border-block-end-color": "CanvasText"
-            },
-            ".kl-avatar[data-status=\"attention\"]": {
-              "border-width": "2px",
-              "border-block-end-width": "var(--kl-av-st)"
-            },
-            ".kl-avatar[data-status=\"attention\"]::after": {
-              "border-color": "CanvasText"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "name": "breadcrumb",
@@ -2190,14 +1992,16 @@
             "align-items": "center",
             "gap": "5px"
           },
-          ".kl-cmd-foot .kl-kbd": {
-            "color": "var(--kl-ink)"
-          },
           "@media (forced-colors: active)": {
             ".kl-cmd-item[data-selected=\"true\"]": {
               "outline": "3px solid Highlight",
               "outline-offset": "-4px"
             }
+          }
+        },
+        "@layer utilities": {
+          ".kl-cmd-foot [data-slot=\"kbd\"]": {
+            "color": "var(--kl-ink)"
           }
         }
       }
@@ -4005,64 +3809,14 @@
           "target": "components/keyline/ui/kbd.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render",
         "utils"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-kbd": {
-            "display": "inline-grid",
-            "place-items": "center",
-            "box-sizing": "border-box",
-            "min-width": "22px",
-            "height": "22px",
-            "padding-inline": "5px",
-            "margin": "0",
-            "margin-block": "-3px",
-            "border": "var(--kl-k1) solid currentColor",
-            "border-block-end-width": "2px",
-            "background-color": "transparent",
-            "color": "inherit",
-            "font": "500 11px/1 var(--kl-font-mono)",
-            "letter-spacing": "0",
-            "white-space": "nowrap",
-            "text-transform": "none"
-          },
-          ".kl-kbd-group": {
-            "display": "inline-flex",
-            "align-items": "stretch",
-            "box-sizing": "border-box",
-            "height": "22px",
-            "margin": "0",
-            "margin-block": "-3px",
-            "border": "var(--kl-k1) solid currentColor",
-            "border-block-end-width": "2px",
-            "background-color": "transparent",
-            "color": "inherit",
-            "white-space": "nowrap",
-            "direction": "ltr",
-            "unicode-bidi": "isolate"
-          },
-          ".kl-kbd-group > .kl-kbd": {
-            "height": "auto",
-            "margin": "0",
-            "min-width": "20px",
-            "border": "0",
-            "background": "none",
-            "color": "inherit"
-          },
-          ".kl-kbd-group > .kl-kbd:not(:first-child)": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-kbd, .kl-kbd-group": {
-              "border-color": "CanvasText"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "name": "keyline",
@@ -4365,7 +4119,7 @@
               "transform": "translateX(333.3333%)"
             }
           },
-          ":where(.kl-pending, .kl-progress-fill, .kl-skeleton, .kl-skel):is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) )": {
+          ":where(.kl-pending, .kl-progress-fill, [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], .kl-skel):is( [dir=\"rtl\"], [dir=\"rtl\"] * ):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
             "--kl-run-dir": "reverse"
           },
           ":where( .kl-attached, .kl-select-panel, .kl-ms-list, .kl-cmd-list, .kl-popover, .kl-tabs-list, [data-slot=\"segmented\"], [data-slot=\"toggle-group\"], .kl-nav-list )": {
@@ -5124,74 +4878,15 @@
           "target": "components/keyline/ui/marker.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0",
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render",
         "utils"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-marker": {
-            "position": "relative",
-            "display": "flex",
-            "align-items": "center",
-            "gap": "10px",
-            "min-width": "0",
-            "min-height": "24px",
-            "font-family": "var(--kl-font-mono)",
-            "font-size": "12px",
-            "line-height": "1.35",
-            "color": "var(--kl-ink-2)"
-          },
-          ".kl-marker-ic": {
-            "flex": "none",
-            "display": "grid",
-            "place-items": "center",
-            "width": "24px",
-            "height": "24px",
-            "border": "var(--kl-k1) solid var(--kl-line-soft)",
-            "color": "var(--kl-ink)"
-          },
-          ".kl-marker-ic svg": {
-            "display": "block",
-            "width": "14px",
-            "height": "14px"
-          },
-          ".kl-marker-t": {
-            "min-width": "0",
-            "overflow-wrap": "anywhere"
-          },
-          ".kl-marker-t a": {
-            "color": "inherit",
-            "text-underline-offset": "3px"
-          },
-          ".kl-marker[data-variant=\"separator\"]::before, .kl-marker[data-variant=\"separator\"]::after": {
-            "content": "\"\"",
-            "flex": "1 1 0",
-            "min-width": "12px",
-            "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
-          },
-          ".kl-marker[data-variant=\"separator\"] .kl-marker-t": {
-            "flex": "none",
-            "max-width": "70%",
-            "text-align": "center"
-          },
-          ".kl-marker[data-variant=\"border\"]": {
-            "padding-block-end": "8px",
-            "border-block-end": "var(--kl-k1) solid var(--kl-line)"
-          },
-          ".kl-marker[data-pending]": {
-            "padding-block-end": "4px"
-          },
-          ".kl-marker-run": {
-            "--kl-bw": "2px",
-            "inset-inline-start": "34px"
-          },
-          ".kl-marker:not(:has(.kl-marker-ic)) .kl-marker-run": {
-            "inset-inline-start": "0"
-          }
-        }
-      }
+      ]
     },
     {
       "name": "menu",
@@ -5349,9 +5044,6 @@
           ".kl-msg-av:empty": {
             "height": "0"
           },
-          ".kl-msg-av > .kl-avatar": {
-            "--kl-av": "var(--kl-msg-av)"
-          },
           ".kl-msg-body": {
             "flex": "0 1 auto",
             "display": "flex",
@@ -5441,8 +5133,15 @@
             },
             ".kl-msg:not(:has(> .kl-msg-av)) > .kl-msg-body": {
               "max-width": "88%"
-            },
-            ".kl-msg-av > .kl-avatar": {
+            }
+          }
+        },
+        "@layer utilities": {
+          ".kl-msg-av > [data-slot=\"avatar\"]": {
+            "--kl-av": "var(--kl-msg-av)"
+          },
+          "@container kl-log (max-width: 420px)": {
+            ".kl-msg-av > [data-slot=\"avatar\"]": {
               "--kl-av-fs": "10px"
             }
           }
@@ -8533,6 +8232,7 @@
         "@keyline-ui/date-range",
         "@keyline-ui/table",
         "@keyline-ui/status",
+        "@keyline-ui/kbd",
         "@keyline-ui/nav",
         "@keyline-ui/app-shell",
         "@keyline-ui/breadcrumb",
@@ -8710,83 +8410,15 @@
           "target": "components/keyline/ui/skeleton.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0",
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render",
         "utils"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-skeleton": {
-            "position": "relative",
-            "overflow": "hidden",
-            "display": "block",
-            "box-sizing": "border-box",
-            "max-width": "100%",
-            "height": "10px",
-            "border": "var(--kl-k1) solid var(--kl-line-soft)",
-            "background-color": "var(--kl-tint)"
-          },
-          ".kl-skeleton[data-shape=\"line\"]": {
-            "width": "100%",
-            "margin-block": "4px"
-          },
-          ".kl-skeleton[data-shape=\"value\"]": {
-            "display": "inline-block",
-            "vertical-align": "baseline",
-            "width": "4ch",
-            "height": "0.8em"
-          },
-          ".kl-skeleton[data-shape=\"control\"]": {
-            "width": "100%",
-            "height": "var(--kl-ctl)",
-            "border-width": "var(--kl-k2)"
-          },
-          ".kl-skeleton[data-shape=\"block\"]": {
-            "width": "100%",
-            "height": "96px"
-          },
-          ".kl-skeleton-lines": {
-            "display": "grid",
-            "gap": "6px",
-            "min-width": "0"
-          },
-          ".kl-skeleton-lines > .kl-skeleton": {
-            "margin-block": "0"
-          },
-          ".kl-skeleton::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset-block": "0",
-            "left": "0",
-            "width": "30%",
-            "background-color": "var(--kl-line-soft)",
-            "animation": "kl-run-30 1100ms linear infinite var(--kl-run-dir, normal)"
-          },
-          "[data-kl-motion=\"reduce\"] .kl-skeleton::after": {
-            "animation": "none",
-            "display": "none"
-          },
-          "@media (prefers-reduced-motion: reduce)": {
-            ".kl-skeleton::after": {
-              "animation": "none",
-              "display": "none"
-            }
-          },
-          ".kl-skeleton-group": {
-            "min-width": "0"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-skeleton": {
-              "border-color": "GrayText",
-              "background": "Canvas"
-            },
-            ".kl-skeleton::after": {
-              "display": "none"
-            }
-          }
-        }
-      }
+      ]
     },
     {
       "name": "slider",
@@ -9149,50 +8781,15 @@
           "target": "components/keyline/ui/status.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0",
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
+        "@keyline-ui/keyline-render",
         "utils"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-status": {
-            "display": "inline-flex",
-            "align-items": "baseline",
-            "gap": "8px"
-          },
-          ".kl-status > .kl-glyph": {
-            "align-self": "center"
-          },
-          ".kl-status[data-kind=\"attention\"]": {
-            "color": "var(--kl-red-text)",
-            "font-weight": "var(--kl-weight-display)"
-          },
-          ".kl-status[data-kind=\"done\"], .kl-status[data-kind=\"none\"]": {
-            "color": "var(--kl-ink-2)"
-          },
-          ".kl-badge": {
-            "display": "inline-flex",
-            "align-items": "center",
-            "height": "20px",
-            "padding-inline": "6px",
-            "border": "var(--kl-k1) solid currentColor",
-            "font": "500 11px/1 var(--kl-font-mono)",
-            "white-space": "nowrap",
-            "color": "var(--kl-ink-2)",
-            "vertical-align": "middle"
-          },
-          ".kl-badge[data-tone=\"signal\"]": {
-            "background-color": "var(--kl-yellow)",
-            "color": "var(--kl-on-yellow)",
-            "border-color": "var(--kl-on-yellow)"
-          },
-          ".kl-badge[data-tone=\"attention\"]": {
-            "color": "var(--kl-red-text)",
-            "font-weight": "var(--kl-weight-strong)"
-          }
-        }
-      }
+      ]
     },
     {
       "name": "switch",

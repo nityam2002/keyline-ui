@@ -6,6 +6,6 @@ export default {
   title: "Status and badge",
   description: "Status glyph + text (shape survives forced colours); square code badge.",
   files: [{ path: "src/registry/keyline/ui/status.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/status.css",
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  dependencies: ["@base-ui/react", "class-variance-authority"],
+  registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/keyline-render", "utils"],
 } satisfies KeylineItem;

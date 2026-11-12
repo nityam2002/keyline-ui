@@ -15,12 +15,12 @@ test("kbd: prose, chords, symbols, sequence, RTL", async ({ open, ok }) => {
       lh,
       h,
       n,
-      tall: [...el.querySelectorAll(":scope > .kl-kbd, :scope > .kl-kbd-group")].map((k) =>
+      tall: [...el.querySelectorAll(":scope > [data-slot=kbd], :scope > [data-slot=kbd-group]")].map((k) =>
         Math.round(k.getBoundingClientRect().height),
       ),
-      nested: el.querySelectorAll(".kl-kbd-group > kbd.kl-kbd").length,
-      hiddenGlyphs: el.querySelectorAll(".kl-kbd > [aria-hidden]").length,
-      named: [...el.querySelectorAll(".kl-kbd > .kl-sr")].map((x) => x.textContent),
+      nested: el.querySelectorAll("[data-slot=kbd-group] > kbd[data-slot=kbd]").length,
+      hiddenGlyphs: el.querySelectorAll("[data-slot=kbd] > [aria-hidden]").length,
+      named: [...el.querySelectorAll("[data-slot=kbd] > .kl-sr")].map((x) => x.textContent),
     };
   });
   ok(
@@ -38,13 +38,13 @@ test("kbd: prose, chords, symbols, sequence, RTL", async ({ open, ok }) => {
     .evaluate((g) => [...g.querySelectorAll(":scope > .kl-sr")].map((s) => s.textContent.trim()));
   ok("kbd: a sequence reads its separator (G then I); the seam is the join", seq.join() === "then", seq);
   const seams = await prose.evaluate((el) =>
-    [...el.querySelectorAll(".kl-kbd-group > .kl-kbd:not(:first-child)")].every(
+    [...el.querySelectorAll("[data-slot=kbd-group] > [data-slot=kbd]:not(:first-child)")].every(
       (k) => getComputedStyle(k).borderInlineStartWidth === "1px",
     ),
   );
   ok("kbd: keys of a chord are cells on seams", seams, null);
   const rtl = await p.getByTestId("kbd-rtl").evaluate((el) => {
-    const k = [...el.querySelectorAll(".kl-kbd-group > .kl-kbd")];
+    const k = [...el.querySelectorAll("[data-slot=kbd-group] > [data-slot=kbd]")];
     return [k[0].textContent, k[0].getBoundingClientRect().left < k[1].getBoundingClientRect().left];
   });
   ok("kbd: in RTL a chord stays left to right (Ctrl then K)", rtl[0] === "Ctrl" && rtl[1], rtl);

@@ -192,9 +192,10 @@
     }
   }
   /* (the direction travels as a variable inside each animation shorthand, so no rule order or specificity can drop it) */
-  :where(.kl-pending, .kl-progress-fill, .kl-skeleton, .kl-skel):is([dir="rtl"], [dir="rtl"] *):where(
-      :not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)
-    ) {
+  :where(.kl-pending, .kl-progress-fill, [data-slot="skeleton"], [data-slot="skeleton-line"], .kl-skel):is(
+      [dir="rtl"],
+      [dir="rtl"] *
+    ):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) {
     --kl-run-dir: reverse;
   }
   /* NATIVE SCROLLERS that a Base UI primitive owns (Select, Multiselect, Menu and Command lists scroll the

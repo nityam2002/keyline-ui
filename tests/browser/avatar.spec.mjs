@@ -23,30 +23,31 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
   });
   const sec = p.locator("[data-testid=specimen-avatar]");
   await sec.scrollIntoViewIfNeeded();
-  const sizes = sec.locator("[data-testid=av-sizes] .kl-avatar");
+  const sizes = sec.locator("[data-testid=av-sizes] [data-slot=avatar]");
   const ade = sizes.nth(1);
   const early = await ade.evaluate((a) => [
-    a.querySelector(".kl-avatar-fb")?.textContent ?? null,
+    a.querySelector("[data-slot=avatar-fallback]")?.textContent ?? null,
     a.querySelectorAll("img").length,
   ]);
   ok("slow photo: the initials hold the cell while it loads (AO)", early[0] === "AO" && early[1] === 0, early);
   await settle(p);
   await p
     .waitForFunction(
-      (el) => el.querySelectorAll("img").length === 1 && !el.querySelector(".kl-avatar-fb"),
+      (el) => el.querySelectorAll("img").length === 1 && !el.querySelector("[data-slot=avatar-fallback]"),
       await ade.elementHandle(),
       { timeout: 8000 },
     )
     .catch(() => {});
   ok(
     "slow photo: the photo replaces the initials once loaded",
-    (await ade.locator("img").count()) === 1 && (await ade.locator(".kl-avatar-fb").count()) === 0,
+    (await ade.locator("img").count()) === 1 && (await ade.locator("[data-slot=avatar-fallback]").count()) === 0,
     null,
   );
   const failed = sec.getByTestId("av-failed");
   ok(
     "failed photo: initials (MN), never a broken image",
-    (await failed.locator(".kl-avatar-fb").textContent()) === "MN" && (await failed.locator("img").count()) === 0,
+    (await failed.locator("[data-slot=avatar-fallback]").textContent()) === "MN" &&
+      (await failed.locator("img").count()) === 0,
     null,
   );
   ok(
@@ -54,15 +55,17 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
     (await failed.getAttribute("role")) === "img" && (await failed.getAttribute("aria-label")) === "María José Núñez",
     await failed.getAttribute("aria-label"),
   );
-  const inits = await sizes.evaluateAll((xs) => xs.map((x) => x.querySelector(".kl-avatar-fb")?.textContent ?? "img"));
+  const inits = await sizes.evaluateAll((xs) =>
+    xs.map((x) => x.querySelector("[data-slot=avatar-fallback]")?.textContent ?? "img"),
+  );
   ok(
     "initials: Han name gives one grapheme (李), an email its local part (O)",
     inits[4] === "李" && inits[5] === "O",
     inits,
   );
-  const crewInits = await sec.locator("[data-testid=av-sizes] .kl-avatar-fb").allTextContents();
+  const crewInits = await sec.locator("[data-testid=av-sizes] [data-slot=avatar-fallback]").allTextContents();
   ok("initials: first and last word (Wilhelmina Oostergetel-Vandersteen → WV)", crewInits.includes("WV"), crewInits);
-  const st = sec.locator("[data-testid=av-status] .kl-avatar");
+  const st = sec.locator("[data-testid=av-status] [data-slot=avatar]");
   ok(
     "status joins the name (default words, and statusLabel)",
     (await st.nth(1).getAttribute("aria-label")) === "Ade Okafor, away" &&
@@ -103,7 +106,7 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
     .locator("img")
     .evaluate((i) => getComputedStyle(i).filter);
   ok("status offline: the photo turns grayscale", gray.includes("grayscale"), gray);
-  const rows = await sec.locator("[data-testid=av-crew] .kl-avatar").evaluateAll((xs) =>
+  const rows = await sec.locator("[data-testid=av-crew] [data-slot=avatar]").evaluateAll((xs) =>
     xs.map((x) => {
       const r = x.getBoundingClientRect(),
         m = x.parentElement.getBoundingClientRect();
@@ -116,7 +119,7 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
     rows,
   );
   const decorative = await sec
-    .locator("[data-testid=av-crew] .kl-avatar")
+    .locator("[data-testid=av-crew] [data-slot=avatar]")
     .evaluateAll((xs) => xs.every((x) => x.getAttribute("aria-hidden") === "true" && !x.getAttribute("role")));
   ok("avatars beside a printed name are decorative (hidden, no role)", decorative, null);
   // group
@@ -137,7 +140,7 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
   ok("group: as wide as its cells in a grid column (not stretched)", gw < 200, gw);
   ok(
     "group: the count keeps its sign first in RTL (+3)",
-    await g.locator(".kl-avatar-count").evaluate((c) => {
+    await g.locator("[data-slot=avatar-group-count]").evaluate((c) => {
       c.closest("[data-testid=av-group]").setAttribute("dir", "rtl");
       const r = document.createRange();
       r.setStart(c.firstChild, 0);
@@ -151,12 +154,12 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
   ok(
     "group: named, count read as words",
     (await g.getAttribute("aria-label")) === "Assignees" &&
-      (await g.locator(".kl-avatar-count").getAttribute("aria-label")) === "3 more",
+      (await g.locator("[data-slot=avatar-group-count]").getAttribute("aria-label")) === "3 more",
     null,
   );
   for (const q of ["cut=on", "cut=off"]) {
     await p.evaluate((c) => document.documentElement.setAttribute("data-kl-cut", c.split("=")[1]), q);
-    const sq = await sec.locator(".kl-avatar[data-size]").evaluateAll((xs) =>
+    const sq = await sec.locator("[data-slot=avatar][data-size]").evaluateAll((xs) =>
       xs.every((x) => {
         const r = x.getBoundingClientRect(),
           s = getComputedStyle(x);

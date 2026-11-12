@@ -54,15 +54,15 @@ check table table TableSortHeader ".kl-tb-item"
 # The date picker ships its own CSS (the time row); time-field is already here
 check date-picker date-picker DateTimePicker ".kl-dtp-time"
 check date-picker date-picker Calendar ".kl-cal-dd"
-# Avatar needs only the theme (its status floor rules ship in its own CSS); hover-card the theme's positioner; otp-field Field's frame and ! cell
-check avatar avatar AvatarGroup '.kl-avatar[data-status="waiting"]'
+# Avatar needs only the theme (its count's key travel); hover-card the theme's positioner; otp-field Field's frame and ! cell
+check avatar avatar AvatarGroup ".kl-key"
 check hover-card hover-card HoverCardContent ".kl-positioner"
 check otp-field otp-field OtpField ".kl-field-bang"
 # Kbd and toggle need only the theme; native-select brings Field's frame and ! cell; command now brings kbd
-check kbd kbd KbdGroup ".kl-kbd-group"
+check kbd kbd KbdGroup ".kl-sr"
 check toggle toggle Toggle ".kl-flood"
 check native-select native-select NativeSelect ".kl-field-bang"
-check command command CommandDialog ".kl-kbd"
+check command command CommandDialog '.kl-cmd-foot [data-slot="kbd"]'
 # Resizable needs only the theme (and react-resizable-panels from npm); navigation-menu the theme's positioner and dock
 check resizable resizable ResizablePanelGroup ".kl-rz-grip"
 check navigation-menu navigation-menu NavigationMenu ".kl-positioner"

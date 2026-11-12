@@ -21,6 +21,7 @@ export default {
     "@keyline-ui/date-range",
     "@keyline-ui/table",
     "@keyline-ui/status",
+    "@keyline-ui/kbd",
     "@keyline-ui/nav",
     "@keyline-ui/app-shell",
     "@keyline-ui/breadcrumb",

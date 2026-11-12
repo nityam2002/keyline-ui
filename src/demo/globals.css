@@ -16,12 +16,10 @@
 @import "../registry/keyline/ui/tooltip.css";
 @import "../registry/keyline/ui/panel.css";
 @import "../registry/keyline/ui/stat.css";
-@import "../registry/keyline/ui/status.css";
 @import "../registry/keyline/ui/nav.css";
 @import "../registry/keyline/ui/table.css";
 @import "../registry/keyline/ui/dialog.css";
 @import "../registry/keyline/ui/inspector.css";
-@import "../registry/keyline/ui/kbd.css";
 @import "../registry/keyline/ui/command.css";
 @import "../registry/keyline/ui/toast.css";
 @import "../registry/keyline/ui/notice.css";
@@ -38,14 +36,12 @@
 @import "../registry/keyline/ui/empty.css";
 @import "../registry/keyline/ui/breadcrumb.css";
 @import "../registry/keyline/ui/pagination.css";
-@import "../registry/keyline/ui/skeleton.css";
 @import "../registry/keyline/ui/app-shell.css";
 @import "../registry/keyline/ui/time-field.css";
 @import "../registry/keyline/ui/menubar.css";
 @import "../registry/keyline/ui/toolbar.css";
 @import "../registry/keyline/ui/checkbox-group.css";
 @import "../registry/keyline/ui/date-picker.css";
-@import "../registry/keyline/ui/avatar.css";
 @import "../registry/keyline/ui/hover-card.css";
 @import "../registry/keyline/ui/otp-field.css";
 @import "../registry/keyline/ui/native-select.css";
@@ -59,7 +55,6 @@
 @import "../registry/keyline/ui/attachment.css";
 @import "../registry/keyline/ui/drawer.css";
 @import "../registry/keyline/ui/questionnaire.css";
-@import "../registry/keyline/ui/marker.css";
 @import "../registry/keyline/blocks/shipments/shipments.css";
 @import "./slow-motion.css";
 

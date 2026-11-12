@@ -146,13 +146,19 @@
     align-items: center;
     gap: 5px;
   }
-  .kl-cmd-foot .kl-kbd {
-    color: var(--kl-ink);
-  }
+  /* (a Kbd in the foot: the rule sits in @layer utilities, below) */
   @media (forced-colors: active) {
     .kl-cmd-item[data-selected="true"] {
       outline: 3px solid Highlight;
       outline-offset: -4px;
     }
+  }
+}
+
+/* Kbd writes its look as utilities, which sit in a later layer than this file's @layer components: a rule here that
+   changes one of its properties sits in @layer utilities, keyed on its attributes, until Command is converted too. */
+@layer utilities {
+  .kl-cmd-foot [data-slot="kbd"] {
+    color: var(--kl-ink);
   }
 }

@@ -23,6 +23,13 @@ const USAGE = `<AvatarGroup label="On the account" max={4}>
   <Avatar name="Jim Halpert" src={jim.photo} />
 </AvatarGroup>`;
 
+const PARTS = `import { Avatar, AvatarImage, AvatarFallback } from "@/components/keyline/ui/avatar"
+
+<Avatar name="Jim Halpert" status="waiting" size="lg">
+  <AvatarImage src={jim.photo} />
+  <AvatarFallback />
+</Avatar>`;
+
 const PROPS: Prop[] = [
   { name: "name", type: "string", default: "\u2014", description: "Names the avatar and gives the initials." },
   {
@@ -40,6 +47,13 @@ const PROPS: Prop[] = [
   },
   { name: "statusLabel", type: "string", default: "by kind", description: "The words for the status." },
   {
+    name: "layout",
+    type: '"control" | "cell"',
+    default: '"control"',
+    description:
+      "Control: its own keyline. Cell: a square filling a cell of an enclosing frame, with no edge of its own.",
+  },
+  {
     name: "decorative",
     type: "boolean",
     default: "false",
@@ -50,6 +64,12 @@ const PROPS: Prop[] = [
     type: "ReactNode",
     default: "initials",
     description: "Something other than the initials, such as an org code.",
+  },
+  {
+    name: "fallbackDelay",
+    type: "number",
+    default: "0",
+    description: "Wait this long before showing the initials, so a fast photo never flashes them.",
   },
   {
     name: "max",
@@ -85,6 +105,7 @@ const TOC: TocGroup[] = [
     label: "Reference",
     items: [
       { id: "status", label: "Status and a missing photo" },
+      { id: "parts", label: "Parts" },
       { id: "props", label: "Props" },
     ],
   },
@@ -123,11 +144,27 @@ export default function AvatarPage() {
         code={code("avatar-status.tsx", "status and a missing photo example code")}
       />
 
+      <h3 id="parts">Parts</h3>
+      <p>
+        Given <code>name</code> and <code>src</code>, an avatar renders its image and initials itself. To compose them,
+        pass the parts as children, named as Base UI names them: <code>Avatar</code> is Base UI&apos;s{" "}
+        <code>Avatar.Root</code>, <code>AvatarImage</code> its <code>Avatar.Image</code>, and{" "}
+        <code>AvatarFallback</code> its <code>Avatar.Fallback</code>, showing the initials of the avatar&apos;s name
+        unless given children.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Avatar props" props={PROPS} />
       <p className="s-small">
-        For a count that opens the full list, leave out <code>max</code> and put <code>AvatarGroupCount</code> in a
-        popover trigger. <code>avatarInitials(name)</code> is exported too. Built on{" "}
+        <code>AvatarGroup</code> (a <code>div</code>, <code>role=&quot;group&quot;</code>) joins avatars on shared seams
+        at its own <code>size</code>; <code>AvatarGroupCount</code> (a <code>span</code>) is its +N cell. For a count
+        that opens the full list, leave out <code>max</code> and put <code>AvatarGroupCount</code> in a popover trigger.
+        Every part takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function
+        of its state. The avatar carries <code>data-slot=&quot;avatar&quot;</code>, <code>data-size</code>,{" "}
+        <code>data-kl-layout</code> and <code>data-status</code>; the others <code>data-slot</code>{" "}
+        <code>avatar-image</code>, <code>avatar-fallback</code>, <code>avatar-group</code> (with <code>data-size</code>)
+        and <code>avatar-group-count</code>. <code>avatarInitials(name)</code> is exported too. Built on{" "}
         <a href="https://base-ui.com/react/components/avatar">Base UI Avatar</a>.
       </p>
     </DocPage>

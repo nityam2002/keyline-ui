@@ -6,7 +6,6 @@
 @import "../../src/registry/keyline/ui/toolbar.css";
 @import "../../src/registry/keyline/ui/checkbox.css";
 @import "../../src/registry/keyline/ui/tabs.css";
-@import "../../src/registry/keyline/ui/status.css";
 @import "../../src/registry/keyline/ui/empty.css";
 @import "../../src/registry/keyline/ui/scroll-area.css";
 @import "../../src/registry/keyline/ui/table.css";
@@ -34,10 +33,6 @@
 @import "../../src/registry/keyline/ui/date-picker.css";
 @import "../../src/registry/keyline/ui/stat.css";
 @import "../../src/registry/keyline/ui/progress.css";
-@import "../../src/registry/keyline/ui/skeleton.css";
-@import "../../src/registry/keyline/ui/avatar.css";
-@import "../../src/registry/keyline/ui/kbd.css";
-@import "../../src/registry/keyline/ui/marker.css";
 @import "../../src/registry/keyline/ui/chart.css";
 @import "../../src/registry/keyline/ui/pagination.css";
 @import "../../src/registry/keyline/ui/navigation-menu.css";

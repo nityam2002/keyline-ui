@@ -143,7 +143,7 @@ test("chat layout: the narrow panel (340px) keeps everything inside and the read
     return {
       sideways: vp.scrollWidth - vp.clientWidth,
       over,
-      av: f.querySelector(".kl-msg-av .kl-avatar").getBoundingClientRect().width,
+      av: f.querySelector(".kl-msg-av [data-slot=avatar]").getBoundingClientRect().width,
       w: Math.round(f.getBoundingClientRect().width),
     };
   });

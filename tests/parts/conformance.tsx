@@ -58,13 +58,18 @@ export interface Part {
   buttonTabIndex?: number | undefined;
   /** Puts the part in the context it needs (its Root, a Provider); defaults to rendering it alone. */
   wrap?: ((part: React.ReactNode) => React.ReactNode) | undefined;
+  /** Resolves once the part's element is in the document, for a part that renders after an event (an avatar's image
+   *  appears once it has loaded). Default: the part renders on mount. */
+  ready?: (() => Promise<void>) | undefined;
 }
 
 const TEST_ID = "part";
 
-function mount(part: Part, props: ConformantProps) {
+async function mount(part: Part, props: ConformantProps) {
   const element = React.cloneElement(part.element, props);
-  return render(<main>{part.wrap ? part.wrap(element) : element}</main>);
+  const screen = await render(<main>{part.wrap ? part.wrap(element) : element}</main>);
+  await part.ready?.();
+  return screen;
 }
 
 function byTestId(id: string): HTMLElement {

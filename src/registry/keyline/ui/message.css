@@ -34,9 +34,6 @@
   .kl-msg-av:empty {
     height: 0;
   }
-  .kl-msg-av > .kl-avatar {
-    --kl-av: var(--kl-msg-av);
-  }
 
   /* the column: as wide as its widest bubble, never wider than most of the row, so each side keeps its side */
   .kl-msg-body {
@@ -135,7 +132,18 @@
     .kl-msg:not(:has(> .kl-msg-av)) > .kl-msg-body {
       max-width: 88%;
     }
-    .kl-msg-av > .kl-avatar {
+  }
+}
+
+/* Avatar writes its look as utilities, which sit in a later layer than this file's @layer components: a rule here that
+   changes one of its properties sits in @layer utilities, keyed on its attributes, until Message is converted too.
+   The gutter sizes its avatar (more specific than the avatar's own size classes). */
+@layer utilities {
+  .kl-msg-av > [data-slot="avatar"] {
+    --kl-av: var(--kl-msg-av);
+  }
+  @container kl-log (max-width: 420px) {
+    .kl-msg-av > [data-slot="avatar"] {
       --kl-av-fs: 10px;
     }
   }

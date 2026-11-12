@@ -18,7 +18,7 @@ test("skeleton: busy group, hidden placeholders, running segment, content swap",
       (await g.getByRole("status").textContent()) === "Loading the carrier summary",
     null,
   );
-  const sk = sec.locator(".kl-skeleton");
+  const sk = sec.locator('[data-slot="skeleton"]:not([data-shape="lines"]), [data-slot="skeleton-line"]');
   ok(
     "skeleton: every placeholder is aria-hidden",
     (await sec.locator('[data-slot="skeleton"]:not([aria-hidden="true"])').count()) === 0 && (await sk.count()) > 4,
@@ -29,7 +29,7 @@ test("skeleton: busy group, hidden placeholders, running segment, content swap",
     (await css(sk.first(), "animation-name", "::after")).startsWith("kl-run"),
     await css(sk.first(), "animation-name", "::after"),
   );
-  const ctl = sec.locator('.kl-skeleton[data-shape="control"]');
+  const ctl = sec.locator('[data-slot="skeleton"][data-shape="control"]');
   const ctlH = (await ctl.boundingBox()).height;
   await sec.getByRole("button", { name: "Show content" }).click();
   await until(async () => (await g.getAttribute("aria-busy")) === null && (await sec.getByText("94.2").isVisible()));
@@ -50,7 +50,7 @@ test("skeleton: busy group, hidden placeholders, running segment, content swap",
 
 test("reduced motion: the skeleton's running segment is off (rtl)", async ({ open, ok }) => {
   const q = await open({ q: "dir=rtl&motion=reduce", ready: READY });
-  const sk = q.locator("#skeleton .kl-skeleton").first();
+  const sk = q.locator('#skeleton [data-slot="skeleton"]').first();
   ok(
     "reduced motion: the skeleton's running segment is off",
     (await css(sk, "display", "::after")) === "none",

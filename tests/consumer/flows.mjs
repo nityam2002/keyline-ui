@@ -882,7 +882,7 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "lookup: the hint bar holds a kbd in the theme's mono voice",
-    await mlf.locator(".kl-field-bar kbd.kl-kbd").evaluate(
+    await mlf.locator('.kl-field-bar kbd[data-slot="kbd"]').evaluate(
       (k) =>
         getComputedStyle(k).fontFamily.replace(/[\s"']/g, "") ===
           getComputedStyle(k)
@@ -893,7 +893,7 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "lookup: ⌘K is named 'Command' for assistive tech",
-    (await ml.locator(".kl-kbd-group").first().textContent()).includes("Command"),
+    (await ml.locator('[data-slot="kbd-group"]').first().textContent()).includes("Command"),
   );
   await mlf.getByRole("button", { name: "Search" }).press("Enter");
   await p.waitForTimeout(400);

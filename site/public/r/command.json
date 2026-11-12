@@ -171,14 +171,16 @@
         "align-items": "center",
         "gap": "5px"
       },
-      ".kl-cmd-foot .kl-kbd": {
-        "color": "var(--kl-ink)"
-      },
       "@media (forced-colors: active)": {
         ".kl-cmd-item[data-selected=\"true\"]": {
           "outline": "3px solid Highlight",
           "outline-offset": "-4px"
         }
+      }
+    },
+    "@layer utilities": {
+      ".kl-cmd-foot [data-slot=\"kbd\"]": {
+        "color": "var(--kl-ink)"
       }
     }
   },

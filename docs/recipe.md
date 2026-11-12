@@ -58,6 +58,11 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   they follow density. A fixed pixel size is a bug unless the design pins it.
 - **Every `cva` result goes through `cn()`**: `cn(labelVariants({ size }))`. Raw `cva` output keeps both of two
   conflicting classes.
+- **Write every class out literally.** Tailwind generates only the classes it finds as text in the source, so a
+  class built in a template or helper (`${side}:min-w-3`) is never generated. Repeat the class instead.
+- **A `font` shorthand also reset what it didn't name.** `font: 500 11px/1 var(--kl-font-mono)` set
+  `font-variant-numeric` and `font-style` back to normal; the utilities don't, so add `normal-nums not-italic`
+  where the part must not inherit them (a code badge in a tabular row).
 
 ### Variants
 
@@ -81,6 +86,10 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - **A flood owns the filled state.** A `kl-flood` part (Toggle, ToggleGroupItem) sets its own background and text
   colour only while it is off (`not-data-pressed:bg-kl-cell`): a utility would beat the foundation's flood fill.
   Change the fill through its variables (`data-disabled:data-pressed:[--kl-fc:var(--kl-press)]`).
+- **A container that sizes its parts wins by specificity, not order.** The part sets its size variables with plain
+  classes (`[--kl-av:32px]`); the container keys a child rule on the part's slot (`*:data-[slot=avatar]:…`, one
+  attribute more), which beats them in any order. Don't pass the size through context when the part can also sit
+  in a portal under the container (a popover's list inside AvatarGroup).
 - **A stretch row styles each element on itself.** The stretch engine clones the row for a move and drops the
   clone's `data-slot`, so a rule keyed on a part's slot (`**:data-[slot=…]`) misses the clone. Give each item its
   classes, pass sizes down through context, and key covered labels on `data-kl-covered`.
@@ -94,7 +103,8 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - **Part test** `tests/parts/<name>.browser.test.tsx`:
   - `describeConformance` over every exported part with an element, each wrapped in the context it needs (its
     Root, an open popup). A button part sets `button: true`; one Base UI keeps out of the tab order sets
-    `buttonTabIndex: -1`.
+    `buttonTabIndex: -1`. A part that renders after an event (Base UI's `Avatar.Image`, once loaded) passes
+    `ready`, which the harness awaits after mounting.
   - axe, closed and open. Portal the popup into the test's `<main>` (`container`), as a page would put it in its
     landmark.
   - keyboard: Escape, and Tab out at both edges. Use text fields as the neighbours: WebKit on macOS doesn't Tab to

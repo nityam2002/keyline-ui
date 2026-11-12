@@ -112,8 +112,11 @@ export default function StatusPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Status and badge props" props={PROPS} />
       <p className="s-small">
-        Both render a <code>span</code> and pass other props through. A badge holds a code or a short word in capitals,
-        not a sentence.
+        Parts: <code>Status</code> and <code>Badge</code>. Both render a <code>span</code> and pass other props through;
+        they carry <code>data-slot=&quot;status&quot;</code> with <code>data-kind</code>, and{" "}
+        <code>data-slot=&quot;badge&quot;</code> with <code>data-tone</code>. Every part takes <code>render</code>, and
+        a <code>className</code> or <code>style</code> that may be a function of its state. A badge holds a code or a
+        short word in capitals, not a sentence.
       </p>
     </DocPage>
   );

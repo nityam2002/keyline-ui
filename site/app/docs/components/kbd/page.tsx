@@ -83,8 +83,10 @@ export default function KbdPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Kbd props" props={PROPS} />
       <p className="s-small">
-        Both render <code>kbd</code>, nested for a combination as HTML specifies. Menu, Command and Tooltip use it for
-        their shortcuts.
+        Parts: <code>Kbd</code> and <code>KbdGroup</code>. Both render <code>kbd</code>, nested for a combination as
+        HTML specifies; they carry <code>data-slot=&quot;kbd&quot;</code> and{" "}
+        <code>data-slot=&quot;kbd-group&quot;</code>. Every part takes <code>render</code>, and a <code>className</code>{" "}
+        or <code>style</code> that may be a function of its state. Menu, Command and Tooltip use it for their shortcuts.
       </p>
     </DocPage>
   );

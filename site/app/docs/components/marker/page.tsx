@@ -88,7 +88,12 @@ export default function MarkerPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Marker props" props={PROPS} />
       <p className="s-small">
-        A marker is a <code>div</code>; a separator marker has the separator role.
+        Parts: <code>Marker</code> (a <code>div</code>; a separator marker has the separator role),{" "}
+        <code>MarkerIcon</code> and <code>MarkerContent</code> (each a <code>span</code>). The marker carries{" "}
+        <code>data-slot=&quot;marker&quot;</code>, <code>data-variant</code> and <code>data-pending</code> while
+        pending; the others <code>data-slot=&quot;marker-icon&quot;</code> and{" "}
+        <code>data-slot=&quot;marker-content&quot;</code>. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state.
       </p>
     </DocPage>
   );
