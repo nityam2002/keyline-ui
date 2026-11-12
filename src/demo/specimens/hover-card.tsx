@@ -3,7 +3,7 @@ import { Avatar } from "@/registry/keyline/ui/avatar";
 import {
   HoverCard,
   HoverCardTrigger,
-  HoverCardContent,
+  HoverCardPopup,
   HoverCardHeader,
   HoverCardFacts,
   HoverCardBody,
@@ -21,7 +21,7 @@ function PersonCard({ p }: { p: (typeof CREW)[number] | undefined }) {
   return (
     <HoverCard>
       <HoverCardTrigger href={`#/specimen?person=${p.code}`}>{p.name}</HoverCardTrigger>
-      <HoverCardContent>
+      <HoverCardPopup>
         <HoverCardHeader
           media={<Avatar layout="cell" name={p.name} src={p.src} status={p.status} decorative />}
           title={p.name}
@@ -39,7 +39,7 @@ function PersonCard({ p }: { p: (typeof CREW)[number] | undefined }) {
             <Status kind="attention">2 entries held at customs</Status>
           </HoverCardBody>
         ) : null}
-      </HoverCardContent>
+      </HoverCardPopup>
     </HoverCard>
   );
 }

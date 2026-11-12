@@ -5,8 +5,8 @@ import { Command as Cmdk } from "cmdk";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 
 import { cn } from "@/lib/utils";
-import { scopeProps, useKeylineScope } from "../lib/keyline-scope";
 import { Kbd } from "./kbd";
+import { DialogPopup } from "./dialog";
 
 /**
  * ⌘K command menu. Results are numbered by a CSS counter, so the digit cell always matches the visible
@@ -29,32 +29,31 @@ function CommandDialog({
     typeof DialogPrimitive.Popup
   >["finalFocus"];
 }) {
-  const [marker, scope] = useKeylineScope(open, container);
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      {marker}
-      <DialogPrimitive.Portal container={container}>
-        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: "kl-scrim" })} />
-        <div {...scopeProps(scope, { className: "kl-dialog-scope" })}>
-          <DialogPrimitive.Popup aria-label={label} className="kl-frame kl-dialog kl-cmd" finalFocus={finalFocus}>
-            <Cmdk
-              label={label}
-              loop
-              onKeyDown={(e) => {
-                if (!e.altKey || !/^Digit[1-9]$/.test(e.code)) return;
-                const items = e.currentTarget.querySelectorAll<HTMLElement>("[cmdk-item]:not([aria-disabled=true])");
-                const el = items[Number(e.code.slice(5)) - 1];
-                if (el) {
-                  e.preventDefault();
-                  el.click();
-                }
-              }}
-            >
-              {children}
-            </Cmdk>
-          </DialogPrimitive.Popup>
-        </div>
-      </DialogPrimitive.Portal>
+      {/* Dialog's frame (it carries dialog-popup's slot); the command menu is wider and not a column of rows */}
+      <DialogPopup
+        aria-label={label}
+        className="kl-cmd block w-[min(600px,calc(100vw-32px))]"
+        container={container}
+        finalFocus={finalFocus}
+      >
+        <Cmdk
+          label={label}
+          loop
+          onKeyDown={(e) => {
+            if (!e.altKey || !/^Digit[1-9]$/.test(e.code)) return;
+            const items = e.currentTarget.querySelectorAll<HTMLElement>("[cmdk-item]:not([aria-disabled=true])");
+            const el = items[Number(e.code.slice(5)) - 1];
+            if (el) {
+              e.preventDefault();
+              el.click();
+            }
+          }}
+        >
+          {children}
+        </Cmdk>
+      </DialogPopup>
     </DialogPrimitive.Root>
   );
 }

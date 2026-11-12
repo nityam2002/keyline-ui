@@ -54,7 +54,7 @@ test("drawer: bottom drawer — dialog, focus, spring back, swipe and Escape dis
     .catch(() => {});
   ok("drawer: focus moves inside", await pop.evaluate((d) => d.contains(document.activeElement)));
   // a short drag springs back
-  const grip = await pop.locator(".kl-drawer-grip").boundingBox();
+  const grip = await pop.locator("[data-slot=drawer-grip]").boundingBox();
   await drag(p, { x: grip.x + grip.width / 2, y: grip.y + 8 }, 0, 30);
   await stable(pop, 6).catch(() => {});
   ok(
@@ -106,7 +106,7 @@ test("drawer: snap drawer opens at the first snap point", async ({ open, ok }) =
     .waitForFunction(
       () =>
         new Promise((r) => {
-          const s = [...document.querySelectorAll(".kl-drawer-scrim")].at(-1);
+          const s = [...document.querySelectorAll("[data-slot=drawer-backdrop]")].at(-1);
           const a = s && getComputedStyle(s).opacity;
           requestAnimationFrame(() =>
             requestAnimationFrame(() =>
@@ -120,7 +120,7 @@ test("drawer: snap drawer opens at the first snap point", async ({ open, ok }) =
     .catch(() => {});
   const visible = vh - (await snap.boundingBox()).y;
   const scrim = await p
-    .locator(".kl-drawer-scrim")
+    .locator("[data-slot=drawer-backdrop]")
     .last()
     .evaluate((s) => Number(getComputedStyle(s).opacity));
   ok(

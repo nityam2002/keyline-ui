@@ -121,9 +121,9 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   for (const i of [0, 1]) await rows.nth(i).locator(".kl-check").click();
   await p.locator(".kl-tf-bulk [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
-  await p.waitForSelector("[data-slot=alert-dialog]");
+  await p.waitForSelector("[data-slot=alert-dialog-popup]");
   // the alert moves focus into itself once it has opened
-  await until(() => p.evaluate(() => !!document.activeElement?.closest("[data-slot=alert-dialog]")));
+  await until(() => p.evaluate(() => !!document.activeElement?.closest("[data-slot=alert-dialog-popup]")));
   await idle(p).catch(() => {});
   const focused = await p.evaluate(() => document.activeElement?.textContent);
   ok("alert opens on the safe action", !/cancel 2/i.test(focused ?? ""), focused);
@@ -132,7 +132,7 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   ok("Escape keeps the selection", same(c, "2"), { actual: c, expected: "2" });
   await p.locator(".kl-tf-bulk [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
-  await p.locator(".kl-alert-danger").click();
+  await p.locator("[data-slot=alert-dialog-confirm]").click();
   const removed = await firstTab();
   ok("cancel removes the rows", removed !== total, { total });
   await a.undo().click();

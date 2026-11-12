@@ -4,7 +4,7 @@ import { Button } from "@/registry/keyline/ui/button";
 import {
   Dialog,
   DialogTrigger,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogTitle,
   DialogDescription,
@@ -34,7 +34,7 @@ export function DialogSpecimen() {
         }}
       >
         <DialogTrigger render={<Button />}>Rename view…</DialogTrigger>
-        <DialogContent>
+        <DialogPopup>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -67,7 +67,7 @@ export function DialogSpecimen() {
               </Button>
             </DialogFooter>
           </form>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
       <span className={ui.note}>
         View: <b>{name}</b>

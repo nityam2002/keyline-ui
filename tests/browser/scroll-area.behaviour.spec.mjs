@@ -130,11 +130,11 @@ test("scroll area: dialog in a short viewport scrolls only its body", async ({ o
   await p.setViewportSize({ width: 900, height: 520 });
   const measure = () =>
     dlg.evaluate((d) => {
-      const vp = d.querySelector(".kl-dialog-scroll .kl-scroll-vp");
+      const vp = d.querySelector("[data-slot=dialog-body] .kl-scroll-vp");
       return {
         frame: d.scrollHeight - d.clientHeight,
         body: vp.scrollHeight - vp.clientHeight,
-        bar: !!d.querySelector(".kl-dialog-scroll .kl-scrollbar"),
+        bar: !!d.querySelector("[data-slot=dialog-body] .kl-scrollbar"),
       };
     });
   await idle(p);

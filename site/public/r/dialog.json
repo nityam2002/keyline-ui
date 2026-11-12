@@ -10,163 +10,16 @@
     "@keyline-ui/keyline",
     "utils",
     "@keyline-ui/scroll-area",
-    "@keyline-ui/keyline-scope"
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/dialog.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\";\nimport { AlertDialog as AlertPrimitive } from \"@base-ui/react/alert-dialog\";\n\nimport { cn } from \"@/lib/utils\";\nimport { ScrollArea } from \"./scroll-area\";\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\";\n\n/* Modal surfaces are region frames: 3px, region cut. They are the only overlays that carry a cut,\n   because they are not attached to an owner. */\n\nconst Dialog = DialogPrimitive.Root;\nconst DialogTrigger = DialogPrimitive.Trigger;\nconst DialogClose = DialogPrimitive.Close;\n\nfunction DialogContent({\n  className,\n  container,\n  children,\n  ...props\n}: React.ComponentProps<typeof DialogPrimitive.Popup> & {\n  container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"];\n}) {\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        {probe}\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n          <DialogPrimitive.Popup data-slot=\"dialog\" className={cn(\"kl-frame kl-dialog\", className)} {...props}>\n            {children}\n          </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </>\n  );\n}\n\n/** Header cell row of a dialog: title, description, optional close. Reserves the cut's room. */\nfunction DialogHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"dialog-header\" className={cn(\"kl-dialog-h\", className)} {...props} />;\n}\n/** Body: padded, scrolls when the dialog hits its max height. Fields and groups go here, standalone (2px). */\n/** The dialog's scrolling body: a Keyline Scroll Area; `className` lays out the content. */\nfunction DialogBody({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <ScrollArea\n      data-slot=\"dialog-body\"\n      className=\"kl-dialog-scroll\"\n      contentClassName={cn(\"kl-dialog-b\", className)}\n      {...(props as object)}\n    >\n      {children}\n    </ScrollArea>\n  );\n}\n/** Footer: a row of cells (use Button layout=\"cell\") sharing the dialog's bottom keyline. */\nfunction DialogFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"dialog-footer\" className={cn(\"kl-cells kl-dialog-f\", className)} {...props} />;\n}\nfunction DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {\n  return <DialogPrimitive.Title className={cn(\"kl-dialog-title\", className)} {...props} />;\n}\nfunction DialogDescription({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>) {\n  return <DialogPrimitive.Description className={cn(\"kl-dialog-desc\", className)} {...props} />;\n}\n\n/* ---------- confirmation (alert) dialog ---------- */\n\nconst AlertDialog = AlertPrimitive.Root;\nconst AlertDialogTrigger = AlertPrimitive.Trigger;\n\ntype AlertContentProps = React.ComponentProps<typeof AlertPrimitive.Popup> & {\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** The safe action receives initial focus. */\n  cancelLabel: string;\n  confirmLabel: string;\n  onConfirm: () => void;\n  tone?: \"destructive\" | \"primary\";\n  container?: React.ComponentProps<typeof AlertPrimitive.Portal>[\"container\"];\n};\n\nfunction AlertDialogContent({\n  title,\n  description,\n  cancelLabel,\n  confirmLabel,\n  onConfirm,\n  tone = \"destructive\",\n  children,\n  className,\n  container,\n  ...props\n}: AlertContentProps) {\n  const safe = React.useRef<HTMLButtonElement>(null);\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  return (\n    <>\n      {marker}\n      <AlertPrimitive.Portal container={container}>\n        {probe}\n        <AlertPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n          <AlertPrimitive.Popup\n            data-slot=\"alert-dialog\"\n            data-tone={tone}\n            initialFocus={safe}\n            className={cn(\"kl-frame kl-rows kl-dialog kl-alert\", className)}\n            {...props}\n          >\n            <div className=\"kl-cells kl-alert-head\">\n              <span className=\"kl-alert-sig\" aria-hidden>\n                {tone === \"destructive\" ? \"!\" : \"?\"}\n              </span>\n              <div className=\"kl-alert-t\">\n                <AlertPrimitive.Title className=\"kl-dialog-title\">{title}</AlertPrimitive.Title>\n                {description ? (\n                  <AlertPrimitive.Description className=\"kl-dialog-desc\">{description}</AlertPrimitive.Description>\n                ) : null}\n              </div>\n            </div>\n            {children ? <div className=\"kl-alert-body\">{children}</div> : null}\n            <div className=\"kl-cells kl-alert-foot\">\n              <AlertPrimitive.Close ref={safe} className=\"kl-cell kl-key kl-alert-btn\">\n                <span>{cancelLabel}</span>\n              </AlertPrimitive.Close>\n              <AlertPrimitive.Close\n                className={cn(\n                  \"kl-cell kl-key kl-alert-btn\",\n                  tone === \"destructive\" ? \"kl-alert-danger\" : \"kl-alert-primary\",\n                )}\n                onClick={onConfirm}\n              >\n                <span>{confirmLabel}</span>\n              </AlertPrimitive.Close>\n            </div>\n          </AlertPrimitive.Popup>\n        </div>\n      </AlertPrimitive.Portal>\n    </>\n  );\n}\n\nexport {\n  Dialog,\n  DialogTrigger,\n  DialogClose,\n  DialogContent,\n  DialogHeader,\n  DialogBody,\n  DialogFooter,\n  DialogTitle,\n  DialogDescription,\n  AlertDialog,\n  AlertDialogTrigger,\n  AlertDialogContent,\n};\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\";\nimport { AlertDialog as AlertPrimitive } from \"@base-ui/react/alert-dialog\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { ScrollArea } from \"./scroll-area\";\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\n/* Modal surfaces are region frames: 3px, region cut. They are the only overlays that carry a cut,\n   because they are not attached to an owner. Parts are named as Base UI names them; AlertDialog's Title,\n   Description, Close and Backdrop are Dialog's own parts in Base UI, so the Dialog parts serve both. */\n\nconst DialogRoot = DialogPrimitive.Root;\nconst Dialog = DialogRoot;\n\n/** The element that opens the dialog. Rendered as another part (`render={<Button />}`), the element is that part's\n * and carries its data-slot. */\nfunction DialogTrigger(props: DialogPrimitive.Trigger.Props): React.ReactElement {\n  return <DialogPrimitive.Trigger {...props} data-slot=\"dialog-trigger\" />;\n}\n\nfunction DialogClose(props: DialogPrimitive.Close.Props): React.ReactElement {\n  return <DialogPrimitive.Close {...props} data-slot=\"dialog-close\" />;\n}\n\n/** The scrim behind a modal surface. It fades in with the surface and leaves with it, not after it. */\nfunction DialogBackdrop({ className, ...props }: DialogPrimitive.Backdrop.Props): React.ReactElement {\n  return (\n    <DialogPrimitive.Backdrop\n      className={resolveClassName(\n        cn(\n          \"fixed inset-0 z-(--kl-z-overlay) bg-kl-scrim transition-opacity duration-(--kl-t-unfold) ease-linear\",\n          \"data-ending-style:opacity-0 data-ending-style:duration-(--kl-t-fold) data-starting-style:opacity-0\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"dialog-backdrop\"\n    />\n  );\n}\n\n/*\n * The modal frame: fixed, centred, region weight, lifted to the overlay surface. It unfolds from its top keyline\n * (clip-path) and folds back to it. A closing dialog is inert: a second click 60ms after the first landed on its\n * confirm button and ran it twice.\n */\nconst modal = cn(\n  \"kl-frame fixed inset-x-0 top-[14vh] z-(--kl-z-overlay) mx-auto max-h-[calc(100vh-20vh)] text-kl-ink outline-0\",\n  \"[--kl-cell:var(--kl-raised)]\",\n  \"transition-[clip-path] duration-(--kl-t-unfold) ease-(--kl-ease-out) [clip-path:inset(-8px)]\",\n  \"data-ending-style:[clip-path:inset(0_0_100%_0)] data-starting-style:[clip-path:inset(0_0_100%_0)]\",\n  \"data-ending-style:pointer-events-none data-ending-style:duration-(--kl-t-fold) data-ending-style:ease-(--kl-ease-in)\",\n);\n\ntype PortalProps = {\n  /** Where the portal renders (defaults to <body>). */\n  container?: DialogPrimitive.Portal.Props[\"container\"];\n  /** Props for Base UI's Dialog.Portal. */\n  portalProps?: Omit<DialogPrimitive.Portal.Props, \"container\" | \"children\">;\n};\n\n/** Portal, backdrop and the configuration of the place the surface is written, around a popup. */\nfunction ModalPortal({\n  container,\n  portalProps,\n  children,\n}: PortalProps & { children: React.ReactNode }): React.ReactElement {\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container} {...portalProps}>\n        {probe}\n        <DialogBackdrop {...scopeProps(scope)} />\n        {/* carries the scope to the popup without a box of its own */}\n        <div {...scopeProps(scope, { className: \"contents\" })}>{children}</div>\n      </DialogPrimitive.Portal>\n    </>\n  );\n}\n\ntype DialogPopupProps = DialogPrimitive.Popup.Props & PortalProps;\n\n/**\n * The dialog: Base UI's Portal, Backdrop and Popup in one part. A region frame over a scrim, with a header, a body\n * that scrolls and a footer of cells. It carries the configuration (cut, density, motion, theme, dir) of the place\n * it is written, not of <body>.\n */\nfunction DialogPopup({ className, container, portalProps, ...props }: DialogPopupProps): React.ReactElement {\n  return (\n    <ModalPortal container={container} portalProps={portalProps}>\n      <DialogPrimitive.Popup\n        className={resolveClassName(cn(modal, \"flex w-[min(560px,calc(100vw-32px))] flex-col\"), className)}\n        {...props}\n        data-slot=\"dialog-popup\"\n      />\n    </ModalPortal>\n  );\n}\n\ntype PartState = Record<string, never>;\nconst PART_STATE: PartState = {};\n\n/** Header cell row of a dialog: title, description, optional close. Reserves the cut's room. */\nfunction DialogHeader({ render, className, style, ...props }: PartProps<\"div\", PartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"dialog-header\",\n    className: resolveClassName(\n      cn(\n        \"grid flex-none gap-1 border-b-(length:--kl-k3) border-b-kl-line pe-[18px] pt-4 pb-3.5\",\n        \"ps-[calc(18px+var(--kl-c-room,0px))]\",\n      ),\n      className,\n    )(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\ntype DialogBodyProps = Omit<React.ComponentProps<typeof ScrollArea>, \"className\" | \"style\"> & {\n  className?: string | ((state: PartState) => string | undefined);\n  style?: React.CSSProperties | ((state: PartState) => React.CSSProperties | undefined);\n};\n\n/** The dialog's scrolling body: a Keyline Scroll Area. `className` and `style` reach the scroll area itself;\n * `contentClassName` lays out the content (a grid with a 16px gap by default). Fields and groups go here, standalone\n * (2px). */\nfunction DialogBody({ className, style, contentClassName, children, ...props }: DialogBodyProps): React.ReactElement {\n  return (\n    <ScrollArea\n      className={resolveClassName(\"min-h-0 flex-[1_1_auto]\", className)(PART_STATE)}\n      style={resolveStyle(undefined, style)(PART_STATE)}\n      viewportClassName=\"overscroll-contain\"\n      contentClassName={cn(\"grid content-start gap-4 p-[18px]\", contentClassName)}\n      {...props}\n      data-slot=\"dialog-body\"\n    >\n      {children}\n    </ScrollArea>\n  );\n}\n\n/** Footer: a row of cells (use Button layout=\"cell\") sharing the dialog's bottom keyline. */\nfunction DialogFooter({ render, className, style, ...props }: PartProps<\"div\", PartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"dialog-footer\",\n    className: resolveClassName(\n      \"kl-cells flex-none border-t-(length:--kl-k3) border-t-kl-line *:min-w-0 *:flex-[1_1_0]\",\n      className,\n    )(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\nfunction DialogTitle({ className, ...props }: DialogPrimitive.Title.Props): React.ReactElement {\n  return (\n    <DialogPrimitive.Title\n      className={resolveClassName(\"m-0 text-(length:--kl-text-title)/[1.2] font-(--kl-weight-strong)\", className)}\n      {...props}\n      data-slot=\"dialog-title\"\n    />\n  );\n}\n\nfunction DialogDescription({ className, ...props }: DialogPrimitive.Description.Props): React.ReactElement {\n  return (\n    <DialogPrimitive.Description\n      className={resolveClassName(\"m-0 text-kl-ink-2\", className)}\n      {...props}\n      data-slot=\"dialog-description\"\n    />\n  );\n}\n\n/* ---------- confirmation (alert) dialog ---------- */\n\nconst AlertDialogRoot = AlertPrimitive.Root;\nconst AlertDialog = AlertDialogRoot;\n\nfunction AlertDialogTrigger(props: AlertPrimitive.Trigger.Props): React.ReactElement {\n  return <AlertPrimitive.Trigger {...props} data-slot=\"alert-dialog-trigger\" />;\n}\n\ntype Tone = \"destructive\" | \"primary\";\n\ntype AlertDialogPopupProps = DialogPrimitive.Popup.Props &\n  PortalProps & {\n    /** The signal of the question: red attention for a destructive action, cobalt for a commitment. */\n    tone?: Tone;\n  };\n\n/** The confirmation frame: Base UI's Portal, Backdrop and Popup in one part. A narrower region of rows. */\nfunction AlertDialogPopup({\n  tone = \"destructive\",\n  className,\n  container,\n  portalProps,\n  ...props\n}: AlertDialogPopupProps): React.ReactElement {\n  return (\n    <ModalPortal container={container} portalProps={portalProps}>\n      <AlertPrimitive.Popup\n        data-tone={tone}\n        className={resolveClassName(cn(modal, \"kl-rows w-[min(480px,calc(100vw-32px))]\"), className)}\n        {...props}\n        data-slot=\"alert-dialog-popup\"\n      />\n    </ModalPortal>\n  );\n}\n\n/* the two answers: cells of the footer, the confirm cell flooded with the tone */\nconst answer =\n  \"kl-cell kl-key min-h-[52px] flex-1 justify-center text-(length:--kl-text-lead) font-(--kl-weight-strong)\";\nconst confirmTone: Record<Tone, string> = {\n  destructive: cn(\n    \"bg-kl-red text-kl-on-red hover:bg-kl-red-hi focus-visible:outline-current\",\n    \"forced-colors:bg-[Mark] forced-colors:text-[MarkText] forced-colors:forced-color-adjust-none\",\n  ),\n  primary: \"bg-kl-cobalt text-kl-on-cobalt hover:bg-kl-cobalt-hi focus-visible:outline-current\",\n};\n\ntype AlertDialogContentProps = Omit<AlertDialogPopupProps, \"title\"> & {\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** The safe action receives initial focus. */\n  cancelLabel: string;\n  confirmLabel: string;\n  onConfirm: () => void;\n};\n\n/**\n * The usual confirmation, built from the parts: an attention cell (! or ?) beside the question, optional detail, and\n * two answers on the bottom keyline. Focus lands on the safe answer.\n */\nfunction AlertDialogContent({\n  title,\n  description,\n  cancelLabel,\n  confirmLabel,\n  onConfirm,\n  tone = \"destructive\",\n  children,\n  ...props\n}: AlertDialogContentProps): React.ReactElement {\n  const safe = React.useRef<HTMLButtonElement>(null);\n  return (\n    <AlertDialogPopup tone={tone} initialFocus={safe} {...props}>\n      <div data-slot=\"alert-dialog-header\" className=\"kl-cells min-h-20\">\n        <span\n          data-slot=\"alert-dialog-signal\"\n          aria-hidden\n          className={cn(\n            // a glyph pinned to its fixed 60px cell, not text: it does not follow the type scale\n            \"grid w-[60px] flex-none place-items-center text-[26px] font-(--kl-weight-display)\",\n            tone === \"destructive\" ? \"bg-kl-red text-kl-on-red\" : \"bg-kl-cobalt text-kl-on-cobalt\",\n            \"forced-colors:bg-[Mark] forced-colors:text-[MarkText] forced-colors:forced-color-adjust-none\",\n          )}\n        >\n          {tone === \"destructive\" ? \"!\" : \"?\"}\n        </span>\n        <div className=\"grid flex-1 content-center gap-1.5 px-[18px] py-3.5\">\n          <DialogTitle>{title}</DialogTitle>\n          {description ? <DialogDescription>{description}</DialogDescription> : null}\n        </div>\n      </div>\n      {children ? (\n        <div data-slot=\"alert-dialog-body\" className=\"grid gap-2.5 px-[18px] py-4\">\n          {children}\n        </div>\n      ) : null}\n      {/* the footer is a row of the frame (kl-rows draws its top keyline) at region weight */}\n      <div data-slot=\"alert-dialog-footer\" className=\"kl-cells border-t-(length:--kl-k3)\">\n        <AlertPrimitive.Close ref={safe} className={answer} data-slot=\"alert-dialog-cancel\">\n          <span>{cancelLabel}</span>\n        </AlertPrimitive.Close>\n        <AlertPrimitive.Close\n          className={cn(answer, confirmTone[tone])}\n          onClick={onConfirm}\n          data-slot=\"alert-dialog-confirm\"\n        >\n          <span>{confirmLabel}</span>\n        </AlertPrimitive.Close>\n      </div>\n    </AlertDialogPopup>\n  );\n}\n\nexport {\n  Dialog,\n  DialogRoot,\n  DialogTrigger,\n  DialogClose,\n  DialogBackdrop,\n  DialogPopup,\n  DialogHeader,\n  DialogBody,\n  DialogFooter,\n  DialogTitle,\n  DialogDescription,\n  AlertDialog,\n  AlertDialogRoot,\n  AlertDialogTrigger,\n  AlertDialogPopup,\n  AlertDialogContent,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/dialog.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-scrim": {
-        "position": "fixed",
-        "inset": "0",
-        "z-index": "var(--kl-z-overlay)",
-        "background-color": "var(--kl-scrim)",
-        "transition": "opacity var(--kl-t-unfold) linear"
-      },
-      ".kl-scrim:is([data-starting-style], [data-ending-style])": {
-        "opacity": "0"
-      },
-      ".kl-scrim[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)"
-      },
-      ".kl-dialog": {
-        "--kl-cell": "var(--kl-raised)",
-        "position": "fixed",
-        "z-index": "var(--kl-z-overlay)",
-        "inset-inline": "0",
-        "inset-block-start": "14vh",
-        "margin-inline": "auto",
-        "width": "min(480px, calc(100vw - 32px))",
-        "max-height": "calc(100vh - 20vh)",
-        "color": "var(--kl-ink)",
-        "outline": "0",
-        "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)",
-        "clip-path": "inset(-8px)"
-      },
-      ".kl-dialog:is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(0 0 100% 0)"
-      },
-      ".kl-dialog[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)",
-        "transition-timing-function": "var(--kl-ease-in)",
-        "pointer-events": "none"
-      },
-      ".kl-dialog-scope": {
-        "display": "contents"
-      },
-      ".kl-dialog:not(.kl-alert):not(.kl-cmd)": {
-        "display": "flex",
-        "flex-direction": "column",
-        "width": "min(560px, calc(100vw - 32px))"
-      },
-      ".kl-dialog-h": {
-        "flex": "none",
-        "display": "grid",
-        "gap": "4px",
-        "padding": "16px 18px 14px calc(18px + var(--kl-c-room, 0px))",
-        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
-      },
-      ".kl-dialog-scroll": {
-        "flex": "1 1 auto",
-        "min-height": "0"
-      },
-      ".kl-dialog-scroll > .kl-scroll-vp": {
-        "overscroll-behavior": "contain"
-      },
-      ".kl-dialog-b": {
-        "display": "grid",
-        "gap": "16px",
-        "align-content": "start",
-        "padding": "18px"
-      },
-      ".kl-dialog-f": {
-        "flex": "none",
-        "border-block-start": "var(--kl-k3) solid var(--kl-line)"
-      },
-      ".kl-dialog-f > *": {
-        "flex": "1 1 0",
-        "min-width": "0"
-      },
-      ".kl-dialog-title": {
-        "margin": "0",
-        "font-size": "20px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.2"
-      },
-      ".kl-dialog-desc": {
-        "margin": "0",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-alert-head": {
-        "min-height": "80px"
-      },
-      ".kl-alert-sig": {
-        "display": "grid",
-        "place-items": "center",
-        "flex": "none",
-        "width": "60px",
-        "background-color": "var(--kl-red)",
-        "color": "var(--kl-on-red)",
-        "font-weight": "var(--kl-weight-display)",
-        "font-size": "26px"
-      },
-      ".kl-alert[data-tone=\"primary\"] .kl-alert-sig": {
-        "background-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)"
-      },
-      ".kl-alert-t": {
-        "flex": "1",
-        "display": "grid",
-        "gap": "6px",
-        "align-content": "center",
-        "padding": "14px 18px"
-      },
-      ".kl-alert-body": {
-        "padding": "16px 18px",
-        "display": "grid",
-        "gap": "10px"
-      },
-      ".kl-alert-foot": {
-        "border-block-start-width": "var(--kl-k3) !important"
-      },
-      ".kl-alert-btn": {
-        "flex": "1",
-        "justify-content": "center",
-        "min-height": "52px",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "15px"
-      },
-      ".kl-alert-danger": {
-        "background-color": "var(--kl-red)",
-        "color": "var(--kl-on-red)"
-      },
-      ".kl-alert-danger:hover": {
-        "background-color": "var(--kl-red-hi)"
-      },
-      ".kl-alert-primary": {
-        "background-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)"
-      },
-      ".kl-alert-primary:hover": {
-        "background-color": "var(--kl-cobalt-hi)"
-      },
-      ":is(.kl-alert-danger, .kl-alert-primary):focus-visible": {
-        "outline-color": "currentColor"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-alert-sig, .kl-alert-danger": {
-          "forced-color-adjust": "none",
-          "background": "Mark",
-          "color": "MarkText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

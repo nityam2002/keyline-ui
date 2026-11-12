@@ -174,7 +174,7 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
   const more = sec.getByTestId("av-more");
   await more.focus();
   await p.keyboard.press("Enter");
-  const pop = p.locator(".kl-popover:visible");
+  const pop = p.locator("[data-slot=popover-popup]:visible");
   await pop
     .locator("[data-slot=item]")
     .nth(5)

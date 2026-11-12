@@ -59,6 +59,17 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>AlertDialogContent</code>: where the dialog&apos;s portal renders, and props for the portal. It keeps
+        the theme, density, motion and direction of the place it is written either way.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -101,8 +112,16 @@ export default function AlertDialogPage() {
       <PropsReference label="Alert dialog props" props={PROPS} />
       <p className="s-small">
         Alert dialog ships inside the dialog item; installing <code>@keyline-ui/alert-dialog</code> installs{" "}
-        <code>@keyline-ui/dialog</code>. Built on{" "}
-        <a href="https://base-ui.com/react/components/alert-dialog">Base UI Alert Dialog</a>.
+        <code>@keyline-ui/dialog</code>. <code>AlertDialogContent</code> is built from parts named as Base UI names
+        them: <code>AlertDialog</code> (also <code>AlertDialogRoot</code>), <code>AlertDialogTrigger</code> and{" "}
+        <code>AlertDialogPopup</code> (Base UI&apos;s Portal, Backdrop and Popup in one part, with <code>tone</code>,{" "}
+        <code>container</code> and <code>portalProps</code>); the title, description, close and backdrop are
+        Dialog&apos;s own parts, as in Base UI. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. They carry <code>data-slot</code>{" "}
+        <code>alert-dialog-trigger</code> and <code>alert-dialog-popup</code> (with <code>data-tone</code>); inside the
+        content, <code>alert-dialog-header</code>, <code>alert-dialog-signal</code>, <code>alert-dialog-body</code>,{" "}
+        <code>alert-dialog-footer</code>, <code>alert-dialog-cancel</code> and <code>alert-dialog-confirm</code>. Built
+        on <a href="https://base-ui.com/react/components/alert-dialog">Base UI Alert Dialog</a>.
       </p>
     </DocPage>
   );

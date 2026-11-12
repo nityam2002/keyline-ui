@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel } from "@/registry/keyline/ui/tabs";
 import {
   Sheet,
   SheetTrigger,
-  SheetContent,
+  SheetPopup,
   SheetHeader,
   SheetBody,
   SheetTitle,
@@ -522,7 +522,7 @@ const config = ${JSON.stringify(cfg, null, 2)}
   return (
     <Sheet>
       <SheetTrigger render={<Button layout="cell" variant="primary" />}>Install config</SheetTrigger>
-      <SheetContent size={620}>
+      <SheetPopup size={620}>
         <SheetHeader>
           <SheetTitle>Install config</SheetTitle>
           <SheetDescription>Three equivalent routes. Each produces the same tokens the preview uses.</SheetDescription>
@@ -615,7 +615,7 @@ const config = ${JSON.stringify(cfg, null, 2)}
             }
           />
         </SheetBody>
-      </SheetContent>
+      </SheetPopup>
     </Sheet>
   );
 }

@@ -28,12 +28,12 @@ test("popover: docked, focus inside, nested select, Escape returns focus", async
   const { p, scope, press } = await setup(open);
   const filters = scope.getByRole("button", { name: /^Filters/ });
   await press(filters);
-  const pop = p.locator("[data-slot=popover-content], .kl-popover").filter({ hasText: "Filter shipments" }).first();
-  await until(async () => (await pop.isVisible()) && (await focusIn(p, ".kl-popover, [data-slot=popover-content]")));
+  const pop = p.locator("[data-slot=popover-popup]").filter({ hasText: "Filter shipments" }).first();
+  await until(async () => (await pop.isVisible()) && (await focusIn(p, "[data-slot=popover-popup]")));
   await idle(p);
   ok(
     "popover: opens with focus inside",
-    (await pop.isVisible()) && (await focusIn(p, ".kl-popover, [data-slot=popover-content]")),
+    (await pop.isVisible()) && (await focusIn(p, "[data-slot=popover-popup]")),
     await focusedText(p),
   );
   const tb = await filters.boundingBox();
@@ -209,7 +209,7 @@ test("reduced motion: the sheet opens without animation", async ({ open, ok }) =
         .filter((a) => (/** @type {any} */ (a).animationName ?? /** @type {any} */ (a).transitionProperty) === name)
         .filter((a) => Number(a.effect?.getComputedTiming().activeDuration ?? 0) > 0);
       if (!live.length) return;
-      const where = el.closest("[data-slot=sheet-content], [data-slot=sheet], [data-testid=scope-preview], main");
+      const where = el.closest("[data-slot=sheet-popup], [data-testid=scope-preview], main");
       seen.push(
         `${name} on ${el.getAttribute("data-slot") ?? el.className} in ${where?.getAttribute("data-slot") ?? where?.getAttribute("data-testid") ?? where?.tagName ?? "page"}`,
       );

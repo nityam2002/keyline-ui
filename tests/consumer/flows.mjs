@@ -762,7 +762,7 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "workspace shell: keyboard focus on a rail item shows its label as a tooltip",
-    await p.locator("[data-slot=tooltip]").filter({ hasText: "Lanes" }).isVisible(),
+    await p.locator("[data-slot=tooltip-popup]").filter({ hasText: "Lanes" }).isVisible(),
   );
   await p.keyboard.press("Enter");
   await p.waitForTimeout(250);
@@ -797,7 +797,7 @@ for (const [eng, type, opts] of [
   await p.keyboard.press("Shift+" + tab);
   await p.keyboard.press(tab);
   await p.waitForTimeout(900);
-  const card = p.locator("[data-slot=hover-card]");
+  const card = p.locator("[data-slot=hover-card-popup]");
   ok(
     eng,
     "handover: keyboard focus on a name opens its card (code U-0388), focus stays on the link",
@@ -1034,7 +1034,7 @@ for (const [eng, type, opts] of [
   const rb = p.getByTestId("in-rtl").getByRole("button");
   await rb.hover();
   await p.waitForTimeout(800);
-  const tipR = await p.locator("[data-slot=tooltip]").evaluate((t) => t.getBoundingClientRect().right);
+  const tipR = await p.locator("[data-slot=tooltip-popup]").evaluate((t) => t.getBoundingClientRect().right);
   ok(
     eng,
     "intake: DirectionProvider rtl puts an inline-end tooltip on the left",

@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { NavExpandContext, NavRailContext } from "./nav";
-import { Sheet, SheetContent } from "./sheet";
+import { Sheet, SheetPopup } from "./sheet";
 
 type AppShellProps = Omit<React.ComponentProps<"div">, "children"> & {
   /** The sidebar: usually <Nav layout="cell" …/>. */
@@ -46,7 +46,7 @@ type AppShellProps = Omit<React.ComponentProps<"div">, "children"> & {
    * by a trigger, so pass the control that opened it (a ref): WebKit does not focus a button on click, and
    * without this focus would fall back to whatever was focused before.
    */
-  asideFinalFocus?: React.ComponentProps<typeof SheetContent>["finalFocus"];
+  asideFinalFocus?: React.ComponentProps<typeof SheetPopup>["finalFocus"];
   /** Below this width of the shell itself (not the viewport), the sidebar and aside become sheets. Default 960. */
   narrowAt?: number;
   /**
@@ -59,7 +59,7 @@ type AppShellProps = Omit<React.ComponentProps<"div">, "children"> & {
   navSize?: number | string;
   asideSize?: number | string;
   /** Portal container for the sheets (the keyline scope travels with them either way). */
-  container?: React.ComponentProps<typeof SheetContent>["container"];
+  container?: React.ComponentProps<typeof SheetPopup>["container"];
   /** Props for the <main> element. */
   mainProps?: React.ComponentProps<"main">;
   children?: React.ReactNode;
@@ -283,7 +283,7 @@ function AppShell({
 
       {narrow ? (
         <Sheet open={navSheet} onOpenChange={setNavSheet}>
-          <SheetContent
+          <SheetPopup
             side="start"
             size={300}
             container={container}
@@ -292,12 +292,12 @@ function AppShell({
             onClick={closeOnChoose}
           >
             {nav}
-          </SheetContent>
+          </SheetPopup>
         </Sheet>
       ) : null}
       {!asideInline && aside ? (
         <Sheet open={asideOpen} onOpenChange={(o) => onAsideOpenChange?.(o)}>
-          <SheetContent
+          <SheetPopup
             side="end"
             size={400}
             container={container}
@@ -306,7 +306,7 @@ function AppShell({
             className="kl-shell-sheet"
           >
             {aside}
-          </SheetContent>
+          </SheetPopup>
         </Sheet>
       ) : null}
     </div>

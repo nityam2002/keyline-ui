@@ -1,6 +1,6 @@
 @layer components {
+  /* the frame is Dialog's DialogPopup; its width is set there (command.tsx) */
   .kl-cmd {
-    width: min(600px, calc(100vw - 32px));
     padding: 0;
   }
   .kl-cmd [cmdk-root] {

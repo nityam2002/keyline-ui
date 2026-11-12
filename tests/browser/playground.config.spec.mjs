@@ -192,7 +192,7 @@ test("export carries the configuration and no diagnostics; reset and persistence
   // diagnostics are never exported; reset returns everything to default
   await toggle(p, ctl, "Slow motion ×8");
   await ctl.getByRole("button", { name: "Install config" }).click();
-  const sheet = p.locator("[data-slot=sheet]");
+  const sheet = p.locator("[data-slot=sheet-popup]");
   await sheet.waitFor();
   await sheet.getByRole("tab", { name: "CSS" }).click();
   const css = await sheet

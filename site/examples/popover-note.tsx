@@ -7,7 +7,7 @@ import {
   Popover,
   PopoverBody,
   PopoverClose,
-  PopoverContent,
+  PopoverPopup,
   PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
@@ -25,7 +25,7 @@ export function DeliveryNote() {
         </span>
         <Popover onOpenChange={(o) => o && setDraft(note)}>
           <PopoverTrigger render={<Button size="compact" />}>Delivery note</PopoverTrigger>
-          <PopoverContent className="w-[min(340px,calc(100vw-24px))]">
+          <PopoverPopup className="w-[min(340px,calc(100vw-24px))]">
             <PopoverHeader title="Delivery note" description="Darryl reads it before he loads the truck." />
             <PopoverBody>
               <Field>
@@ -41,7 +41,7 @@ export function DeliveryNote() {
                 Save note
               </PopoverClose>
             </PopoverFooter>
-          </PopoverContent>
+          </PopoverPopup>
         </Popover>
       </div>
       <p role="status" className="m-0 text-kl-ink-2">

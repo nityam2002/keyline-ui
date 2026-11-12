@@ -2,7 +2,7 @@ import * as ui from "../demo-ui";
 import { Avatar, AvatarGroup, AvatarGroupCount } from "@/registry/keyline/ui/avatar";
 import { ItemList, Item, ItemMedia, ItemContent, ItemMeta } from "@/registry/keyline/ui/item";
 import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
-import { Popover, PopoverTrigger, PopoverContent, PopoverHeader } from "@/registry/keyline/ui/popover";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverHeader } from "@/registry/keyline/ui/popover";
 
 export const CREW = [
   {
@@ -109,7 +109,7 @@ export function AvatarSpecimen() {
                   }
                   data-testid="av-more"
                 />
-                <PopoverContent detached>
+                <PopoverPopup detached>
                   <PopoverHeader title="Approvers" description="6 people" />
                   <ItemList layout="cell">
                     {CREW.map((p) => (
@@ -121,7 +121,7 @@ export function AvatarSpecimen() {
                       </Item>
                     ))}
                   </ItemList>
-                </PopoverContent>
+                </PopoverPopup>
               </Popover>
             </AvatarGroup>
             <span className={ui.note}>The count opens everyone (a real button).</span>

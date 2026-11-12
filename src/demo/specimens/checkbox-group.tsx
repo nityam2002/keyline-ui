@@ -3,7 +3,7 @@ import * as ui from "../demo-ui";
 import { Button } from "@/registry/keyline/ui/button";
 import { Form, FormActions, Field, FieldLabel, FieldFrame, FieldInput } from "@/registry/keyline/ui/field";
 import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
-import { Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverFooter } from "@/registry/keyline/ui/popover";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverHeader, PopoverFooter } from "@/registry/keyline/ui/popover";
 import { CheckboxGroup, CheckboxGroupItem } from "@/registry/keyline/ui/checkbox-group";
 import { Badge } from "@/registry/keyline/ui/status";
 
@@ -91,7 +91,7 @@ export function CheckboxGroupSpecimen() {
           <h3 className={ui.cap}>Cells of a popover: the legend is the header</h3>
           <Popover>
             <PopoverTrigger render={<Button />}>Status · {status.length}</PopoverTrigger>
-            <PopoverContent>
+            <PopoverPopup>
               <PopoverHeader title="Status" />
               <CheckboxGroup
                 layout="cell"
@@ -110,7 +110,7 @@ export function CheckboxGroupSpecimen() {
                   Clear
                 </Button>
               </PopoverFooter>
-            </PopoverContent>
+            </PopoverPopup>
           </Popover>
         </div>
         <div className={ui.group}>

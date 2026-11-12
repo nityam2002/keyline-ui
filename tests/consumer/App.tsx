@@ -12,7 +12,7 @@ import {
   Dialog,
   DialogTrigger,
   DialogClose,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogBody,
   DialogFooter,
@@ -120,7 +120,7 @@ import { Avatar, AvatarGroup } from "@/components/keyline/ui/avatar";
 import {
   HoverCard,
   HoverCardTrigger,
-  HoverCardContent,
+  HoverCardPopup,
   HoverCardHeader,
   HoverCardFacts,
 } from "@/components/keyline/ui/hover-card";
@@ -164,7 +164,7 @@ import {
   ToolbarMenuCheckboxItem,
 } from "@/components/keyline/ui/toolbar";
 import { CheckboxGroup } from "@/components/keyline/ui/checkbox-group";
-import { Popover, PopoverTrigger, PopoverContent, PopoverHeader } from "@/components/keyline/ui/popover";
+import { Popover, PopoverTrigger, PopoverPopup, PopoverHeader } from "@/components/keyline/ui/popover";
 
 // Questionnaire, sidebar (nested links, row actions), toast outside React, button group, marker, direction
 import {
@@ -537,13 +537,13 @@ function CreateDialog() {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger render={<Button variant="primary" />}>Book pickup…</DialogTrigger>
-      <DialogContent>
+      <DialogPopup>
         <form onSubmit={submit} className="contents">
           <DialogHeader>
             <DialogTitle>Book a pickup</DialogTitle>
             <DialogDescription>The carrier confirms the slot by email.</DialogDescription>
           </DialogHeader>
-          <DialogBody className="grid gap-5">
+          <DialogBody contentClassName="gap-5">
             <Field>
               <FieldLabel>Reference</FieldLabel>
               <FieldFrame>
@@ -574,7 +574,7 @@ function CreateDialog() {
             </Button>
           </DialogFooter>
         </form>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }
@@ -1305,7 +1305,7 @@ function Exceptions() {
         <div className="grid gap-3">
           <Popover>
             <PopoverTrigger render={<Button />}>Kind · {kinds.length || "any"}</PopoverTrigger>
-            <PopoverContent>
+            <PopoverPopup>
               <PopoverHeader title="Kind" />
               <CheckboxGroup
                 layout="cell"
@@ -1319,7 +1319,7 @@ function Exceptions() {
                   meta: EXCS.filter((e) => e.kind === k).length,
                 }))}
               />
-            </PopoverContent>
+            </PopoverPopup>
           </Popover>
           {rows.length ? (
             <ItemList aria-label="Exception list">
@@ -1665,7 +1665,7 @@ function Handover() {
                   title={
                     <HoverCard>
                       <HoverCardTrigger href={`#person-${c.code}`}>{c.name}</HoverCardTrigger>
-                      <HoverCardContent>
+                      <HoverCardPopup>
                         <HoverCardHeader
                           media={<Avatar layout="cell" name={c.name} decorative />}
                           title={c.name}
@@ -1678,7 +1678,7 @@ function Handover() {
                             ["Status", c.status],
                           ]}
                         />
-                      </HoverCardContent>
+                      </HoverCardPopup>
                     </HoverCard>
                   }
                   description={c.role}

@@ -16,14 +16,14 @@ export const metadata = componentMetadata(
   "hover-card",
 );
 
-const IMPORT = `import { HoverCard, HoverCardBody, HoverCardContent, HoverCardFacts, HoverCardHeader, HoverCardTrigger } from "@/components/keyline/ui/hover-card"`;
+const IMPORT = `import { HoverCard, HoverCardBody, HoverCardPopup, HoverCardFacts, HoverCardHeader, HoverCardTrigger } from "@/components/keyline/ui/hover-card"`;
 
 const USAGE = `<HoverCard>
   <HoverCardTrigger href="/clients/c-0112">Lackawanna County</HoverCardTrigger>
-  <HoverCardContent>
+  <HoverCardPopup>
     <HoverCardHeader media={<Avatar layout="cell" decorative name="…" />} title="Lackawanna County" code="C-0112" />
     <HoverCardFacts facts={[["Rep", "Dwight Schrute"], ["Since", "2003"]]} />
-  </HoverCardContent>
+  </HoverCardPopup>
 </HoverCard>`;
 
 const PROPS: Prop[] = [
@@ -53,7 +53,7 @@ const PROPS: Prop[] = [
     default: '"bottom" \u00b7 "start"',
     description: (
       <>
-        On <code>HoverCardContent</code>.
+        On <code>HoverCardPopup</code>.
       </>
     ),
   },
@@ -74,6 +74,33 @@ const PROPS: Prop[] = [
     type: "div",
     default: "\u2014",
     description: "Free content in its own row, such as a Status.",
+  },
+  {
+    name: "sideOffset \u00b7 alignOffset \u00b7 collisionPadding",
+    type: "number",
+    default: "8 \u00b7 0 \u00b7 12",
+    description: (
+      <>
+        On <code>HoverCardPopup</code>: the positioner&apos;s props, lifted onto the popup.
+      </>
+    ),
+  },
+  {
+    name: "anchor",
+    type: "Element | ref",
+    default: "the trigger",
+    description: "On HoverCardPopup: place it by another element.",
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>HoverCardPopup</code>: where the card&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
+      </>
+    ),
   },
 ];
 
@@ -116,7 +143,17 @@ export default function HoverCardPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Hover card props" props={PROPS} />
       <p className="s-small">
-        Touch screens have no hover, so the card never holds anything the linked page doesn&apos;t. Built on{" "}
+        Touch screens have no hover, so the card never holds anything the linked page doesn&apos;t. Parts, named as Base
+        UI names them: <code>HoverCard</code> (also <code>HoverCardRoot</code>), <code>HoverCardTrigger</code>,{" "}
+        <code>HoverCardPopup</code> (Base UI&apos;s Portal, Positioner and Popup in one part), with Keyline&apos;s{" "}
+        <code>HoverCardHeader</code>, <code>HoverCardFacts</code> and <code>HoverCardBody</code>;{" "}
+        <code>createHoverCardHandle</code> is exported too. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state. They carry{" "}
+        <code>data-slot</code> <code>hover-card-trigger</code> (with Base UI&apos;s <code>data-popup-open</code>),{" "}
+        <code>hover-card-popup</code> (with <code>data-side</code>), <code>hover-card-header</code>,{" "}
+        <code>hover-card-media</code>, <code>hover-card-title</code>, <code>hover-card-description</code>,{" "}
+        <code>hover-card-code</code>, <code>hover-card-facts</code>, <code>hover-card-fact</code> and{" "}
+        <code>hover-card-body</code>. Built on{" "}
         <a href="https://base-ui.com/react/components/preview-card">Base UI Preview Card</a>.
       </p>
     </DocPage>

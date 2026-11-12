@@ -48,6 +48,24 @@ const PROPS: Prop[] = [
     default: "500",
     description: "Milliseconds of hover before it opens. Focus opens it at once.",
   },
+  {
+    name: "TooltipPopup",
+    type: "{ shortcut?, side?, align?, sideOffset?, alignOffset?, collisionPadding?, anchor? }",
+    default: 'side "top" \u00b7 sideOffset 4',
+    description:
+      "The label as a part, for composing with TooltipRoot and TooltipTrigger. The positioner’s props are lifted onto it.",
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>TooltipPopup</code>: where the tooltip&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -90,7 +108,13 @@ export default function TooltipPage() {
       <PropsReference label="Tooltip props" props={PROPS} />
       <p className="s-small">
         An icon button still needs its own <code>aria-label</code>; the tooltip is for sighted readers. Wrap a group in{" "}
-        <code>TooltipProvider</code> so moving between buttons skips the delay. Built on{" "}
+        <code>TooltipProvider</code> so moving between buttons skips the delay. <code>Tooltip</code> is built from parts
+        named as Base UI names them: <code>TooltipProvider</code>, <code>TooltipRoot</code>, <code>TooltipTrigger</code>{" "}
+        and <code>TooltipPopup</code> (Base UI&apos;s Portal, Positioner and Popup in one part). Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+        They carry <code>data-slot</code> <code>tooltip-trigger</code> and <code>tooltip-popup</code> (with Base
+        UI&apos;s <code>data-side</code> and <code>data-instant</code>); inside the popup, <code>tooltip-label</code>{" "}
+        and <code>tooltip-shortcut</code>. Built on{" "}
         <a href="https://base-ui.com/react/components/tooltip">Base UI Tooltip</a>.
       </p>
     </DocPage>

@@ -4,7 +4,7 @@ import { Avatar } from "@/components/keyline/ui/avatar";
 import {
   HoverCard,
   HoverCardBody,
-  HoverCardContent,
+  HoverCardPopup,
   HoverCardFacts,
   HoverCardHeader,
   HoverCardTrigger,
@@ -44,7 +44,7 @@ function Client({ id }: { id: keyof typeof CLIENTS }) {
       <HoverCardTrigger href={`?client=${c.code}`} onClick={(e) => e.preventDefault()}>
         {c.name}
       </HoverCardTrigger>
-      <HoverCardContent className="w-[min(320px,calc(100vw-24px))]">
+      <HoverCardPopup className="w-[min(320px,calc(100vw-24px))]">
         <HoverCardHeader
           media={<Avatar layout="cell" decorative name={c.contact} />}
           title={c.name}
@@ -53,7 +53,7 @@ function Client({ id }: { id: keyof typeof CLIENTS }) {
         />
         <HoverCardFacts facts={c.facts} />
         <HoverCardBody>{c.status}</HoverCardBody>
-      </HoverCardContent>
+      </HoverCardPopup>
     </HoverCard>
   );
 }

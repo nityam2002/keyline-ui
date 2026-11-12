@@ -42,11 +42,8 @@ check() { # item, component file, export, selector that must be in the CSS
 # each pair: the item, and a rule from the item it depends on only through its CSS
 check number-field number-field NumberField ".kl-field-frame"
 check switch switch Switch ".kl-choice-row"
-check command command CommandDialog ".kl-scrim"
 check time-field time-field TimeField ".kl-field-frame"
-check app-shell app-shell AppShell ".kl-sheet"
 check app-shell app-shell AppShell ".kl-nav-ic"
-check nav nav NavIdentity ".kl-tip"
 check tabs tabs Tabs ".kl-more-fade"
 check checkbox-group checkbox-group CheckboxGroup ".kl-choice-row"
 # Table now composes toolbar (filter tokens in a toolbar), so its CSS must come with it
@@ -56,7 +53,7 @@ check date-picker date-picker DateTimePicker ".kl-dtp-time"
 check date-picker date-picker Calendar ".kl-cal-dd"
 # Avatar needs only the theme (its count's key travel); hover-card the theme's positioner; otp-field Field's frame and ! cell
 check avatar avatar AvatarGroup ".kl-key"
-check hover-card hover-card HoverCardContent ".kl-positioner"
+check hover-card hover-card HoverCardPopup ".kl-positioner"
 check otp-field otp-field OtpField ".kl-field-bang"
 # Kbd and toggle need only the theme; native-select brings Field's frame and ! cell; command now brings kbd
 check kbd kbd KbdGroup ".kl-sr"

@@ -6,7 +6,7 @@ import {
   Drawer,
   DrawerBody,
   DrawerClose,
-  DrawerContent,
+  DrawerPopup,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
@@ -30,7 +30,7 @@ export function TruckRoute() {
     <div className="grid gap-4">
       <Drawer>
         <DrawerTrigger render={<Button className="justify-self-start" />}>Darryl&apos;s route</DrawerTrigger>
-        <DrawerContent size="min(70vh, 480px)">
+        <DrawerPopup size="min(70vh, 480px)">
           <DrawerHeader>
             <DrawerTitle>Darryl&apos;s route today</DrawerTitle>
             <DrawerDescription>Swipe down, press Escape or Close to put it away.</DrawerDescription>
@@ -51,7 +51,7 @@ export function TruckRoute() {
               Call Bob Vance
             </DrawerClose>
           </DrawerFooter>
-        </DrawerContent>
+        </DrawerPopup>
       </Drawer>
       <p role="status" className="m-0 min-h-5 text-[14px] text-kl-ink-2">
         {called ? "Calling Vance Refrigeration about the held delivery." : ""}

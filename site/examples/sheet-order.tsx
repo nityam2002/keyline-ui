@@ -6,7 +6,7 @@ import {
   Sheet,
   SheetBody,
   SheetClose,
-  SheetContent,
+  SheetPopup,
   SheetDescription,
   SheetFooter,
   SheetHeader,
@@ -25,7 +25,7 @@ export function OrderSheet() {
       <Status kind={delivered ? "done" : "normal"}>{delivered ? "Delivered" : "Out for delivery"}</Status>
       <Sheet>
         <SheetTrigger render={<Button size="compact" />}>Details</SheetTrigger>
-        <SheetContent side="end" size={420}>
+        <SheetPopup side="end" size={420}>
           <SheetHeader>
             <SheetTitle>DM-4107</SheetTitle>
             <SheetDescription>Lackawanna County · Dwight Schrute</SheetDescription>
@@ -50,7 +50,7 @@ export function OrderSheet() {
               {delivered ? "Delivered" : "Mark delivered"}
             </Button>
           </SheetFooter>
-        </SheetContent>
+        </SheetPopup>
       </Sheet>
     </div>
   );

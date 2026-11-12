@@ -16,11 +16,11 @@ export const metadata = componentMetadata(
   "drawer",
 );
 
-const IMPORT = `import { Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/keyline/ui/drawer"`;
+const IMPORT = `import { Drawer, DrawerBody, DrawerClose, DrawerPopup, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/keyline/ui/drawer"`;
 
 const USAGE = `<Drawer>
   <DrawerTrigger render={<Button />}>Darryl's route</DrawerTrigger>
-  <DrawerContent size="min(70vh, 480px)">
+  <DrawerPopup size="min(70vh, 480px)">
     <DrawerHeader>
       <DrawerTitle>Darryl's route today</DrawerTitle>
     </DrawerHeader>
@@ -28,7 +28,7 @@ const USAGE = `<Drawer>
     <DrawerFooter>
       <DrawerClose render={<Button layout="cell" />}>Close</DrawerClose>
     </DrawerFooter>
-  </DrawerContent>
+  </DrawerPopup>
 </Drawer>`;
 
 const PROPS: Prop[] = [
@@ -48,7 +48,7 @@ const PROPS: Prop[] = [
     default: "\u2014",
     description: (
       <>
-        On <code>DrawerContent</code>: height from the bottom, width from a side. Pixels or any CSS length.
+        On <code>DrawerPopup</code>: height from the bottom, width from a side. Pixels or any CSS length.
       </>
     ),
   },
@@ -65,6 +65,17 @@ const PROPS: Prop[] = [
     description: (
       <>
         On <code>Drawer</code>: control it.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>DrawerPopup</code>: where the drawer&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
       </>
     ),
   },
@@ -109,8 +120,18 @@ export default function DrawerPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Drawer props" props={PROPS} />
       <p className="s-small">
-        Built on <a href="https://base-ui.com/react/components/drawer">Base UI Drawer</a>. For a panel on a wide screen
-        that doesn&apos;t need the swipe, use Sheet.
+        Parts, named as Base UI names them: <code>Drawer</code> (also <code>DrawerRoot</code>; a logical{" "}
+        <code>side</code> in place of Base UI&apos;s <code>swipeDirection</code>), <code>DrawerTrigger</code>,{" "}
+        <code>DrawerPopup</code> (Base UI&apos;s Portal, Backdrop, Viewport and Popup in one part),{" "}
+        <code>DrawerBody</code> (Base UI&apos;s Content), <code>DrawerTitle</code>, <code>DrawerDescription</code> and{" "}
+        <code>DrawerClose</code>; <code>DrawerHeader</code> and <code>DrawerFooter</code> are Dialog&apos;s. Every part
+        takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its
+        state. They carry <code>data-slot</code> <code>drawer-trigger</code>, <code>drawer-backdrop</code>,{" "}
+        <code>drawer-viewport</code>, <code>drawer-popup</code> (with <code>data-side</code> and Base UI&apos;s{" "}
+        <code>data-swipe-direction</code> and <code>data-swiping</code>), <code>drawer-grip</code>,{" "}
+        <code>drawer-body</code>, <code>drawer-title</code>, <code>drawer-description</code> and{" "}
+        <code>drawer-close</code>. Built on <a href="https://base-ui.com/react/components/drawer">Base UI Drawer</a>.
+        For a panel on a wide screen that doesn&apos;t need the swipe, use Sheet.
       </p>
     </DocPage>
   );

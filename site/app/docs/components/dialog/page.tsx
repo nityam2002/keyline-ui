@@ -16,11 +16,11 @@ export const metadata = componentMetadata(
   "dialog",
 );
 
-const IMPORT = `import { Dialog, DialogBody, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/keyline/ui/dialog"`;
+const IMPORT = `import { Dialog, DialogBody, DialogClose, DialogPopup, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/keyline/ui/dialog"`;
 
 const USAGE = `<Dialog>
   <DialogTrigger render={<Button />}>Add a client</DialogTrigger>
-  <DialogContent>
+  <DialogPopup>
     <DialogHeader>
       <DialogTitle>Add a client</DialogTitle>
       <DialogDescription>…</DialogDescription>
@@ -30,7 +30,7 @@ const USAGE = `<Dialog>
       <DialogClose render={<Button layout="cell" />}>Cancel</DialogClose>
       <Button layout="cell" variant="primary" type="submit" form="new-client">Add client</Button>
     </DialogFooter>
-  </DialogContent>
+  </DialogPopup>
 </Dialog>`;
 
 const PROPS: Prop[] = [
@@ -55,12 +55,13 @@ const PROPS: Prop[] = [
     ),
   },
   {
-    name: "container",
-    type: "HTMLElement | ref",
-    default: "document.body",
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
     description: (
       <>
-        On <code>DialogContent</code>: where the dialog is portalled.
+        On <code>DialogPopup</code>: where the dialog&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
       </>
     ),
   },
@@ -68,8 +69,13 @@ const PROPS: Prop[] = [
     name: "DialogBody",
     type: "div",
     default: "\u2014",
-    description:
-      "Scrolls in a Keyline Scroll Area once the dialog reaches its maximum height. The header and footer stay put.",
+    description: (
+      <>
+        Scrolls in a Keyline Scroll Area once the dialog reaches its maximum height; the header and footer stay put.{" "}
+        <code>className</code> reaches the scroll area, <code>contentClassName</code> lays out what it holds (a grid,
+        16px apart).
+      </>
+    ),
   },
   {
     name: "DialogFooter",
@@ -123,8 +129,18 @@ export default function DialogPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Dialog props" props={PROPS} />
       <p className="s-small">
-        Built on <a href="https://base-ui.com/react/components/dialog">Base UI Dialog</a>; its other props pass through.
-        To confirm something that can&apos;t be undone, use Alert dialog.
+        Parts, named as Base UI names them: <code>Dialog</code> (also <code>DialogRoot</code>),{" "}
+        <code>DialogTrigger</code>, <code>DialogPopup</code> (Base UI&apos;s Portal, Backdrop and Popup in one part),{" "}
+        <code>DialogBackdrop</code> (the scrim, for composing your own), <code>DialogTitle</code>,{" "}
+        <code>DialogDescription</code> and <code>DialogClose</code>, with Keyline&apos;s <code>DialogHeader</code>,{" "}
+        <code>DialogBody</code> and <code>DialogFooter</code>. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state. They carry{" "}
+        <code>data-slot</code> <code>dialog-trigger</code>, <code>dialog-backdrop</code>, <code>dialog-popup</code>,{" "}
+        <code>dialog-header</code>, <code>dialog-title</code>, <code>dialog-description</code>, <code>dialog-body</code>
+        , <code>dialog-footer</code> and <code>dialog-close</code>, and Base UI&apos;s <code>data-open</code>,{" "}
+        <code>data-starting-style</code> and <code>data-ending-style</code>. Built on{" "}
+        <a href="https://base-ui.com/react/components/dialog">Base UI Dialog</a>; its other props pass through. To
+        confirm something that can&apos;t be undone, use Alert dialog.
       </p>
     </DocPage>
   );

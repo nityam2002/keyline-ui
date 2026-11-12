@@ -11,9 +11,9 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
     const p = await open({ route: "specimen", q, ready: "#otp" });
     const text = p.getByTestId("hc-text");
     await text.scrollIntoViewIfNeeded();
-    const nora = text.locator(".kl-hc-trigger").first();
+    const nora = text.locator("[data-slot=hover-card-trigger]").first();
     const box = await nora.boundingBox();
-    const card = p.locator(".kl-hc");
+    const card = p.locator("[data-slot=hover-card-popup]");
     // timing: the underline is sampled 300ms after the pointer enters (part-way through the hover delay). The timer
     // runs in the page from the pointerenter itself, so round trips on a loaded machine cannot stretch the 300ms.
     await nora.evaluate((a) => {
@@ -25,7 +25,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
             () =>
               (window.__hcMid = [
                 getComputedStyle(a).backgroundSize.split(",")[0].trim(),
-                document.querySelectorAll(".kl-hc").length,
+                document.querySelectorAll("[data-slot=hover-card-popup]").length,
               ]),
             300,
           ),
@@ -44,9 +44,9 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
     ok(
       `${q}: the card opens after the delay with header, code and facts`,
       (await card.count()) === 1 &&
-        /Nora van der Berg/.test(await card.locator(".kl-hc-title").textContent()) &&
-        (await card.locator(".kl-hc-code").textContent()) === "U-0412" &&
-        (await card.locator(".kl-hc-fact").count()) === 2,
+        /Nora van der Berg/.test(await card.locator("[data-slot=hover-card-title]").textContent()) &&
+        (await card.locator("[data-slot=hover-card-code]").textContent()) === "U-0412" &&
+        (await card.locator("[data-slot=hover-card-fact]").count()) === 2,
       null,
     );
     ok(`${q}: open, the underline is fully drawn`, (await under(nora)).startsWith("100%"), null);
@@ -64,7 +64,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
     await p.mouse.move(5, 5);
     await card.waitFor({ state: "detached", timeout: 3000 }).catch(() => {});
     ok(`${q}: leaving closes the card`, (await card.count()) === 0, null);
-    const ade = text.locator(".kl-hc-trigger").nth(1);
+    const ade = text.locator("[data-slot=hover-card-trigger]").nth(1);
     const ab = await ade.boundingBox();
     await p.mouse.move(ab.x + 5, ab.y + ab.height / 2);
     await p.waitForTimeout(200); // timing: a 200ms pass, shorter than the hover delay
@@ -81,7 +81,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
     ok(
       `${q}: keyboard focus opens the card; focus stays on the link`,
       (await card.count()) === 1 &&
-        (await p.evaluate(() => document.activeElement?.classList.contains("kl-hc-trigger"))),
+        (await p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "hover-card-trigger")),
       null,
     );
     await p.keyboard.press("Escape");
@@ -89,8 +89,12 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
     ok(`${q}: Escape closes it`, (await card.count()) === 0, null);
     ok(
       `${q}: the card is not in the accessibility order (the link is the interface)`,
-      (await p.evaluate(() => document.querySelectorAll(".kl-hc [tabindex='0'], .kl-hc button, .kl-hc a").length)) ===
-        0,
+      (await p.evaluate(
+        () =>
+          document.querySelectorAll(
+            "[data-slot=hover-card-popup] [tabindex='0'], [data-slot=hover-card-popup] button, [data-slot=hover-card-popup] a",
+          ).length,
+      )) === 0,
       null,
     );
     ok(`${q}: no page errors`, p.errs.length === 0, p.errs);
@@ -100,22 +104,22 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
 test("hover card: 390px, the card stays inside the viewport", async ({ open, ok }) => {
   // the long name in a narrow column; the card stays inside the viewport
   const p = await open({ route: "specimen", q: "theme=light", width: 390, height: 844, ready: "#otp" });
-  const t = p.getByTestId("hc-narrow").locator(".kl-hc-trigger");
+  const t = p.getByTestId("hc-narrow").locator("[data-slot=hover-card-trigger]");
   await t.scrollIntoViewIfNeeded();
   await t.focus();
-  const card = p.locator(".kl-hc");
+  const card = p.locator("[data-slot=hover-card-popup]");
   await card.waitFor({ state: "visible", timeout: 3000 }).catch(() => {});
   await idle(p);
   await stable(card).catch(() => {});
   const cb = await card.boundingBox();
   ok("390px: the card fits the viewport with 12px to spare", cb && cb.x >= 11 && cb.x + cb.width <= 390 - 11, cb);
-  const wrap = await p.locator(".kl-hc-title").evaluate((x) => x.scrollWidth <= x.clientWidth + 1);
+  const wrap = await p.locator("[data-slot=hover-card-title]").evaluate((x) => x.scrollWidth <= x.clientWidth + 1);
   ok("390px: a long name wraps inside the card", wrap, null);
 });
 
 test("hover card: reduced motion", async ({ open, ok }) => {
   const p = await open({ route: "specimen", q: "motion=reduce", ready: "#otp" });
-  const t = p.getByTestId("hc-text").locator(".kl-hc-trigger").first();
+  const t = p.getByTestId("hc-text").locator("[data-slot=hover-card-trigger]").first();
   await t.scrollIntoViewIfNeeded();
   const bb = await t.boundingBox();
   // timing: sampled 300ms after pointerenter (part-way through the hover delay), timed in the page
@@ -135,12 +139,12 @@ test("hover card: reduced motion", async ({ open, ok }) => {
     null,
   );
   await p
-    .locator(".kl-hc")
+    .locator("[data-slot=hover-card-popup]")
     .waitFor({ state: "visible", timeout: 3000 })
     .catch(() => {});
   ok(
     "reduced motion: it is drawn once the card is open",
-    (await under(t)).startsWith("100%") && (await p.locator(".kl-hc").count()) === 1,
+    (await under(t)).startsWith("100%") && (await p.locator("[data-slot=hover-card-popup]").count()) === 1,
     null,
   );
 });

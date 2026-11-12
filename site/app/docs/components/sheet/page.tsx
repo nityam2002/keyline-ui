@@ -16,18 +16,18 @@ export const metadata = componentMetadata(
   "sheet",
 );
 
-const IMPORT = `import { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/keyline/ui/sheet"`;
+const IMPORT = `import { Sheet, SheetBody, SheetClose, SheetPopup, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/keyline/ui/sheet"`;
 
 const USAGE = `<Sheet>
   <SheetTrigger render={<Button size="compact" />}>Details</SheetTrigger>
-  <SheetContent side="end" size={420}>
+  <SheetPopup side="end" size={420}>
     <SheetHeader>
       <SheetTitle>DM-4107</SheetTitle>
       <SheetDescription>Lackawanna County</SheetDescription>
     </SheetHeader>
     <SheetBody>…</SheetBody>
     <SheetFooter>…</SheetFooter>
-  </SheetContent>
+  </SheetPopup>
 </Sheet>`;
 
 const PROPS: Prop[] = [
@@ -37,7 +37,7 @@ const PROPS: Prop[] = [
     default: '"end"',
     description: (
       <>
-        On <code>SheetContent</code>. <code>end</code> is the right edge in left-to-right text and mirrors in
+        On <code>SheetPopup</code>. <code>end</code> is the right edge in left-to-right text and mirrors in
         right-to-left.
       </>
     ),
@@ -49,10 +49,15 @@ const PROPS: Prop[] = [
     description: "Width from a side, height from the bottom.",
   },
   {
-    name: "container",
-    type: "HTMLElement | ref",
-    default: "document.body",
-    description: "Where the sheet is portalled.",
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>SheetPopup</code>: where the sheet&apos;s portal renders, and props for the portal. It keeps the theme,
+        density, motion and direction of the place it is written either way.
+      </>
+    ),
   },
   {
     name: "open \u00b7 onOpenChange",
@@ -100,8 +105,13 @@ export default function SheetPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Sheet props" props={PROPS} />
       <p className="s-small">
-        Built on <a href="https://base-ui.com/react/components/dialog">Base UI Dialog</a>. For something to swipe away
-        on a phone, use Drawer.
+        Parts: <code>Sheet</code> (also <code>SheetRoot</code>) and <code>SheetPopup</code> (Base UI&apos;s Portal,
+        Backdrop and Popup in one part, <code>data-slot=&quot;sheet-popup&quot;</code> with <code>data-side</code>). The
+        trigger, close, header, body, footer, title and description are Dialog&apos;s own parts under Sheet names, and
+        carry Dialog&apos;s <code>data-slot</code>s. Every part takes <code>render</code>, and a <code>className</code>{" "}
+        or <code>style</code> that may be a function of its state. Built on{" "}
+        <a href="https://base-ui.com/react/components/dialog">Base UI Dialog</a>. For something to swipe away on a
+        phone, use Drawer.
       </p>
     </DocPage>
   );

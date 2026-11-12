@@ -107,7 +107,7 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   const p = await open({ route: "app", width: 1280, height: H, ready: ".kl-shell-h" });
   const toggle = p.locator(".kl-shell-toggle");
   const col = p.locator(".kl-shell-nav");
-  const tooltip = p.locator("[data-slot=tooltip]");
+  const tooltip = p.locator("[data-slot=tooltip-popup]");
   ok(
     "rail: the toggle says Collapse navigation and is expanded",
     (await toggle.getAttribute("aria-label")) === "Collapse navigation" &&

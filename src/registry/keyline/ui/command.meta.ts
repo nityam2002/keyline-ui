@@ -8,11 +8,5 @@ export default {
   files: [{ path: "src/registry/keyline/ui/command.tsx", type: "registry:ui" }],
   cssFile: "src/registry/keyline/ui/command.css",
   dependencies: ["@base-ui/react", "cmdk"],
-  registryDependencies: [
-    "@keyline-ui/keyline",
-    "utils",
-    "@keyline-ui/keyline-scope",
-    "@keyline-ui/kbd",
-    "@keyline-ui/dialog",
-  ],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/kbd", "@keyline-ui/dialog"],
 } satisfies KeylineItem;

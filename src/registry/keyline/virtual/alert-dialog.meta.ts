@@ -5,7 +5,7 @@ export default {
   type: "registry:ui",
   title: "Alert dialog",
   description:
-    "Installs the dialog item, which exports AlertDialog, AlertDialogTrigger and AlertDialogContent (focus on the safe action, destructive or primary tone) beside Dialog. Import from dialog.",
+    "Installs the dialog item, which exports AlertDialog, AlertDialogTrigger, AlertDialogPopup and AlertDialogContent (focus on the safe action, destructive or primary tone) beside Dialog. Import from dialog.",
   files: [],
   registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/dialog"],
   requires: {

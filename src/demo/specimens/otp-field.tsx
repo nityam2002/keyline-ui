@@ -7,7 +7,7 @@ import { Panel, PanelHeader, PanelFooter } from "@/registry/keyline/ui/panel";
 import {
   Dialog,
   DialogTrigger,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogTitle,
   DialogDescription,
@@ -91,7 +91,7 @@ export function OtpSpecimen() {
           <h3 className={ui.cap}>In a dialog</h3>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger render={<Button variant="primary" />}>Release shipment…</DialogTrigger>
-            <DialogContent>
+            <DialogPopup>
               <DialogHeader>
                 <DialogTitle>Confirm release</DialogTitle>
                 <DialogDescription>Releasing SH-20483 to DSV Road needs a second factor.</DialogDescription>
@@ -102,7 +102,7 @@ export function OtpSpecimen() {
               <DialogFooter>
                 <DialogClose render={<Button layout="cell" />}>Cancel</DialogClose>
               </DialogFooter>
-            </DialogContent>
+            </DialogPopup>
           </Dialog>
         </div>
       </div>

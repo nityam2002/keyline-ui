@@ -32,6 +32,15 @@ Menu and Combobox were converted this way first; their diffs are the worked exam
   `container` and `portalProps`, renders `useKeylineScope(false, container)`'s marker beside the portal and its probe
   inside it, and spreads `scopeProps(scope)` on the positioner. Export the styled popup on its own too when other
   components position it themselves (`MenuSurface`).
+- **A modal flattens Portal, Backdrop and Popup** (`DialogPopup`, `SheetPopup`, `AlertDialogPopup`). It has no
+  positioner to carry the scope, so the backdrop spreads `scopeProps(scope)` and the popup sits in a
+  `<div {...scopeProps(scope, { className: "contents" })}>`, which configures it without a box of its own. Export the
+  backdrop too (`DialogBackdrop`). Drawer adds Base UI's Viewport to the same part; its root renders the marker,
+  because the root needs the direction to pick its physical swipe side.
+- **A part that is another Keyline component** (`DialogBody` is a Scroll Area) sends `className` and `style` to that
+  component's root, resolved with an empty state, and takes a second prop for what it holds (`contentClassName`).
+  A component that reuses another's whole popup (Command's dialog is `DialogPopup`) passes its own classes in
+  `className`; `cn()` drops the popup's conflicting ones.
 - **A field component keeps its convenience API** (`Combobox` with `options` and `loadOptions`), built from the
   exported parts in the same file. Change callbacks pass Base UI's `eventDetails` through as their last argument.
 - **A display component composes from its parts too** (`Progress`, `Meter`): its props are a union of the
@@ -69,6 +78,15 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - **A `font` shorthand also reset what it didn't name.** `font: 500 11px/1 var(--kl-font-mono)` set
   `font-variant-numeric` and `font-style` back to normal; the utilities don't, so add `normal-nums not-italic`
   where the part must not inherit them (a code badge in a tabular row).
+- **The foundation's focus ring keys on a `kl-` class.** A part with none (Hover Card's trigger is a plain link with
+  utilities) writes its own: `focus-visible:outline-(length:--kl-ring) focus-visible:outline-offset-2
+  focus-visible:outline-kl-focus focus-visible:outline-solid`.
+- **Reduced motion zeroes the `--kl-t-*` tokens, nothing else.** A duration that doesn't come from them (the hover
+  card's underline runs for its open delay) adds `motion-reduce:transition-none
+  in-data-[kl-motion=reduce]:transition-none`.
+- **Where clip-path is the cut, a clip-path entrance erases the corner.** Unfold with clip-path only under
+  `supports-[corner-start-start-shape:bevel]:`, and fade under `not-supports-[corner-start-start-shape:bevel]:`.
+  Chromium and WebKit both support corner shapes, so only Firefox runs the fade.
 
 ### Variants
 
@@ -124,6 +142,12 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
     buttons. To reach a native `<button>` the component renders itself (a dismiss cell, an Item rendered as a
     button), press Option+Tab in WebKit, the key a Safari user presses for the same order:
     `const TAB = server.browser === "webkit" ? "{Alt>}{Tab}{/Alt}" : "{Tab}"`.
+  - modal (dialog, sheet, drawer): Base UI makes the page inert while it is open, so judge the open state with axe
+    on the popup. Test the focus trap at its two ends: Tab from the last control lands on the first, Shift+Tab
+    from the first on the last.
+  - a position guard measures after the entry has landed: wait for `data-starting-style` to go and for
+    `popup.getAnimations()` to finish, not for a time. Give the fixture whole-pixel rows and line heights, so the
+    edges it compares are whole.
   - style guards: prove each one fails by breaking the class it guards, then restore it. A guard that compares
     parts with each other can pass on broken code (size-contained stats with no flex basis all collapse to the same
     width); assert the expected value.

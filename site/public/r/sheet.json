@@ -10,77 +10,16 @@
     "@keyline-ui/keyline",
     "utils",
     "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/dialog"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/sheet.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\";\n\nimport { cn } from \"@/lib/utils\";\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\";\nimport { DialogBody, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from \"./dialog\";\n\n/* A sheet is a region docked to an edge of the viewport. Behaviour is Base UI Dialog (focus trap, return\n   focus, Escape, scroll lock, modal or not); the parts below only add construction and motion. */\nconst Sheet = DialogPrimitive.Root;\nconst SheetTrigger = DialogPrimitive.Trigger;\nconst SheetClose = DialogPrimitive.Close;\n\ntype SheetContentProps = React.ComponentProps<typeof DialogPrimitive.Popup> & {\n  /** end: the inline-end edge (mirrors in RTL) · start · bottom. */\n  side?: \"end\" | \"start\" | \"bottom\";\n  /** Width (end/start) or height (bottom) in px or any CSS length. */\n  size?: number | string;\n  container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"];\n};\n\n/**\n * The frame draws only the edge that faces the page (3px, region weight); the edges against the viewport\n * are the screen's. The cut, when on, sits on the inner top corner, the one corner that is not against\n * the viewport. It unfolds from the docked edge and folds back to it.\n */\nfunction SheetContent({ side = \"end\", size, className, container, style, children, ...props }: SheetContentProps) {\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  const len = typeof size === \"number\" ? `${size}px` : size;\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        {probe}\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n          <DialogPrimitive.Popup\n            data-slot=\"sheet\"\n            data-side={side}\n            className={cn(\"kl-frame kl-sheet\", className)}\n            style={(state) =>\n              ({\n                ...(len ? { \"--kl-sheet-size\": len } : null),\n                ...(typeof style === \"function\" ? style(state) : style),\n              }) as React.CSSProperties\n            }\n            {...props}\n          >\n            {children}\n          </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </>\n  );\n}\n\nconst SheetHeader = DialogHeader;\nconst SheetBody = DialogBody;\nconst SheetFooter = DialogFooter;\nconst SheetTitle = DialogTitle;\nconst SheetDescription = DialogDescription;\n\nexport {\n  Sheet,\n  SheetTrigger,\n  SheetClose,\n  SheetContent,\n  SheetHeader,\n  SheetBody,\n  SheetFooter,\n  SheetTitle,\n  SheetDescription,\n};\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\";\n\nimport { cn } from \"@/lib/utils\";\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\";\nimport { resolveClassName, resolveStyle } from \"../lib/keyline-render\";\nimport {\n  DialogBackdrop,\n  DialogBody,\n  DialogClose,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"./dialog\";\n\n/* A sheet is a region docked to an edge of the viewport. Behaviour is Base UI Dialog (focus trap, return\n   focus, Escape, scroll lock, modal or not); the parts below only add construction and motion. Every part but the\n   popup is Dialog's own. */\nconst SheetRoot = DialogPrimitive.Root;\nconst Sheet = SheetRoot;\n\n/*\n * The frame draws only the edge that faces the page (3px, region weight); the edges against the viewport are the\n * screen's. The cut sits on the top-start corner, and a cut is an L-junction of two keylines (C3): the bevel strokes\n * the transition between the two edges it joins, so with one of them at 0px its diagonal tapers to nothing. Each side\n * therefore draws both keylines that meet at that corner, at region weight:\n * - end: the page-facing start edge and the top edge (the region's top, against the top of the screen);\n * - bottom: the page-facing top edge and the start edge;\n * - start: the corner is the screen's own corner, so this side keeps no cut.\n * It unfolds from the docked edge and folds back to it (clip-path, physical per direction). The clip-path fallback cut\n * needs room past the frame edge, so where the cut is not a corner shape the sheet is not clipped at rest.\n */\nconst sheet = cn(\n  \"kl-frame fixed z-(--kl-z-overlay) flex flex-col border-0 text-kl-ink outline-0 [--kl-cell:var(--kl-raised)]\",\n  \"[clip-path:inset(0)] not-supports-[corner-start-start-shape:bevel]:[clip-path:none]\",\n  \"transition-[clip-path] duration-(--kl-t-unfold) ease-(--kl-ease-out)\",\n  \"data-ending-style:pointer-events-none data-ending-style:duration-(--kl-t-fold) data-ending-style:ease-(--kl-ease-in)\",\n  \"data-[side=end]:inset-y-0 data-[side=end]:end-0 data-[side=end]:w-[min(var(--kl-sheet-size,440px),calc(100vw-40px))]\",\n  \"data-[side=end]:border-s-(length:--kl-k3) data-[side=end]:border-t-(length:--kl-k3)\",\n  \"data-[side=start]:inset-y-0 data-[side=start]:start-0 data-[side=start]:w-[min(var(--kl-sheet-size,440px),calc(100vw-40px))]\",\n  \"data-[side=start]:border-e-(length:--kl-k3) data-[side=start]:[--kl-cut-size:0px]\",\n  \"data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:max-h-[min(var(--kl-sheet-size,70vh),calc(100vh-40px))]\",\n  \"data-[side=bottom]:border-s-(length:--kl-k3) data-[side=bottom]:border-t-(length:--kl-k3)\",\n  \"data-[side=end]:[&:is([data-starting-style],[data-ending-style])]:[clip-path:inset(0_0_0_100%)]\",\n  \"kl-rtl:data-[side=end]:[&:is([data-starting-style],[data-ending-style])]:[clip-path:inset(0_100%_0_0)]\",\n  \"data-[side=start]:[&:is([data-starting-style],[data-ending-style])]:[clip-path:inset(0_100%_0_0)]\",\n  \"kl-rtl:data-[side=start]:[&:is([data-starting-style],[data-ending-style])]:[clip-path:inset(0_0_0_100%)]\",\n  \"data-[side=bottom]:[&:is([data-starting-style],[data-ending-style])]:[clip-path:inset(100%_0_0_0)]\",\n);\n\ntype SheetPopupProps = DialogPrimitive.Popup.Props & {\n  /** end: the inline-end edge (mirrors in RTL) · start · bottom. */\n  side?: \"end\" | \"start\" | \"bottom\";\n  /** Width (end/start) or height (bottom) in px or any CSS length. */\n  size?: number | string;\n  /** Where the portal renders (defaults to <body>). */\n  container?: DialogPrimitive.Portal.Props[\"container\"];\n  /** Props for Base UI's Dialog.Portal. */\n  portalProps?: Omit<DialogPrimitive.Portal.Props, \"container\" | \"children\">;\n};\n\n/**\n * The sheet: Base UI's Portal, Backdrop and Popup in one part, docked to a viewport edge. It carries the\n * configuration (cut, density, motion, theme, dir) of the place it is written, not of <body>.\n */\nfunction SheetPopup({\n  side = \"end\",\n  size,\n  className,\n  container,\n  portalProps,\n  style,\n  ...props\n}: SheetPopupProps): React.ReactElement {\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  const len = typeof size === \"number\" ? `${size}px` : size;\n  return (\n    <>\n      {marker}\n      <DialogPrimitive.Portal container={container} {...portalProps}>\n        {probe}\n        <DialogBackdrop {...scopeProps(scope)} />\n        {/* carries the scope to the popup without a box of its own */}\n        <div {...scopeProps(scope, { className: \"contents\" })}>\n          <DialogPrimitive.Popup\n            data-side={side}\n            className={resolveClassName(sheet, className)}\n            style={resolveStyle(len ? ({ \"--kl-sheet-size\": len } as React.CSSProperties) : undefined, style)}\n            {...props}\n            data-slot=\"sheet-popup\"\n          />\n        </div>\n      </DialogPrimitive.Portal>\n    </>\n  );\n}\n\nconst SheetTrigger = DialogTrigger;\nconst SheetClose = DialogClose;\nconst SheetHeader = DialogHeader;\nconst SheetBody = DialogBody;\nconst SheetFooter = DialogFooter;\nconst SheetTitle = DialogTitle;\nconst SheetDescription = DialogDescription;\n\nexport {\n  Sheet,\n  SheetRoot,\n  SheetTrigger,\n  SheetClose,\n  SheetPopup,\n  SheetHeader,\n  SheetBody,\n  SheetFooter,\n  SheetTitle,\n  SheetDescription,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/sheet.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-sheet": {
-        "--kl-cell": "var(--kl-raised)",
-        "position": "fixed",
-        "z-index": "var(--kl-z-overlay)",
-        "display": "flex",
-        "flex-direction": "column",
-        "color": "var(--kl-ink)",
-        "outline": "0",
-        "border-width": "0",
-        "transition": "clip-path var(--kl-t-unfold) var(--kl-ease-out)",
-        "clip-path": "inset(0)"
-      },
-      ".kl-sheet[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)",
-        "transition-timing-function": "var(--kl-ease-in)",
-        "pointer-events": "none"
-      },
-      ".kl-sheet:is([data-side=\"end\"], [data-side=\"start\"])": {
-        "inset-block": "0",
-        "width": "min(var(--kl-sheet-size, 440px), calc(100vw - 40px))"
-      },
-      ".kl-sheet[data-side=\"end\"]": {
-        "inset-inline-end": "0",
-        "border-inline-start-width": "var(--kl-k3)",
-        "border-block-start-width": "var(--kl-k3)"
-      },
-      ".kl-sheet[data-side=\"start\"]": {
-        "inset-inline-start": "0",
-        "border-inline-end-width": "var(--kl-k3)",
-        "--kl-cut-size": "0px"
-      },
-      ".kl-sheet[data-side=\"bottom\"]": {
-        "inset-inline": "0",
-        "inset-block-end": "0",
-        "max-height": "min(var(--kl-sheet-size, 70vh), calc(100vh - 40px))",
-        "border-block-start-width": "var(--kl-k3)",
-        "border-inline-start-width": "var(--kl-k3)"
-      },
-      ".kl-sheet[data-side=\"end\"]:is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(0 0 0 100%)"
-      },
-      ".kl-sheet[data-side=\"end\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) ):is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(0 100% 0 0)"
-      },
-      ".kl-sheet[data-side=\"start\"]:is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(0 100% 0 0)"
-      },
-      ".kl-sheet[data-side=\"start\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) ):is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(0 0 0 100%)"
-      },
-      ".kl-sheet[data-side=\"bottom\"]:is([data-starting-style], [data-ending-style])": {
-        "clip-path": "inset(100% 0 0 0)"
-      },
-      "@supports not (corner-start-start-shape: bevel)": {
-        ".kl-sheet": {
-          "clip-path": "none"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

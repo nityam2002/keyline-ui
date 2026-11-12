@@ -162,7 +162,7 @@ test("checkbox group cells in a popover; invalid and disabled groups", async ({ 
   await sec.scrollIntoViewIfNeeded();
   // popover cells
   await sec.getByRole("button", { name: /^Status · 2/ }).click();
-  const pop = p.locator(".kl-popover");
+  const pop = p.locator("[data-slot=popover-popup]");
   await pop.waitFor({ state: "visible" });
   const pgroup = pop.getByRole("group", { name: "Status" });
   ok(

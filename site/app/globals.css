@@ -8,10 +8,8 @@
 @import "../../src/registry/keyline/ui/tabs.css";
 @import "../../src/registry/keyline/ui/scroll-area.css";
 @import "../../src/registry/keyline/ui/table.css";
-@import "../../src/registry/keyline/ui/tooltip.css";
 @import "../../src/registry/keyline/ui/nav.css";
 @import "../../src/registry/keyline/ui/breadcrumb.css";
-@import "../../src/registry/keyline/ui/sheet.css";
 @import "../../src/registry/keyline/ui/app-shell.css";
 @import "../../src/registry/keyline/ui/panel.css";
 @import "../../src/registry/keyline/ui/menubar.css";
@@ -27,16 +25,12 @@
 @import "../../src/registry/keyline/ui/multiselect.css";
 @import "../../src/registry/keyline/ui/otp-field.css";
 @import "../../src/registry/keyline/ui/time-field.css";
-@import "../../src/registry/keyline/ui/popover.css";
 @import "../../src/registry/keyline/ui/date-range.css";
 @import "../../src/registry/keyline/ui/date-picker.css";
 @import "../../src/registry/keyline/ui/chart.css";
 @import "../../src/registry/keyline/ui/pagination.css";
 @import "../../src/registry/keyline/ui/navigation-menu.css";
-@import "../../src/registry/keyline/ui/dialog.css";
 @import "../../src/registry/keyline/ui/command.css";
-@import "../../src/registry/keyline/ui/drawer.css";
-@import "../../src/registry/keyline/ui/hover-card.css";
 @import "../../src/registry/keyline/ui/toast.css";
 @import "../../src/registry/keyline/ui/accordion.css";
 @import "../../src/registry/keyline/ui/collapsible.css";

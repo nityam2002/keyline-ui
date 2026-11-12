@@ -10,11 +10,11 @@ test("direction: tooltip side in an rtl region", async ({ open, ok }) => {
   const rtlBtn = dsec.locator('[dir="rtl"]').getByRole("button", { name: "تصدير" });
   await rtlBtn.hover();
   // the tooltip's hover delay passes; then wait for it to be placed
-  const tipLoc = p.locator('[data-slot="tooltip"]').first();
+  const tipLoc = p.locator('[data-slot="tooltip-popup"]').first();
   await tipLoc.waitFor({ timeout: 5000 }).catch(() => {});
   if (await tipLoc.count()) await stable(tipLoc).catch(() => {});
   const tip = await p.evaluate(() => {
-    const t = document.querySelector('[data-slot="tooltip"]');
+    const t = document.querySelector('[data-slot="tooltip-popup"]');
     return t ? t.getBoundingClientRect().right : null;
   });
   const box = await rtlBtn.boundingBox();

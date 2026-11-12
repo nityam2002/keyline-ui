@@ -5,7 +5,7 @@ import {
   Drawer,
   DrawerBody,
   DrawerClose,
-  DrawerContent,
+  DrawerPopup,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
@@ -49,7 +49,7 @@ export function DrawerSpecimen() {
             <DrawerTrigger render={<Button />} data-testid="dr-bottom">
               Report damage
             </DrawerTrigger>
-            <DrawerContent data-testid="dr-bottom-pop">
+            <DrawerPopup data-testid="dr-bottom-pop">
               <DrawerHeader>
                 <DrawerTitle>Report a damaged pallet</DrawerTitle>
                 <DrawerDescription>TR-4492 at bay 2. The shipper gets a copy.</DrawerDescription>
@@ -63,13 +63,13 @@ export function DrawerSpecimen() {
                   Report
                 </DrawerClose>
               </DrawerFooter>
-            </DrawerContent>
+            </DrawerPopup>
           </Drawer>
           <Drawer side="end" onOpenChange={(o, d) => !o && setLog(`closed (${d.reason})`)}>
             <DrawerTrigger render={<Button />} data-testid="dr-end">
               Trailer details
             </DrawerTrigger>
-            <DrawerContent data-testid="dr-end-pop">
+            <DrawerPopup data-testid="dr-end-pop">
               <DrawerHeader>
                 <DrawerTitle>TR-4492</DrawerTitle>
                 <DrawerDescription>From Antwerp, 18 pallets, reefer at 4 °C.</DrawerDescription>
@@ -81,13 +81,13 @@ export function DrawerSpecimen() {
               <DrawerFooter>
                 <DrawerClose render={<Button layout="cell" />}>Close</DrawerClose>
               </DrawerFooter>
-            </DrawerContent>
+            </DrawerPopup>
           </Drawer>
           <Drawer snapPoints={[0.45, 1]} onOpenChange={(o, d) => !o && setLog(`closed (${d.reason})`)}>
             <DrawerTrigger render={<Button />} data-testid="dr-snap">
               Bay 2 log (snap points)
             </DrawerTrigger>
-            <DrawerContent data-testid="dr-snap-pop">
+            <DrawerPopup data-testid="dr-snap-pop">
               <DrawerHeader>
                 <DrawerTitle>Bay 2 log</DrawerTitle>
                 <DrawerDescription>Opens at 45% of the screen; drag up for the full log.</DrawerDescription>
@@ -100,7 +100,7 @@ export function DrawerSpecimen() {
                   </p>
                 ))}
               </DrawerBody>
-            </DrawerContent>
+            </DrawerPopup>
           </Drawer>
         </div>
         <p className={ui.note} data-testid="dr-log">
@@ -113,7 +113,7 @@ export function DrawerSpecimen() {
           <DrawerTrigger render={<Button />} data-testid="dr-rtl">
             تفاصيل المقطورة
           </DrawerTrigger>
-          <DrawerContent data-testid="dr-rtl-pop">
+          <DrawerPopup data-testid="dr-rtl-pop">
             <DrawerHeader>
               <DrawerTitle>TR-4492</DrawerTitle>
             </DrawerHeader>
@@ -123,7 +123,7 @@ export function DrawerSpecimen() {
             <DrawerFooter>
               <DrawerClose render={<Button layout="cell" />}>إغلاق</DrawerClose>
             </DrawerFooter>
-          </DrawerContent>
+          </DrawerPopup>
         </Drawer>
       </div>
     </div>

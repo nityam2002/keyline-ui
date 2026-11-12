@@ -442,7 +442,7 @@
     .kl-select-panel,
     .kl-ms-list,
     .kl-cmd-list,
-    .kl-popover,
+    [data-slot="popover-popup"],
     .kl-tabs-list,
     [data-slot="segmented"],
     [data-slot="toggle-group"],

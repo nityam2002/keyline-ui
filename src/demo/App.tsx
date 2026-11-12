@@ -62,7 +62,7 @@ import { ScrollArea } from "@/registry/keyline/ui/scroll-area";
 import {
   Popover,
   PopoverTrigger,
-  PopoverContent,
+  PopoverPopup,
   PopoverHeader,
   PopoverBody,
   PopoverFooter,
@@ -303,7 +303,7 @@ function Bar({
           <PopoverTrigger render={<Button className="ms-auto" />}>
             Display {changed ? <ButtonAffix>{changed}</ButtonAffix> : null}
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-[min(360px,calc(100vw-24px))]">
+          <PopoverPopup align="end" className="w-[min(360px,calc(100vw-24px))]">
             <PopoverHeader title="Display" description="Applies to every page here, overlays included." />
             <PopoverBody>
               <DisplaySetting
@@ -364,7 +364,7 @@ function Bar({
                 Reset to defaults
               </Button>
             </PopoverFooter>
-          </PopoverContent>
+          </PopoverPopup>
         </Popover>
       ) : null}
     </header>
@@ -1751,7 +1751,7 @@ function Specimen() {
     {
       id: "dialog",
       title: "Dialog",
-      note: "Install: npx shadcn@latest add @keyline-ui/dialog. Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose.",
+      note: "Install: npx shadcn@latest add @keyline-ui/dialog. Dialog, DialogTrigger, DialogPopup, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose.",
       states: [
         "Header, scrolling body, footer cells",
         "A form inside: Enter saves, invalid name keeps it open",
@@ -1762,7 +1762,7 @@ function Specimen() {
     {
       id: "alert-dialog",
       title: "Alert dialog",
-      note: "Install: npx shadcn@latest add @keyline-ui/alert-dialog (ships the dialog item). AlertDialog, AlertDialogTrigger, AlertDialogContent from dialog.",
+      note: "Install: npx shadcn@latest add @keyline-ui/alert-dialog (ships the dialog item). AlertDialog, AlertDialogTrigger, AlertDialogPopup, AlertDialogContent from dialog.",
       states: [
         "Destructive: the ! cell, focus on the safe action",
         "Primary tone: the ? cell",

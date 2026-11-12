@@ -16,7 +16,7 @@ import {
 import {
   Drawer,
   DrawerTrigger,
-  DrawerContent,
+  DrawerPopup,
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
@@ -135,7 +135,7 @@ export function ReleaseDrawer() {
         <DrawerTrigger render={<Button />} data-testid="lab-drawer">
           Open a drawer to throw
         </DrawerTrigger>
-        <DrawerContent data-testid="lab-drawer-pop">
+        <DrawerPopup data-testid="lab-drawer-pop">
           <DrawerHeader>
             <DrawerTitle>Seal check, trailer TR-4492</DrawerTitle>
             <DrawerDescription>
@@ -148,7 +148,7 @@ export function ReleaseDrawer() {
           <DrawerFooter>
             <DrawerClose render={<Button layout="cell" variant="primary" />}>Done</DrawerClose>
           </DrawerFooter>
-        </DrawerContent>
+        </DrawerPopup>
       </Drawer>
     </div>
   );

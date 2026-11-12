@@ -8,7 +8,7 @@ test("popover: a detached popover keeps its cut at rest and unfolds or fades on 
   const t = p.getByTestId("av-more");
   await t.scrollIntoViewIfNeeded();
   await t.click();
-  const pop = p.locator(".kl-popover-float").last();
+  const pop = p.locator("[data-slot=popover-popup][data-detached]").last();
   await pop.waitFor({ state: "attached" });
   await p.waitForTimeout(60); // timing: sample the entry 60ms in, while it is still on the way in
   const mid = await pop.evaluate((e) => [getComputedStyle(e).clipPath, getComputedStyle(e).opacity]);

@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogBody,
   DialogClose,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -36,7 +36,7 @@ export function NewClient() {
       </ul>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger render={<Button className="justify-self-start" />}>Add a client</DialogTrigger>
-        <DialogContent>
+        <DialogPopup>
           <DialogHeader>
             <DialogTitle>Add a client</DialogTitle>
             <DialogDescription>They join Dwight&apos;s accounts until you assign a rep.</DialogDescription>
@@ -72,7 +72,7 @@ export function NewClient() {
               Add client
             </Button>
           </DialogFooter>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
     </div>
   );

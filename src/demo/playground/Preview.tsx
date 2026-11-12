@@ -32,7 +32,7 @@ import {
   Dialog,
   DialogTrigger,
   DialogClose,
-  DialogContent,
+  DialogPopup,
   DialogHeader,
   DialogBody,
   DialogFooter,
@@ -43,7 +43,7 @@ import {
   Sheet,
   SheetTrigger,
   SheetClose,
-  SheetContent,
+  SheetPopup,
   SheetHeader,
   SheetBody,
   SheetFooter,
@@ -53,7 +53,7 @@ import {
 import {
   Popover,
   PopoverTrigger,
-  PopoverContent,
+  PopoverPopup,
   PopoverHeader,
   PopoverBody,
   PopoverFooter,
@@ -192,7 +192,7 @@ function BookDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button />}>Book pickup…</DialogTrigger>
-      <DialogContent>
+      <DialogPopup>
         <DialogHeader>
           <DialogTitle>Book a pickup</DialogTitle>
           <DialogDescription>
@@ -242,7 +242,7 @@ function BookDialog() {
             Book pickup
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }
@@ -251,7 +251,7 @@ function CarrierSheet() {
   return (
     <Sheet>
       <SheetTrigger render={<Button variant="quiet" />}>Carrier details</SheetTrigger>
-      <SheetContent>
+      <SheetPopup>
         <SheetHeader>
           <SheetTitle>DHL Freight</SheetTitle>
           <SheetDescription>Contract FR-2291 · renews 1 March 2027</SheetDescription>
@@ -280,7 +280,7 @@ function CarrierSheet() {
             Upload certificate
           </Button>
         </SheetFooter>
-      </SheetContent>
+      </SheetPopup>
     </Sheet>
   );
 }
@@ -487,7 +487,7 @@ function FilterPopover() {
       <PopoverTrigger render={<Button layout="cell" />}>
         Filters <ButtonAffix>2</ButtonAffix>
       </PopoverTrigger>
-      <PopoverContent align="end" attachWeight={1}>
+      <PopoverPopup align="end" attachWeight={1}>
         <PopoverHeader title="Filter shipments" description="Applies to every view." />
         <PopoverBody>
           <div className="grid">
@@ -509,7 +509,7 @@ function FilterPopover() {
           <PopoverClose render={<Button layout="cell" variant="quiet" />}>Clear</PopoverClose>
           <PopoverClose render={<Button layout="cell" variant="primary" />}>Apply</PopoverClose>
         </PopoverFooter>
-      </PopoverContent>
+      </PopoverPopup>
     </Popover>
   );
 }

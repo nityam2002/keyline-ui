@@ -2390,7 +2390,7 @@ for (const [width, reduce] of run("overlays")
   demo = await docs(p, "tooltip");
   d = demo(0);
   await box(d).getByRole("button", { name: "Email to client" }).focus();
-  const tip = p.locator("[data-slot=tooltip]");
+  const tip = p.locator("[data-slot=tooltip-popup]");
   await tip.waitFor({ timeout: 3000 }).catch(() => {});
   ok((await tip.textContent())?.includes("⌘E"), `${tag} tooltip: focus shows the shortcut`);
   await p.keyboard.press("Enter");

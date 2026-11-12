@@ -5,6 +5,7 @@ import { Drawer as DrawerPrimitive } from "@base-ui/react/drawer";
 
 import { cn } from "@/lib/utils";
 import { scopeProps, useKeylineScope, type KeylineScope } from "../lib/keyline-scope";
+import { resolveClassName, resolveStyle } from "../lib/keyline-render";
 import { releaseEasing, velocityTracker } from "../lib/keyline-motion";
 import { DialogFooter, DialogHeader } from "./dialog";
 
@@ -30,7 +31,8 @@ type DrawerProps = Omit<React.ComponentProps<typeof DrawerPrimitive.Root>, "swip
   side?: Side;
 };
 
-function Drawer({ side = "bottom", children, ...props }: DrawerProps) {
+/** The drawer's root: Base UI's Drawer.Root with a logical `side` in place of the physical `swipeDirection`. */
+function Drawer({ side = "bottom", children, ...props }: DrawerProps): React.ReactElement {
   // read only while the drawer is mounted (the probe sits in its portal); a closed drawer costs nothing
   const [marker, scope, probe] = useKeylineScope(false);
   return (
@@ -43,52 +45,122 @@ function Drawer({ side = "bottom", children, ...props }: DrawerProps) {
   );
 }
 
-const DrawerTrigger = DrawerPrimitive.Trigger;
-const DrawerClose = DrawerPrimitive.Close;
+/** The element that opens the drawer. Rendered as another part (`render={<Button />}`), the element is that part's
+ * and carries its data-slot. */
+function DrawerTrigger(props: DrawerPrimitive.Trigger.Props): React.ReactElement {
+  return <DrawerPrimitive.Trigger {...props} data-slot="drawer-trigger" />;
+}
 
-type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive.Popup> & {
+function DrawerClose(props: DrawerPrimitive.Close.Props): React.ReactElement {
+  return <DrawerPrimitive.Close {...props} data-slot="drawer-close" />;
+}
+
+/* the scrim fades as the drawer is swiped away; with snap points a lower snap is a resting state, not a dismissal,
+   so the scrim keeps half its strength there */
+const backdrop = cn(
+  "fixed inset-0 z-(--kl-z-overlay) bg-kl-scrim",
+  "opacity-[max(var(--kl-scrim-min,0),calc(1_-_var(--drawer-swipe-progress,0)))]",
+  "transition-opacity duration-[calc(var(--kl-t-unfold)*1.5)] ease-linear data-swiping:duration-0",
+  "data-ending-style:opacity-0 data-ending-style:duration-(--kl-t-fold) data-starting-style:opacity-0",
+  "data-kl-snap:[--kl-scrim-min:0.5] data-kl-snap:data-ending-style:[--kl-scrim-min:0] data-kl-snap:data-starting-style:[--kl-scrim-min:0]",
+);
+
+/*
+ * The drawer: edge-attached, the page-facing edge at region weight (as Sheet); it follows the finger
+ * (--drawer-swipe-movement-*) and slides from its side on the system's unfold timing. A sheet-sized travel gets 1.25×
+ * the unfold (200ms), inside the 220ms everyday cap; it leaves on the fold. Released by the hand, the curve starts at
+ * the release velocity (useReleaseFromHand).
+ */
+const popup = cn(
+  "group/drawer kl-frame pointer-events-auto fixed flex flex-col border-0 bg-kl-cell text-kl-ink outline-0",
+  "[--kl-cell:var(--kl-raised)] [--kl-move:calc(var(--kl-t-unfold)*1.25)]",
+  "transition-[transform] duration-(--kl-move) ease-(--kl-ease-out) will-change-transform",
+  "data-swiping:duration-0 data-swiping:select-none",
+  "data-ending-style:ease-(--kl-ease-in) data-ending-style:[--kl-move:calc(var(--kl-t-fold)*1.25)]",
+  "data-kl-released:not-data-swiping:ease-[var(--kl-release-back,var(--kl-ease-out))]",
+  "data-kl-released:data-ending-style:ease-[var(--kl-release-out,var(--kl-ease-out))]",
+  // bottom: full width, its top edge faces the page; the cut on its top-start corner
+  "data-[swipe-direction=down]:inset-x-0 data-[swipe-direction=down]:bottom-0",
+  "data-[swipe-direction=down]:h-[var(--kl-drawer-size,auto)] data-[swipe-direction=down]:max-h-[calc(100dvh-48px)]",
+  "data-[swipe-direction=down]:border-t-(length:--kl-k3)",
+  "data-[swipe-direction=down]:[transform:translateY(calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]",
+  "data-[swipe-direction=down]:data-ending-style:[transform:translateY(100%)] data-[swipe-direction=down]:data-starting-style:[transform:translateY(100%)]",
+  // after a grip, the header sits closer to the edge
+  "data-[swipe-direction=down]:[&>[data-slot=drawer-grip]+[data-slot=dialog-header]]:pt-1",
+  // end/start: full height; the page-facing edge is the inline one; no cut (its corner is the screen's)
+  "[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:inset-y-0",
+  "[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:w-[min(var(--kl-drawer-size,400px),calc(100vw-40px))]",
+  "[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:[--kl-cut-size:0px]",
+  "[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:[transform:translateX(var(--drawer-swipe-movement-x,0px))]",
+  "data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:border-l-(length:--kl-k3)",
+  "data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:border-r-(length:--kl-k3)",
+  "data-[swipe-direction=right]:data-ending-style:[transform:translateX(100%)] data-[swipe-direction=right]:data-starting-style:[transform:translateX(100%)]",
+  "data-[swipe-direction=left]:data-ending-style:[transform:translateX(-100%)] data-[swipe-direction=left]:data-starting-style:[transform:translateX(-100%)]",
+);
+
+/* the grip: a short ink bar on the page-facing edge (decorative: Escape and Close always work) */
+const grip = cn(
+  "grid h-[18px] flex-none cursor-grab touch-none place-items-center",
+  "before:h-[3px] before:w-10 before:bg-kl-ink-3 forced-colors:before:bg-[CanvasText]",
+  "group-data-swiping/drawer:cursor-grabbing group-data-swiping/drawer:before:bg-kl-ink",
+  "group-data-[swipe-direction=right]/drawer:absolute group-data-[swipe-direction=right]/drawer:inset-y-0 group-data-[swipe-direction=right]/drawer:left-0",
+  "group-data-[swipe-direction=left]/drawer:absolute group-data-[swipe-direction=left]/drawer:inset-y-0 group-data-[swipe-direction=left]/drawer:right-0",
+  "group-data-[swipe-direction=right]/drawer:z-1 group-data-[swipe-direction=right]/drawer:h-auto group-data-[swipe-direction=right]/drawer:w-[18px]",
+  "group-data-[swipe-direction=left]/drawer:z-1 group-data-[swipe-direction=left]/drawer:h-auto group-data-[swipe-direction=left]/drawer:w-[18px]",
+  "group-data-[swipe-direction=right]/drawer:before:h-10 group-data-[swipe-direction=right]/drawer:before:w-[3px]",
+  "group-data-[swipe-direction=left]/drawer:before:h-10 group-data-[swipe-direction=left]/drawer:before:w-[3px]",
+);
+
+type DrawerPopupProps = DrawerPrimitive.Popup.Props & {
   /** Height (bottom) or width (end/start), px or any CSS length. */
   size?: number | string;
   /** Hide the grip cell (it is decorative: the swipe works anywhere on the drawer, Escape and Close always do). */
   hideGrip?: boolean;
-  container?: React.ComponentProps<typeof DrawerPrimitive.Portal>["container"];
+  /** Where the portal renders (defaults to <body>). */
+  container?: DrawerPrimitive.Portal.Props["container"];
+  /** Props for Base UI's Drawer.Portal. */
+  portalProps?: Omit<DrawerPrimitive.Portal.Props, "container" | "children">;
 };
 
-function DrawerContent({
+/**
+ * The drawer: Base UI's Portal, Backdrop, Viewport and Popup in one part. It carries the configuration of the place
+ * the Drawer is written (read by Drawer, which needs the direction to pick the swipe side).
+ */
+function DrawerPopup({
   className,
   style,
   size,
   hideGrip,
   container,
+  portalProps,
   children,
   ref: refProp,
   ...props
-}: DrawerContentProps) {
+}: DrawerPopupProps): React.ReactElement {
   const { side, scope, snap, probe } = React.useContext(DrawerSide);
   const len = typeof size === "number" ? `${size}px` : size;
   const ref = useReleaseFromHand(refProp);
   return (
-    <DrawerPrimitive.Portal container={container}>
+    <DrawerPrimitive.Portal container={container} {...portalProps}>
       {probe}
       <DrawerPrimitive.Backdrop
         data-kl-snap={snap ? "" : undefined}
-        {...scopeProps(scope, { className: "kl-scrim kl-drawer-scrim" })}
+        {...scopeProps(scope, { className: backdrop })}
+        data-slot="drawer-backdrop"
       />
-      <DrawerPrimitive.Viewport {...scopeProps(scope, { className: "kl-drawer-vp" })}>
+      <DrawerPrimitive.Viewport
+        {...scopeProps(scope, { className: "pointer-events-none fixed inset-0 z-(--kl-z-overlay)" })}
+        data-slot="drawer-viewport"
+      >
         <DrawerPrimitive.Popup
-          data-slot="drawer"
           data-side={side}
           ref={ref}
-          className={cn("kl-frame kl-drawer", className)}
-          style={(state) =>
-            ({
-              ...(len ? { "--kl-drawer-size": len } : null),
-              ...(typeof style === "function" ? style(state) : style),
-            }) as React.CSSProperties
-          }
+          className={resolveClassName(popup, className)}
+          style={resolveStyle(len ? ({ "--kl-drawer-size": len } as React.CSSProperties) : undefined, style)}
           {...props}
+          data-slot="drawer-popup"
         >
-          {hideGrip ? null : <span className="kl-drawer-grip" aria-hidden />}
+          {hideGrip ? null : <span data-slot="drawer-grip" className={grip} aria-hidden />}
           {children}
         </DrawerPrimitive.Popup>
       </DrawerPrimitive.Viewport>
@@ -150,27 +222,51 @@ function useReleaseFromHand(forward?: React.Ref<HTMLDivElement>) {
   }, []);
 }
 
-/** The scrolling body. A swipe that starts here scrolls first and dismisses only from the scroll edge. */
-function DrawerBody({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
-  return <DrawerPrimitive.Content data-slot="drawer-body" className={cn("kl-drawer-b", className)} {...props} />;
+/** The scrolling body (Base UI's Drawer.Content). A swipe that starts here scrolls first and dismisses only from the
+ * scroll edge. */
+function DrawerBody({ className, ...props }: DrawerPrimitive.Content.Props): React.ReactElement {
+  return (
+    <DrawerPrimitive.Content
+      className={resolveClassName(
+        "grid min-h-0 flex-[1_1_auto] content-start gap-4 overflow-y-auto overscroll-contain p-[18px]",
+        className,
+      )}
+      {...props}
+      data-slot="drawer-body"
+    />
+  );
 }
 
-function DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {
-  return <DrawerPrimitive.Title className={cn("kl-dialog-title", className)} {...props} />;
+function DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props): React.ReactElement {
+  return (
+    <DrawerPrimitive.Title
+      className={resolveClassName("m-0 text-(length:--kl-text-title)/[1.2] font-(--kl-weight-strong)", className)}
+      {...props}
+      data-slot="drawer-title"
+    />
+  );
 }
 
-function DrawerDescription({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Description>) {
-  return <DrawerPrimitive.Description className={cn("kl-dialog-desc", className)} {...props} />;
+function DrawerDescription({ className, ...props }: DrawerPrimitive.Description.Props): React.ReactElement {
+  return (
+    <DrawerPrimitive.Description
+      className={resolveClassName("m-0 text-kl-ink-2", className)}
+      {...props}
+      data-slot="drawer-description"
+    />
+  );
 }
 
+const DrawerRoot = Drawer;
 const DrawerHeader = DialogHeader;
 const DrawerFooter = DialogFooter;
 
 export {
   Drawer,
+  DrawerRoot,
   DrawerTrigger,
   DrawerClose,
-  DrawerContent,
+  DrawerPopup,
   DrawerHeader,
   DrawerBody,
   DrawerFooter,
