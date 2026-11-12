@@ -3,7 +3,7 @@
 import { Pause, Play } from "lucide-react"
 import * as React from "react"
 import { Toggle } from "@/components/keyline/ui/toggle"
-import { chainsOf, isIndex, createTracer, INTERVAL, KEY_LEVEL, splineFlat, VIEW, type Traced } from "@site/lib/contours"
+import { chainsOf, isIndex, createTracer, f64, INTERVAL, KEY_LEVEL, nth, splineFlat, VIEW, type Traced } from "@site/lib/contours"
 import { createTerrain, MAX_REACH, type Box } from "@site/lib/terrain"
 
 // past the visible slice by more than the terrain ever moves a point (MAX_REACH), so no cut end can drift into view
@@ -31,7 +31,7 @@ function cutChains(src: readonly { pts: Float64Array; closed: boolean }[], box: 
   for (const c of src) {
     const n = c.pts.length / 2
     const inside = (k: number) => {
-      const x = c.pts[2 * k], y = c.pts[2 * k + 1]
+      const x = f64(c.pts, 2 * k), y = f64(c.pts, 2 * k + 1)
       return x > box.x0 && x < box.x1 && y > box.y0 && y < box.y1
     }
     const all = Array.from({ length: n }, (_, k) => inside(k))
@@ -39,8 +39,8 @@ function cutChains(src: readonly { pts: Float64Array; closed: boolean }[], box: 
       if (idx.length < 3) return
       const rest = new Float64Array(idx.length * 2)
       idx.forEach((k, j) => {
-        rest[2 * j] = c.pts[2 * k]
-        rest[2 * j + 1] = c.pts[2 * k + 1]
+        rest[2 * j] = f64(c.pts, 2 * k)
+        rest[2 * j + 1] = f64(c.pts, 2 * k + 1)
       })
       out.push({ rest, live: new Float64Array(rest), n: idx.length, closed, key })
     }
@@ -72,10 +72,12 @@ function cutChains(src: readonly { pts: Float64Array; closed: boolean }[], box: 
 /** the same Catmull-Rom spline as splineFlat (contours.ts), traced onto a canvas path */
 function traceSpline(ctx: CanvasRenderingContext2D, p: Float64Array, n: number, closed: boolean) {
   const ix = (j: number) => 2 * (closed ? (j + n) % n : Math.min(n - 1, Math.max(0, j)))
-  ctx.moveTo(p[0], p[1])
+  ctx.moveTo(f64(p, 0), f64(p, 1))
   for (let j = 0; j < (closed ? n : n - 1); j++) {
     const a = ix(j - 1), b = ix(j), c = ix(j + 1), e = ix(j + 2)
-    ctx.bezierCurveTo(p[b] + (p[c] - p[a]) / 6, p[b + 1] + (p[c + 1] - p[a + 1]) / 6, p[c] - (p[e] - p[b]) / 6, p[c + 1] - (p[e + 1] - p[b + 1]) / 6, p[c], p[c + 1])
+    const ax = f64(p, a), ay = f64(p, a + 1), bx = f64(p, b), by = f64(p, b + 1)
+    const cx = f64(p, c), cy = f64(p, c + 1), ex = f64(p, e), ey = f64(p, e + 1)
+    ctx.bezierCurveTo(bx + (cx - ax) / 6, by + (cy - ay) / 6, cx - (ex - bx) / 6, cy - (ey - by) / 6, cx, cy)
   }
   if (closed) ctx.closePath()
 }
@@ -121,7 +123,7 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
     if (!el || !svg || !canvas || !ctx) return
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)")
     // the resting drawing, read once before anything moves it
-    const paths = [...svg.querySelectorAll<SVGPathElement>("path.s-contour, path.s-keyline")].map((p) => ({ p, key: p.classList.contains("s-keyline"), index: p.classList.contains("s-index"), level: Number(p.dataset.level ?? KEY_LEVEL), rest: chainsOf(p.getAttribute("d") ?? ""), chains: [] as Chain[] }))
+    const paths = [...svg.querySelectorAll<SVGPathElement>("path.s-contour, path.s-keyline")].map((p) => ({ p, key: p.classList.contains("s-keyline"), index: p.classList.contains("s-index"), level: Number(p.dataset["level"] ?? KEY_LEVEL), rest: chainsOf(p.getAttribute("d") ?? ""), chains: [] as Chain[] }))
     // the three inks, read from the SVG so CSS styles both renderers: gray contours, blue index contours, the keyline
     const inks = [paths.find((p) => !p.key && !p.index)?.p, paths.find((p) => p.index)?.p, paths.find((p) => p.key)?.p]
     const inkOf = (p: (typeof paths)[number]) => (p.key ? 2 : p.index ? 1 : 0)
@@ -153,7 +155,10 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
       }
       // standing hills need no new tracing: only one that is rising or wearing away changes the lines
       let same = traced && hills.length === drawnHills.length
-      for (let i = 0; same && i < hills.length; i++) same = Math.abs(hills[i].h - drawnHills[i]) < 0.02 && hills[i].x === drawnAt[i]
+      for (let i = 0; same && i < hills.length; i++) {
+        const b = nth(hills, i)
+        same = Math.abs(b.h - nth(drawnHills, i)) < 0.02 && b.x === nth(drawnAt, i)
+      }
       if (same) return
       drawnHills = hills.map((b) => b.h)
       drawnAt = hills.map((b) => b.x)
@@ -184,15 +189,16 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
       for (const { chains } of paths)
         for (const c of chains)
           for (let i = 0; i < c.n; i++) {
-            terrain.displace(c.rest[2 * i], c.rest[2 * i + 1], out)
-            c.live[2 * i] = c.rest[2 * i] + out[0]
-            c.live[2 * i + 1] = c.rest[2 * i + 1] + out[1]
+            const x = f64(c.rest, 2 * i), y = f64(c.rest, 2 * i + 1)
+            terrain.displace(x, y, out)
+            c.live[2 * i] = x + f64(out, 0)
+            c.live[2 * i + 1] = y + f64(out, 1)
           }
       // the spot heights ride on their contours: the same map at their anchor
       for (const l of labels) {
         terrain.displace(l.x, l.y, out)
-        l.t.setAttribute("x", (l.x + out[0]).toFixed(1))
-        l.t.setAttribute("y", (l.y + out[1]).toFixed(1))
+        l.t.setAttribute("x", (l.x + f64(out, 0)).toFixed(1))
+        l.t.setAttribute("y", (l.y + f64(out, 1)).toFixed(1))
       }
     }
     // while it moves: the canvas, in the SVG's own colours (read from its paths, so the
@@ -222,7 +228,7 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
     // at rest (paused, offscreen, hidden tab): hand the moved land back to the SVG, once, and let the canvas go
     const settle = () => {
       for (const { p, chains } of paths) p.setAttribute("d", chains.map((c) => splineFlat(c.live, c.n, c.closed)).join(""))
-      el.dataset.live = "false"
+      el.dataset["live"] = "false"
     }
 
     // the pointer (a mouse or a pen: touch scrolls the page and never bends the land)
@@ -291,7 +297,7 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
       reshape()
       move()
       paint()
-      el.dataset.live = "true"
+      el.dataset["live"] = "true"
     }
     const sync = () => {
       const run = visible && !document.hidden && !reduce.matches && !pausedRef.current
@@ -306,7 +312,7 @@ export function Backdrop({ children }: { children: React.ReactNode }) {
     }
     wake.current = sync
     const io = new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting
+      if (e) visible = e.isIntersecting // one element observed: every callback carries its entry
       sync()
     })
     io.observe(el)

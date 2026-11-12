@@ -4,13 +4,13 @@ Playwright Test specs, one file per component or behaviour (`<component>[.<aspec
 (the installed Chrome channel) and WebKit against a development-mode build of the demo app (`src/demo/`).
 
 ```sh
-npm run test:browser                        # every spec, both engines (builds and serves the app itself)
-npx playwright test toolbar menu            # specs whose file name matches
-npx playwright test --project=chromium      # one engine, without the @timing pass
+pnpm test:browser                               # every spec, both engines (builds and serves the app itself)
+pnpm exec playwright test toolbar menu          # specs whose file name matches
+pnpm exec playwright test --project=chromium    # one engine, without the @timing pass
 ```
 
 A failed test is retried once with a trace, kept under `.artifacts/playwright/` (open a trace with
-`npx playwright show-trace <file>`). A test that fails and then passes on its one retry is reported as flaky.
+`pnpm exec playwright show-trace <file>`). A test that fails and then passes on its one retry is reported as flaky.
 
 ## Writing a spec
 
@@ -35,7 +35,7 @@ test("toolbar: arrows move focus, Home and End jump", async ({ open, ok, eng }) 
   `waitForFunction`). A fixed `p.waitForTimeout(ms)` is kept only where the duration itself is the subject
   (a held press, a hover delay, a hold-then-fade, sampling motion) and is marked `// timing:` with why.
 - No screenshots or pixel baselines in specs; assert on geometry, computed styles and the accessibility tree.
-  For looking at a change by eye, use `npm run capture` (see .github/CONTRIBUTING.md).
+  For looking at a change by eye, use `pnpm capture` (see .github/CONTRIBUTING.md).
 - Specimen entries: a spec that works inside a few specimen entries declares them once, after its imports:
   `test.use({ only: ["toolbar", "toolbar-overflow"] })` (the entry ids in `src/demo/App.tsx`). `open()` then loads
   `?only=…`, about 0.2 s instead of 1–4 s for the whole specimen, and fails if any listed entry is missing. Leave it

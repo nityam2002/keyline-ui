@@ -70,7 +70,7 @@ function Proof() {
       </RadioGroup>
       <PanelFooter>
         <span role="status" className="flex flex-1 items-center px-3 text-[13px] text-kl-ink-2">
-          {approved === stock ? `Approved on ${chosen.label.split(" ")[0].toLowerCase()}.` : <>2,000 copies: <span className="ms-1 tabular-nums">${(2000 * chosen.price).toLocaleString("en-US")}</span></>}
+          {approved === stock ? `Approved on ${(chosen.label.split(" ")[0] ?? "").toLowerCase()}.` : <>2,000 copies: <span className="ms-1 tabular-nums">${(2000 * chosen.price).toLocaleString("en-US")}</span></>}
         </span>
         <Button layout="cell" variant="primary" disabled={approved === stock} onClick={() => setApproved(stock)}>
           Approve proof
@@ -156,7 +156,7 @@ function Alerts() {
 
 const doc = (slug: string) => `/docs/components/${slug}`
 type Plate = { name: string; parts: { label: string; href: string }[]; render: () => React.ReactNode }
-const PLATES: Plate[] = [
+const PLATES: [Plate, ...Plate[]] = [
   { name: "Survey", parts: [{ label: "Panel", href: doc("panel") }, { label: "Segmented", href: doc("segmented") }, { label: "Stat", href: doc("stat") }], render: () => <Survey /> },
   { name: "Proof", parts: [{ label: "Panel", href: doc("panel") }, { label: "Radio group", href: doc("radio-group") }, { label: "Button", href: doc("button") }], render: () => <Proof /> },
   { name: "Press runs", parts: [{ label: "Toolbar", href: doc("toolbar") }, { label: "Table", href: doc("table") }, { label: "Status", href: doc("status") }], render: () => <PressRuns /> },
@@ -168,7 +168,7 @@ const PLATES: Plate[] = [
  * every turn (the title block's mark absorbs it). */
 export function HeroPlates({ onTurn }: { onTurn?: () => void }) {
   const [i, setI] = React.useState(0)
-  const plate = PLATES[i]
+  const plate = PLATES[i] ?? PLATES[0] // i wraps modulo PLATES.length, so the fallback is never taken
   // a plate keeps the height it opened at: it stands on the stage's floor, so if a filter shortened it, its top
   // (and the control just pressed) would drop away from the pointer. The frame keeps its room instead.
   const plateRef = React.useRef<HTMLDivElement>(null)

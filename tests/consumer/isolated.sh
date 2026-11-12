@@ -3,7 +3,7 @@
 # forgets a dependency still works there. This builds a bare app and adds items that share no CSS-level
 # dependency, one at a time, checking after each add that the rules it relies on arrived and the app
 # type-checks and builds.
-#   Run through scripts/consumer-check.sh (npm run test:consumer), which builds and serves the registry and
+#   Run through scripts/consumer-check.sh (pnpm test:consumer), which builds and serves the registry and
 #   sets KEYLINE_REGISTRY. By hand: KEYLINE_REGISTRY='<url>/r/{name}.json' tests/consumer/isolated.sh <empty-dir>
 set -euo pipefail
 DIR=${1:?usage: isolated.sh <empty-dir>}

@@ -4,7 +4,7 @@
   "title": "Select",
   "description": "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts (SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectSeparator).",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

@@ -7,7 +7,7 @@ the latest deployed version, so deploy the site only from a release commit.
 ## First release only
 
 The site's origin is `https://keyline-ui.dev`, set as `"homepage"` in `package.json`. The registry catalog and
-the site's install commands read it, and `npm test` fails unless every install command in `README.md` and
+the site's install commands read it, and `pnpm test` fails unless every install command in `README.md` and
 `docs/usage.md` uses it. If the origin ever changes, change all three together.
 
 1. Add `"repository"` to `package.json` once the GitHub repository exists.
@@ -21,15 +21,15 @@ the site's install commands read it, and `npm test` fails unless every install c
 2. Rebuild and check, on a clean checkout:
 
    ```sh
-   npm ci
-   npm run registry:build      # site/public/r must not change; if it does, commit it
-   npm run check
-   npm run test:consumer
+   pnpm install --frozen-lockfile
+   pnpm registry:build      # site/public/r must not change; if it does, commit it
+   pnpm check
+   pnpm test:consumer
    ```
 
 3. Commit, tag `v<version>`, push, and let CI pass.
-4. Deploy the site from that commit. Any Next.js host works: build with `npm run site:build` and serve with
-   `npm run site:start` (or the platform's equivalent for `next build site`). The site must serve `site/public`
+4. Deploy the site from that commit. Any Next.js host works: build with `pnpm site:build` and serve with
+   `pnpm site:start` (or the platform's equivalent for `next build site`). The site must serve `site/public`
    at the root.
    Build it with `KEYLINE_SITE_ENV=production` (Vercel's production deployments set `VERCEL_ENV` instead): only
    that build may be indexed by search engines and lists its sitemap. Every other build sends `noindex`

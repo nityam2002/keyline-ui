@@ -16,7 +16,7 @@ const FILES: Record<string, string[]> = {
 
 export function DriveFolder() {
   const [depth, setDepth] = useState(PATH.length)
-  const here = PATH[depth - 1]
+  const here = PATH[depth - 1] ?? "Shared drive"
 
   return (
     <div className="grid gap-4">
@@ -28,7 +28,7 @@ export function DriveFolder() {
         }))}
       />
       <ul aria-label={`In ${here}`} className="m-0 grid min-h-8 list-none items-center gap-2 p-0 text-[14px]">
-        {FILES[here].map((f) => {
+        {(FILES[here] ?? []).map((f) => {
           const next = PATH[depth]
           return (
             <li key={f}>

@@ -4,7 +4,7 @@
   "title": "Date picker",
   "description": "Single-date calendar and picker on react-day-picker, sharing the range calendar's look, wording and bounds; the chosen day floods ink. DateTimePicker adds a time row (a TimeField cell, 24- or 12-hour, with optional minTime/maxTime) under the calendar.",
   "dependencies": [
-    "@base-ui/react",
+    "@base-ui/react@1.9.0",
     "react-day-picker@9.14.0"
   ],
   "registryDependencies": [

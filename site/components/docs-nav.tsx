@@ -34,7 +34,7 @@ function NavLink({ onClick, ...props }: React.ComponentProps<typeof Link>) {
       onClick={(e) => {
         onClick?.(e)
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-        choose(String(props.href))
+        choose(typeof props.href === "string" ? props.href : (props.href.pathname ?? ""))
       }}
     />
   )

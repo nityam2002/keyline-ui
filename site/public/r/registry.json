@@ -1073,7 +1073,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react",
+        "@base-ui/react@1.9.0",
         "class-variance-authority"
       ],
       "css": {
@@ -1291,7 +1291,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -1386,7 +1386,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -1602,7 +1602,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -1692,7 +1692,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -1723,7 +1723,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -2043,7 +2043,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -2364,7 +2364,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react",
+        "@base-ui/react@1.9.0",
         "react-day-picker@9.14.0"
       ],
       "css": {
@@ -2697,7 +2697,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react",
+        "@base-ui/react@1.9.0",
         "react-day-picker@9.14.0"
       ],
       "css": {
@@ -2803,7 +2803,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -2950,7 +2950,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -3065,7 +3065,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -3199,7 +3199,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -3368,7 +3368,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -3489,7 +3489,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -3675,7 +3675,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -4821,7 +4821,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -5108,7 +5108,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -5191,7 +5191,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -5431,7 +5431,7 @@
       ],
       "docs": "Size the root (height or max-height) with your own class: <ScrollArea className=\"h-64\" label=\"Activity\">…</ScrollArea>. scrollbars=\"vertical\" (default), \"horizontal\" or \"both\". Scrolling stays native (wheel, trackpad, touch, keyboard). Give label when nothing else names the region; the viewport is focusable while it overflows. Do not wrap Select or Multiselect lists in it: they keep their own native scroller, styled to match.",
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -5679,7 +5679,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -5884,7 +5884,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6171,7 +6171,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6322,7 +6322,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6446,7 +6446,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6483,7 +6483,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6606,7 +6606,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -6871,7 +6871,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -7420,7 +7420,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -7523,7 +7523,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -7610,7 +7610,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -7998,7 +7998,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -8096,7 +8096,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -8317,7 +8317,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -8535,7 +8535,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -8783,7 +8783,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -8894,7 +8894,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -9623,7 +9623,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -9805,7 +9805,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react",
+        "@base-ui/react@1.9.0",
         "@shadcn/react@0.3.1"
       ],
       "css": {
@@ -9936,7 +9936,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -10212,7 +10212,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -10374,7 +10374,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -10882,7 +10882,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ]
     },
     {
@@ -10928,7 +10928,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {
@@ -11084,7 +11084,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react",
+        "@base-ui/react@1.9.0",
         "cmdk"
       ],
       "css": {
@@ -11266,7 +11266,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react@1.9.0"
       ],
       "css": {
         "@layer components": {

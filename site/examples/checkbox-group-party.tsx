@@ -17,7 +17,7 @@ export function PartySupplies() {
 
   return (
     <Form className="max-w-[420px]" onFormSubmit={(v) => {
-        const n = (v.supplies as string[]).length
+        const n = (v["supplies"] as string[]).length
         setSent(`List sent to Angela: ${n} ${n === 1 ? "item" : "items"}.`)
       }}>
       <CheckboxGroup

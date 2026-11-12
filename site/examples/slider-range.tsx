@@ -13,7 +13,7 @@ const PAPER = [
 
 export function PriceRange() {
   const [range, setRange] = useState<number[]>([40, 80])
-  const [lo, hi] = range
+  const [lo = 20, hi = 120] = range
   const shown = PAPER.filter((p) => p.price >= lo && p.price <= hi)
 
   return (

@@ -79,7 +79,7 @@ function ControlledLayout() {
           <ResizablePanel id="results">
             <Pane title="Results">
               <p className={ui.note} data-testid="rz-readout">
-                Filters {Math.round(layout.filters ?? 0)}% · results {Math.round(layout.results ?? 0)}%
+                Filters {Math.round(layout["filters"] ?? 0)}% · results {Math.round(layout["results"] ?? 0)}%
               </p>
             </Pane>
           </ResizablePanel>

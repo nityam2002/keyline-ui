@@ -122,7 +122,10 @@ export async function inputDuringFade(p, loc, { lo, hi, still = false, ms, input
           let at = null
           let arrived = 0
           const on = () => {
-            if (at == null) (at = op()), (arrived = performance.now())
+            if (at == null) {
+              at = op()
+              arrived = performance.now()
+            }
           }
           addEventListener(event, on, { capture: true, passive: true })
           const s0 = performance.now()
@@ -131,7 +134,10 @@ export async function inputDuringFade(p, loc, { lo, hi, still = false, ms, input
             out.push([Math.round(performance.now() - s0), op()])
             // sample for `ms` after the input arrived (or give up 2s after sending)
             if (at == null ? performance.now() - s0 < 2000 : performance.now() - arrived < ms) requestAnimationFrame(f)
-            else (removeEventListener(event, on, { capture: true }), res({ at: at ?? sentAt, sentAt, samples: out }))
+            else {
+              removeEventListener(event, on, { capture: true })
+              res({ at: at ?? sentAt, sentAt, samples: out })
+            }
           }
           f()
         }

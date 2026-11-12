@@ -10,6 +10,28 @@ type Pt = readonly [number, number]
  * below runs well past it on every side */
 export const VIEW = { x: 0, y: -100, w: 1400, h: 700 }
 
+/** a[i] where the caller keeps i in range by construction (every lookup below is a grid, ring or chain index):
+ * reading past the end would be a bug, so it throws instead of letting undefined turn into NaN */
+export function nth<T>(a: ArrayLike<T>, i: number): T {
+  const v = a[i]
+  if (v === undefined) throw outOfRange(i, a.length)
+  return v
+}
+const outOfRange = (i: number, length: number) => new RangeError(`index ${i} is out of range (length ${length})`)
+// the same check for the typed arrays read per sample every frame (the live tracer here, the backdrop's redraw): one
+// reader per array type stays monomorphic, so V8 inlines it, where the generic nth (seeing every kind of array) would
+// cost the frame budget
+export function f64(a: Float64Array, i: number): number {
+  const v = a[i]
+  if (v === undefined) throw outOfRange(i, a.length)
+  return v
+}
+function i32(a: Int32Array, i: number): number {
+  const v = a[i]
+  if (v === undefined) throw outOfRange(i, a.length)
+  return v
+}
+
 /* ---------------- the field ---------------- */
 
 // seeded gradient noise (Perlin's, with his quintic fade): smooth, and the same on the server and in the browser
@@ -19,7 +41,7 @@ const PERM = (() => {
   for (let i = 255; i > 0; i--) {
     s = (Math.imul(s, 1664525) + 1013904223) >>> 0
     const j = s % (i + 1)
-    ;[p[i], p[j]] = [p[j], p[i]]
+    ;[p[i], p[j]] = [nth(p, j), nth(p, i)]
   }
   return Uint8Array.from([...p, ...p])
 })()
@@ -29,8 +51,8 @@ function noise(x: number, y: number) {
   const xi = Math.floor(x), yi = Math.floor(y), fx = x - xi, fy = y - yi
   const i = xi & 255, j = yi & 255
   const dot = (a: number, b: number, dx: number, dy: number) => {
-    const g = PERM[PERM[i + a] + j + b]
-    return GX[g] * dx + GY[g] * dy
+    const g = nth(PERM, nth(PERM, i + a) + j + b)
+    return nth(GX, g) * dx + nth(GY, g) * dy
   }
   const u = fx * fx * fx * (fx * (fx * 6 - 15) + 10), v = fy * fy * fy * (fy * (fy * 6 - 15) + 10)
   const a = dot(0, 0, fx, fy), b = dot(1, 0, fx - 1, fy), c = dot(0, 1, fx, fy - 1), d = dot(1, 1, fx - 1, fy - 1)
@@ -78,12 +100,12 @@ export function trace(level: number): { pts: Pt[]; closed: boolean }[] {
   const g = samples()
   // a sample exactly on the level would make a degenerate segment; nudge it off
   const v = (i: number, j: number) => {
-    const d = g[j * (NX + 1) + i] - level
+    const d = nth(g, j * (NX + 1) + i) - level
     return d === 0 ? 1e-9 : d
   }
   const at = (key: string): Pt => {
     const [k, a, b] = key.split(",")
-    const i = +a, j = +b
+    const i = Number(a), j = Number(b)
     const [i2, j2] = k === "h" ? [i + 1, j] : [i, j + 1]
     const va = v(i, j), vb = v(i2, j2), t = va / (va - vb)
     return [G.x0 + (i + (i2 - i) * t) * G.s, G.y0 + (j + (j2 - j) * t) * G.s]
@@ -118,14 +140,14 @@ export function trace(level: number): { pts: Pt[]; closed: boolean }[] {
   for (let s = 0; s < segs.length; s++) {
     if (used[s]) continue
     used[s] = 1
-    const edges = [segs[s][0], segs[s][1]]
+    const edges = [...nth(segs, s)]
     const walk = (fromEnd: boolean) => {
       for (;;) {
-        const e = fromEnd ? edges[edges.length - 1] : edges[0]
+        const e = fromEnd ? nth(edges, edges.length - 1) : nth(edges, 0)
         const next = byEdge.get(e)!.find((n) => !used[n])
         if (next === undefined) return
         used[next] = 1
-        const [p, q] = segs[next]
+        const [p, q] = nth(segs, next)
         const other = p === e ? q : p
         if (fromEnd) edges.push(other)
         else edges.unshift(other)
@@ -144,18 +166,22 @@ export function trace(level: number): { pts: Pt[]; closed: boolean }[] {
 
 /** even spacing along the chain, so the spline has no kinks from uneven grid crossings */
 function resample(p: Pt[], closed: boolean, step: number): Pt[] {
-  const src = closed ? [...p, p[0]] : p
+  const src = closed ? [...p, nth(p, 0)] : p
   const len = [0]
-  for (let k = 1; k < src.length; k++) len.push(len[k - 1] + Math.hypot(src[k][0] - src[k - 1][0], src[k][1] - src[k - 1][1]))
-  const total = len[len.length - 1]
+  for (let k = 1; k < src.length; k++) {
+    const [x0, y0] = nth(src, k - 1), [x1, y1] = nth(src, k)
+    len.push(nth(len, k - 1) + Math.hypot(x1 - x0, y1 - y0))
+  }
+  const total = nth(len, len.length - 1)
   const n = Math.max(closed ? 6 : 2, Math.round(total / step))
   const out: Pt[] = []
   let k = 1
   for (let m = 0; m < (closed ? n : n + 1); m++) {
     const d = (m / n) * total
-    while (k < src.length - 1 && len[k] < d) k++
-    const t = (d - len[k - 1]) / (len[k] - len[k - 1] || 1)
-    out.push([src[k - 1][0] + (src[k][0] - src[k - 1][0]) * t, src[k - 1][1] + (src[k][1] - src[k - 1][1]) * t])
+    while (k < src.length - 1 && nth(len, k) < d) k++
+    const [x0, y0] = nth(src, k - 1), [x1, y1] = nth(src, k), l0 = nth(len, k - 1)
+    const t = (d - l0) / (nth(len, k) - l0 || 1)
+    out.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * t])
   }
   return out
 }
@@ -174,10 +200,12 @@ export function spline(p: Pt[], closed: boolean): string {
  * so it allocates nothing but the string */
 export function splineFlat(p: ArrayLike<number>, n: number, closed: boolean): string {
   const ix = (k: number) => 2 * (closed ? (k + n) % n : Math.min(n - 1, Math.max(0, k)))
-  let d = `M${f1(p[0])} ${f1(p[1])}`
+  let d = `M${f1(nth(p, 0))} ${f1(nth(p, 1))}`
   for (let k = 0; k < (closed ? n : n - 1); k++) {
     const a = ix(k - 1), b = ix(k), c = ix(k + 1), e = ix(k + 2)
-    d += `C${f1(p[b] + (p[c] - p[a]) / 6)} ${f1(p[b + 1] + (p[c + 1] - p[a + 1]) / 6)} ${f1(p[c] - (p[e] - p[b]) / 6)} ${f1(p[c + 1] - (p[e + 1] - p[b + 1]) / 6)} ${f1(p[c])} ${f1(p[c + 1])}`
+    const ax = nth(p, a), ay = nth(p, a + 1), bx = nth(p, b), by = nth(p, b + 1)
+    const cx = nth(p, c), cy = nth(p, c + 1), ex = nth(p, e), ey = nth(p, e + 1)
+    d += `C${f1(bx + (cx - ax) / 6)} ${f1(by + (cy - ay) / 6)} ${f1(cx - (ex - bx) / 6)} ${f1(cy - (ey - by) / 6)} ${f1(cx)} ${f1(cy)}`
   }
   return closed ? d + "Z" : d
 }
@@ -230,7 +258,7 @@ export function contour(i: number) {
 export function keyScore(c: { pts: readonly Pt[] }) {
   let len = 0
   for (let k = 1; k < c.pts.length; k++) {
-    const [x, y] = c.pts[k], d = Math.hypot(x - c.pts[k - 1][0], y - c.pts[k - 1][1])
+    const [x, y] = nth(c.pts, k), [px, py] = nth(c.pts, k - 1), d = Math.hypot(x - px, y - py)
     if (x > VIEW.x && x < VIEW.x + VIEW.w && y > 0 && y < VIEW.y + VIEW.h) len += x > 1020 ? d : 0.25 * d
   }
   return len
@@ -262,7 +290,7 @@ export function createTracer() {
   const lo = new Float64Array(NY), hi = new Float64Array(NY)
   let ns = 0, nt = 0, level = 0
   const link = (e: number, s: number) => {
-    if (e1[e] < 0) {
+    if (i32(e1, e) < 0) {
       e1[e] = s
       if (nt === touched.length) touched = grow(touched)
       touched[nt++] = e
@@ -286,7 +314,7 @@ export function createTracer() {
     ns++
   }
   const v = (k: number) => {
-    const d = f[k] - level
+    const d = f64(f, k) - level
     return d === 0 ? 1e-9 : d
   }
   // an edge's crossing point: edges below HV run along x from sample (i, j), the rest along y
@@ -295,7 +323,10 @@ export function createTracer() {
     const va = v(k), vb = v(vert ? k + W : k + 1), t = va / (va - vb)
     return vert ? [G.x0 + i * G.s, G.y0 + (j + t) * G.s] : [G.x0 + (i + t) * G.s, G.y0 + j * G.s]
   }
-  const next = (e: number) => (e1[e] >= 0 && !used[e1[e]] ? e1[e] : e2[e] >= 0 && !used[e2[e]] ? e2[e] : -1)
+  const next = (e: number) => {
+    const s1 = i32(e1, e), s2 = i32(e2, e)
+    return s1 >= 0 && !used[s1] ? s1 : s2 >= 0 && !used[s2] ? s2 : -1
+  }
 
   return (bumps: readonly Bump[]): Traced[] => {
     f.set(base)
@@ -309,14 +340,15 @@ export function createTracer() {
         for (let i = i0; i <= i1; i++) {
           const dx = G.x0 + i * G.s - b.x
           const u = dx * b.c + dy * b.s, w = dy * b.c - dx * b.s
-          f[j * W + i] += b.h * Math.exp(-u * u * ka - w * w * kb)
+          const k = j * W + i
+          f[k] = f64(f, k) + b.h * Math.exp(-u * u * ka - w * w * kb)
         }
       }
     }
     for (let j = 0; j < NY; j++) {
       let l = Infinity, h = -Infinity
       for (let k = j * W, end = k + 2 * W; k < end; k++) {
-        const x = f[k]
+        const x = f64(f, k)
         if (x < l) l = x
         if (x > h) h = x
       }
@@ -328,7 +360,7 @@ export function createTracer() {
       level = levelOf(li)
       ns = 0
       for (let j = 0; j < NY; j++) {
-        if (level < lo[j] || level > hi[j]) continue
+        if (level < f64(lo, j) || level > f64(hi, j)) continue
         for (let i = 0; i < NX; i++) {
           const k = j * W + i
           const a = v(k), b = v(k + 1), c = v(k + W + 1), d = v(k + W)
@@ -342,8 +374,24 @@ export function createTracer() {
             case 4: case 11: seg(T, R); break
             case 6: case 9: seg(T, Bo); break
             case 7: case 8: seg(L, T); break
-            case 5: if (a + b + c + d > 0) seg(L, T), seg(Bo, R); else seg(T, R), seg(L, Bo); break
-            case 10: if (a + b + c + d > 0) seg(T, R), seg(L, Bo); else seg(L, T), seg(Bo, R); break
+            case 5:
+              if (a + b + c + d > 0) {
+                seg(L, T)
+                seg(Bo, R)
+              } else {
+                seg(T, R)
+                seg(L, Bo)
+              }
+              break
+            case 10:
+              if (a + b + c + d > 0) {
+                seg(T, R)
+                seg(L, Bo)
+              } else {
+                seg(L, T)
+                seg(Bo, R)
+              }
+              break
           }
         }
       }
@@ -352,18 +400,20 @@ export function createTracer() {
       for (let s0 = 0; s0 < ns; s0++) {
         if (used[s0]) continue
         used[s0] = 1
-        const fwd = [A[s0], B[s0]]
-        for (let n = next(fwd[fwd.length - 1]); n >= 0; n = next(fwd[fwd.length - 1])) {
+        const fwd = [i32(A, s0), i32(B, s0)]
+        for (let n = next(nth(fwd, fwd.length - 1)); n >= 0; n = next(nth(fwd, fwd.length - 1))) {
           used[n] = 1
-          fwd.push(A[n] === fwd[fwd.length - 1] ? B[n] : A[n])
+          const a = i32(A, n)
+          fwd.push(a === nth(fwd, fwd.length - 1) ? i32(B, n) : a)
         }
         const closed = fwd[0] === fwd[fwd.length - 1]
         let edges = fwd
         if (!closed) {
           const back: number[] = []
-          for (let e = fwd[0], n = next(e); n >= 0; n = next(e)) {
+          for (let e = nth(fwd, 0), n = next(e); n >= 0; n = next(e)) {
             used[n] = 1
-            e = A[n] === e ? B[n] : A[n]
+            const a = i32(A, n)
+            e = a === e ? i32(B, n) : a
             back.push(e)
           }
           edges = back.reverse().concat(fwd)
@@ -371,7 +421,10 @@ export function createTracer() {
         const keys = closed ? edges.slice(0, -1) : edges
         if (keys.length > 3) chains.push({ pts: resample(keys.map(point), closed, SPACING), closed })
       }
-      for (let t = 0; t < nt; t++) e1[touched[t]] = e2[touched[t]] = -1
+      for (let t = 0; t < nt; t++) {
+        const e = i32(touched, t)
+        e1[e] = e2[e] = -1
+      }
       nt = 0
       const key = li === KEY_LEVEL && chains.length ? keyOf(chains) : null
       for (const c of chains) {
@@ -411,7 +464,7 @@ export function land(): Land {
     // demo, clear of the heading's strip (y < 80 lies under or against the lettering at every width)
     let label: Land["rings"][number]["label"]
     if (i % 5 === 2) {
-      const spot = SPOTS[(i / 5) | 0]
+      const spot = nth(SPOTS, (i / 5) | 0)
       const near = chains.flatMap((c) => c.pts).filter(([x, y]) => y > 80 && y < 560 && x > 1040 && x < 1380)
       const top = near.reduce<Pt | null>((b, p) => (!b || Math.hypot(p[0] - spot[0], p[1] - spot[1]) < Math.hypot(b[0] - spot[0], b[1] - spot[1]) ? p : b), null)
       if (top && Math.hypot(top[0] - spot[0], top[1] - spot[1]) < 120) label = { x: top[0], y: top[1], text: String(Math.round(400 + levelOf(i))) }

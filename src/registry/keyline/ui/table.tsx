@@ -194,6 +194,7 @@ function TableIndexCell({ checked, indeterminate, onCheckedChange, code, label, 
   const Tag = header ? "th" : "td"
   return (
     <Tag rowSpan={rowSpan} className={cn("kl-ix kl-flood", className)} data-kl-on={checked && !header ? "" : undefined} {...floodHandlers}>
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- only stops the press reaching the row; the checkbox inside handles keys */}
       <label className="kl-ix-in" onClick={(e) => e.stopPropagation()}>
         <Checkbox checked={checked} indeterminate={indeterminate} onCheckedChange={(v) => onCheckedChange(!!v)} aria-label={label} />
         {code != null ? <span className="kl-code">{code}</span> : null}
@@ -272,33 +273,44 @@ function useRowMotion() {
     const slide = (r: HTMLElement, dy: number) =>
       Math.abs(dy) > 0.5 && r.animate([{ transform: `translateY(${dy}px)` }, { transform: "none" }], { duration: dy > 0 ? close : open, easing: ease })
     let carry = 0 // where the nearest row above that stayed was, relative to where it is now
+    const stayed = (k: number) => {
+      const r = rows[k]
+      return r !== undefined && before.has(r)
+    }
     for (let i = 0; i < rows.length; ) {
-      const was = before.get(rows[i])
+      const row = rows[i]
+      const box = boxes[i]
+      if (!row || !box) break
+      const was = before.get(row)
       if (was != null) {
-        carry = was - boxes[i].top
-        slide(rows[i], carry)
+        carry = was - box.top
+        slide(row, carry)
         i++
         continue
       }
       // a run of rows that were not there: the room for the whole run opens as one, from the keyline above it
       let j = i
-      while (j < rows.length && !before.has(rows[j])) j++
-      if (j < rows.length) {
-        const top = boxes[i].top
-        const H = boxes[j - 1].bottom - top
+      while (j < rows.length && !stayed(j)) j++
+      const next = rows[j]
+      const runEnd = boxes[j - 1]
+      if (next && runEnd) {
+        const top = box.top
+        const H = runEnd.bottom - top
         for (let k = i; k < j; k++) {
-          const h = boxes[k].height
-          const o = Math.min(1, (boxes[k].top - top) / H)
-          const e = Math.min(1, (boxes[k].bottom - top) / H)
+          const r = rows[k]
+          const b = boxes[k]
+          if (!r || !b) continue
+          const h = b.height
+          const o = Math.min(1, (b.top - top) / H)
+          const e = Math.min(1, (b.bottom - top) / H)
           // carried with the row above; clipped where the opening has reached (top-anchored, like a fold)
           const at = (t: number, inset: number) => ({ offset: t, transform: `translateY(${carry * (1 - t)}px)`, clipPath: `inset(0 0 ${inset}px 0)` })
-          rows[k].animate([at(0, h), at(o, h), at(e, 0), at(1, 0)], { duration: open, easing: ease })
+          r.animate([at(0, h), at(o, h), at(e, 0), at(1, 0)], { duration: open, easing: ease })
         }
         // the opening's leading edge is a keyline: the row below the run carries one on its top while it travels
-        const next = rows[j]
         next.setAttribute("data-kl-opening", "")
         setTimeout(() => next.removeAttribute("data-kl-opening"), open)
-      } else for (let k = i; k < j; k++) slide(rows[k], carry) // arrived at the end (from the next page): up with the rows above
+      } else for (const r of rows.slice(i, j)) slide(r, carry) // arrived at the end (from the next page): up with the rows above
       i = j
     }
   })

@@ -7,7 +7,7 @@ export async function poll(fn, pred = Boolean, timeout = 5000, interval = 40) {
   for (;;) {
     try {
       v = await fn()
-    } catch (e) {
+    } catch {
       v = undefined
     }
     let good = false

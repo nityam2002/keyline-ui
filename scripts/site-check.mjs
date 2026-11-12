@@ -1,5 +1,5 @@
 // Public-site prototype assertions (Chrome): homepage plates, the guides, Toolbar docs, the Actions, Inputs, Data and Navigation pages and the catalogue.
-//   npm run site:build && npm run site:start   then   npm run test:site [-- <base, default http://localhost:5293>]
+//   pnpm site:build && pnpm site:start   then   pnpm test:site [-- <base, default http://localhost:5293>]
 // Keyboard-only paths, the filter keeping its state in More, Escape returning focus, the home plates turning
 // without moving the pager or the legend, reduced motion, the docs component index, server
 // HTML before the preview, copy = example source, no lab links, and no horizontal scroll at 390px.
@@ -88,7 +88,7 @@ const GUIDE_PAGES = [
   console.log("llms.txt")
   const res = await fetch(`${BASE}/llms.txt`)
   const txt = await res.text()
-  ok(res.ok && /^text\/plain/.test(res.headers.get("content-type") ?? ""), "llms.txt: served as text")
+  ok(res.ok && (res.headers.get("content-type") ?? "").startsWith("text/plain"), "llms.txt: served as text")
   ok(res.headers.get("x-robots-tag") === "noindex", "llms.txt: kept out of search results (X-Robots-Tag), fetchable")
   ok(txt.startsWith("# Keyline UI\n\n> "), "llms.txt: H1 then the summary blockquote")
   const map = txt.indexOf(`npx shadcn@latest registry add @keyline-ui=${ORIGIN}/r/{name}.json`)

@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "allowJs": true,
+    "tsBuildInfoFile": ".artifacts/tsconfig.tests.tsbuildinfo",
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "site/lib/**/*.ts"
+  ],
+  "exclude": [
+    "tests/consumer/App.tsx",
+    "tests/consumer/PreviewPage.tsx",
+    "tests/lint/fixtures/**"
+  ]
+}

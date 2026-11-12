@@ -9,7 +9,8 @@ import { CREW } from "./avatar"
 /* ------------------------------------------------------------------ *
  * 2. Hover card
  * ------------------------------------------------------------------ */
-function PersonCard({ p }: { p: (typeof CREW)[number] }) {
+function PersonCard({ p }: { p: (typeof CREW)[number] | undefined }) {
+  if (!p) return null
   return (
     <HoverCard>
       <HoverCardTrigger href={`#/specimen?person=${p.code}`}>{p.name}</HoverCardTrigger>

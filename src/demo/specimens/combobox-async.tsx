@@ -40,6 +40,7 @@ const LOCAL = CARRIERS.map(cbOption)
 function Case({ id, said, children }: { id: string; said: string; children: React.ReactNode }) {
   const [reached, setReached] = React.useState(0)
   return (
+    // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- counts the Escapes that reach the case from the combobox inside
     <div data-testid={id} className="grid content-start gap-2" onKeyDown={(e) => e.key === "Escape" && setReached((n) => n + 1)}>
       {children}
       <output data-testid={`${id}-value`} className="font-mono text-[12px] text-kl-ink-2">

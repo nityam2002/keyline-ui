@@ -1,4 +1,5 @@
 import { TENTHS } from "../site/lib/contours.ts"
+import { defined } from "./defined.ts"
 
 export type P = [number, number]
 
@@ -6,9 +7,9 @@ export type P = [number, number]
 /** the drawn paths, flattened: every cubic sampled finely, one polyline per subpath */
 export function flatten(d: string): P[][] {
   const out: P[][] = []
-  const tok = d.match(/[MCZ]|-?\d*\.?\d+/g)!
+  const tok = d.match(/[MCZ]|-?\d*\.?\d+/g)! // a drawn path always has commands; null would throw on .length below anyway
   let k = 0, cur: P[] = [], pen: P = [0, 0]
-  const num = () => +tok[k++] / TENTHS // paths are written in tenths of a unit
+  const num = () => +defined(tok[k++]) / TENTHS // paths are written in tenths of a unit
   while (k < tok.length) {
     const c = tok[k++]
     if (c === "M") {
@@ -26,7 +27,7 @@ export function flatten(d: string): P[][] {
       }
       pen = e
     } else if (c === "Z") {
-      cur.push(cur[0])
+      cur.push(defined(cur[0], "subpath start"))
     }
   }
   if (cur.length) out.push(cur)
@@ -43,7 +44,7 @@ export const cross = (p: P, q: P, r: P, s: P) => {
 export function crossings(paths: { level: number; pts: P[] }[]): string[] {
   // bucket every segment on a coarse grid, then test only neighbours
   const C = 40
-  const segs = paths.flatMap((p, path) => p.pts.slice(1).map((b, n) => ({ path, n, a: p.pts[n], b, closedLen: p.pts.length - 1 })))
+  const segs = paths.flatMap((p, path) => p.pts.slice(1).map((b, n) => ({ path, n, a: defined(p.pts[n]), b, closedLen: p.pts.length - 1 })))
   const buckets = new Map<string, number[]>()
   segs.forEach((s, id) => {
     const [x0, x1] = [Math.min(s.a[0], s.b[0]), Math.max(s.a[0], s.b[0])], [y0, y1] = [Math.min(s.a[1], s.b[1]), Math.max(s.a[1], s.b[1])]
@@ -59,12 +60,12 @@ export function crossings(paths: { level: number; pts: P[] }[]): string[] {
   for (const ids of buckets.values())
     for (let i = 0; i < ids.length; i++)
       for (let j = i + 1; j < ids.length; j++) {
-        const s = segs[ids[i]], t = segs[ids[j]]
+        const s = defined(segs[defined(ids[i])]), t = defined(segs[defined(ids[j])])
         if (s.path === t.path) {
           const gap = Math.abs(s.n - t.n)
           if (gap <= 1 || gap >= s.closedLen - 1) continue // neighbours share an end
         }
-        if (cross(s.a, s.b, t.a, t.b)) hits.add(`${paths[s.path].level}/${paths[t.path].level} near ${s.a.map(Math.round)}`)
+        if (cross(s.a, s.b, t.a, t.b)) hits.add(`${defined(paths[s.path]).level}/${defined(paths[t.path]).level} near ${s.a.map(Math.round).join(",")}`)
       }
   return [...hits]
 }

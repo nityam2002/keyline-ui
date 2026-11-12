@@ -86,7 +86,7 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   await p.keyboard.press("Escape")
   const dock = nav.getByRole("link", { name: /^Dock schedule/ })
   await dock.click()
-  await p.waitForFunction(() => [...document.querySelectorAll(".kl-shell-nav a")].some((a) => /^Dock schedule/.test(a.textContent.trim()) && a.getAttribute("aria-current") === "page"), null, { timeout: 3000 }).catch(() => {})
+  await p.waitForFunction(() => [...document.querySelectorAll(".kl-shell-nav a")].some((a) => a.textContent.trim().startsWith('Dock schedule') && a.getAttribute("aria-current") === "page"), null, { timeout: 3000 }).catch(() => {})
   ok("rail: choosing an item moves the current item", (await dock.getAttribute("aria-current")) === "page", null)
   await toggle.click()
   await p.waitForFunction(() => Math.round(document.querySelector(".kl-shell-nav").getBoundingClientRect().width) >= 200).catch(() => {})

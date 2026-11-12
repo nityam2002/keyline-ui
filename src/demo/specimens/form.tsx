@@ -45,17 +45,17 @@ export function FormSpecimen() {
               setPending(true)
               setTimeout(() => {
                 setPending(false)
-                const ref = String(values.reference ?? "")
+                const ref = String(values["reference"] ?? "")
                 if (ref.toUpperCase().startsWith("DUP")) setErrors({ reference: `${ref} is already booked for this week.` })
                 else {
                   setErrors({})
-                  setSaved(`${ref} · ${values.pallets} PLT · ${values.service}${values.carrier ? ` · ${values.carrier}` : ""}`)
+                  setSaved(`${ref} · ${values["pallets"]} PLT · ${values["service"]}${values["carrier"] ? ` · ${values["carrier"]}` : ""}`)
                 }
               }, 500)
             }}
           >
             {saved ? <Notice tone="done" title="Pickup booked" description={saved} live data-kl-span="control" /> : null}
-            <Field name="reference" validate={(v) => (String(v ?? "").trim() ? null : "Enter the shipment reference.")}>
+            <Field name="reference" validate={(v) => ((typeof v === "string" ? v : "").trim() ? null : "Enter the shipment reference.")}>
               <FieldLabel>Reference</FieldLabel>
               <FieldFrame>
                 <FieldInput placeholder="SH-24-0193" autoComplete="off" />

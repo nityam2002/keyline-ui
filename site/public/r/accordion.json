@@ -4,7 +4,7 @@
   "title": "Accordion",
   "description": "Stacked sections in one frame: header rows on shared keylines, panels unfold from the header's keyline; one or many open.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

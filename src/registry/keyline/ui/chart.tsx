@@ -30,6 +30,11 @@ export type ChartConfig = Record<
 
 const ROLE = ["var(--kl-data-1)", "var(--kl-data-2)", "var(--kl-data-3)"]
 
+/** The text a screen reader hears for a label: a string or number as is; an element has no text to read. */
+function spoken(n: React.ReactNode): string {
+  return typeof n === "string" || typeof n === "number" ? String(n) : ""
+}
+
 const ChartContext = React.createContext<{ config: ChartConfig; format: (v: number) => string; announce: (text: string) => void } | null>(null)
 
 function useChart() {
@@ -46,12 +51,12 @@ function adapt(node: React.ReactNode, o: { still: boolean; rtl: boolean }): Reac
     if (!React.isValidElement(el)) return el
     const p = el.props as Record<string, unknown> & { children?: React.ReactNode }
     const extra: Record<string, unknown> = {}
-    if (o.still && SERIES.has(el.type) && p.isAnimationActive === undefined) extra.isAnimationActive = false
+    if (o.still && SERIES.has(el.type) && p["isAnimationActive"] === undefined) extra["isAnimationActive"] = false
     // an Operate chart updates, it does not perform: data changes and the first draw take the unfold time, not
     // recharts' 1.5s (switching Table → Chart replayed a 1.5s line draw every time)
-    else if (SERIES.has(el.type) && p.animationDuration === undefined) extra.animationDuration = 220
-    if (o.rtl && el.type === Recharts.XAxis && p.reversed === undefined) extra.reversed = true
-    if (o.rtl && el.type === Recharts.YAxis && p.orientation === undefined) extra.orientation = "right"
+    else if (SERIES.has(el.type) && p["animationDuration"] === undefined) extra["animationDuration"] = 220
+    if (o.rtl && el.type === Recharts.XAxis && p["reversed"] === undefined) extra["reversed"] = true
+    if (o.rtl && el.type === Recharts.YAxis && p["orientation"] === undefined) extra["orientation"] = "right"
     const kids = p.children !== undefined && typeof p.children !== "function" ? adapt(p.children, o) : undefined
     return Object.keys(extra).length || kids !== undefined ? React.cloneElement(el, extra, ...(kids !== undefined ? [kids] : [])) : el
   })
@@ -83,7 +88,7 @@ function ChartContainer({ config, children, className, style, format, locale, "a
   const [env, setEnv] = React.useState(() =>
     typeof document === "undefined"
       ? { still: false, rtl: false }
-      : { still: window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.klMotion === "reduce", rtl: document.documentElement.dir === "rtl" },
+      : { still: window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset["klMotion"] === "reduce", rtl: document.documentElement.dir === "rtl" },
   )
   React.useLayoutEffect(() => {
     const el = ref.current
@@ -104,8 +109,7 @@ function ChartContainer({ config, children, className, style, format, locale, "a
       mo.disconnect()
     }
   }, [])
-  const keys = Object.keys(config)
-  const vars = Object.fromEntries(keys.map((k, i) => [`--color-${k}`, config[k].color ?? ROLE[Math.min(i, ROLE.length - 1)]]))
+  const vars = Object.fromEntries(Object.entries(config).map(([k, c], i) => [`--color-${k}`, c.color ?? ROLE[Math.min(i, ROLE.length - 1)]]))
   const fmt = React.useMemo(() => format ?? ((v: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v)), [format, locale])
   const plot = React.Children.toArray(adapt(children, env))[0] as React.ReactElement<Record<string, string | undefined>>
   return (
@@ -152,7 +156,8 @@ function ChartTooltipContent({
   className?: string
 }) {
   const { config, format, announce } = useChart()
-  const said = active && payload?.length ? [label, ...payload.map((it) => `${config[String(it.dataKey)]?.label ?? it.name ?? ""} ${typeof it.value === "number" ? format(it.value) : String(it.value ?? "–")} ${config[String(it.dataKey)]?.unit ?? ""}`.trim())].filter((x) => x != null && x !== "").join(", ") : ""
+  // oxlint-disable-next-line typescript/no-base-to-string -- a non-numeric value is announced by its string form, as it is shown
+  const said = active && payload?.length ? [spoken(label), ...payload.map((it) => `${spoken(config[String(it.dataKey)]?.label ?? it.name)} ${typeof it.value === "number" ? format(it.value) : String(it.value ?? "–")} ${config[String(it.dataKey)]?.unit ?? ""}`.trim())].filter((x) => x !== "").join(", ") : ""
   React.useEffect(() => {
     if (said) announce(said)
   }, [said, announce])
@@ -164,6 +169,7 @@ function ChartTooltipContent({
       {payload.map((it, i) => {
         const key = String(nameKey ? it.payload?.[nameKey] : it.dataKey ?? it.name ?? i)
         const c = config[key]
+        // oxlint-disable-next-line typescript/no-base-to-string -- a non-numeric value is shown by its string form
         const v = typeof it.value === "number" ? format(it.value) : String(it.value ?? "–")
         return (
           <div className="kl-chart-tip-r" key={key + i}>
@@ -224,11 +230,11 @@ function ChartTable({ data, config, labelKey, labelHeader, caption, format, loca
         <thead>
           <tr>
             <th className="kl-th" scope="col">{labelHeader ?? labelKey}</th>
-            {keys.map((k) => (
+            {Object.entries(config).map(([k, c]) => (
               <th className="kl-th kl-chart-num" scope="col" key={k}>
-                <span className="kl-chart-key" style={{ background: config[k].color ?? ROLE[Math.min(keys.indexOf(k), ROLE.length - 1)] }} aria-hidden />
-                {config[k].label ?? k}
-                {config[k].unit ? <span className="kl-code"> {config[k].unit}</span> : null}
+                <span className="kl-chart-key" style={{ background: c.color ?? ROLE[Math.min(keys.indexOf(k), ROLE.length - 1)] }} aria-hidden />
+                {c.label ?? k}
+                {c.unit ? <span className="kl-code"> {c.unit}</span> : null}
               </th>
             ))}
           </tr>
@@ -236,9 +242,11 @@ function ChartTable({ data, config, labelKey, labelHeader, caption, format, loca
         <tbody>
           {data.map((row, i) => (
             <tr key={i}>
+              {/* oxlint-disable-next-line typescript/no-base-to-string -- data cells show their value's string form */}
               <th className="kl-td kl-chart-rowh" scope="row">{String(row[labelKey] ?? "")}</th>
               {keys.map((k) => (
                 <td className="kl-td kl-chart-num" key={k}>
+                  {/* oxlint-disable-next-line typescript/no-base-to-string -- data cells show their value's string form */}
                   {typeof row[k] === "number" ? fmt(row[k] as number) : String(row[k] ?? "–")}
                 </td>
               ))}

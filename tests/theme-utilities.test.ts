@@ -5,6 +5,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import postcss from "postcss"
+import { defined } from "./defined.ts"
 
 const css = postcss.parse(readFileSync(new URL("../src/registry/keyline/theme/keyline.css", import.meta.url), "utf8"))
 const decls = (node: postcss.Container) => (node.nodes ?? []).filter((n): n is postcss.Declaration => n.type === "decl")
@@ -16,6 +17,7 @@ css.walkRules((r) => {
 })
 const roles = derived.filter((n) => n !== "hatch")
 const themes = (css.nodes ?? []).filter((n): n is postcss.AtRule => n.type === "atrule" && n.name === "theme")
+const [theme] = themes
 
 test("the derived roles were found", () => {
   assert.ok(roles.length >= 30, `found ${roles.length}`)
@@ -24,25 +26,26 @@ test("the derived roles were found", () => {
 
 test("one top-level @theme block, and it is inline", () => {
   assert.equal(themes.length, 1)
-  assert.equal(themes[0].params, "inline")
+  assert.ok(theme)
+  assert.equal(theme.params, "inline")
 })
 
 test("every colour role is a Tailwind colour of the same name, and nothing else is", () => {
-  const colours = Object.fromEntries(decls(themes[0]).filter((d) => d.prop.startsWith("--color-")).map((d) => [d.prop, d.value]))
+  const colours = Object.fromEntries(decls(defined(theme, "@theme block")).filter((d) => d.prop.startsWith("--color-")).map((d) => [d.prop, d.value]))
   assert.deepEqual(colours, Object.fromEntries(roles.map((r) => [`--color-kl-${r}`, `var(--kl-${r})`])))
 })
 
 test("the two type voices are Tailwind fonts", () => {
-  const fonts = Object.fromEntries(decls(themes[0]).filter((d) => d.prop.startsWith("--font-") && !d.prop.startsWith("--font-weight-")).map((d) => [d.prop, d.value]))
+  const fonts = Object.fromEntries(decls(defined(theme, "@theme block")).filter((d) => d.prop.startsWith("--font-") && !d.prop.startsWith("--font-weight-")).map((d) => [d.prop, d.value]))
   assert.deepEqual(fonts, { "--font-kl": "var(--kl-font)", "--font-kl-mono": "var(--kl-font-mono)" })
 })
 
 test("the two weights are Tailwind font weights", () => {
-  const weights = Object.fromEntries(decls(themes[0]).filter((d) => d.prop.startsWith("--font-weight-")).map((d) => [d.prop, d.value]))
+  const weights = Object.fromEntries(decls(defined(theme, "@theme block")).filter((d) => d.prop.startsWith("--font-weight-")).map((d) => [d.prop, d.value]))
   assert.deepEqual(weights, { "--font-weight-kl-strong": "var(--kl-weight-strong)", "--font-weight-kl-display": "var(--kl-weight-display)" })
 })
 
 test("the density spacing is Tailwind spacing", () => {
-  const spacing = Object.fromEntries(decls(themes[0]).filter((d) => d.prop.startsWith("--spacing-")).map((d) => [d.prop, d.value]))
+  const spacing = Object.fromEntries(decls(defined(theme, "@theme block")).filter((d) => d.prop.startsWith("--spacing-")).map((d) => [d.prop, d.value]))
   assert.deepEqual(spacing, { "--spacing-kl-inset": "var(--kl-inset)", "--spacing-kl-gutter": "var(--kl-gutter)" })
 })

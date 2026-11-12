@@ -4,7 +4,7 @@
   "title": "Collapsible",
   "description": "One unframed disclosure: a caret box whose keyline runs down the panel as a spine; the panel unfolds.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

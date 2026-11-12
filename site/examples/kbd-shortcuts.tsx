@@ -41,6 +41,7 @@ export function OrderShortcuts() {
   return (
     <div
       ref={area}
+      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- the area takes focus so its shortcuts have somewhere to land
       tabIndex={0}
       aria-label="Order screen. Try a shortcut."
       className="grid gap-4 outline-offset-4 focus-visible:outline-2 focus-visible:outline-current"

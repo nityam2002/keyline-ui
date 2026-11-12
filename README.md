@@ -95,13 +95,13 @@ reaches your project only when you add a component again with `--overwrite`.
 
 ## Develop Keyline
 
-Node.js 24 (see `.nvmrc`):
+Node.js 24 (see `.nvmrc`) and pnpm (the version is pinned in `package.json`; `corepack enable` provides it):
 
 ```sh
-npm ci
-npm run dev          # demo app on :5291: every component, the playground (#/playground), a records workflow (#/app)
-npm run site:dev     # documentation site on :5293: examples, install commands and props for each component
-npm run check        # types, unit and browser tests, the registry build
+pnpm install
+pnpm dev             # demo app on :5291: every component, the playground (#/playground), a records workflow (#/app)
+pnpm site:dev        # documentation site on :5293: examples, install commands and props for each component
+pnpm check           # types, lint, format, unit and browser tests, the registry build
 ```
 
 ```text

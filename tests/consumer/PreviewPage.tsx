@@ -5,8 +5,8 @@ import * as React from "react"
 import { Preview } from "./Preview"
 
 export default function PreviewPage() {
-  const q = new URLSearchParams(location.search)
   React.useLayoutEffect(() => {
+    const q = new URLSearchParams(location.search)
     const h = document.documentElement
     for (const a of (q.get("attrs") ?? "").split(",").filter(Boolean)) {
       if (a === "dark" || a === "light") h.classList.add(a)

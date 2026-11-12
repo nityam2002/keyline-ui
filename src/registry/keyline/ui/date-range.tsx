@@ -82,9 +82,10 @@ function DayButton({
   ...props
 }: DayButtonProps) {
   const ref = React.useRef<HTMLButtonElement>(null);
+  const focused = modifiers["focused"];
   React.useEffect(() => {
-    if (modifiers.focused) ref.current?.focus();
-  }, [modifiers.focused]);
+    if (focused) ref.current?.focus();
+  }, [focused]);
   const m = modifiers as Record<string, boolean>;
   const flag = (b: boolean | undefined) => (b ? "" : undefined);
   return (
@@ -94,23 +95,23 @@ function DayButton({
       // the flood (and its seed under a held press) starts where the day was pressed
       onPointerDown={(e) => {
         props.onPointerDown?.(e)
-        if (!m.disabled) floodFromPointer(e)
+        if (!m["disabled"]) floodFromPointer(e)
       }}
-      aria-current={m.today ? "date" : undefined}
+      aria-current={m["today"] ? "date" : undefined}
       className={cn(
         "kl-day kl-flood",
-        m.kl_ink && !m.disabled && "kl-sig-ink",
+        m["kl_ink"] && !m["disabled"] && "kl-sig-ink",
         className,
       )}
       data-kl-flood="manual"
-      data-kl-on={flag(m.kl_on && !m.disabled)}
-      data-preview={flag(m.kl_preview)}
-      data-unavailable={flag(m.disabled)}
-      data-in-range={flag(m.kl_in)}
-      data-end={flag(m.kl_end)}
-      data-cont-prev={flag(m.kl_cont_prev)}
-      data-cont-next={flag(m.kl_cont_next)}
-      data-today={flag(m.today)}
+      data-kl-on={flag(m["kl_on"] && !m["disabled"])}
+      data-preview={flag(m["kl_preview"])}
+      data-unavailable={flag(m["disabled"])}
+      data-in-range={flag(m["kl_in"])}
+      data-end={flag(m["kl_end"])}
+      data-cont-prev={flag(m["kl_cont_prev"])}
+      data-cont-next={flag(m["kl_cont_next"])}
+      data-today={flag(m["today"])}
     >
       <span>{children}</span>
     </button>
@@ -263,6 +264,7 @@ function useDayPicker({
       // "Mon" where it fits a column; locales whose short names are long (ar: "الاثنين") use the narrow form
       formatWeekdayName: (d: Date) => {
         const s = f.wdShort.format(d);
+        // oxlint-disable-next-line typescript/no-misused-spread -- counts code points, which is the width measure wanted here
         return [...s].length > 3 ? f.wdNarrow.format(d) : s;
       },
     },
@@ -387,7 +389,7 @@ function RangeCalendar({
             inR(d) && col(d) === 6 && !!shown && d < shown.to,
         }}
         onDayClick={(d, m) => {
-          if (m.disabled) return;
+          if (m["disabled"]) return;
           if (!anchor) {
             setAnchor(d);
             setEnd(d);
@@ -397,7 +399,7 @@ function RangeCalendar({
             setEnd(null);
           }
         }}
-        onDayMouseEnter={(d, m) => anchor && !m.disabled && setEnd(d)}
+        onDayMouseEnter={(d, m) => anchor && !m["disabled"] && setEnd(d)}
         onDayFocus={(d) => anchor && setEnd(d)}
         onDayKeyDown={(_, __, e) => {
           if (e.key !== "Escape" || !(anchor || onEscape)) return;

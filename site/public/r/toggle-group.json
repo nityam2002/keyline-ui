@@ -4,7 +4,7 @@
   "title": "Toggle group",
   "description": "Independent toggles in one frame; each cell floods from the press point and carries a lamp.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

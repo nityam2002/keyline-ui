@@ -1236,7 +1236,8 @@ const intakeToaster = createToaster()
 const INTAKE = [{ name: "mode", required: true, choices: [{ value: "road" }, { value: "rail" }] }, { name: "ref" }] as const
 /** Not a component: the way a data layer would report a submission. */
 function sendIntake(fd: FormData) {
-  return intakeToaster.promise(new Promise<string>((ok) => setTimeout(() => ok(String(fd.get("mode"))), 500)), {
+  const mode = fd.get("mode")
+  return intakeToaster.promise(new Promise<string>((ok) => setTimeout(() => ok(typeof mode === "string" ? mode : ""), 500)), {
     loading: "Sending intake…",
     done: (mode) => ({ title: "Intake sent", description: `Mode: ${mode}` }),
     failed: "Intake failed",

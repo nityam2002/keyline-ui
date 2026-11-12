@@ -4,7 +4,7 @@
   "title": "Tabs",
   "description": "Tabs with a cobalt location band that stretches; optional count voice; panels.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

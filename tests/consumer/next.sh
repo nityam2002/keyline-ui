@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds an independent Next.js App Router consumer the way the installation guide describes, and checks what the
-# install left behind. Run through scripts/consumer-check.sh (npm run test:consumer -- next), which serves the
+# install left behind. Run through scripts/consumer-check.sh (pnpm test:consumer -- next), which serves the
 # registry; by hand: KEYLINE_REGISTRY='<url>/r/{name}.json' tests/consumer/next.sh <empty-dir>
 #
 # The app deliberately differs from this repository: a src/ directory, the import alias ~/* instead of @/*, and a

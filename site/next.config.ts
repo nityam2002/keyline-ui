@@ -6,7 +6,7 @@ import type { NextConfig } from "next"
 const root = path.join(__dirname, "..")
 
 // The same test as INDEXABLE in lib/seo.ts: only the production deployment may be indexed
-const indexable = (process.env.KEYLINE_SITE_ENV ?? process.env.VERCEL_ENV) === "production"
+const indexable = (process.env["KEYLINE_SITE_ENV"] ?? process.env["VERCEL_ENV"]) === "production"
 const NOINDEX = [{ key: "X-Robots-Tag", value: "noindex" }]
 
 const config: NextConfig = {

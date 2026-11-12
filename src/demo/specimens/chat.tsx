@@ -134,9 +134,11 @@ const REPLIES = [
   "Copy that, reversing now.",
 ];
 const minutes = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+/** A run is never empty: it starts with the message that opened it. */
+type MsgRun = [Msg, ...Msg[]];
 /** A run: consecutive messages from one sender, each within 5 minutes of the one before. */
 function toRuns(msgs: Msg[]) {
-  const runs: Msg[][] = [];
+  const runs: MsgRun[] = [];
   for (const m of msgs) {
     const run = runs.at(-1);
     const prev = run?.at(-1);
@@ -196,7 +198,7 @@ function Receipt({ m }: { m: Msg }) {
   const busy = m.status === "sending" || m.files?.some((f) => f.state !== "done");
   return <MessageFooter data-testid="receipt">{busy ? "Sending…" : m.status === "sent" ? "Sent" : `Read ${m.readAt}`}</MessageFooter>;
 }
-function Run({ run, retry, file }: { run: Msg[]; retry?: (id: string) => void; file?: (mid: string) => FileActions }) {
+function Run({ run, retry, file }: { run: MsgRun; retry?: (id: string) => void; file?: (mid: string) => FileActions }) {
   const own = run[0].who === "clerk";
   const p = PEOPLE[run[0].who];
   // each run says how its last delivered message stands; a message that failed says so under itself
@@ -266,7 +268,10 @@ function ConversationLog() {
   const [width, setWidth] = React.useState("wide");
   // after the reader sends, the log goes to the end once the new row is in
   React.useEffect(() => {
-    if (sent.current) ((sent.current = false), scrollToEnd());
+    if (sent.current) {
+      sent.current = false;
+      scrollToEnd();
+    }
   }, [msgs, scrollToEnd]);
 
   /* a fake network: every timer is cleared when the specimen unmounts */
@@ -412,7 +417,7 @@ function ConversationLog() {
         <Button size="compact" onClick={() => incoming(3)} data-testid="ms-three">
           Receive three
         </Button>
-        <Button size="compact" onClick={() => setMsgs((ms) => (ms[0].id === "e1" ? ms : [...EARLIER, ...ms]))} data-testid="ms-earlier">
+        <Button size="compact" onClick={() => setMsgs((ms) => (ms[0]?.id === "e1" ? ms : [...EARLIER, ...ms]))} data-testid="ms-earlier">
           Load earlier
         </Button>
         <Button size="compact" onClick={() => attach(false)} data-testid="ms-attach">

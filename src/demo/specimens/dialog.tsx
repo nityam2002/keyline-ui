@@ -25,6 +25,7 @@ export function DialogSpecimen() {
               <Field invalid={!draft.trim()}>
                 <FieldLabel>Name</FieldLabel>
                 <FieldFrame>
+                  {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- a rename dialog opens with its field focused */}
                   <FieldInput value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus />
                 </FieldFrame>
                 <FieldDescription>Up to 40 characters.</FieldDescription>

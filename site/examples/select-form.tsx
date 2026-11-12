@@ -15,7 +15,7 @@ export function QuoteForm() {
   const [sent, setSent] = useState<string | null>(null)
 
   return (
-    <Form className="max-w-[360px]" onFormSubmit={(v) => setSent(`Quote sent with ${WEIGHTS.find((w) => w.value === v.weight)?.label}.`)}>
+    <Form className="max-w-[360px]" onFormSubmit={(v) => setSent(`Quote sent with ${WEIGHTS.find((w) => w.value === v["weight"])?.label}.`)}>
       <Select name="weight" label="Paper weight" placeholder="Choose a weight" required options={WEIGHTS} error="Choose a weight. The price depends on it." />
       <FormActions>
         <Button type="submit" variant="primary">

@@ -41,7 +41,7 @@ export function QuestionnaireSpecimen() {
     window.setTimeout(() => {
       attempts.current += 1
       if (failFirst && attempts.current === 1) return setPhase("failed")
-      setAnswers(STEPS.map((s) => [s.name, fd.getAll(s.name).map((v) => LABEL[String(v)] ?? String(v)).join(", ") || "Skipped"]))
+      setAnswers(STEPS.map((s) => [s.name, fd.getAll(s.name).map((v) => (typeof v === "string" ? (LABEL[v] ?? v) : v.name)).join(", ") || "Skipped"]))
       setPhase("done")
     }, 900)
   }

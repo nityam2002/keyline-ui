@@ -93,11 +93,17 @@ function Carousel({ orientation = "horizontal", opts, plugins, setApi, className
     const own = t === e.currentTarget || t.matches('[data-slot="carousel-item"]') || !!t.closest('[data-slot="carousel-bar"]')
     if (e.defaultPrevented || !own || t.closest("input, textarea, select, [contenteditable], [role=slider], [role=spinbutton]")) return
     const [back, fwd] = orientation === "vertical" ? ["ArrowUp", "ArrowDown"] : rtl ? ["ArrowRight", "ArrowLeft"] : ["ArrowLeft", "ArrowRight"]
-    if (e.key === back) (e.preventDefault(), scrollPrev())
-    else if (e.key === fwd) (e.preventDefault(), scrollNext())
+    if (e.key === back) {
+      e.preventDefault()
+      scrollPrev()
+    } else if (e.key === fwd) {
+      e.preventDefault()
+      scrollNext()
+    }
   }
   return (
     <CarouselContext.Provider value={{ carouselRef, api, orientation, scrollPrev, scrollNext, ...s }}>
+      {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- arrow keys bubble from the slides and controls inside; the section is not itself a control */}
       <section
         ref={root}
         aria-roledescription="carousel"

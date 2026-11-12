@@ -3,15 +3,18 @@ import assert from "node:assert/strict"
 import { land, chainsOf, splineFlat, createTracer, INTERVAL, KEY_LEVEL } from "../site/lib/contours.ts"
 import { createTerrain, MAX_STRAIN, HARD_LIMIT, MAX_REACH, MAX_SPEED, HILL, type Box } from "../site/lib/terrain.ts"
 import { flatten, crossings } from "./geometry.ts"
+import { defined } from "./defined.ts"
 
 const DT = 1 / 60
 const out = new Float64Array(2)
+/** the displacement last written into out */
+const disp = (): [number, number] => [defined(out[0]), defined(out[1])]
 // probes across the sheet: the open right, below the table, left of it, behind the heading
 const PROBES = [[1200, 350], [1300, 120], [800, 520], [200, 330], [650, -20]] as const
 const at = (t: ReturnType<typeof createTerrain>) =>
   PROBES.map(([x, y]) => {
     t.displace(x, y, out)
-    return [out[0], out[1]] as const
+    return disp()
   })
 
 test("the field starts at rest: the first frame is the server's drawing", () => {
@@ -34,15 +37,16 @@ const PHONE = { view: { x0: 448, y0: -100, x1: 952, y1: 600 }, covered: [{ x0: 4
 function watch(t: ReturnType<typeof createTerrain>, pts: [number, number][]) {
   const prev = pts.map(([x, y]) => {
     t.displace(x, y, out)
-    return [out[0], out[1]]
+    return disp()
   })
   return () => {
     let fast = 0, far = 0
     pts.forEach(([x, y], k) => {
       t.displace(x, y, out)
-      fast = Math.max(fast, Math.hypot(out[0] - prev[k][0], out[1] - prev[k][1]) / DT)
-      far = Math.max(far, Math.hypot(out[0], out[1]))
-      prev[k] = [out[0], out[1]]
+      const [dx, dy] = disp(), [px, py] = defined(prev[k])
+      fast = Math.max(fast, Math.hypot(dx - px, dy - py) / DT)
+      far = Math.max(far, Math.hypot(dx, dy))
+      prev[k] = [dx, dy]
     })
     return { fast, far }
   }
@@ -52,19 +56,20 @@ test("over ten minutes it stays within its bounds, moves smoothly, and is never 
   const t = createTerrain()
   t.frame(WIDE.view, WIDE.covered)
   const seen = watch(t, openLand(WIDE.view, WIDE.covered))
-  let prev = at(t), prevV = prev.map(() => [0, 0])
+  let prev = at(t), prevV = prev.map((): [number, number] => [0, 0])
   let maxV = 0, maxA = 0, worstStrain = 0, worstProven = 0, worstReach = 0, slowest = Infinity, heading = 0
   for (let i = 1; i <= 60 * 600; i++) {
     t.step(DT)
     const now = at(t)
     now.forEach((p, k) => {
-      const v = [(p[0] - prev[k][0]) / DT, (p[1] - prev[k][1]) / DT]
+      const [px, py] = defined(prev[k]), [pvx, pvy] = defined(prevV[k])
+      const v: [number, number] = [(p[0] - px) / DT, (p[1] - py) / DT]
       maxV = Math.max(maxV, Math.hypot(v[0], v[1]))
-      if (i > 1) maxA = Math.max(maxA, Math.hypot(v[0] - prevV[k][0], v[1] - prevV[k][1]) / DT)
+      if (i > 1) maxA = Math.max(maxA, Math.hypot(v[0] - pvx, v[1] - pvy) / DT)
       prevV[k] = v
     })
     prev = now
-    heading = Math.max(heading, Math.hypot(...now[4]))
+    heading = Math.max(heading, Math.hypot(...defined(now[4])))
     const { fast } = seen()
     if (i > 60) slowest = Math.min(slowest, fast)
     if (i % 30 === 0) {
@@ -159,16 +164,16 @@ test("a pointer moving across open land leaves a run of different hills, never p
 test("the land traced with hills: with none it is the drawing, to the tenth; with them, new rings and no crossings", () => {
   const tracer = createTracer()
   const { rings, keyline } = land()
-  const sig = (c: { level: number; key: boolean; closed: boolean; pts: Float64Array }) => `${c.level}${c.key}${c.closed}:${Array.from(c.pts, (v) => v.toFixed(1))}`
+  const sig = (c: { level: number; key: boolean; closed: boolean; pts: Float64Array }) => `${c.level}${c.key}${c.closed}:${Array.from(c.pts, (v) => v.toFixed(1)).join(",")}`
   const drawn = [...rings.flatMap((r) => chainsOf(r.d).map((c) => ({ level: r.level, key: false, ...c }))), ...chainsOf(keyline).map((c) => ({ level: KEY_LEVEL, key: true, ...c }))]
   assert.deepEqual(new Set(tracer([]).map(sig)), new Set(drawn.map(sig)))
   // hills from a pointer that has wandered past the keyline and the open land
   const t = createTerrain()
-  const keyPts = chainsOf(keyline)[0].pts
-  const path = [[keyPts[40], keyPts[41]], [1200, 300], [900, 520], [300, 420], [1150, 180]]
+  const keyPts = defined(chainsOf(keyline)[0], "keyline chain").pts
+  const path: [number, number][] = [[defined(keyPts[40]), defined(keyPts[41])], [1200, 300], [900, 520], [300, 420], [1150, 180]]
   for (let s = 1; s < path.length; s++)
     for (let i = 0; i <= 60; i++) {
-      const [a, b] = [path[s - 1], path[s]]
+      const [a, b] = [defined(path[s - 1]), defined(path[s])]
       t.aim(a[0] + ((b[0] - a[0]) * i) / 60, a[1] + ((b[1] - a[1]) * i) / 60, 1)
       t.step(DT)
       if (i % 20) continue
@@ -190,8 +195,13 @@ test("no repeated sequence: the field never returns to an earlier state", () => 
   }
   // compare every pair of moments at least 20 s apart; the closest any two come is still a real difference
   let closest = Infinity
-  for (let a = 0; a < sig.length; a++)
-    for (let b = a + 20; b < sig.length; b++) closest = Math.min(closest, Math.hypot(...sig[a].map((v, k) => v - sig[b][k])))
+  for (let a = 0; a < sig.length; a++) {
+    const p = defined(sig[a])
+    for (let b = a + 20; b < sig.length; b++) {
+      const q = defined(sig[b])
+      closest = Math.min(closest, Math.hypot(...p.map((v, k) => v - defined(q[k]))))
+    }
+  }
   assert.ok(closest > 4, `closest return ${closest.toFixed(1)} units`)
 })
 
@@ -213,9 +223,11 @@ function live(drawn: ReturnType<typeof chainsOf>[], t: ReturnType<typeof createT
     chains.flatMap((c) => {
       const n = c.pts.length / 2, moved = new Float64Array(c.pts.length)
       for (let k = 0; k < n; k++) {
-        t.displace(c.pts[2 * k], c.pts[2 * k + 1], out)
-        moved[2 * k] = c.pts[2 * k] + out[0]
-        moved[2 * k + 1] = c.pts[2 * k + 1] + out[1]
+        const x = defined(c.pts[2 * k]), y = defined(c.pts[2 * k + 1])
+        t.displace(x, y, out)
+        const [dx, dy] = disp()
+        moved[2 * k] = x + dx
+        moved[2 * k + 1] = y + dy
       }
       return flatten(splineFlat(moved, n, c.closed)).map((pts) => ({ level, pts }))
     }),

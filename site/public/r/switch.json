@@ -4,7 +4,7 @@
   "title": "Switch",
   "description": "Binary setting: a two-cell frame whose block stretches to the on side.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

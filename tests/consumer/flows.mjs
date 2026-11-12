@@ -313,7 +313,7 @@ for (const [eng, type, opts] of [["chromium", chromium, { channel: "chrome" }], 
   ok(eng, "workspace shell: collapse makes a rail (56px), the toggle says Expand", Math.round((await wcol.boundingBox()).width) === 56 && (await ws.getByRole("button", { name: "Expand navigation" }).getAttribute("aria-expanded")) === "false")
   ok(eng, "workspace shell: rail items keep their names", (await wnav.getByRole("button", { name: /^Queue/ }).count()) === 1)
   // real keyboard focus (a scripted .focus() after a mouse press is not focus-visible, so no tooltip): Tab from the toggle
-  for (let i = 0; i < 6 && !(await p.evaluate(() => /^Lanes/.test(document.activeElement?.textContent ?? ""))); i++) await p.keyboard.press(eng === "webkit" ? "Alt+Tab" : "Tab")
+  for (let i = 0; i < 6 && !(await p.evaluate(() => (document.activeElement?.textContent ?? "").startsWith("Lanes"))); i++) await p.keyboard.press(eng === "webkit" ? "Alt+Tab" : "Tab")
   await p.waitForTimeout(600)
   ok(eng, "workspace shell: keyboard focus on a rail item shows its label as a tooltip", await p.locator("[data-slot=tooltip]").filter({ hasText: "Lanes" }).isVisible())
   await p.keyboard.press("Enter"); await p.waitForTimeout(250)

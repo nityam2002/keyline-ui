@@ -4,7 +4,7 @@
   "title": "Command menu",
   "description": "⌘K command menu: digit cells run by index, grouped results, empty state.",
   "dependencies": [
-    "@base-ui/react",
+    "@base-ui/react@1.9.0",
     "cmdk"
   ],
   "registryDependencies": [

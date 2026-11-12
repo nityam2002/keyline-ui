@@ -15,7 +15,7 @@ test("scroll area: at rest — overlay platform reveals, the cell and seam are t
   const s = await state(v)
   ok("rest: the platform overlays scrollbars here, so the area reveals (data-kl-reveal=scroll)", s.reveal === "scroll", s.reveal)
   ok("rest: the bar's cell and its 1px seam are there, the thumb is not", s.bars.vertical.bar.width === 12 && s.bars.vertical.seam === "1px" && s.bars.vertical.op === 0, s.bars.vertical)
-  ok("rest: the hidden thumb is slim (4 of 7px) and centred in the cell", /^0\.57/.test(s.bars.vertical.scale) && Math.abs((s.bars.vertical.thumb.left + s.bars.vertical.thumb.right) / 2 - (s.bars.vertical.bar.left + 3 + s.bars.vertical.bar.right - 2) / 2) < 0.6, s.bars.vertical)
+  ok("rest: the hidden thumb is slim (4 of 7px) and centred in the cell", s.bars.vertical.scale.startsWith('0.57') && Math.abs((s.bars.vertical.thumb.left + s.bars.vertical.thumb.right) / 2 - (s.bars.vertical.bar.left + 3 + s.bars.vertical.bar.right - 2) / 2) < 0.6, s.bars.vertical)
   noErrors(ok, p)
 })
 

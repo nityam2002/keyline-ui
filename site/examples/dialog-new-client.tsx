@@ -28,7 +28,7 @@ export function NewClient() {
             <Form
               id="new-client"
               onFormSubmit={(v) => {
-                setClients((all) => [...all, String(v.company).trim()])
+                setClients((all) => [...all, String(v["company"]).trim()])
                 setOpen(false)
               }}
             >

@@ -12,7 +12,7 @@ test("disabled primary: the label is the disabled ink (toolbar, bulk bar)", asyn
     const cs = getComputedStyle(tb)
     const out = { toolbar: cs.color, bulk: null }
     tb.removeAttribute("data-disabled")
-    const bulk = [...document.querySelectorAll("button[disabled]")].find((e) => /^Assign carrier/.test(e.textContent.trim()))
+    const bulk = [...document.querySelectorAll("button[disabled]")].find((e) => e.textContent.trim().startsWith('Assign carrier'))
     if (bulk) out.bulk = getComputedStyle(bulk).color
     const probe = document.createElement("span")
     probe.style.color = "var(--kl-dis)"

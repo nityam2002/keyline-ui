@@ -57,7 +57,7 @@ export function ToolbarOverflowSpecimen() {
               <ToolbarButton icon aria-label="Redo" disabled><G d={GLYPH.redo} /></ToolbarButton>
             </ToolbarGroup>
             <ToolbarToggle defaultPressed onPressedChange={(p) => setWrap(p)}>Wrap</ToolbarToggle>
-            <ToolbarToggleGroup aria-label="Layout" multiple={false} defaultValue={["list"]} onValueChange={(v) => v.length && setView(v[0])}>
+            <ToolbarToggleGroup aria-label="Layout" multiple={false} defaultValue={["list"]} onValueChange={([first]) => first !== undefined && setView(first)}>
               <ToolbarToggle value="list">List</ToolbarToggle>
               <ToolbarToggle value="board">Board</ToolbarToggle>
               <ToolbarToggle value="map">Map</ToolbarToggle>

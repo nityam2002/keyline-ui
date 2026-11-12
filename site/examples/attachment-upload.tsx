@@ -44,6 +44,7 @@ export function InvoiceUploads() {
   const attach = () => {
     const id = n.current++
     const next = NEXT[(id - 1) % NEXT.length]
+    if (!next) return
     setFiles((fs) => [...fs, { id, ...next, state: "uploading", progress: 0 }])
   }
 

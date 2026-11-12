@@ -30,8 +30,13 @@ const SEED: Msg[] = [
 
 const REPLIES = ["Lackawanna's done. 120 cases signed for.", "Blue Cross wants to know about the recycled stock.", "Nobody at Vance. Again.", "Heading back. Traffic on 81."]
 
-// consecutive messages from the same person, close in time, make one run (one Message)
-const runs = (ms: Msg[]) => ms.reduce<Msg[][]>((acc, m) => (acc.at(-1)?.[0].own === m.own && !m.day ? (acc.at(-1)!.push(m), acc) : [...acc, [m]]), [])
+// consecutive messages from the same person, close in time, make one run (one Message); a run is never empty
+type Run = [Msg, ...Msg[]]
+const runs = (ms: Msg[]) =>
+  ms.reduce<Run[]>((acc, m) => {
+    const last = acc.at(-1)
+    return last && last[0].own === m.own && !m.day ? (last.push(m), acc) : [...acc, [m]]
+  }, [])
 
 function Chat() {
   const { scrollToEnd } = useMessageScroller()
@@ -105,7 +110,10 @@ function Chat() {
           Send
         </Button>
       </form>
-      <Button size="compact" variant="quiet" className="justify-self-start" onClick={() => add(false, REPLIES[n.current % REPLIES.length])}>
+      <Button size="compact" variant="quiet" className="justify-self-start" onClick={() => {
+          const reply = REPLIES[n.current % REPLIES.length]
+          if (reply) add(false, reply)
+        }}>
         Darryl replies
       </Button>
     </div>

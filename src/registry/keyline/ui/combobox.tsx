@@ -163,7 +163,7 @@ function Combobox({ label, options = [], loadOptions, value, defaultValue = null
     return selected && !base.some((o) => o.value === selected.value) ? [...base, selected] : base
   }, [async, options, results, selected])
   const items = React.useMemo(() => grouped(list), [list])
-  const isGrouped = items.length > 0 && "items" in items[0]
+  const isGrouped = items[0] !== undefined && "items" in items[0]
 
   const choose = (o: ComboboxOption | null) => {
     if (o) known.current.set(o.value, o)

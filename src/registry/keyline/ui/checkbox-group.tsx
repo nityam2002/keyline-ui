@@ -30,7 +30,7 @@ type CheckboxGroupProps = Omit<React.ComponentProps<typeof CheckboxGroupPrimitiv
      * A parent row that checks or clears every option (Base UI's parent checkbox: mixed while some are
      * checked). true labels it "All"; pass a node to name it ("All carriers"). Its meta cell counts "3/5".
      */
-    selectAll?: boolean | React.ReactNode
+    selectAll?: React.ReactNode
     /** Form name: Base UI Form values and FormData get the checked values under it. */
     name?: string
     /** control (default): its own 2px frame, legend above. cell: rows of an enclosing frame (a panel body, a popover). */

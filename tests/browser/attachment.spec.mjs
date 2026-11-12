@@ -7,7 +7,6 @@ test.use({ only: ["chat"] })
 
 const VIEW = { width: 1280, height: 1000 }
 const noErrors = (ok, p) => ok("no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs])
-const lastAtt = () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1)
 
 test("attachment: the specimen states — progress, processing, failed, long names, idle, actions", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=at-up]" })

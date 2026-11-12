@@ -15,14 +15,14 @@ type AvatarStatus = "normal" | "waiting" | "attention" | "done" | "none"
  * so "Ægir Øster" → "ÆØ" and combining marks stay whole. Emails and handles use the part before "@".
  */
 function avatarInitials(name: string | null | undefined): string {
-  const clean = (name ?? "").split("@")[0].replace(/[_.\-+]+/g, " ").replace(/[^\p{L}\p{N}\p{M}\s]/gu, "").trim()
+  const clean = ((name ?? "").split("@")[0] ?? "").replace(/[_.\-+]+/g, " ").replace(/[^\p{L}\p{N}\p{M}\s]/gu, "").trim()
   if (!clean) return ""
   const words = clean.split(/\s+/u)
   const seg = typeof Intl !== "undefined" && "Segmenter" in Intl ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null
   const first = (w: string) => (seg ? (seg.segment(w)[Symbol.iterator]().next().value?.segment ?? "") : Array.from(w)[0] ?? "")
   // a script written without spaces (Han, Kana, Hangul, Thai…) gives one grapheme: two would be two words' worth
-  if (words.length === 1 || /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Thai}]/u.test(clean)) return first(words[0]).toLocaleUpperCase()
-  return (first(words[0]) + first(words[words.length - 1])).toLocaleUpperCase()
+  if (words.length === 1 || /^[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Thai}]/u.test(clean)) return first(words[0] ?? "").toLocaleUpperCase()
+  return (first(words[0] ?? "") + first(words.at(-1) ?? "")).toLocaleUpperCase()
 }
 
 const STATUS_TEXT: Record<AvatarStatus, string> = { normal: "active", waiting: "away", attention: "needs attention", done: "done", none: "offline" }

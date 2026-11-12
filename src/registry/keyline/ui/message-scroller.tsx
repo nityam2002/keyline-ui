@@ -58,8 +58,9 @@ function MessageScrollerViewport({
         const vp = e.currentTarget.querySelector<HTMLElement>(".kl-ms-vp")
         if (e.button !== 0 || !vp || !(e.target as Element).closest?.(".kl-scrollbar")) return
         if (vp.scrollHeight - vp.clientHeight - vp.scrollTop <= 2) {
-          const newest = vp.querySelectorAll('[data-slot="bubble"]')
-          if (newest.length) seenAtPress.set(vp, newest[newest.length - 1])
+          const bubbles = vp.querySelectorAll('[data-slot="bubble"]')
+          const newest = bubbles[bubbles.length - 1]
+          if (newest) seenAtPress.set(vp, newest)
           const release = () => {
             seenAtPress.delete(vp)
             window.removeEventListener("pointerup", release, true)
@@ -95,7 +96,8 @@ function readingAnchor(content: HTMLElement, vpTop: number) {
   let hi = items.length - 1
   while (lo < hi) {
     const mid = (lo + hi) >> 1
-    if (items[mid].getBoundingClientRect().bottom <= vpTop) lo = mid + 1
+    const box = items[mid]?.getBoundingClientRect()
+    if (box && box.bottom <= vpTop) lo = mid + 1
     else hi = mid
   }
   for (let i = lo; i < Math.min(items.length, lo + 3); i++) {

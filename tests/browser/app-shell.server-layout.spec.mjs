@@ -19,7 +19,10 @@ test("shell: before any script, CSS lays the columns out for the shell's width",
         shell.setAttribute("data-kl-nav", "open")
         shell.querySelector(":scope > .kl-shell-nav")?.removeAttribute("hidden")
         if (!shell.querySelector(":scope > .kl-shell-aside")) shell.querySelector(":scope > .kl-shell-main").after(Object.assign(document.createElement("div"), { className: "kl-shell-aside" }))
-        if (at !== "own") (shell.setAttribute("data-kl-at", at), shell.querySelector(":scope > style")?.remove())
+        if (at !== "own") {
+          shell.setAttribute("data-kl-at", at)
+          shell.querySelector(":scope > style")?.remove()
+        }
         box.append(shell)
         document.body.append(box)
         const shown = (s) => { const e = shell.querySelector(`:scope > ${s}`); return getComputedStyle(e).display !== "none" }

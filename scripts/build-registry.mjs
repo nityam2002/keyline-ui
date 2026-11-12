@@ -1,7 +1,7 @@
 // Builds the registry: site/public/r/{name}.json, what the shadcn CLI fetches, from src/registry/manifest.mjs and the
 // source. The documentation site serves that folder at /r/{name}.json, so deploying the site publishes the registry.
 //
-//   npm run registry:build
+//   pnpm registry:build
 //
 // Step one writes the registry index (.artifacts/registry/registry.json); step two is `shadcn build`, which inlines
 // each item's files into site/public/r. The output is committed; CI fails when it is out of date.
@@ -156,7 +156,10 @@ const built = items.map(({ css, theme, ...item }) => {
   const depsOf = (name, seen = new Set()) => {
     for (const d of byName.get(name)?.registryDependencies ?? []) {
       const n = d.replace(`${NS}/`, "")
-      if (!seen.has(n)) (seen.add(n), depsOf(n, seen))
+      if (!seen.has(n)) {
+        seen.add(n)
+        depsOf(n, seen)
+      }
     }
     return seen
   }

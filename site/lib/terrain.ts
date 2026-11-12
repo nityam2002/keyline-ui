@@ -74,6 +74,15 @@ const SOFT_STRAIN = 0.01 // the strain's log-sum-exp temperature (overestimates 
 const SOFT_DISP = 1.5 // the displacement's, in units (at most ~10 over)
 const SOFT_MIN = 10 // p of the soft minimum // max of ρ·e^(−ρ²/2) is e^(−1/2)
 
+/** a[i] where i is in range by construction (a zone's six state slots, a grid sample): reading past the end would be
+ * a bug, so it throws instead of letting undefined turn into NaN. Typed arrays only, so it stays monomorphic and V8
+ * inlines it in the per-frame loops. */
+function f64(a: Float64Array, i: number): number {
+  const v = a[i]
+  if (v === undefined) throw new RangeError(`index ${i} is out of range (length ${a.length})`)
+  return v
+}
+
 /** 0 → 1 with no speed and no acceleration at either end */
 const smoother = (u: number) => u * u * u * (u * (u * 6 - 15) + 10)
 
@@ -154,13 +163,16 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     return z
   })
   const leadSpec: ZoneSpec = { x: [0, 0], y: [0, 0], r: LEAD.r, push: LEAD.push, swell: LEAD.swell, rate: [0, 0], dwell: [0, 0], relax: 0 }
-  const leads = [0, 1].map(() => {
+  const lead = () => {
     const z = zone(leadSpec)
     z.q[0] = 1200 // somewhere harmless until its first change places it
     z.q[2] = LEAD.r[0]
     z.lead = { from: new Float64Array(N), to: new Float64Array(N), t: 0, T: 1, handoff: 0, moving: false, formed: false }
     return z
-  })
+  }
+  const leads: [Zone, Zone] = [lead(), lead()]
+  // each lead with the other, in the order step() offers them the next change
+  const pairs: [Zone, Zone][] = [[leads[0], leads[1]], [leads[1], leads[0]]]
   const zones = [...leads, ...quiet]
 
   // the open land the lead bends start in
@@ -171,12 +183,12 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     return d
   }
   // somewhere in view, clear of what covers it and, if the other lead is formed, away from its bend
-  const spot = (other: Zone) => {
+  const spot = (other: Zone): [number, number] => {
     let bx = 0, by = 0, best = -Infinity
     const m = 24, x0 = view.x0 + m, x1 = Math.max(x0, view.x1 - m), y0 = view.y0 + m, y1 = Math.max(y0, view.y1 - m)
     for (let i = 0; i < 24; i++) {
       const x = x0 + (x1 - x0) * rand(), y = y0 + (y1 - y0) * rand()
-      const away = other.lead!.formed || other.lead!.moving ? Math.min(Math.hypot(x - other.q[0], y - other.q[1]), 320) : 320
+      const away = other.lead!.formed || other.lead!.moving ? Math.min(Math.hypot(x - f64(other.q, 0), y - f64(other.q, 1)), 320) : 320
       const score = Math.min(gap(x, y), 140) + 0.35 * away + 30 * rand()
       if (score > best) [best, bx, by] = [score, x, y]
     }
@@ -195,7 +207,7 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     c.to.set(z.q)
     // a new bend's direction: any, or for a turn, well away from the one it has (a turn that barely turns is a stall)
     const bend = (strength: number, turning = false) => {
-      const was = Math.atan2(z.q[4], z.q[3]), swing = (Math.PI / 2 + rand() * Math.PI / 2) * (rand() < 0.5 ? -1 : 1)
+      const was = Math.atan2(f64(z.q, 4), f64(z.q, 3)), swing = (Math.PI / 2 + rand() * Math.PI / 2) * (rand() < 0.5 ? -1 : 1)
       const ang = turning ? was + swing : rand() * Math.PI * 2, mag = LEAD.push * strength
       c.to[3] = Math.cos(ang) * mag
       c.to[4] = Math.sin(ang) * mag
@@ -208,8 +220,8 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     } else if (rand() < TURN_ODDS) {
       // turn: the bend drifts a little and takes another direction
       const ang = rand() * Math.PI * 2
-      c.to[0] = Math.min(view.x1, Math.max(view.x0, z.q[0] + Math.cos(ang) * 60))
-      c.to[1] = Math.min(view.y1, Math.max(view.y0, z.q[1] + Math.sin(ang) * 60))
+      c.to[0] = Math.min(view.x1, Math.max(view.x0, f64(z.q, 0) + Math.cos(ang) * 60))
+      c.to[1] = Math.min(view.y1, Math.max(view.y0, f64(z.q, 1) + Math.sin(ang) * 60))
       bend(0.6 + 0.4 * rand(), true)
       c.T = between(LEAD.turn)
     } else {
@@ -267,7 +279,7 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     for (const z of zones) {
       // smooth stand-ins for |push| and |swell| (never below them): a plain abs would kink the bound, and so the
       // motion, each time a swell or a push passes through zero
-      const r = z.q[2], a = Math.hypot(z.q[3], z.q[4], 1), s = Math.hypot(z.q[5], 0.005)
+      const r = f64(z.q, 2), a = Math.hypot(f64(z.q, 3), f64(z.q, 4), 1), s = Math.hypot(f64(z.q, 5), 0.005)
       h += (1.2 * a) / (r * r) + (3 * s) / r
       reach += a + s * r * G
       grad += (G * a) / r + s
@@ -276,14 +288,13 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
   }
   // the actual largest stretch or squeeze over the sheet (and its overscan): the spectral norm of the field's
   // Jacobian, sampled on a grid far finer than any zone
-  const J = new Float64Array(4)
   let lastDisp = 0
   const jacobian = (x: number, y: number) => {
     let a = 0, b = 0, c = 0, d = 0, dx = 0, dy = 0
     for (const z of zones) {
-      const ex = x - z.q[0], ey = y - z.q[1], r2 = z.q[2] * z.q[2], s = z.q[5]
+      const r = f64(z.q, 2), ex = x - f64(z.q, 0), ey = y - f64(z.q, 1), r2 = r * r, s = f64(z.q, 5)
       const g = Math.exp(-(ex * ex + ey * ey) / (2 * r2))
-      const ux = z.q[3] + s * ex, uy = z.q[4] + s * ey
+      const ux = f64(z.q, 3) + s * ex, uy = f64(z.q, 4) + s * ey
       dx += ux * g
       dy += uy * g
       a += (s - (ux * ex) / r2) * g
@@ -295,11 +306,8 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     const w = ENV_MIN + (1 - ENV_MIN) * t * t * (3 - 2 * t)
     const wy = t > 0 && t < 1 ? ((1 - ENV_MIN) * 6 * t * (1 - t)) / (ENVELOPE[1] - ENVELOPE[0]) : 0
     lastDisp = Math.hypot(dx, dy) * w
-    J[0] = w * a
-    J[1] = w * b + dx * wy
-    J[2] = w * c
-    J[3] = w * d + dy * wy
-    const T = J[0] * J[0] + J[1] * J[1] + J[2] * J[2] + J[3] * J[3], det = J[0] * J[3] - J[1] * J[2]
+    const j0 = w * a, j1 = w * b + dx * wy, j2 = w * c, j3 = w * d + dy * wy
+    const T = j0 * j0 + j1 * j1 + j2 * j2 + j3 * j3, det = j0 * j3 - j1 * j2
     return Math.sqrt((T + Math.sqrt(Math.max(0, T * T - 4 * det * det))) / 2)
   }
   // the largest stretch and the largest displacement over the sheet and its overscan, as smooth maxima
@@ -307,7 +315,7 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
   const ms = new Float64Array(NS), ds = new Float64Array(NS)
   const softMax = (v: Float64Array, hard: number, tau: number) => {
     let sum = 0
-    for (let i = 0; i < v.length; i++) sum += Math.exp((v[i] - hard) / tau)
+    for (let i = 0; i < v.length; i++) sum += Math.exp((f64(v, i) - hard) / tau)
     return hard + tau * Math.log(sum)
   }
   const measured = () => {
@@ -316,8 +324,8 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
       for (let x = -160; x <= 1560; x += GRID) {
         ms[i] = jacobian(x, y)
         ds[i] = lastDisp
-        m = Math.max(m, ms[i])
-        disp = Math.max(disp, ds[i++])
+        m = Math.max(m, f64(ms, i))
+        disp = Math.max(disp, f64(ds, i++))
       }
     return { m: softMax(ms.subarray(0, i), m, SOFT_STRAIN), disp: softMax(ds.subarray(0, i), disp, SOFT_DISP) }
   }
@@ -341,21 +349,21 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
       if (!c.moving) continue
       c.t += dt
       const u = Math.min(1, c.t / c.T), e = smoother(u)
-      for (let k = 0; k < N; k++) z.q[k] = c.from[k] + (c.to[k] - c.from[k]) * e
+      for (let k = 0; k < N; k++) z.q[k] = f64(c.from, k) + (f64(c.to, k) - f64(c.from, k)) * e
       if (u >= 1) c.moving = false
     }
     // an idle lead starts its next change once the other is well into its own (or still): so one change always
     // starts while the other is mid-way, and their slow ends never meet
-    for (let i = 0; i < 2; i++) {
-      const z = leads[i], o = leads[1 - i].lead!
+    for (const [z, other] of pairs) {
+      const o = other.lead!
       if (z.lead!.moving || (o.moving && o.t / o.T < o.handoff)) continue
-      begin(z, leads[1 - i])
+      begin(z, other)
       break
     }
     for (const z of quiet) {
       z.dwell -= dt
       let near = 0
-      for (let k = 0; k < N; k++) near = Math.max(near, Math.abs(z.goal[k] - z.q[k]) / (k < 3 ? 60 : k < 5 ? z.spec.push : z.spec.swell))
+      for (let k = 0; k < N; k++) near = Math.max(near, Math.abs(f64(z.goal, k) - f64(z.q, k)) / (k < 3 ? 60 : k < 5 ? z.spec.push : z.spec.swell))
       // arrived: hold the shape a moment, then move on
       if (near < 0.12 && !z.held) {
         z.held = true
@@ -364,27 +372,27 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
       if (z.dwell <= 0) pick(z)
       // the spring's anchor glides to a new goal rather than jumping, so the pull, and the acceleration, stay smooth
       const glide = 1 - Math.exp(-GLIDE * dt)
-      for (let k = 0; k < N; k++) z.target[k] += (z.goal[k] - z.target[k]) * glide
+      for (let k = 0; k < N; k++) z.target[k] = f64(z.target, k) + (f64(z.goal, k) - f64(z.target, k)) * glide
       // a slightly underdamped spring: eases out of each turn, never stops dead
       const w = z.omega, c = 2 * 0.85 * w
       for (let k = 0; k < N; k++) {
-        z.v[k] += (w * w * (z.target[k] - z.q[k]) - c * z.v[k]) * dt
+        z.v[k] = f64(z.v, k) + (w * w * (f64(z.target, k) - f64(z.q, k)) - c * f64(z.v, k)) * dt
       }
       // speed limits on the moving parts (the centre and the push in units/s, the radius, the swell): a drag that
       // only grows past the limit, so a fast zone eases off instead of being cut (which would jolt it)
       const lim = (i: number, j: number, max: number) => {
-        const over = Math.hypot(z.v[i], j < 0 ? 0 : z.v[j]) / max - 1
+        const over = Math.hypot(f64(z.v, i), j < 0 ? 0 : f64(z.v, j)) / max - 1
         if (over > 0) {
           const f = 1 / (1 + 12 * over * over * dt * 60 * dt)
-          z.v[i] *= f
-          if (j >= 0) z.v[j] *= f
+          z.v[i] = f64(z.v, i) * f
+          if (j >= 0) z.v[j] = f64(z.v, j) * f
         }
       }
       lim(0, 1, MAX_SPEED * 1.4)
       lim(2, -1, MAX_SPEED)
       lim(3, 4, MAX_SPEED)
       lim(5, -1, 0.05)
-      for (let k = 0; k < N; k++) z.q[k] += z.v[k] * dt
+      for (let k = 0; k < N; k++) z.q[k] = f64(z.q, k) + f64(z.v, k) * dt
     }
     // the hills: the one under the pointer builds while it rests; once the pointer has moved HILL_STEP on, it is
     // left standing and another starts under the pointer
@@ -440,8 +448,8 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
     let rx = x, ry = y
     for (let i = 0; i < 4; i++) {
       displace(rx, ry, inv)
-      rx = x - inv[0]
-      ry = y - inv[1]
+      rx = x - f64(inv, 0)
+      ry = y - f64(inv, 1)
     }
     aimed.x = rx
     aimed.y = ry
@@ -457,10 +465,10 @@ export function createTerrain(seed = 0x6b65796c): Terrain {
   function displace(x: number, y: number, out: Float64Array) {
     let dx = 0, dy = 0
     for (const z of zones) {
-      const ex = x - z.q[0], ey = y - z.q[1], r2 = z.q[2] * z.q[2]
+      const r = f64(z.q, 2), s = f64(z.q, 5), ex = x - f64(z.q, 0), ey = y - f64(z.q, 1), r2 = r * r
       const g = Math.exp(-(ex * ex + ey * ey) / (2 * r2))
-      dx += (z.q[3] + z.q[5] * ex) * g
-      dy += (z.q[4] + z.q[5] * ey) * g
+      dx += (f64(z.q, 3) + s * ex) * g
+      dy += (f64(z.q, 4) + s * ey) * g
     }
     const w = env(y) * scale
     out[0] = dx * w

@@ -62,7 +62,7 @@ export function AppShellSpecimen() {
                 { label: "Northwind", href: "#" },
                 { label: "Europe", href: "#" },
                 { label: "Netherlands", href: "#" },
-                { label: place === "shipments" ? "Shipments" : place[0].toUpperCase() + place.slice(1), href: "#" },
+                { label: place === "shipments" ? "Shipments" : place.charAt(0).toUpperCase() + place.slice(1), href: "#" },
                 ...(row ? [{ label: row.id }] : [{ label: "All" }]),
               ]}
             />

@@ -3,6 +3,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
+import { defined } from "./defined.ts"
 
 const root = new URL("..", import.meta.url).pathname
 const read = (p: string) => readFileSync(join(root, p), "utf8")
@@ -40,7 +41,7 @@ test("install commands use @latest and one of the documented forms", () => {
       if (c.includes("${")) continue // built by site/lib/registry.ts, checked below
       if (f === PLACEHOLDER.file && c === PLACEHOLDER.command) continue
       assert.ok(forms.some((r) => r.test(c)), `${f}: unexpected command "${c}"`)
-      for (const m of c.matchAll(/@keyline-ui\/([a-z-]+)/g)) assert.ok(names.has(m[1]), `${f}: "${c}" names no registry item "${m[1]}"`)
+      for (const m of c.matchAll(/@keyline-ui\/([a-z-]+)/g)) assert.ok(names.has(defined(m[1], "item name")), `${f}: "${c}" names no registry item "${m[1]}"`)
     }
   }
 })

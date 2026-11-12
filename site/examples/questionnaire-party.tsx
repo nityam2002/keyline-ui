@@ -90,7 +90,7 @@ export function BirthdaySurvey() {
       onSubmit={(e) => {
         e.preventDefault()
         const fd = new FormData(e.currentTarget)
-        setAnswers(STEPS.map((s) => [s.name, fd.getAll(s.name).map((v) => LABEL[String(v)] ?? String(v)).join(", ") || "Skipped"]))
+        setAnswers(STEPS.map((s) => [s.name, fd.getAll(s.name).map((v) => (typeof v === "string" ? (LABEL[v] ?? v) : v.name)).join(", ") || "Skipped"]))
       }}
     >
       <QuestionnaireProgress />

@@ -57,7 +57,8 @@ export type PaletteId = keyof typeof PALETTES
 export const ROLE_TONE = { working: [0.9, 0.16], commit: [0.48, 0.18], attention: [0.55, 0.2] } as const
 const DARK_LIFT = { commit: 0.09, attention: 0.02 } as const
 
-function oklchToLinear(L: number, C: number, H: number) {
+type Rgb = [number, number, number]
+function oklchToLinear(L: number, C: number, H: number): Rgb {
   const h = (H * Math.PI) / 180
   const [a, b] = [C * Math.cos(h), C * Math.sin(h)]
   const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3
@@ -68,8 +69,9 @@ function oklchToLinear(L: number, C: number, H: number) {
 /** The lower WCAG 2 contrast of white on this colour, clipped to sRGB or not. */
 export function whiteContrast(L: number, C: number, H: number) {
   const rgb = oklchToLinear(L, C, H)
-  const y = (v: number[]) => 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]
-  const lum = Math.max(y(rgb.map((v) => Math.min(1, Math.max(0, v)))), y(rgb))
+  const y = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
+  const clip = (v: number) => Math.min(1, Math.max(0, v))
+  const lum = Math.max(y([clip(rgb[0]), clip(rgb[1]), clip(rgb[2])]), y(rgb))
   return 1.05 / (lum + 0.05)
 }
 /** The fill keyline.css derives in the dark theme from a commit or attention source. */
@@ -268,7 +270,7 @@ type ScopeProps = React.ComponentProps<"div"> & { config: KeylineConfig; name?: 
  * A configuration scope at runtime: everything inside (and every overlay opened from inside) takes the
  * configuration. Use it for a tenant theme, an embedded widget, or a preview. Theme "system" inherits.
  */
-export function KeylineConfigScope({ config, name = "", className, style, ...props }: ScopeProps) {
+export function KeylineConfigScope({ config, name = "", className, style, ...props }: ScopeProps): React.ReactElement {
   const a = configAttributes(config)
   return React.createElement("div", {
     ...props,

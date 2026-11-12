@@ -406,7 +406,7 @@ function Code({ children }: { children: string }) {
         variant="quiet"
         signal={copied ? "done" : "idle"}
         onClick={() => {
-          navigator.clipboard?.writeText(children)
+          void navigator.clipboard?.writeText(children)
           setCopied(true)
           setTimeout(() => setCopied(false), 900)
         }}

@@ -106,8 +106,17 @@ export function useKeylineScope(open = true, container?: unknown): [React.ReactE
   return [marker, scope, React.createElement(ScopeProbe, { sync })]
 }
 
+type ScopedProps = {
+  dir: KeylineScope["dir"]
+  "data-kl-config": string | undefined
+  "data-kl-density": string | undefined
+  "data-kl-motion": string | undefined
+  className: string | undefined
+  style: React.CSSProperties
+}
+
 /** Merge a scope into props for a portaled element (keeps the element's own className and style). */
-export function scopeProps<P extends { className?: string; style?: React.CSSProperties }>(scope: KeylineScope, own: P = {} as P) {
+export function scopeProps<P extends { className?: string; style?: React.CSSProperties }>(scope: KeylineScope, own: P = {} as P): P & ScopedProps {
   return {
     ...own,
     dir: scope.dir,

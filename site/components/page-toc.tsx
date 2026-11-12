@@ -13,7 +13,7 @@ const LINE = 160
 /** The headings of this page in Keyline's Nav; the band follows the section being read. */
 export function PageToc({ title, groups }: { title: string; groups: TocGroup[] }) {
   const ids = React.useMemo(() => groups.flatMap((g) => g.items.map((i) => i.id)), [groups])
-  const [active, setActive] = React.useState(ids[0])
+  const [active, setActive] = React.useState(ids[0] ?? "")
   // a section chosen in the index stays current until the reader scrolls by themselves: near the end of
   // the page a short section can't reach the line, and the band must not land on its neighbour
   const chosen = React.useRef<string | null>(null)
@@ -27,14 +27,14 @@ export function PageToc({ title, groups }: { title: string; groups: TocGroup[] }
         if (t > -40 && t < window.innerHeight / 2) return setActive(chosen.current)
         chosen.current = null
       }
-      let cur = ids[0]
+      let cur = ids[0] ?? ""
       for (const id of ids) {
         const el = document.getElementById(id)
         if (el && el.getBoundingClientRect().top <= LINE) cur = id
       }
       // at the very end of the page the last heading may never reach the line
       const sc = pageScroller()
-      if (sc.clientHeight + sc.scrollTop >= sc.scrollHeight - 2) cur = ids[ids.length - 1]
+      if (sc.clientHeight + sc.scrollTop >= sc.scrollHeight - 2) cur = ids.at(-1) ?? cur
       setActive(cur)
     }
     const queue = () => { if (!frame) frame = requestAnimationFrame(pick) }

@@ -28,6 +28,9 @@ type MenuContentProps = React.ComponentProps<typeof MenuPrimitive.Popup> & {
 function useFrameDock() {
   const ref = React.useRef<HTMLSpanElement>(null)
   const [frame, setFrame] = React.useState<HTMLElement | null>(null)
+  // Runs after every render on purpose: the frame can change without any prop changing. The setter bails out
+  // when the frame is the same, so this settles after one pass.
+  // oxlint-disable-next-line react-hooks/exhaustive-deps -- re-reads the DOM each render; see above
   React.useLayoutEffect(() => {
     const next = ref.current?.closest<HTMLElement>('[data-slot="button-group"]') ?? null
     setFrame((prev) => (prev === next ? prev : next))

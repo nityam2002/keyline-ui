@@ -51,8 +51,9 @@ const pad = (n: number) => String(n).padStart(2, "0")
 const parse = (v: string | null | undefined, cycle: 12 | 24): Parts => {
   const m = v ? /^(\d{1,2}):(\d{1,2})$/.exec(v) : null
   if (!m) return ["", "", ""]
-  const h = Math.min(23, +m[1])
-  const mi = pad(Math.min(59, +m[2]))
+  const [, hours = "", minutes = ""] = m
+  const h = Math.min(23, +hours)
+  const mi = pad(Math.min(59, +minutes))
   return cycle === 24 ? [pad(h), mi, ""] : [pad(h % 12 || 12), mi, h < 12 ? "am" : "pm"]
 }
 /** The 24-hour value the parts make, or null while one is missing. */
@@ -293,7 +294,7 @@ function TimeField({
     const typed = raw.startsWith(shown) ? raw.slice(shown.length) : raw
     const c = typed.slice(-1).toLocaleLowerCase(locale)
     if (raw === "") return setPart(2, "")
-    const [a, p] = periods.names.map((x) => x.toLocaleLowerCase(locale))
+    const [a, p] = [periods.names[0].toLocaleLowerCase(locale), periods.names[1].toLocaleLowerCase(locale)]
     const n: Period | null = c === "a" || (a.includes(c) && !p.includes(c)) ? "am" : c === "p" || (p.includes(c) && !a.includes(c)) ? "pm" : null
     if (n) {
       setPart(2, n)
@@ -363,6 +364,7 @@ function TimeField({
         <input
           ref={refs[2]}
           {...common}
+          role="spinbutton"
           inputMode="text"
           placeholder="––"
           aria-label={periodLabel}
@@ -402,6 +404,9 @@ function TimeField({
       <span id={labelId} className={cn("kl-field-label", layout === "cell" && "kl-sr")}>
         {label}
       </span>
+      {/* A press on the frame's padding focuses the first part, for the pointer only; the keyboard reaches each
+          part directly, so the group needs no key handler. */}
+      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- pointer convenience; see above */}
       <div ref={frameRef} role="group" aria-labelledby={labelId} data-kl-layout={layout} className="kl-ctl kl-cells kl-field-frame kl-edge kl-time-frame" onClick={(e) => e.target === e.currentTarget && focusPart(order[0])}>
         <span className="kl-slot kl-field-bang" aria-hidden>
           <span>

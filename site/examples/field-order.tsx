@@ -13,8 +13,8 @@ export function NewOrder() {
     <Form
       orientation="responsive"
       onFormSubmit={(v) => {
-        const cases = Number(v.cases)
-        setPlaced(`Order DM-4142 placed: ${cases} ${cases === 1 ? "case" : "cases"} for ${v.client}. Darryl has the note.`)
+        const cases = Number(v["cases"])
+        setPlaced(`Order DM-4142 placed: ${cases} ${cases === 1 ? "case" : "cases"} for ${v["client"]}. Darryl has the note.`)
       }}
     >
       <Field name="client">

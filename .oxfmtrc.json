@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "endOfLine": "lf",
+  "sortPackageJson": false,
+  "sortTailwindcss": {
+    "stylesheet": "./src/demo/globals.css",
+    "functions": ["cn", "clsx", "cva"]
+  },
+  "ignorePatterns": ["site/public/**", "site/.next/**", ".artifacts/**", "pnpm-lock.yaml", "**/*.md"]
+}

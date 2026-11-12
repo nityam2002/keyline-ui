@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { Search } from "lucide-react"
 import { Button } from "@/components/keyline/ui/button"
 import { Progress } from "@/components/keyline/ui/progress"
-import { createTracer, isIndex, splineFlat, TENTHS, type Bump } from "@site/lib/contours"
+import { createTracer, f64, isIndex, nth, splineFlat, TENTHS, type Bump } from "@site/lib/contours"
 import { Mark } from "@site/components/land"
 import { PrimaryLink } from "@site/components/primary-link"
 import { useSiteCommand } from "@site/components/site-command"
@@ -65,7 +65,7 @@ function makeRun(box: Box, topSafe: number, level: number): Run {
   const stretches: Pt[][] = []
   for (const t of traced) {
     const n = t.pts.length / 2
-    const p = (k: number): Pt => ({ x: t.pts[2 * (k % n)], y: t.pts[2 * (k % n) + 1] })
+    const p = (k: number): Pt => ({ x: f64(t.pts, 2 * (k % n)), y: f64(t.pts, 2 * (k % n) + 1) })
     // a closed line is walked from a point outside, so no stretch is cut in two at its seam
     let s0 = 0
     if (t.closed) for (let k = 0; k < n; k++) if (!inside(p(k).x, p(k).y)) { s0 = k; break }
@@ -73,7 +73,10 @@ function makeRun(box: Box, topSafe: number, level: number): Run {
     for (let k = 0; k < (t.closed ? n + 1 : n); k++) {
       const q = p(s0 + k)
       if (inside(q.x, q.y)) cur.push(q)
-      else if (cur.length) (stretches.push(cur), (cur = []))
+      else if (cur.length) {
+        stretches.push(cur)
+        cur = []
+      }
     }
     if (cur.length) stretches.push(cur)
   }
@@ -86,7 +89,8 @@ function makeRun(box: Box, topSafe: number, level: number): Run {
       if (s.length <= need) continue
       for (let k = 0; k < 4; k++) {
         const a = Math.floor(r() * (s.length - need)), part = s.slice(a, a + need + 1)
-        const ends = Math.hypot(part[0].x - part[part.length - 1].x, part[0].y - part[part.length - 1].y)
+        const first = nth(part, 0), last = nth(part, part.length - 1)
+        const ends = Math.hypot(first.x - last.x, first.y - last.y)
         if (ends > 0.4 * want) picks.push(part)
       }
     }
@@ -95,18 +99,22 @@ function makeRun(box: Box, topSafe: number, level: number): Run {
     const turn = (q: Pt[]) => {
       let t = 0
       for (let k = 2; k < q.length; k++) {
-        const a1 = Math.atan2(q[k - 1].y - q[k - 2].y, q[k - 1].x - q[k - 2].x), a2 = Math.atan2(q[k].y - q[k - 1].y, q[k].x - q[k - 1].x)
+        const q0 = nth(q, k - 2), q1 = nth(q, k - 1), q2 = nth(q, k)
+        const a1 = Math.atan2(q1.y - q0.y, q1.x - q0.x), a2 = Math.atan2(q2.y - q1.y, q2.x - q1.x)
         t += Math.abs(Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1)))
       }
       return t
     }
-    const few = Array.from({ length: Math.min(picks.length, 1 + 2 * (level - 1)) }, () => picks[Math.floor(r() * picks.length)])
+    const few = Array.from({ length: Math.min(picks.length, 1 + 2 * (level - 1)) }, () => nth(picks, Math.floor(r() * picks.length)))
     let line = few.reduce((b, q) => (turn(q) > turn(b) ? q : b))
     // the line runs left to right more often than not: the way a reader's eye goes home
-    if (r() < 0.7 && line[0].x > line[line.length - 1].x) line = [...line].reverse()
+    if (r() < 0.7 && nth(line, 0).x > nth(line, line.length - 1).x) line = [...line].reverse()
     const pts = Float64Array.from(line.flatMap((q) => [q.x, q.y])), n = line.length
     const cum = new Float64Array(n)
-    for (let k = 1; k < n; k++) cum[k] = cum[k - 1] + Math.hypot(line[k].x - line[k - 1].x, line[k].y - line[k - 1].y)
+    for (let k = 1; k < n; k++) {
+      const a = nth(line, k - 1), b = nth(line, k)
+      cum[k] = f64(cum, k - 1) + Math.hypot(b.x - a.x, b.y - a.y)
+    }
     return { level, pts, n, cum, tol: bandPx(level) * u, line: splineFlat(pts, n, false), land: { plain: plain.join(""), index: index.join("") } }
   }
   // no stretch long enough in sight (a very small board): a fresh land will have one
@@ -118,7 +126,7 @@ function makeRun(box: Box, topSafe: number, level: number): Run {
 function nearest(run: Run, p: Pt, from: number, ahead: number) {
   let best = { at: from, d: Infinity }
   for (let k = Math.max(0, Math.floor(from) - 2); k < Math.min(run.n - 1, Math.floor(from) + ahead); k++) {
-    const ax = run.pts[2 * k], ay = run.pts[2 * k + 1], bx = run.pts[2 * k + 2], by = run.pts[2 * k + 3]
+    const ax = f64(run.pts, 2 * k), ay = f64(run.pts, 2 * k + 1), bx = f64(run.pts, 2 * k + 2), by = f64(run.pts, 2 * k + 3)
     const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy
     const t = l2 ? clamp(((p.x - ax) * dx + (p.y - ay) * dy) / l2, 0, 1) : 0
     const d = Math.hypot(p.x - (ax + t * dx), p.y - (ay + t * dy))
@@ -128,11 +136,13 @@ function nearest(run: Run, p: Pt, from: number, ahead: number) {
 }
 const pointAt = (run: Run, at: number): Pt => {
   const k = Math.min(run.n - 2, Math.floor(at)), t = at - k
-  return { x: run.pts[2 * k] + t * (run.pts[2 * k + 2] - run.pts[2 * k]), y: run.pts[2 * k + 1] + t * (run.pts[2 * k + 3] - run.pts[2 * k + 1]) }
+  const ax = f64(run.pts, 2 * k), ay = f64(run.pts, 2 * k + 1)
+  return { x: ax + t * (f64(run.pts, 2 * k + 2) - ax), y: ay + t * (f64(run.pts, 2 * k + 3) - ay) }
 }
 const lengthAt = (run: Run, at: number) => {
   const k = Math.min(run.n - 2, Math.floor(at))
-  return run.cum[k] + (at - k) * (run.cum[k + 1] - run.cum[k])
+  const c = f64(run.cum, k)
+  return c + (at - k) * (f64(run.cum, k + 1) - c)
 }
 
 type Record = { level: number; times: { [level: number]: number } }
@@ -201,7 +211,7 @@ export function KeylineTrace() {
     const m = 24 * box.upp
     const fits = (r: Run) => {
       for (let k = 0; k < r.n; k++) {
-        const x = r.pts[2 * k], y = r.pts[2 * k + 1]
+        const x = f64(r.pts, 2 * k), y = f64(r.pts, 2 * k + 1)
         if (x < box.x + m || x > box.x + box.w - m || y < box.y + topSafe.current - m || y > box.y + box.h - m) return false
       }
       return Math.abs(r.tol - bandPx(r.level) * box.upp) < 0.5
@@ -243,7 +253,7 @@ export function KeylineTrace() {
     const p = new DOMPoint(cx, cy).matrixTransform(ctm.inverse())
     return { x: p.x, y: p.y }
   }
-  const pct = (a: number) => (run ? Math.round((100 * lengthAt(run, a)) / run.cum[run.n - 1]) : 0)
+  const pct = (a: number) => (run ? Math.round((100 * lengthAt(run, a)) / f64(run.cum, run.n - 1)) : 0)
 
   const finish = (won: boolean, a: number, extra: Partial<End> = {}) => {
     if (!run) return
@@ -252,7 +262,7 @@ export function KeylineTrace() {
     if (won) {
       const prev = record.times[run.level]
       best = !prev || ms < prev
-      const next: Record = { level: Math.max(record.level, run.level), times: { ...record.times, [run.level]: best ? ms : prev } }
+      const next: Record = { level: Math.max(record.level, run.level), times: { ...record.times, [run.level]: prev && !best ? prev : ms } }
       setRecord(next)
       try {
         localStorage.setItem(KEY, JSON.stringify(next))
@@ -299,7 +309,7 @@ export function KeylineTrace() {
         return
       }
       atRef.current = Math.max(atRef.current, near.at)
-      if (run.cum[run.n - 1] - lengthAt(run, atRef.current) < run.tol * 0.6) {
+      if (f64(run.cum, run.n - 1) - lengthAt(run, atRef.current) < run.tol * 0.6) {
         atRef.current = run.n - 1
         setAt(atRef.current)
         setHand(null)
@@ -330,7 +340,10 @@ export function KeylineTrace() {
   let plateAt: React.CSSProperties | undefined
   if (run && box) {
     let cx = 0, cy = 0
-    for (let k = 0; k < run.n; k++) (cx += run.pts[2 * k]), (cy += run.pts[2 * k + 1])
+    for (let k = 0; k < run.n; k++) {
+      cx += f64(run.pts, 2 * k)
+      cy += f64(run.pts, 2 * k + 1)
+    }
     const fx = (cx / run.n - box.x) / box.w, fy = (cy / run.n - box.y) / box.h
     const top = topSafe.current / box.h
     plateAt =

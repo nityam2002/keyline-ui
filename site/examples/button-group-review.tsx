@@ -15,6 +15,7 @@ const ORDERS = [
 export function OrderReview() {
   const [i, setI] = useState(0)
   const order = ORDERS[i]
+  if (!order) return null
 
   return (
     <div className="grid gap-4">

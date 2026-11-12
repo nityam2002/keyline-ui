@@ -16,7 +16,8 @@ test("groupBy keeps first-appearance order of groups and of options inside them"
   )
   assert.deepEqual(groupBy([]), [])
   assert.equal(hasGroups(list), true)
-  assert.equal(hasGroups([{ v: "x" }, { v: "y", group: "" }]), false)
+  const ungrouped: { v: string; group?: string }[] = [{ v: "x" }, { v: "y", group: "" }]
+  assert.equal(hasGroups(ungrouped), false)
 })
 
 test("longestValue: ends, steps, signs, separators and decimals", () => {

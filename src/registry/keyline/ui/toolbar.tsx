@@ -130,17 +130,17 @@ function useKeepFocus(ref: React.RefObject<HTMLDivElement | null>) {
 type El = React.ReactElement<Record<string, unknown>>
 const isEl = (c: unknown): c is El => React.isValidElement(c)
 const textOf = (n: unknown): string =>
-  typeof n === "string" || typeof n === "number" ? String(n) : Array.isArray(n) ? n.map(textOf).join("") : isEl(n) ? textOf(n.props.children) : ""
+  typeof n === "string" || typeof n === "number" ? String(n) : Array.isArray(n) ? n.map(textOf).join("") : isEl(n) ? textOf(n.props["children"]) : ""
 
 /** The name an item carries into the More menu: overflowLabel, else aria-label (glyph items), else its text. */
 function labelOf(p: Record<string, unknown>): React.ReactNode {
-  if (p.overflowLabel != null) return p.overflowLabel as React.ReactNode
-  if (p.icon || p.children == null || textOf(p.children).trim() === "") return (p["aria-label"] as string) ?? (p.children as React.ReactNode)
-  return p.children as React.ReactNode
+  if (p["overflowLabel"] != null) return p["overflowLabel"] as React.ReactNode
+  if (p["icon"] || p["children"] == null || textOf(p["children"]).trim() === "") return (p["aria-label"] as string) ?? (p["children"] as React.ReactNode)
+  return p["children"] as React.ReactNode
 }
 
 /** An affix in the menu: a key (a <kbd>) goes in the shortcut cell; a count or a code follows the label. */
-const isKey = (a: unknown) => isEl(a) && (a.type === "kbd" || React.Children.toArray(a.props.children as React.ReactNode).some((c) => isEl(c) && c.type === "kbd"))
+const isKey = (a: unknown) => isEl(a) && (a.type === "kbd" || React.Children.toArray(a.props["children"] as React.ReactNode).some((c) => isEl(c) && c.type === "kbd"))
 function withAffix(label: React.ReactNode, affix: unknown): { label: React.ReactNode; shortcut?: React.ReactNode } {
   if (affix == null || affix === false) return { label }
   if (isKey(affix)) return { label, shortcut: affix as React.ReactNode }
@@ -150,16 +150,16 @@ function withAffix(label: React.ReactNode, affix: unknown): { label: React.React
 type Kind = "unit" | "sep" | "keep"
 function kindOf(el: El): Kind {
   if (el.type === ToolbarSeparator) return "sep"
-  if (el.type === ToolbarButton || el.type === ToolbarToggle) return el.props.primary ? "keep" : "unit"
+  if (el.type === ToolbarButton || el.type === ToolbarToggle) return el.props["primary"] ? "keep" : "unit"
   if (el.type === ToolbarLink || el.type === ToolbarGroup || el.type === ToolbarToggleGroup) return "unit"
-  if (el.type === Menu) return el.props.children != null && React.Children.toArray(el.props.children as React.ReactNode).some((c) => isEl(c) && c.type === ToolbarMenuTrigger && !c.props.primary) ? "unit" : "keep"
+  if (el.type === Menu) return el.props["children"] != null && React.Children.toArray(el.props["children"] as React.ReactNode).some((c) => isEl(c) && c.type === ToolbarMenuTrigger && !c.props["primary"]) ? "unit" : "keep"
   return "keep"
 }
 
 /** A ToolbarGroup whose children are all plain items gives them up one at a time (not with keepTogether). */
 function splits(el: unknown): boolean {
-  if (!isEl(el) || el.type !== ToolbarGroup || el.props.keepTogether) return false
-  const kids = React.Children.toArray(el.props.children as React.ReactNode)
+  if (!isEl(el) || el.type !== ToolbarGroup || el.props["keepTogether"]) return false
+  const kids = React.Children.toArray(el.props["children"] as React.ReactNode)
   return kids.length > 1 && kids.every((k) => isEl(k) && kindOf(k) === "unit" && k.type !== ToolbarGroup && k.type !== ToolbarToggleGroup)
 }
 
@@ -169,30 +169,30 @@ function splits(el: unknown): boolean {
  */
 function adopt(el: El, key: string, own: Record<string, unknown>, set: React.Dispatch<React.SetStateAction<Record<string, unknown>>>): El {
   const p = el.props
-  if (el.type === ToolbarToggle && p.pressed === undefined) {
-    const pressed = (own[key] as boolean | undefined) ?? (p.defaultPressed as boolean | undefined) ?? false
+  if (el.type === ToolbarToggle && p["pressed"] === undefined) {
+    const pressed = (own[key] as boolean | undefined) ?? (p["defaultPressed"] as boolean | undefined) ?? false
     return React.cloneElement(el, {
       pressed,
       defaultPressed: undefined,
       onPressedChange: (v: boolean, d: unknown) => {
         set((o) => ({ ...o, [key]: v }))
-        ;(p.onPressedChange as ((v: boolean, d: unknown) => void) | undefined)?.(v, d)
+        ;(p["onPressedChange"] as ((v: boolean, d: unknown) => void) | undefined)?.(v, d)
       },
     })
   }
-  if (el.type === ToolbarToggleGroup && p.value === undefined) {
-    const value = (own[key] as string[] | undefined) ?? (p.defaultValue as string[] | undefined) ?? []
+  if (el.type === ToolbarToggleGroup && p["value"] === undefined) {
+    const value = (own[key] as string[] | undefined) ?? (p["defaultValue"] as string[] | undefined) ?? []
     return React.cloneElement(el, {
       value,
       defaultValue: undefined,
       onValueChange: (v: string[]) => {
         set((o) => ({ ...o, [key]: v }))
-        ;(p.onValueChange as ((v: string[]) => void) | undefined)?.(v)
+        ;(p["onValueChange"] as ((v: string[]) => void) | undefined)?.(v)
       },
     })
   }
   if (el.type === ToolbarGroup) {
-    const kids = React.Children.toArray(p.children as React.ReactNode).map((c, i) => (isEl(c) ? adopt(c, `${key}/${c.key ?? i}`, own, set) : c))
+    const kids = React.Children.toArray(p["children"] as React.ReactNode).map((c, i) => (isEl(c) ? adopt(c, `${key}/${c.key ?? i}`, own, set) : c))
     return React.cloneElement(el, undefined, ...kids)
   }
   return el
@@ -203,38 +203,38 @@ function toMenu(el: El, key: React.Key): React.ReactNode {
   const p = el.props as Record<string, never>
   if (el.type === ToolbarButton) {
     return (
-      <MenuItem key={key} disabled={p.disabled} onClick={p.onClick} shortcut={withAffix(labelOf(p), p.affix).shortcut}>
-        {withAffix(labelOf(p), p.affix).label}
+      <MenuItem key={key} disabled={p["disabled"]} onClick={p["onClick"]} shortcut={withAffix(labelOf(p), p["affix"]).shortcut}>
+        {withAffix(labelOf(p), p["affix"]).label}
       </MenuItem>
     )
   }
   if (el.type === ToolbarLink) {
     return (
-      <MenuItem key={key} disabled={p.disabled} render={<a href={p.href} target={p.target} rel={p.rel} />} onClick={p.onClick}>
+      <MenuItem key={key} disabled={p["disabled"]} render={<a href={p["href"]} target={p["target"]} rel={p["rel"]} />} onClick={p["onClick"]}>
         {labelOf(p)}
       </MenuItem>
     )
   }
   if (el.type === ToolbarToggle) {
     return (
-      <MenuCheckboxItem key={key} disabled={p.disabled} checked={!!p.pressed} onCheckedChange={(v, d) => (p.onPressedChange as ((v: boolean, d: unknown) => void) | undefined)?.(v, d)} shortcut={withAffix(labelOf(p), p.affix).shortcut}>
-        {withAffix(labelOf(p), p.affix).label}
+      <MenuCheckboxItem key={key} disabled={p["disabled"]} checked={!!p["pressed"]} onCheckedChange={(v, d) => (p["onPressedChange"] as ((v: boolean, d: unknown) => void) | undefined)?.(v, d)} shortcut={withAffix(labelOf(p), p["affix"]).shortcut}>
+        {withAffix(labelOf(p), p["affix"]).label}
       </MenuCheckboxItem>
     )
   }
   if (el.type === ToolbarToggleGroup) {
-    const value = (p.value as string[] | undefined) ?? []
-    const change = p.onValueChange as ((v: string[]) => void) | undefined
-    const opts = React.Children.toArray(p.children as React.ReactNode).filter(isEl)
+    const value = (p["value"] as string[] | undefined) ?? []
+    const change = p["onValueChange"] as ((v: string[]) => void) | undefined
+    const opts = React.Children.toArray(p["children"] as React.ReactNode).filter(isEl)
     const label = (p["aria-label"] as string | undefined) ?? null
-    if (p.multiple === false) {
+    if (p["multiple"] === false) {
       return (
         <MenuGroup key={key}>
           {label ? <MenuGroupLabel>{label}</MenuGroupLabel> : null}
-          <MenuRadioGroup value={value[0] ?? null} onValueChange={(v) => change?.([v as string])} disabled={p.disabled}>
+          <MenuRadioGroup value={value[0] ?? null} onValueChange={(v) => change?.([v as string])} disabled={p["disabled"]}>
             {opts.map((o, i) => (
-              <MenuRadioItem key={o.key ?? i} value={o.props.value as string} disabled={o.props.disabled as boolean | undefined} shortcut={withAffix(labelOf(o.props), o.props.affix).shortcut}>
-                {withAffix(labelOf(o.props), o.props.affix).label}
+              <MenuRadioItem key={o.key ?? i} value={o.props["value"] as string} disabled={o.props["disabled"] as boolean | undefined} shortcut={withAffix(labelOf(o.props), o.props["affix"]).shortcut}>
+                {withAffix(labelOf(o.props), o.props["affix"]).label}
               </MenuRadioItem>
             ))}
           </MenuRadioGroup>
@@ -245,16 +245,16 @@ function toMenu(el: El, key: React.Key): React.ReactNode {
       <MenuGroup key={key}>
         {label ? <MenuGroupLabel>{label}</MenuGroupLabel> : null}
         {opts.map((o, i) => {
-          const v = o.props.value as string
+          const v = o.props["value"] as string
           return (
             <MenuCheckboxItem
               key={o.key ?? i}
-              disabled={(p.disabled || o.props.disabled) as boolean | undefined}
+              disabled={(p["disabled"] || o.props["disabled"]) as boolean | undefined}
               checked={value.includes(v)}
               onCheckedChange={(on) => change?.(on ? [...value, v] : value.filter((x) => x !== v))}
-              shortcut={withAffix(labelOf(o.props), o.props.affix).shortcut}
+              shortcut={withAffix(labelOf(o.props), o.props["affix"]).shortcut}
             >
-              {withAffix(labelOf(o.props), o.props.affix).label}
+              {withAffix(labelOf(o.props), o.props["affix"]).label}
             </MenuCheckboxItem>
           )
         })}
@@ -266,19 +266,19 @@ function toMenu(el: El, key: React.Key): React.ReactNode {
     return (
       <MenuGroup key={key}>
         {label ? <MenuGroupLabel>{label}</MenuGroupLabel> : null}
-        {React.Children.toArray(p.children as React.ReactNode).map((c, i) => (isEl(c) ? toMenu(c, c.key ?? i) : null))}
+        {React.Children.toArray(p["children"] as React.ReactNode).map((c, i) => (isEl(c) ? toMenu(c, c.key ?? i) : null))}
       </MenuGroup>
     )
   }
   if (el.type === Menu) {
-    const kids = React.Children.toArray(p.children as React.ReactNode).filter(isEl)
+    const kids = React.Children.toArray(p["children"] as React.ReactNode).filter(isEl)
     const trigger = kids.find((c) => c.type === ToolbarMenuTrigger)
     const content = kids.find((c) => c.type === ToolbarMenuContent)
     if (!trigger || !content) return null
     return (
       <MenuSubmenu key={key}>
-        <MenuSubmenuTrigger disabled={trigger.props.disabled as boolean | undefined}>{labelOf(trigger.props)}</MenuSubmenuTrigger>
-        <MenuSubmenuContent container={content.props.container as never}>{content.props.children as React.ReactNode}</MenuSubmenuContent>
+        <MenuSubmenuTrigger disabled={trigger.props["disabled"] as boolean | undefined}>{labelOf(trigger.props)}</MenuSubmenuTrigger>
+        <MenuSubmenuContent container={content.props["container"] as never}>{content.props["children"] as React.ReactNode}</MenuSubmenuContent>
       </MenuSubmenu>
     )
   }
@@ -309,7 +309,7 @@ function useOverflow(ref: React.RefObject<HTMLDivElement | null>, on: boolean, v
   const kinds = els.map((c) => (isEl(c) ? kindOf(c) : "keep"))
   // a ToolbarGroup of plain items gives them up one at a time ("i/k"), unless keepTogether; anything else is
   // one unit ("i"). A toggle group stays whole: an exclusive choice is not split between row and menu.
-  const parts = els.map((c, i) => (kinds[i] === "unit" && splits(c) ? React.Children.toArray((c as El).props.children as React.ReactNode) : null))
+  const parts = els.map((c, i) => (kinds[i] === "unit" && splits(c) ? React.Children.toArray((c as El).props["children"] as React.ReactNode) : null))
   const units = kinds.flatMap((k, i) => (k !== "unit" ? [] : parts[i] ? parts[i]!.map((_, k2) => `${i}/${k2}`) : [String(i)]))
   const count = Math.min(n, units.length)
   const gone = new Set(units.slice(units.length - count))
@@ -329,6 +329,10 @@ function useOverflow(ref: React.RefObject<HTMLDivElement | null>, on: boolean, v
   // the More item follows a partly hidden group, otherwise it takes the first hidden item's place
   const moreAt = partial >= 0 ? partial + 1 : first
 
+  // Measures after every render on purpose: items, fonts and the parent can all change the fit without a prop
+  // changing. Each pass moves the hidden count one step toward the fit and `blocked` stops a step that would
+  // undo the last, so the passes settle.
+  // oxlint-disable-next-line react-hooks/exhaustive-deps -- re-measures each render; see above
   React.useLayoutEffect(() => {
     if (!on) return
     const el = ref.current
@@ -340,7 +344,10 @@ function useOverflow(ref: React.RefObject<HTMLDivElement | null>, on: boolean, v
       const pos = getComputedStyle(c).position
       return pos !== "fixed" && pos !== "absolute"
     })
-    el.querySelectorAll<HTMLElement>("[data-kl-unit]").forEach((k) => widths.current.set(k.dataset.klUnit!, size(k)))
+    el.querySelectorAll<HTMLElement>("[data-kl-unit]").forEach((k) => {
+      const id = k.dataset["klUnit"]
+      if (id !== undefined) widths.current.set(id, size(k))
+    })
     // the width the row asks for with every item in it: its flex basis, so a toolbar sized by its content
     // (in a flex row) shrinks under pressure, and grows back, instead of fitting its current items forever
     let full = outer(el) - inner(el) + 2
@@ -383,6 +390,7 @@ function useOverflow(ref: React.RefObject<HTMLDivElement | null>, on: boolean, v
     }
     const free = w - used + slack
     const next = units[units.length - count]
+    if (next === undefined) return
     // the first item back into a group that had left whole brings the group's own 2px edges with it
     const edges = next.includes("/") && hidden.has(Number(next.split("/")[0])) ? 4 : 0
     const need = (widths.current.get(next) ?? Infinity) + 2 + edges - (count === 1 && moreRef.current ? size(moreRef.current) : 0)
@@ -474,7 +482,7 @@ function useOverflow(ref: React.RefObject<HTMLDivElement | null>, on: boolean, v
 /** Marks a unit's row element (data-kl-unit) so its width can be measured while it is in the row. */
 function tag(el: El, id: string): El {
   if (el.type === Menu) {
-    const kids = React.Children.toArray(el.props.children as React.ReactNode).map((c) => (isEl(c) && c.type === ToolbarMenuTrigger ? React.cloneElement(c, { "data-kl-unit": id }) : c))
+    const kids = React.Children.toArray(el.props["children"] as React.ReactNode).map((c) => (isEl(c) && c.type === ToolbarMenuTrigger ? React.cloneElement(c, { "data-kl-unit": id }) : c))
     return React.cloneElement(el, undefined, ...kids)
   }
   return React.cloneElement(el, { "data-kl-unit": id })

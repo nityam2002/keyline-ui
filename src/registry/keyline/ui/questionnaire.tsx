@@ -194,7 +194,7 @@ function QuestionnaireError({ className, ...props }: React.ComponentProps<typeof
       render={(ep) => (
         <p {...ep}>
           <span className="kl-glyph" data-kind="attention" aria-hidden />
-          <span>{ep.children as React.ReactNode}</span>
+          <span>{ep["children"] as React.ReactNode}</span>
         </p>
       )}
     />

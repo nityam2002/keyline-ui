@@ -76,9 +76,13 @@ const BAND = () => {
         const e = b.querySelector(sel)
         if (!e) continue
         const q = e.getBoundingClientRect()
-        left = Math.max(left, q.left), top = Math.max(top, q.top), right = Math.min(right, q.right), bottom = Math.min(bottom, q.bottom)
+        left = Math.max(left, q.left)
+        top = Math.max(top, q.top)
+        right = Math.min(right, q.right)
+        bottom = Math.min(bottom, q.bottom)
       }
-    right = Math.max(left, right), bottom = Math.max(top, bottom)
+    right = Math.max(left, right)
+    bottom = Math.max(top, bottom)
     return { left, top, right, bottom, x: left, y: top, width: right - left, height: bottom - top }
   }
 }

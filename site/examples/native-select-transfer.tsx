@@ -22,7 +22,7 @@ export function TransferRequest() {
   const label = (v: unknown) => BRANCHES.flatMap((g) => g.options).find((o) => o.value === v)?.label
 
   return (
-    <Form className="max-w-[400px]" onFormSubmit={(v) => setSent(`Request sent to ${label(v.branch)}. Toby has a copy.`)}>
+    <Form className="max-w-[400px]" onFormSubmit={(v) => setSent(`Request sent to ${label(v["branch"])}. Toby has a copy.`)}>
       <NativeSelect
         name="branch"
         label="Transfer to"

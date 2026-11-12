@@ -46,7 +46,7 @@ export function CheckboxGroupSpecimen() {
               aria-label="Carrier access"
               onFormSubmit={(v) => {
                 setValues(v)
-                setErrors((v.regions as string[]).includes("baltics") ? { regions: "Baltics needs a customs bond on file. Remove it or upload the bond." } : {})
+                setErrors((v["regions"] as string[]).includes("baltics") ? { regions: "Baltics needs a customs bond on file. Remove it or upload the bond." } : {})
               }}
             >
               <Field name="carrier">

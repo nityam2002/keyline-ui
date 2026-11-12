@@ -36,8 +36,8 @@ export function nextSortList<K extends string>(current: SortList<K>, key: K, { f
     return next ? [next] : []
   }
   const i = current.findIndex((s) => s.key === key)
-  if (i < 0) return [...current, { key, direction: first }]
   const cur = current[i]
+  if (!cur) return [...current, { key, direction: first }]
   if (cur.direction === first) return current.map((s, j) => (j === i ? { key, direction: first === "ascending" ? "descending" : "ascending" } : s))
   return clearable ? current.filter((_, j) => j !== i) : current.map((s, j) => (j === i ? { key, direction: first } : s))
 }
@@ -45,7 +45,8 @@ export function nextSortList<K extends string>(current: SortList<K>, key: K, { f
 /** Where `key` sits in a sort list: its direction and its 1-based priority, or null when it doesn't sort. */
 export function sortLevel<K extends string>(list: SortList<K>, key: K): { direction: SortDirection; priority: number } | null {
   const i = list.findIndex((s) => s.key === key)
-  return i < 0 ? null : { direction: list[i].direction, priority: i + 1 }
+  const level = list[i]
+  return level ? { direction: level.direction, priority: i + 1 } : null
 }
 
 /** A comparator for Array.prototype.sort over a sort list: compareValues level by level until one differs. */
@@ -75,6 +76,7 @@ export function compareValues(a: unknown, b: unknown, direction: SortDirection =
     const id = locale ?? ""
     let c = collators.get(id)
     if (!c) collators.set(id, (c = new Intl.Collator(locale, { numeric: true, sensitivity: "base" })))
+    // oxlint-disable-next-line typescript/no-base-to-string -- any other cell value sorts by its string form
     r = c.compare(String(a), String(b))
   }
   return direction === "ascending" ? r : -r

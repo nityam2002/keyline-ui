@@ -20,7 +20,7 @@ export function TrackShipment() {
       className="max-w-[440px]"
       errors={errors}
       onFormSubmit={(v) => {
-        const id = String(v.tracking).trim().toUpperCase()
+        const id = String(v["tracking"]).trim().toUpperCase()
         setBusy(true)
         setTimeout(() => {
           setBusy(false)

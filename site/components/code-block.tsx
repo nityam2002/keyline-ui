@@ -18,10 +18,10 @@ export async function CodeBlock({ code, lang, copyLabel, after, tall }: { code: 
         [&_.shiki]:text-(--shiki-light) [&_.shiki_span]:text-(--shiki-light)
         in-[.dark]:[&_.shiki]:text-(--shiki-dark) in-[.dark]:[&_.shiki_span]:text-(--shiki-dark)" data-single={single ? "" : undefined} data-tall={tall ? "" : undefined}>
       {filled ? (
-        <OriginFill html={html} code={code} sentinel={ORIGIN_SENTINEL} slot={ORIGIN_SLOT} label={copyLabel[0].toUpperCase() + copyLabel.slice(1)} copyLabel={copyLabel} after={after} tall={tall} />
+        <OriginFill html={html} code={code} sentinel={ORIGIN_SENTINEL} slot={ORIGIN_SLOT} label={copyLabel.charAt(0).toUpperCase() + copyLabel.slice(1)} copyLabel={copyLabel} after={after} tall={tall} />
       ) : (
         <>
-          <CodeScroll html={html} label={copyLabel[0].toUpperCase() + copyLabel.slice(1)} tall={tall} />
+          <CodeScroll html={html} label={copyLabel.charAt(0).toUpperCase() + copyLabel.slice(1)} tall={tall} />
           <CopyButton text={code} label={copyLabel} after={after} />
         </>
       )}

@@ -4,7 +4,7 @@ import { Combobox,type ComboboxOption } from "@/registry/keyline/ui/combobox"
 import { searchCarriers } from "@/registry/keyline/blocks/shipments/shipments-data"
 
 /* shared fixtures --------------------------------------------------- */
-const TERMINALS: ComboboxOption[] = [
+const TERMINALS: ComboboxOption[] = ([
   ["Rotterdam", "Europoort ECT Delta", "NL", "RTM-1"],
   ["Rotterdam", "Maasvlakte II APMT", "NL", "RTM-2"],
   ["Rotterdam", "Waalhaven Uniport", "NL", "RTM-3"],
@@ -14,7 +14,7 @@ const TERMINALS: ComboboxOption[] = [
   ["Hamburg", "Altenwerder CTA (automated, rail-connected, shore power on berths 1–4)", "DE", "HAM-2"],
   ["Hamburg", "Tollerort CTT", "DE", "HAM-3"],
   ["Bremerhaven", "North Sea Terminal", "DE", "BRV-1"],
-].map(([port, name, , code], i) => ({ value: code, label: `${port} ${name}`, code, group: port, disabled: i === 7 ? true : undefined, description: i === 7 ? "Closed for berth works" : undefined }))
+] satisfies [port: string, name: string, country: string, code: string][]).map(([port, name, , code], i) => ({ value: code, label: `${port} ${name}`, code, group: port, disabled: i === 7 ? true : undefined, description: i === 7 ? "Closed for berth works" : undefined }))
 /* ------------------------------------------------------------------ */
 export function ComboboxSpecimen() {
   const [terminal, setTerminal] = React.useState<string | null>("HAM-2")

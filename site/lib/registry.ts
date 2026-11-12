@@ -15,7 +15,7 @@ export const REGISTRY_PATH = "/r/{name}.json"
  * KEYLINE_SITE_URL from the build environment. Without either, the page fills in its own origin in the browser,
  * which is right wherever the site is deployed, since the site is what serves the registry.
  */
-export const SITE_ORIGIN: string | undefined = ((pkg as { homepage?: string }).homepage ?? process.env.KEYLINE_SITE_URL)?.replace(/\/+$/, "") || undefined
+export const SITE_ORIGIN: string | undefined = ((pkg as { homepage?: string }).homepage ?? process.env["KEYLINE_SITE_URL"])?.replace(/\/+$/, "") || undefined
 
 /** Stands for the site's origin in a command until the browser knows it (see SITE_ORIGIN). */
 export const ORIGIN_SLOT = "https://<keyline-site>"

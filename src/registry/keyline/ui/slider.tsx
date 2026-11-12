@@ -69,6 +69,7 @@ function Slider<V extends number | readonly number[]>({ label, unit, showValue =
   const unitText = typeof unit === "string" ? unit : ""
   const labelText = typeof label === "string" ? label : undefined
   const names = thumbLabels ?? (thumbs > 1 && labelText ? [`${labelText}, from`, `${labelText}, to`] : undefined)
+  const firstName = names?.[0]
   const valueText = getAriaValueText ?? (unitText ? (formatted: string) => `${formatted} ${unitText}` : undefined)
 
   return (
@@ -99,7 +100,7 @@ function Slider<V extends number | readonly number[]>({ label, unit, showValue =
               <SliderPrimitive.Track className="kl-slider-rail" style={railStyle}>
                 <SliderPrimitive.Indicator className="kl-slider-fill" />
                 {Array.from({ length: thumbs }, (_, i) => (
-                  <SliderPrimitive.Thumb key={i} index={i} className="kl-key kl-slider-thumb" getAriaLabel={names ? (j) => names[j] ?? names[0] : undefined} getAriaValueText={valueText}>
+                  <SliderPrimitive.Thumb key={i} index={i} className="kl-key kl-slider-thumb" getAriaLabel={names && firstName !== undefined ? (j) => names[j] ?? firstName : undefined} getAriaValueText={valueText}>
                     <span className="kl-slider-grip" aria-hidden />
                   </SliderPrimitive.Thumb>
                 ))}

@@ -198,8 +198,9 @@ export function velocityTracker() {
   const pts: { t: number; x: number; y: number }[] = []
   return {
     push(e: { clientX: number; clientY: number; timeStamp: number }) {
-      pts.push({ t: e.timeStamp, x: e.clientX, y: e.clientY })
-      while (pts.length > 2 && pts[pts.length - 1].t - pts[0].t > 80) pts.shift()
+      const t = e.timeStamp
+      pts.push({ t, x: e.clientX, y: e.clientY })
+      while (pts.length > 2 && t - (pts[0]?.t ?? t) > 80) pts.shift()
     },
     reset() {
       pts.length = 0
@@ -208,7 +209,8 @@ export function velocityTracker() {
     get(now: number) {
       if (pts.length < 2) return { x: 0, y: 0 }
       const a = pts[0]
-      const b = pts[pts.length - 1]
+      const b = pts.at(-1)
+      if (!a || !b) return { x: 0, y: 0 }
       const dt = Math.max(1, b.t - a.t)
       if (now - b.t > 60) return { x: 0, y: 0 }
       return { x: (b.x - a.x) / dt, y: (b.y - a.y) / dt }
@@ -433,6 +435,7 @@ export function useStretch(
       write(m.band, "--kl-band-c1", (cross.c1 ?? 0) + inset)
       m.items.forEach((it, i) => {
         const q = m.boxes[i]
+        if (!q) return
         const ov = Math.max(0, Math.min(b, q.b) - Math.max(a, q.a)) / Math.max(1, q.b - q.a)
         it.toggleAttribute("data-kl-covered", ov > 0.5)
       })
@@ -512,7 +515,7 @@ export function useStretch(
       // the last keyframe is the target itself
       as[as.length - 1] = clamp(a.t)
       bs[bs.length - 1] = clamp(b.t)
-      const D = ts[ts.length - 1]
+      const D = ts.at(-1) ?? 0
       if (D <= 0) return land(st)
       const mode = travel || st.mode === "travel" ? "travel" : "lean"
       st.mode = mode
@@ -571,16 +574,17 @@ export function useStretch(
       // each translation is linear in the samples, so what shows (their sum) is exact between keyframes too:
       // the clip starts at a, the fill ends at b, the copy is pinned to the host's own origin
       const T = (v: number) => (y ? `translateY(${v}px)` : `translateX(${v}px)`)
-      const off = (i: number) => ts[i] / D
-      const start = (i: number) => as[i] + inset
-      const end = (i: number) => bs[i] - inset
+      const off = (i: number) => (ts[i] ?? 0) / D
+      const start = (i: number) => (as[i] ?? 0) + inset
+      const end = (i: number) => (bs[i] ?? 0) - inset
       const baseMain = y ? -m.host.clientTop : -m.host.clientLeft
       const baseCross = (y ? -m.host.clientLeft : -m.host.clientTop) - (tgt.c0 + inset)
       const kfClip = ts.map((_, i) => ({ offset: off(i), transform: T(start(i) - m.lo) }))
       const kfFill = ts.map((_, i) => ({ offset: off(i), transform: T(end(i) - start(i) - L) }))
       const opts: KeyframeAnimationOptions = { duration: D, easing: "linear", fill: "forwards" }
       const prev = f.anims
-      const anims = [f.clip.animate(kfClip, opts), f.fill.animate(kfFill, opts)]
+      const clipAnim = f.clip.animate(kfClip, opts)
+      const anims = [clipAnim, f.fill.animate(kfFill, opts)]
       if (f.ghost) {
         // the fill's origin sits at end - L in the host's content box; the copy goes back to the host's border box
         const kfGhost = ts.map((_, i) => {
@@ -591,7 +595,7 @@ export function useStretch(
       }
       f.anims = anims
       prev.forEach((x) => x.cancel())
-      anims[0].onfinish = () => {
+      clipAnim.onfinish = () => {
         if (st.flight?.anims === anims) land(st)
       }
     },
@@ -624,7 +628,7 @@ export function useStretch(
     // so the band stays on it; travelling from the old coordinates would sweep across the neighbours that now
     // sit there (closing a nested Nav list swept the band over the next row)
     const same = lastEl.current === m.items[active]
-    lastEl.current = m.items[active]
+    lastEl.current = m.items[active] ?? null
     if (!st || lead === 0 || same || instantRef.current) return place(m, tgt)
     advance(st)
     // the edge on the travel side leads; the other trails. Semantics are already committed (this runs after render)
@@ -678,10 +682,14 @@ export function useStretch(
         // the lean enters the item next to the band on the travel side (by geometry, so RTL rows work), which is
         // the pressed one only when it is adjacent
         let near = -1
+        let nearBox: Box | undefined
         m.boxes.forEach((x, k) => {
-          if (fwd ? x.a >= rest.b - 2 && (near < 0 || x.a < m.boxes[near].a) : x.b <= rest.a + 2 && (near < 0 || x.b > m.boxes[near].b)) near = k
+          if (fwd ? x.a >= rest.b - 2 && (!nearBox || x.a < nearBox.a) : x.b <= rest.a + 2 && (!nearBox || x.b > nearBox.b)) {
+            near = k
+            nearBox = x
+          }
         })
-        const into = near >= 0 ? m.items[near] : el
+        const into = m.items[near] ?? el
         const room = inkRoom(into, m.axis, fwd)
         const pull = Math.min(tug, room - 2)
         if (pull >= 3) {

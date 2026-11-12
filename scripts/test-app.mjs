@@ -24,7 +24,7 @@ export async function buildApp(outDir, { transformCss } = {}) {
     const { config } = await loadConfigFromFile({ command: "build", mode: "development" }, join(ROOT, "vite.config.ts"), ROOT)
     const plugins = (config.plugins ?? []).flat(Infinity).filter((p) => p && !p.name?.startsWith("@tailwindcss/vite"))
     // the CSS-order check rewrites a stylesheet when it is loaded, before Tailwind reads it
-    const rewrite = transformCss ? [{ name: "kl-css-transform", enforce: "pre", load: (id) => { const f = id.split("?")[0]; return /\.css$/.test(f) ? transformCss(f, readFileSync(f, "utf8")) : null } }] : []
+    const rewrite = transformCss ? [{ name: "kl-css-transform", enforce: "pre", load: (id) => { const f = id.split("?")[0]; return f.endsWith('.css') ? transformCss(f, readFileSync(f, "utf8")) : null } }] : []
     await build({
       ...config,
       configFile: false,

@@ -4,7 +4,7 @@
   "title": "Popover",
   "description": "Arbitrary content docked to its trigger (or detached by one gutter), with optional header, body and footer cells.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",

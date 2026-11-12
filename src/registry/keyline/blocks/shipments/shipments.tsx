@@ -48,7 +48,7 @@ const DENSITIES = [
   { value: "48", label: "48 rows" },
 ]
 const VIEWS = [
-  { value: "all", label: "All", test: (_: Shipment) => true },
+  { value: "all", label: "All", test: () => true },
   { value: "active", label: "Active", test: (s: Shipment) => s.status !== "delivered" },
   { value: "attention", label: "Needs attention", test: (s: Shipment) => s.status === "delayed" || s.status === "docs" || s.status === "none" },
   { value: "delivered", label: "Delivered", test: (s: Shipment) => s.status === "delivered" },
@@ -707,7 +707,7 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
               </ToolbarToggle>
             ))}
           </ToolbarToggleGroup>
-          {carriers.length ? <FilterToken field="Carrier" op="is" value={carriers.length === 1 ? carriers[0].label : `${carriers.length} carriers`} onRemove={() => setCarriers([])} /> : null}
+          {carriers.length ? <FilterToken field="Carrier" op="is" value={carriers.length === 1 && carriers[0] ? carriers[0].label : `${carriers.length} carriers`} onRemove={() => setCarriers([])} /> : null}
           {eta ? <FilterToken field="ETA" op="in" value={formatRange(eta)} onRemove={() => setEta(null)} /> : null}
           {q ? <FilterToken field="Text" op="has" value={q} onRemove={() => setQ("")} /> : null}
           {activeFilters ? (

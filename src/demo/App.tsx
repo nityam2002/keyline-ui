@@ -187,11 +187,11 @@ export function App() {
   React.useLayoutEffect(() => {
     const h = document.documentElement
     h.classList.toggle("dark", cfg.theme === "dark")
-    h.dataset.klCut = cfg.cut
-    if (cfg.density === "compact") h.dataset.klDensity = "compact"
-    else delete h.dataset.klDensity
-    if (cfg.motion === "normal") delete h.dataset.klMotion
-    else h.dataset.klMotion = cfg.motion
+    h.dataset["klCut"] = cfg.cut
+    if (cfg.density === "compact") h.dataset["klDensity"] = "compact"
+    else delete h.dataset["klDensity"]
+    if (cfg.motion === "normal") delete h.dataset["klMotion"]
+    else h.dataset["klMotion"] = cfg.motion
     h.dir = cfg.dir
     const p = new URLSearchParams()
     Object.entries(cfg).forEach(([k, v]) => p.set(k, v))
@@ -249,10 +249,10 @@ export function App() {
  * ------------------------------------------------------------------ */
 type Entry = { id: string; title: string; /** shorter name for the index */ short?: string; states?: string[]; note?: string; children: React.ReactNode }
 
-const instant = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.klMotion === "reduce"
+const instant = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset["klMotion"] === "reduce"
 
 function Catalogue({ label, entries, testId, stageClassName }: { label: string; entries: Entry[]; testId?: string; stageClassName?: string }) {
-  const [current, setCurrent] = React.useState(entries[0].id)
+  const [current, setCurrent] = React.useState(entries[0]?.id ?? "")
   const root = React.useRef<HTMLDivElement>(null)
   const steering = React.useRef(0)
 
@@ -269,12 +269,12 @@ function Catalogue({ label, entries, testId, stageClassName }: { label: string; 
         const scroller = vp.scrollHeight > vp.clientHeight + 1 ? vp : null
         const top = scroller ? scroller.getBoundingClientRect().top : 0
         const atEnd = scroller ? scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2 : innerHeight + scrollY >= document.documentElement.scrollHeight - 2
-        let id = entries[0].id
+        let id = entries[0]?.id ?? ""
         for (const e of entries) {
           const el = document.getElementById(e.id)
           if (el && el.getBoundingClientRect().top - top <= 96) id = e.id
         }
-        setCurrent(atEnd ? entries[entries.length - 1].id : id)
+        setCurrent(atEnd ? (entries.at(-1)?.id ?? id) : id)
       })
     }
     vp.addEventListener("scroll", spy, { passive: true })
@@ -621,7 +621,7 @@ function Specimen() {
           {(range, setRange) => (
         <>
           <div className={ui.grid2}>
-            <Multiselect label="Carriers" noun={["carrier", "carriers"]} loadOptions={searchCarriers} defaultValue={[CARRIERS[0], CARRIERS[3]]} />
+            <Multiselect label="Carriers" noun={["carrier", "carriers"]} loadOptions={searchCarriers} defaultValue={CARRIERS.filter((_, i) => i === 0 || i === 3)} />
             <Multiselect label="Carriers (disabled)" noun={["carrier", "carriers"]} loadOptions={searchCarriers} disabled />
             <DateRangePicker label="ETA" value={range} onValueChange={setRange} today={TODAY} defaultMonth={TODAY} isDateUnavailable={isUnavailable} presets={[{ label: "Next 7 days", range: () => ({ from: TODAY, to: new Date(2026, 10, 13) }) }]} />
           </div>

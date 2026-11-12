@@ -23,7 +23,6 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
       "@/components/keyline/ui/*": [
         "../src/registry/keyline/ui/*"
@@ -41,7 +40,13 @@
         "./*"
       ]
     },
-    "allowJs": true
+    "allowJs": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": [
     "next-env.d.ts",

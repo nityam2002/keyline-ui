@@ -65,8 +65,9 @@ export function makeShipments(n = 64): Shipment[] {
   const out: Shipment[] = SEED.map((s, i) => ({ ...s, reference: `PO-${88201 + i}-${s.dest.slice(0, 3).toUpperCase()}` }))
   for (let i = out.length; i < n; i++) {
     const status = KEYS[Math.floor(r() * KEYS.length)]
-    const carrier = CARRIERS.filter((c) => !c.disabled)[Math.floor(r() * 8)].value
+    const carrier = CARRIERS.filter((c) => !c.disabled)[Math.floor(r() * 8)]?.value
     const dest = CITIES[Math.floor(r() * CITIES.length)]
+    if (!status || !carrier || !dest) continue
     const kg = Math.round(r() * 9000 * 10) / 10 + 40
     out.push({
       id: `SH-${20481 + i}`,

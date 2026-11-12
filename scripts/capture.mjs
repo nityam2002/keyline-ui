@@ -2,11 +2,11 @@
 // configurations and both engines, for looking at a change by eye. This is not a test and not a baseline: the
 // browser specs never compare pixels. Output goes to .artifacts/captures/ (ignored), replaced on each run.
 //
-//   npm run capture -- <testid | #/route> [--q=<query> ...] [--engines=chromium,webkit] [--base=<url>]
+//   pnpm capture -- <testid | #/route> [--q=<query> ...] [--engines=chromium,webkit] [--base=<url>]
 //
-//   npm run capture -- sa-v-frame                         the default matrix (below), both engines
-//   npm run capture -- toolbar --q="theme=dark&dir=rtl"   one configuration
-//   npm run capture -- "#/playground" --engines=chromium  a whole route
+//   pnpm capture -- sa-v-frame                         the default matrix (below), both engines
+//   pnpm capture -- toolbar --q="theme=dark&dir=rtl"   one configuration
+//   pnpm capture -- "#/playground" --engines=chromium  a whole route
 //
 // A query sets the demo's modes (theme, cut, density, motion, dir) and may add w=<px> for the viewport width.
 // Without --base the app is built and served from the working tree (scripts/test-app.mjs).
@@ -21,7 +21,7 @@ const args = process.argv.slice(2)
 const target = args.find((a) => !a.startsWith("--"))
 const opt = (k) => args.filter((a) => a.startsWith(`--${k}=`)).map((a) => a.slice(k.length + 3))
 if (!target) {
-  console.error("usage: npm run capture -- <testid | #/route> [--q=<query> ...] [--engines=chromium,webkit] [--base=<url>]")
+  console.error("usage: pnpm capture -- <testid | #/route> [--q=<query> ...] [--engines=chromium,webkit] [--base=<url>]")
   process.exit(2)
 }
 const queries = opt("q").length ? opt("q") : MATRIX

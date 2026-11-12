@@ -21,7 +21,7 @@ export const SITE_URL = SITE_ORIGIN
  * the release deployment (docs/releasing.md); on Vercel, VERCEL_ENV says the same thing without configuration.
  * Read at build: every page is static, so the robots meta tag is decided when the page is rendered.
  */
-export const INDEXABLE = (process.env.KEYLINE_SITE_ENV ?? process.env.VERCEL_ENV) === "production"
+export const INDEXABLE = (process.env["KEYLINE_SITE_ENV"] ?? process.env["VERCEL_ENV"]) === "production"
 
 /**
  * One page's metadata: its title and description, the canonical URL, and the same title and description for shared

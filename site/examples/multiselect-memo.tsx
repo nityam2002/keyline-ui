@@ -22,7 +22,7 @@ function findPeople(query: string, signal: AbortSignal): Promise<MultiselectOpti
 }
 
 export function MemoRecipients() {
-  const [to, setTo] = useState<MultiselectOption[]>([PEOPLE[1]])
+  const [to, setTo] = useState<MultiselectOption[]>(PEOPLE.slice(1, 2))
 
   return (
     <div className="grid max-w-[480px] gap-3">

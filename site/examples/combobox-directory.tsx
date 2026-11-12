@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Combobox, type ComboboxOption } from "@/components/keyline/ui/combobox"
 
-const STAFF = [
+const STAFF: [name: string, role: string, branch: string][] = [
   ["Jan Levinson", "VP, Northeast Sales", "New York"],
   ["David Wallace", "CFO", "New York"],
   ["Karen Filippelli", "Regional Manager", "Utica"],

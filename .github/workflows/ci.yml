@@ -19,27 +19,29 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run test:format
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test
       - name: Registry is up to date
         run: |
-          npm run registry:build
+          pnpm registry:build
           if [ -n "$(git status --porcelain -- site/public/r)" ]; then
             git status --short -- site/public/r
-            echo "::error::site/public/r is out of date. Run npm run registry:build and commit the result."
+            echo "::error::site/public/r is out of date. Run pnpm registry:build and commit the result."
             exit 1
           fi
-      - run: npm run build
-      - run: npm run site:build
-      - run: npx playwright install --with-deps chrome webkit
-      - run: npm run test:browser
-      - run: npm run test:css-order
+      - run: pnpm build
+      - run: pnpm site:build
+      - run: pnpm exec playwright install --with-deps chrome webkit
+      - run: pnpm test:browser
+      - run: pnpm test:css-order
       - name: Upload test report and traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -55,13 +57,14 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chrome webkit
-      - run: npm run test:consumer
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chrome webkit
+      - run: pnpm test:consumer
       - name: Upload consumer logs
         if: failure()
         uses: actions/upload-artifact@v4

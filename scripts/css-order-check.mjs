@@ -2,7 +2,7 @@
 // component may depend on its file coming after another's. This builds the app twice — as written, and with the
 // component imports in src/demo/globals.css reversed (in the build only; the source file is never touched) — captures
 // the computed styles of every Keyline element on the specimen and the playground preview in both, and diffs.
-//   npm run test:css-order            (no dev server needed)
+//   pnpm test:css-order            (no dev server needed)
 import { chromium } from "playwright"
 import { join } from "node:path"
 import { buildApp, serveApp } from "./test-app.mjs"

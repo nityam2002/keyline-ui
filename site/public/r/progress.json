@@ -4,7 +4,7 @@
   "title": "Progress",
   "description": "Task progress: the pending signal made determinate (yellow fill, ink leading edge), indeterminate, complete and failed states.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
