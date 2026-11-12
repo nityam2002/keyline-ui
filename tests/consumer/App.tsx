@@ -65,12 +65,12 @@ import { Multiselect, type MultiselectOption } from "@/components/keyline/ui/mul
 import {
   ContextMenu,
   ContextMenuTrigger,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuItem,
   ContextMenuSeparator,
-  ContextMenuSubmenu,
+  ContextMenuSubmenuRoot,
   ContextMenuSubmenuTrigger,
-  ContextMenuSubmenuContent,
+  ContextMenuSubmenuPopup,
 } from "@/components/keyline/ui/context-menu";
 import { Item, ItemList, ItemMeta, ItemContent, ItemMedia } from "@/components/keyline/ui/item";
 import { Progress } from "@/components/keyline/ui/progress";
@@ -145,7 +145,7 @@ import {
   Menubar,
   MenubarMenu,
   MenubarTrigger,
-  MenubarContent,
+  MenubarPopup,
   MenubarItem,
   MenubarCheckboxItem,
   MenubarSeparator,
@@ -784,7 +784,7 @@ function Uploads() {
               </div>
               <ItemMeta>{d.id}</ItemMeta>
             </ContextMenuTrigger>
-            <ContextMenuContent>
+            <ContextMenuPopup>
               <ContextMenuItem onClick={() => setLast(`Opened ${d.name}`)}>Open</ContextMenuItem>
               <ContextMenuItem
                 disabled={!(d.id === "EUR1" && failed)}
@@ -795,22 +795,22 @@ function Uploads() {
               >
                 Retry upload
               </ContextMenuItem>
-              <ContextMenuSubmenu>
+              <ContextMenuSubmenuRoot>
                 <ContextMenuSubmenuTrigger>Send to</ContextMenuSubmenuTrigger>
-                <ContextMenuSubmenuContent>
+                <ContextMenuSubmenuPopup>
                   <ContextMenuItem onClick={() => setLast(`Sent ${d.name} to the broker`)}>
                     Customs broker
                   </ContextMenuItem>
                   <ContextMenuItem onClick={() => setLast(`Sent ${d.name} to the consignee`)}>
                     Consignee
                   </ContextMenuItem>
-                </ContextMenuSubmenuContent>
-              </ContextMenuSubmenu>
+                </ContextMenuSubmenuPopup>
+              </ContextMenuSubmenuRoot>
               <ContextMenuSeparator />
               <ContextMenuItem variant="destructive" onClick={() => setLast(`Removed ${d.name}`)}>
                 Remove
               </ContextMenuItem>
-            </ContextMenuContent>
+            </ContextMenuPopup>
           </ContextMenu>
         ))}
       </ItemList>
@@ -1166,7 +1166,7 @@ function Lanes() {
       <Menubar aria-label="Lanes">
         <MenubarMenu>
           <MenubarTrigger>View</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             {table
               .getAllLeafColumns()
               .filter((c) => c.id !== "lane")
@@ -1183,7 +1183,7 @@ function Lanes() {
             <MenubarItem disabled={!sorting.length} onClick={() => setSorting([])}>
               Clear sort
             </MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
       </Menubar>
       <TableFrame>

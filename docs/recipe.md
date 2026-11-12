@@ -123,7 +123,14 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   in a portal under the container (a popover's list inside AvatarGroup).
 - **A stretch row styles each element on itself.** The stretch engine clones the row for a move and drops the
   clone's `data-slot`, so a rule keyed on a part's slot (`**:data-[slot=…]`) misses the clone. Give each item its
-  classes, pass sizes down through context, and key covered labels on `data-kl-covered`.
+  classes, pass sizes down through context, and key covered labels on `data-kl-covered`. The clone keeps a hidden
+  placeholder for the band in first place, so position rules count children (`[&>:nth-child(2)]:` for the first
+  cell after the band) rather than read the band's markers.
+- **Know which element is the outermost Keyline element.** The foundation gives Keyline's type and ink to the first
+  element with a `kl-` class and no `kl-` ancestor, and a `kl-rtl:` utility counts as one. When a part's root carries
+  no foundation class (a toast on its ink fill, a portalled viewport), the outermost element is somewhere inside it
+  and turns ink: put Keyline's type and ink on the portalled root, and `text-inherit` on inner `kl-` elements that sit
+  on a coloured fill.
 - **Foundation classes stay as classes**: `kl-ctl`, `kl-frame`, `kl-cells`, `kl-edge`, `kl-attached kl-dock`,
   `kl-slot`, `kl-pending`, `kl-code`, `kl-count`, `kl-key`. They carry the construction rules that utilities can't
   express. A rule that only one component used moves into its classes; a rule shared across components moves into
@@ -142,6 +149,14 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
     buttons. To reach a native `<button>` the component renders itself (a dismiss cell, an Item rendered as a
     button), press Option+Tab in WebKit, the key a Safari user presses for the same order:
     `const TAB = server.browser === "webkit" ? "{Alt>}{Tab}{/Alt}" : "{Tab}"`.
+  - axe judges the part's markup, not Base UI's: `tests/parts/axe.ts` leaves out Base UI's focus guards, including
+    as disallowed children of a composite (a menubar's menus write their portal, and so the guards, inside the
+    menubar). For markup Base UI hides on purpose in one state (a toast's close cell is `aria-hidden` until the
+    stack expands), pass those elements as `exclude` in that state, say why, and judge everything in the state
+    where it is shown.
+  - a keyboard command the browser turns into an event (Shift+F10 and the Menu key fire `contextmenu`) doesn't
+    happen for synthetic key presses in every engine: send the event the browser would, and press the real key
+    where the engine delivers it (`it.runIf(server.browser === "chromium")`).
   - modal (dialog, sheet, drawer): Base UI makes the page inert while it is open, so judge the open state with axe
     on the popup. Test the focus trap at its two ends: Tab from the last control lands on the first, Shift+Tab
     from the first on the last.

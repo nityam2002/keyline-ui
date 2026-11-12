@@ -14,7 +14,11 @@ const stackRests = (p, timeout = 5000) =>
     () =>
       new Promise((res) => {
         const key = () =>
-          [...document.querySelectorAll('[data-slot="toast-floating"] .kl-toast')]
+          [
+            ...document.querySelectorAll(
+              '[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-root]',
+            ),
+          ]
             .map((e) => {
               const r = e.getBoundingClientRect();
               return [r.top, r.left, r.width, r.height, getComputedStyle(e.firstElementChild).opacity]
@@ -43,19 +47,19 @@ test("toast: docked stack", async ({ open, ok }) => {
   const p = await open({ ...VP, ready: "#toast" });
   const t = await at(p, "toast");
   const panel = t.locator('[data-testid="toast-docked"]');
-  const dock = panel.locator('[data-slot="toast-dock"]');
-  const front = (sel = ".kl-toast") =>
+  const dock = panel.locator('[data-slot="toast-viewport"][data-placement="dock"]');
+  const front = (sel = "[data-slot=toast-root]") =>
     dock.evaluate((el, sel) => el.querySelector(sel)?.getAttribute("data-kind") ?? null, sel);
   await panel.getByRole("button", { name: "Archive" }).first().click();
   await until(async () => (await front()) === "done");
   await idle(p);
   const t1 = await dock.evaluate((el) => {
-    const r = el.querySelector(".kl-toast");
+    const r = el.querySelector("[data-slot=toast-root]");
     return {
       kind: r?.getAttribute("data-kind"),
-      title: r?.querySelector(".kl-toast-title")?.textContent,
-      desc: r?.querySelector(".kl-toast-desc")?.textContent,
-      drain: !!r?.querySelector(".kl-toast-drain"),
+      title: r?.querySelector("[data-slot=toast-title]")?.textContent,
+      desc: r?.querySelector("[data-slot=toast-description]")?.textContent,
+      drain: !!r?.querySelector("[data-slot=toast-drain]"),
       inDock: !!el.closest('[data-testid="toast-docked"]'),
     };
   });
@@ -66,20 +70,21 @@ test("toast: docked stack", async ({ open, ok }) => {
   );
   await dock.getByRole("button", { name: "Undo" }).click();
   await until(
-    async () => (await dock.locator(".kl-toast").count()) === 0 && (await panel.getByText("SH-20483").isVisible()),
+    async () =>
+      (await dock.locator("[data-slot=toast-root]").count()) === 0 && (await panel.getByText("SH-20483").isVisible()),
   );
   ok(
     "toast: Undo restores the row and closes the toast",
-    (await panel.getByText("SH-20483").isVisible()) && (await dock.locator(".kl-toast").count()) === 0,
+    (await panel.getByText("SH-20483").isVisible()) && (await dock.locator("[data-slot=toast-root]").count()) === 0,
   );
   await panel.getByRole("button", { name: "Export", exact: true }).click();
   await until(async () => (await front()) === "loading");
   const t2 = await dock.evaluate((el) => {
-    const r = el.querySelector(".kl-toast");
+    const r = el.querySelector("[data-slot=toast-root]");
     return {
       kind: r?.getAttribute("data-kind"),
-      pending: !!r?.querySelector(".kl-toast-pending"),
-      drain: !!r?.querySelector(".kl-toast-drain"),
+      pending: !!r?.querySelector("[data-slot=toast-pending]"),
+      drain: !!r?.querySelector("[data-slot=toast-drain]"),
     };
   });
   ok(
@@ -90,11 +95,11 @@ test("toast: docked stack", async ({ open, ok }) => {
   await until(async () => (await front()) === "done");
   await idle(p);
   const t3 = await dock.evaluate((el) => {
-    const r = el.querySelector(".kl-toast");
+    const r = el.querySelector("[data-slot=toast-root]");
     return {
       kind: r?.getAttribute("data-kind"),
-      title: r?.querySelector(".kl-toast-title")?.textContent,
-      n: el.querySelectorAll(".kl-toast:not([data-ending-style])").length,
+      title: r?.querySelector("[data-slot=toast-title]")?.textContent,
+      n: el.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])").length,
     };
   });
   ok(
@@ -107,18 +112,18 @@ test("toast: docked stack", async ({ open, ok }) => {
   await until(async () => (await front()) === "failed");
   await idle(p);
   const t4 = await dock.evaluate((el) => {
-    const r = el.querySelector(".kl-toast");
-    return { kind: r?.getAttribute("data-kind"), retry: r?.querySelector(".kl-toast-action")?.textContent };
+    const r = el.querySelector("[data-slot=toast-root]");
+    return { kind: r?.getAttribute("data-kind"), retry: r?.querySelector("[data-slot=toast-action]")?.textContent };
   });
   ok("toast: a rejected export becomes failed with Retry", t4.kind === "failed" && t4.retry === "Retry", t4);
   await panel.getByRole("button", { name: "Warning" }).click();
-  await until(async () => (await front(".kl-toast:not([data-ending-style])")) === "warning");
+  await until(async () => (await front("[data-slot=toast-root]:not([data-ending-style])")) === "warning");
   await idle(p);
   const t5 = await dock.evaluate((el) => {
-    const r = el.querySelector(".kl-toast:not([data-ending-style])");
+    const r = el.querySelector("[data-slot=toast-root]:not([data-ending-style])");
     return {
       kind: r?.getAttribute("data-kind"),
-      glyph: !!r?.querySelector('.kl-toast-sig .kl-glyph[data-kind="attention"]'),
+      glyph: !!r?.querySelector('[data-slot=toast-signal] .kl-glyph[data-kind="attention"]'),
     };
   });
   ok("toast: warning shows the attention glyph", t5.kind === "warning" && t5.glyph, t5);
@@ -127,14 +132,14 @@ test("toast: docked stack", async ({ open, ok }) => {
   await p.mouse.move(2, 2);
   await idle(p);
   const ds = await dock.evaluate((el) => {
-    const front = el.querySelector(".kl-toast[data-kl-front]");
+    const front = el.querySelector("[data-slot=toast-root][data-kl-front]");
     const box = el.getBoundingClientRect();
-    const shown = [...el.querySelectorAll(".kl-toast")].filter(
+    const shown = [...el.querySelectorAll("[data-slot=toast-root]")].filter(
       (t) => getComputedStyle(t).visibility !== "hidden" && +getComputedStyle(t).opacity > 0,
     );
     return {
       kind: front?.getAttribute("data-kind"),
-      more: front?.querySelector(".kl-toast-more")?.textContent,
+      more: front?.querySelector("[data-slot=toast-more]")?.textContent,
       shown: shown.length,
       inside: shown.every((t) => {
         const r = t.getBoundingClientRect();
@@ -151,8 +156,8 @@ test("toast: docked stack", async ({ open, ok }) => {
   await until(() =>
     dock.evaluate(
       (el) =>
-        el.querySelectorAll(".kl-toast:not([data-ending-style])").length >= 2 &&
-        [...el.querySelectorAll(".kl-toast:not([data-ending-style])")]
+        el.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])").length >= 2 &&
+        [...el.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])")]
           .slice(0, -1)
           .some((t) => t.getBoundingClientRect().bottom <= el.getBoundingClientRect().top + 0.5),
     ),
@@ -160,7 +165,7 @@ test("toast: docked stack", async ({ open, ok }) => {
   await idle(p);
   const de = await dock.evaluate((el) => {
     const box = el.getBoundingClientRect();
-    const rs = [...el.querySelectorAll(".kl-toast:not([data-ending-style])")]
+    const rs = [...el.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])")]
       .map((t) => t.getBoundingClientRect())
       .sort((a, b) => a.top - b.top);
     return {
@@ -175,12 +180,13 @@ test("toast: docked stack", async ({ open, ok }) => {
     de,
   );
   // by keyboard (WebKit gives programmatic focus no :focus-visible): from its × back to the toast itself
-  await dock.locator(".kl-toast[data-kl-front] .kl-toast-x").focus();
+  await dock.locator("[data-slot=toast-root][data-kl-front] [data-slot=toast-close]").focus();
   for (let i = 0; i < 3; i++) {
-    if (await dock.locator(".kl-toast[data-kl-front]").evaluate((t) => document.activeElement === t)) break;
+    if (await dock.locator("[data-slot=toast-root][data-kl-front]").evaluate((t) => document.activeElement === t))
+      break;
     await p.keyboard.press("Shift+Tab");
   }
-  const ring = await dock.locator(".kl-toast[data-kl-front]").evaluate((t) => {
+  const ring = await dock.locator("[data-slot=toast-root][data-kl-front]").evaluate((t) => {
     const cs = getComputedStyle(t);
     return {
       fv: t.matches(":focus-visible"),
@@ -194,10 +200,12 @@ test("toast: docked stack", async ({ open, ok }) => {
     ring.fv && ring.style !== "none" && ring.w > 0 && ring.off <= -ring.w,
     ring,
   );
-  await dock.locator(".kl-toast[data-kl-front] .kl-toast-x").click();
+  await dock.locator("[data-slot=toast-root][data-kl-front] [data-slot=toast-close]").click();
   const kinds = () =>
     dock.evaluate((el) =>
-      [...el.querySelectorAll(".kl-toast:not([data-ending-style])")].map((t) => t.getAttribute("data-kind")),
+      [...el.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])")].map((t) =>
+        t.getAttribute("data-kind"),
+      ),
     );
   await until(async () => !(await kinds()).includes("warning"));
   const left = await kinds();
@@ -208,20 +216,20 @@ test("toast: docked stack", async ({ open, ok }) => {
 test("toast: floating stack", async ({ open, ok, eng }) => {
   const p = await open({ ...VP, ready: "#toast" });
   const t = await at(p, "toast");
-  const floating = (sel) => p.locator(`[data-slot="toast-floating"] ${sel}`);
+  const floating = (sel) => p.locator(`[data-slot="toast-viewport"][data-placement="floating"] ${sel}`);
   // outside React: a plain module function raises it in the floating viewport
   await t.getByRole("button", { name: "Simulate a carrier message" }).click();
-  await floating(".kl-toast")
+  await floating("[data-slot=toast-root]")
     .first()
     .waitFor({ timeout: 5000 })
     .catch(() => {});
   await stackRests(p);
   await idle(p);
   const fl = await p.evaluate(() => {
-    const v = document.querySelector('[data-slot="toast-floating"]');
-    const r = v?.querySelector(".kl-toast")?.getBoundingClientRect();
+    const v = document.querySelector('[data-slot="toast-viewport"][data-placement="floating"]');
+    const r = v?.querySelector("[data-slot=toast-root]")?.getBoundingClientRect();
     return {
-      title: v?.querySelector(".kl-toast-title")?.textContent,
+      title: v?.querySelector("[data-slot=toast-title]")?.textContent,
       right: r ? innerWidth - r.right : null,
       bottom: r ? innerHeight - r.bottom : null,
     };
@@ -236,12 +244,12 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
   await p.mouse.move(2, 2);
   const limState = () =>
     p.evaluate(() => {
-      const v = document.querySelector('[data-slot="toast-floating"]');
-      const all = [...v.querySelectorAll(".kl-toast:not([data-ending-style])")];
+      const v = document.querySelector('[data-slot="toast-viewport"][data-placement="floating"]');
+      const all = [...v.querySelectorAll("[data-slot=toast-root]:not([data-ending-style])")];
       return {
         n: all.length,
         limited: all.filter((e) => e.hasAttribute("data-limited")).length,
-        more: v.querySelector(".kl-toast[data-kl-front] .kl-toast-more bdi")?.textContent,
+        more: v.querySelector("[data-slot=toast-root][data-kl-front] [data-slot=toast-more] bdi")?.textContent,
       };
     });
   // the three arrive one after another: wait for the fourth (and its +n), then for the stack's motion to end
@@ -255,7 +263,7 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
     p.evaluate(() =>
       [
         ...document.querySelectorAll(
-          '[data-slot="toast-floating"] .kl-toast:not([data-ending-style]):not([data-limited])',
+          '[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-root]:not([data-ending-style]):not([data-limited])',
         ),
       ].map((e) => {
         const r = e.getBoundingClientRect();
@@ -291,9 +299,11 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
       back.every((x) => x.text === 0 && x.bg !== f.bg),
     c,
   );
-  await floating(".kl-toast[data-kl-front]").hover();
+  await floating("[data-slot=toast-root][data-kl-front]").hover();
   await until(() =>
-    p.evaluate(() => document.querySelector('[data-slot="toast-floating"]')?.hasAttribute("data-expanded")),
+    p.evaluate(() =>
+      document.querySelector('[data-slot="toast-viewport"][data-placement="floating"]')?.hasAttribute("data-expanded"),
+    ),
   );
   await stackRests(p);
   await idle(p);
@@ -304,20 +314,22 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
     e,
   );
   const paused = await p.evaluate(() => {
-    const d = [...document.querySelectorAll('[data-slot="toast-floating"] .kl-toast-drain')];
+    const d = [
+      ...document.querySelectorAll('[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-drain]'),
+    ];
     return d.length > 0 && d.every((x) => getComputedStyle(x).animationPlayState === "paused");
   });
   ok("toast stack (floating): every countdown pauses while it is open", paused);
   const moreShown = await p.evaluate(
     () =>
-      [...document.querySelectorAll('[data-slot="toast-floating"] .kl-toast-more')].filter(
-        (m) => m.getClientRects().length > 0,
-      ).length,
+      [
+        ...document.querySelectorAll('[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-more]'),
+      ].filter((m) => m.getClientRects().length > 0).length,
   );
   ok("toast stack (floating): expanded, there is nothing left to count (no +n)", moreShown === 0, moreShown);
   if (eng === "chromium") {
-    const before = await floating(".kl-toast").count();
-    const fr = await floating(".kl-toast[data-kl-front]").boundingBox();
+    const before = await floating("[data-slot=toast-root]").count();
+    const fr = await floating("[data-slot=toast-root][data-kl-front]").boundingBox();
     await p.mouse.move(fr.x + 120, fr.y + 20);
     await p.mouse.down();
     for (let i = 1; i <= 10; i++) {
@@ -327,28 +339,33 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
     await p.mouse.up();
     await until(
       async () =>
-        (await floating(".kl-toast").count()) === before - 1 &&
-        (await floating(".kl-toast[data-limited]").count()) === 0,
+        (await floating("[data-slot=toast-root]").count()) === before - 1 &&
+        (await floating("[data-slot=toast-root][data-limited]").count()) === 0,
     );
     ok(
       "toast stack (floating): a swipe toward the inline end dismisses the front toast",
-      (await floating(".kl-toast").count()) === before - 1,
+      (await floating("[data-slot=toast-root]").count()) === before - 1,
     );
     ok(
       "toast stack (floating): the one waiting over the limit comes forward",
-      (await floating(".kl-toast[data-limited]").count()) === 0,
+      (await floating("[data-slot=toast-root][data-limited]").count()) === 0,
     );
   }
   // the keyboard opens the stack too: F6 moves focus into the viewport (Base UI), which expands it
   await p.mouse.move(2, 2);
   await until(() =>
-    p.evaluate(() => !document.querySelector('[data-slot="toast-floating"]')?.hasAttribute("data-expanded")),
+    p.evaluate(
+      () =>
+        !document
+          .querySelector('[data-slot="toast-viewport"][data-placement="floating"]')
+          ?.hasAttribute("data-expanded"),
+    ),
   );
   await idle(p);
   await p.keyboard.press("F6");
   const kxState = () =>
     p.evaluate(() => {
-      const v = document.querySelector('[data-slot="toast-floating"]');
+      const v = document.querySelector('[data-slot="toast-viewport"][data-placement="floating"]');
       return {
         expanded: v?.hasAttribute("data-expanded") ?? null,
         inside: v?.contains(document.activeElement) ?? null,
@@ -361,8 +378,8 @@ test("toast: floating stack", async ({ open, ok, eng }) => {
   const kx = await kxState();
   ok("toast stack (floating): F6 moves focus into the stack and expands it", kx.expanded && kx.inside, kx);
   await t.getByRole("button", { name: "Dismiss all" }).click();
-  await until(async () => (await floating(".kl-toast").count()) === 0);
-  ok("toast: dismiss() closes every toast", (await floating(".kl-toast").count()) === 0);
+  await until(async () => (await floating("[data-slot=toast-root]").count()) === 0);
+  ok("toast: dismiss() closes every toast", (await floating("[data-slot=toast-root]").count()) === 0);
   ok("toast: no page errors", p.errs.length === 0, p.errs);
 });
 
@@ -370,14 +387,16 @@ test("toast: floating toast at 375px", async ({ open, ok }) => {
   const p = await open({ width: 375, height: 800, ready: "#toast" });
   await (await at(p, "toast")).getByRole("button", { name: "Simulate a carrier message" }).click();
   await p
-    .locator('[data-slot="toast-floating"] .kl-toast')
+    .locator('[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-root]')
     .first()
     .waitFor({ timeout: 5000 })
     .catch(() => {});
   await stackRests(p);
   await idle(p);
   const w = await p.evaluate(() => {
-    const r = document.querySelector('[data-slot="toast-floating"] .kl-toast')?.getBoundingClientRect();
+    const r = document
+      .querySelector('[data-slot="toast-viewport"][data-placement="floating"] [data-slot=toast-root]')
+      ?.getBoundingClientRect();
     return r ? [r.left, r.right] : null;
   });
   ok("narrow: the floating toast fits the viewport with a 16px gutter", w && w[0] >= 15.5 && w[1] <= 375 - 15.5, w);

@@ -4,14 +4,14 @@ import * as ui from "../demo-ui";
 import {
   ContextMenu,
   ContextMenuTrigger,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuGroup,
   ContextMenuGroupLabel,
-  ContextMenuSubmenu,
+  ContextMenuSubmenuRoot,
   ContextMenuSubmenuTrigger,
-  ContextMenuSubmenuContent,
+  ContextMenuSubmenuPopup,
 } from "@/registry/keyline/ui/context-menu";
 import { ItemList, Item, ItemContent, ItemMeta, ItemMedia } from "@/registry/keyline/ui/item";
 import { Status } from "@/registry/keyline/ui/status";
@@ -50,7 +50,7 @@ export function ContextMenuSpecimen() {
                 />
                 <ItemMeta>{d.id}</ItemMeta>
               </ContextMenuTrigger>
-              <ContextMenuContent>
+              <ContextMenuPopup>
                 <ContextMenuGroup>
                   <ContextMenuGroupLabel>{d.id}</ContextMenuGroupLabel>
                   <ContextMenuItem
@@ -68,9 +68,9 @@ export function ContextMenuSpecimen() {
                   >
                     Upload new version
                   </ContextMenuItem>
-                  <ContextMenuSubmenu>
+                  <ContextMenuSubmenuRoot>
                     <ContextMenuSubmenuTrigger code="3">Send to</ContextMenuSubmenuTrigger>
-                    <ContextMenuSubmenuContent>
+                    <ContextMenuSubmenuPopup>
                       <ContextMenuItem onClick={() => setLast(`Sent ${d.name} to the customs broker`)}>
                         Customs broker
                       </ContextMenuItem>
@@ -80,14 +80,14 @@ export function ContextMenuSpecimen() {
                       <ContextMenuItem description="No e-mail on file" disabled>
                         Haulier
                       </ContextMenuItem>
-                    </ContextMenuSubmenuContent>
-                  </ContextMenuSubmenu>
+                    </ContextMenuSubmenuPopup>
+                  </ContextMenuSubmenuRoot>
                 </ContextMenuGroup>
                 <ContextMenuSeparator />
                 <ContextMenuItem variant="destructive" onClick={() => setLast(`Removed ${d.name}`)}>
                   Remove
                 </ContextMenuItem>
-              </ContextMenuContent>
+              </ContextMenuPopup>
             </ContextMenu>
           ))}
         </ItemList>

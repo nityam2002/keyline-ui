@@ -299,6 +299,14 @@
           "transform": "translateX(333.3333%)"
         }
       },
+      "@keyframes kl-drain": {
+        "from": {
+          "transform": "scaleX(1)"
+        },
+        "to": {
+          "transform": "scaleX(0)"
+        }
+      },
       ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], .kl-skel ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
         "--kl-run-dir": "reverse"
       },

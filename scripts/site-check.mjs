@@ -2415,13 +2415,13 @@ for (const [width, reduce] of run("overlays")
   ok(true, `${tag} toast: a failed send retries to done`);
   // updated in place (loading → done gains a description), it is re-measured: hovering (the expanded stack, sized
   // from --toast-height) keeps it at full height instead of the title-only loading height, clipping the description
-  const sent = p.locator(".kl-toast", { hasText: "Report sent to Jan" });
+  const sent = p.locator("[data-slot=toast-root]", { hasText: "Report sent to Jan" });
   await p.waitForTimeout(400);
   const rest = (await sent.boundingBox())?.height ?? 0;
   await sent.hover();
   await p.waitForTimeout(500);
   const open = (await sent.boundingBox())?.height ?? 0;
-  const fits = await sent.locator(".kl-toast-text").evaluate((e) => e.scrollHeight <= e.clientHeight);
+  const fits = await sent.locator("[data-slot=toast-text]").evaluate((e) => e.scrollHeight <= e.clientHeight);
   ok(
     Math.abs(open - rest) < 1 && fits,
     `${tag} toast: an updated toast keeps its height when the stack expands (${rest} → ${open})`,

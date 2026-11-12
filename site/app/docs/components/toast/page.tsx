@@ -67,6 +67,29 @@ const PROPS: Prop[] = [
     description: "Shows toasts inside a cell of your layout, such as a table&apos;s footer, so they never cover data.",
   },
   {
+    name: "placement",
+    type: '"dock" | "floating"',
+    default: '"dock"',
+    description: (
+      <>
+        On <code>ToastViewport</code>: in flow inside a host cell, or fixed at the bottom inline-end corner in a portal.{" "}
+        <code>ToastDock</code> and <code>ToastFloating</code> are the two placements with the manager&apos;s toasts
+        already inside.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>ToastFloating</code> (or a floating <code>ToastViewport</code>): where the portal renders, and props
+        for the portal. It keeps the theme, density, motion and direction of the place it is written either way.
+      </>
+    ),
+  },
+  {
     name: "createToaster",
     type: "() => manager",
     default: "\u2014",
@@ -128,8 +151,20 @@ export default function ToastPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Toast props" props={PROPS} />
       <p className="s-small">
-        For a condition that is still true, such as low stock, use Notice. Built on{" "}
-        <a href="https://base-ui.com/react/components/toast">Base UI Toast</a>.
+        For a condition that is still true, such as low stock, use Notice. F6 moves focus to the toasts (Base UI&apos;s
+        hotkey); from there Tab reaches each toast&apos;s action and close cell. Parts, named as Base UI names them:{" "}
+        <code>ToastProvider</code>, <code>ToastViewport</code>, <code>ToastRoot</code>, <code>ToastTitle</code>,{" "}
+        <code>ToastDescription</code>, <code>ToastAction</code> and <code>ToastClose</code> (its <code>aria-label</code>{" "}
+        is required), with Keyline&apos;s <code>ToastDock</code> and <code>ToastFloating</code>, which compose them for
+        the manager&apos;s toasts. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. Each carries a <code>data-slot</code>:{" "}
+        <code>toast-viewport</code> (with <code>data-placement</code> and Base UI&apos;s <code>data-expanded</code>),{" "}
+        <code>toast-root</code> (with <code>data-kind</code>: done, failed, info, warning or loading;{" "}
+        <code>data-kl-front</code> on the newest, <code>data-kl-behind</code> on those waiting;{" "}
+        <code>data-placement</code>; and Base UI&apos;s <code>data-expanded</code>, <code>data-limited</code>,{" "}
+        <code>data-swiping</code> and <code>data-swipe-direction</code>), <code>toast-title</code>,{" "}
+        <code>toast-description</code>, <code>toast-action</code> and <code>toast-close</code>. Built on{" "}
+        <a href="https://base-ui.com/react/components/toast">Base UI Toast</a>; its other props pass through.
       </p>
     </DocPage>
   );

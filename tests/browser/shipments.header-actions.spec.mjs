@@ -40,7 +40,7 @@ test("header 1440: Alerts, Export, Help; one Tab stop; Export toasts", async ({ 
   const toasts = await poll(
     () =>
       p
-        .locator(".kl-toast, [data-slot=toast]")
+        .locator("[data-slot=toast-root]")
         .allTextContents()
         .then((x) => x.join(" ")),
     (t) => /Export of/.test(t),

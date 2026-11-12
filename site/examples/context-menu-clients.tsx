@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
 import {
   ContextMenu,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
@@ -37,7 +37,7 @@ export function ClientList() {
                   {c.contact} · {c.rep}’s account
                 </span>
               </ContextMenuTrigger>
-              <ContextMenuContent>
+              <ContextMenuPopup>
                 <ContextMenuItem onClick={() => setLog(`Calling ${c.name}, ${c.contact}.`)}>Call</ContextMenuItem>
                 <ContextMenuItem onClick={() => setLog(`New order started for ${c.name}.`)}>New order</ContextMenuItem>
                 <ContextMenuItem
@@ -55,7 +55,7 @@ export function ClientList() {
                 >
                   Archive client
                 </ContextMenuItem>
-              </ContextMenuContent>
+              </ContextMenuPopup>
             </ContextMenu>
           </li>
         ))}

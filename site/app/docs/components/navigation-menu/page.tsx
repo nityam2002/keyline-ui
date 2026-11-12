@@ -80,6 +80,39 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  {
+    name: "side \u00b7 align \u00b7 anchor",
+    type: "Base UI side \u00b7 align \u00b7 Element | ref",
+    default: '"bottom" \u00b7 "start" \u00b7 the list',
+    description: (
+      <>
+        On <code>NavigationMenuPopup</code>: where the panel docks. It docks to the list&apos;s frame, not the open
+        trigger, and flips when there&apos;s no room.
+      </>
+    ),
+  },
+  {
+    name: "sideOffset \u00b7 alignOffset \u00b7 collisionPadding",
+    type: "number",
+    default: "-2 \u00b7 0 \u00b7 12",
+    description: (
+      <>
+        On <code>NavigationMenuPopup</code>: the positioner&apos;s props, lifted onto the popup.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>NavigationMenuPopup</code>: where the panel&apos;s portal renders, and props for the portal. It keeps
+        the theme, density, motion and direction of the place it is written either way. To pass them, compose{" "}
+        <code>NavigationMenuRoot</code>, the list and <code>NavigationMenuPopup</code> yourself.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -123,7 +156,21 @@ export default function NavigationMenuPage() {
       <PropsReference label="Navigation menu props" props={PROPS} />
       <p className="s-small">
         Hover opens a section after a short delay; Enter, Space or Down opens it from the keyboard, and Escape closes
-        it. Built on <a href="https://base-ui.com/react/components/navigation-menu">Base UI Navigation Menu</a>.
+        it. Parts, named as Base UI names them: <code>NavigationMenuRoot</code>, <code>NavigationMenuList</code>,{" "}
+        <code>NavigationMenuItem</code>, <code>NavigationMenuTrigger</code> (with Base UI&apos;s Icon inside),{" "}
+        <code>NavigationMenuLink</code>, <code>NavigationMenuContent</code> and <code>NavigationMenuPopup</code> (Base
+        UI&apos;s Portal, Positioner, Popup and Viewport in one part), with Keyline&apos;s <code>NavigationMenu</code>{" "}
+        (the root with its popup in place), <code>NavigationMenuGrid</code> and <code>NavigationMenuCard</code>. Every
+        part takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its
+        state. Each carries a <code>data-slot</code>: <code>navigation-menu</code>, <code>navigation-menu-list</code>,{" "}
+        <code>navigation-menu-item</code>, <code>navigation-menu-trigger</code> (with Base UI&apos;s{" "}
+        <code>data-popup-open</code>, and <code>data-kl-covered</code> while the moving band covers it),{" "}
+        <code>navigation-menu-icon</code>, <code>navigation-menu-link</code> (<code>aria-current=&quot;page&quot;</code>{" "}
+        when active), <code>navigation-menu-content</code>, <code>navigation-menu-popup</code>,{" "}
+        <code>navigation-menu-viewport</code>, <code>navigation-menu-grid</code>, <code>navigation-menu-grid-item</code>{" "}
+        and <code>navigation-menu-card</code>. Built on{" "}
+        <a href="https://base-ui.com/react/components/navigation-menu">Base UI Navigation Menu</a>; its other props pass
+        through.
       </p>
     </DocPage>
   );

@@ -12,11 +12,11 @@ for (const motion of ["normal", "reduce"]) {
       q: `motion=${motion}`,
       width: 1440,
       height: 900,
-      ready: "[data-testid=specimen-nm] .kl-nmenu-list",
+      ready: "[data-testid=specimen-nm] [data-slot=navigation-menu-list]",
     });
-    const list = p.getByTestId("specimen-nm").locator(".kl-nmenu-list").first();
+    const list = p.getByTestId("specimen-nm").locator("[data-slot=navigation-menu-list]").first();
     await list.scrollIntoViewIfNeeded();
-    const trig = list.locator(".kl-nmenu-trigger");
+    const trig = list.locator("[data-slot=navigation-menu-trigger]");
     const geo = () =>
       list.evaluate((l) => {
         const band = l.querySelector(":scope > [data-kl-band]");

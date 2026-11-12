@@ -17,7 +17,7 @@ for (const [eng, type, opts] of [
   p.on("pageerror", (e) => errs.push(String(e)));
   await p.goto(URL + "?cut=on");
   await p.waitForTimeout(700);
-  const toasts = () => p.locator("[data-slot=toast-floating] .kl-toast, .kl-toast").allTextContents();
+  const toasts = () => p.locator("[data-slot=toast-root]").allTextContents();
 
   // dialog: async failure → retry succeeds; closing while pending cancels
   await p.getByRole("button", { name: "Book pickup…" }).click();
@@ -929,8 +929,8 @@ for (const [eng, type, opts] of [
       (await ypop.getByRole("link", { name: /North yard/ }).getAttribute("aria-current")) === "page" &&
       Math.abs(
         (await ypop.boundingBox()).y -
-          ((await yp.locator(".kl-nmenu-list").boundingBox()).y +
-            (await yp.locator(".kl-nmenu-list").boundingBox()).height -
+          ((await yp.locator("[data-slot=navigation-menu-list]").boundingBox()).y +
+            (await yp.locator("[data-slot=navigation-menu-list]").boundingBox()).height -
             2),
       ) <= 1,
   );
@@ -1009,13 +1009,13 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "intake: Skip on the last step submits; the toast raised outside React is loading",
-    (await indock.locator(".kl-toast").getAttribute("data-kind")) === "loading",
+    (await indock.locator("[data-slot=toast-root]").getAttribute("data-kind")) === "loading",
   );
   await p.waitForTimeout(800);
   ok(
     eng,
     "intake: then done with the answer in its description",
-    (await indock.locator(".kl-toast-desc").textContent()) === "Mode: rail",
+    (await indock.locator("[data-slot=toast-description]").textContent()) === "Mode: rail",
   );
   const igrp = p.getByRole("group", { name: "Intake pages" });
   await igrp.getByRole("button", { name: "Previous" }).focus();

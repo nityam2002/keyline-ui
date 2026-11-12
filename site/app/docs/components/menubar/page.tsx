@@ -18,7 +18,7 @@ export const metadata = componentMetadata(
 
 const IMPORT = `import {
   Menubar,
-  MenubarContent,
+  MenubarPopup,
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
@@ -27,9 +27,9 @@ const IMPORT = `import {
 const USAGE = `<Menubar aria-label="Sales report">
   <MenubarMenu>
     <MenubarTrigger>File</MenubarTrigger>
-    <MenubarContent>
+    <MenubarPopup>
       <MenubarItem onClick={print}>Print</MenubarItem>
-    </MenubarContent>
+    </MenubarPopup>
   </MenubarMenu>
 </Menubar>`;
 
@@ -50,6 +50,37 @@ const PROPS: Prop[] = [
     type: "boolean",
     default: "true",
     description: "Left and Right wrap from the last title to the first.",
+  },
+  {
+    name: "side \u00b7 align \u00b7 anchor",
+    type: "Base UI side \u00b7 align \u00b7 Element | ref",
+    default: '"bottom" \u00b7 "start" \u00b7 the title',
+    description: (
+      <>
+        On <code>MenubarPopup</code>: where the menu docks. It flips when there&apos;s no room.
+      </>
+    ),
+  },
+  {
+    name: "sideOffset \u00b7 alignOffset \u00b7 collisionPadding",
+    type: "number",
+    default: "0 \u00b7 0 \u00b7 12",
+    description: (
+      <>
+        On <code>MenubarPopup</code>: the positioner&apos;s props, lifted onto the popup.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>MenubarPopup</code>: where the menu&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
+      </>
+    ),
   },
 ];
 
@@ -97,8 +128,18 @@ export default function MenubarPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Menubar props" props={PROPS} />
       <p className="s-small">
-        At narrow widths the titles scroll inside the frame and the hidden edge is shaded. Built on{" "}
-        <a href="https://base-ui.com/react/components/menubar">Base UI Menubar</a>.
+        At narrow widths the titles scroll inside the frame and the hidden edge is shaded. Parts, named as Base UI names
+        them: <code>Menubar</code>, <code>MenubarMenu</code> (Base UI&apos;s Menu.Root), <code>MenubarTrigger</code> and{" "}
+        <code>MenubarPopup</code> (Base UI&apos;s Portal, Positioner and Popup in one part), with Menu&apos;s rows
+        re-exported as <code>MenubarItem</code>, <code>MenubarCheckboxItem</code>, <code>MenubarRadioGroup</code>,{" "}
+        <code>MenubarRadioItem</code>, <code>MenubarSeparator</code>, <code>MenubarGroup</code>,{" "}
+        <code>MenubarGroupLabel</code>, <code>MenubarSubmenuRoot</code>, <code>MenubarSubmenuTrigger</code> and{" "}
+        <code>MenubarSubmenuPopup</code>. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. Each carries a <code>data-slot</code>:{" "}
+        <code>menubar</code> (with <code>data-kl-layout</code>), <code>menubar-trigger</code> (with Base UI&apos;s{" "}
+        <code>data-popup-open</code> and <code>data-disabled</code>), <code>menu-popup</code> (Menu&apos;s surface, with
+        Base UI&apos;s <code>data-side</code> and <code>data-align</code>) and Menu&apos;s row slots. Built on{" "}
+        <a href="https://base-ui.com/react/components/menubar">Base UI Menubar</a>; its other props pass through.
       </p>
     </DocPage>
   );

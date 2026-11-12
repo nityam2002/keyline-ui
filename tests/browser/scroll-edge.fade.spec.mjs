@@ -6,14 +6,17 @@ test.use({ only: ["navigation-menu"] });
 
 test("scroll edges: one shadow over any cell, at both ends", async ({ open, ok }) => {
   const p = await open({ width: 1280, height: 1000, ready: "[data-testid=nm-narrow]" });
-  const list = p.getByTestId("nm-narrow").locator(".kl-nmenu-list");
+  const list = p.getByTestId("nm-narrow").locator("[data-slot=navigation-menu-list]");
   await list.scrollIntoViewIfNeeded();
   await p.keyboard.press("Escape");
   await p.mouse.move(1, 1);
   // the edges are marked once the list has measured its overflow
   await p
     .waitForFunction(
-      () => document.querySelector("[data-testid=nm-narrow] .kl-nmenu-list")?.hasAttribute("data-kl-more"),
+      () =>
+        document
+          .querySelector("[data-testid=nm-narrow] [data-slot=navigation-menu-list]")
+          ?.hasAttribute("data-kl-more"),
       null,
       { timeout: 3000 },
     )

@@ -423,6 +423,16 @@
       transform: translateX(333.3333%);
     }
   }
+  /* DRAIN: a countdown empties its keyline toward the start edge (a toast's time left: transform-origin picks the
+     edge, so RTL drains the other way). Compositor-only, like RUN. */
+  @keyframes kl-drain {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
+    }
+  }
   /* (the direction travels as a variable inside each animation shorthand, so no rule order or specificity can drop it) */
   :where(
       .kl-pending,

@@ -59,8 +59,10 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
       null,
     );
     const dock = await p.evaluate(() => {
-      const l = document.querySelector("[data-testid=nm-main] .kl-nmenu-list").getBoundingClientRect(),
-        t = document.querySelector("[data-testid=nm-main] .kl-nmenu-trigger").getBoundingClientRect(),
+      const l = document
+          .querySelector("[data-testid=nm-main] [data-slot=navigation-menu-list]")
+          .getBoundingClientRect(),
+        t = document.querySelector("[data-testid=nm-main] [data-slot=navigation-menu-trigger]").getBoundingClientRect(),
         pp = document.querySelector("[data-slot=navigation-menu-popup]").getBoundingClientRect(),
         bw = parseFloat(getComputedStyle(document.querySelector("[data-slot=navigation-menu-popup]")).borderTopWidth);
       return { top: pp.top, frameBottom: l.bottom, bw, left: pp.left, tl: t.left, l: l.left };
@@ -77,7 +79,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
         (await popup.getByRole("link", { name: /Customs/ }).getAttribute("aria-current")) === "page",
       null,
     );
-    const seams = await popup.locator(".kl-nmenu-gi").evaluateAll((xs) => {
+    const seams = await popup.locator("[data-slot=navigation-menu-grid-item]").evaluateAll((xs) => {
       const r = xs.map((x) => x.getBoundingClientRect());
       return { cols: new Set(r.map((x) => Math.round(x.left))).size, gap: Math.round(r[1].left - r[0].right) };
     });
@@ -153,7 +155,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await idle(p);
     await stable(popup).catch(() => {});
     const rg = await p.evaluate(() => {
-      const t = document.querySelector("[data-testid=nm-rtl] .kl-nmenu-list").getBoundingClientRect(),
+      const t = document.querySelector("[data-testid=nm-rtl] [data-slot=navigation-menu-list]").getBoundingClientRect(),
         pp = document.querySelector("[data-slot=navigation-menu-popup]").getBoundingClientRect();
       return { tr: t.right, pr: pp.right };
     });
@@ -180,8 +182,8 @@ test("navigation menu: narrow (390px)", async ({ open, ok }) => {
   const p = await open({ route: "specimen", q: "theme=light", width: 390, height: 844, ready: "#navigation-menu" });
   const n = p.getByTestId("nm-narrow");
   await n.scrollIntoViewIfNeeded();
-  await stable(n.locator(".kl-nmenu-list"));
-  const sc = await n.locator(".kl-nmenu-list").evaluate((e) => ({
+  await stable(n.locator("[data-slot=navigation-menu-list]"));
+  const sc = await n.locator("[data-slot=navigation-menu-list]").evaluate((e) => ({
     sw: e.scrollWidth,
     cw: e.clientWidth,
     more: e.getAttribute("data-kl-more"),
@@ -201,9 +203,9 @@ test("navigation menu: narrow (390px)", async ({ open, ok }) => {
   await stable(popup).catch(() => {});
   const pg = await p.evaluate(() => {
     const pp = document.querySelector("[data-slot=navigation-menu-popup]").getBoundingClientRect(),
-      xs = [...document.querySelectorAll("[data-slot=navigation-menu-popup] .kl-nmenu-gi")].map((x) =>
-        Math.round(x.getBoundingClientRect().left),
-      );
+      xs = [
+        ...document.querySelectorAll("[data-slot=navigation-menu-popup] [data-slot=navigation-menu-grid-item]"),
+      ].map((x) => Math.round(x.getBoundingClientRect().left));
     return { l: pp.left, r: pp.right, vw: innerWidth, cols: new Set(xs).size };
   });
   ok("narrow: the panel fits the viewport, one column", pg.l >= 0 && pg.r <= pg.vw && pg.cols === 1, pg);

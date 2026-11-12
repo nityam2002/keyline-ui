@@ -16,7 +16,7 @@ async function app(open) {
     rows,
     carriers: (n) => Promise.all(Array.from({ length: n }, (_, i) => carrier(i))),
     count: () => p.locator(".kl-tf-bulk-n .kl-count").textContent(),
-    undo: () => p.locator(".kl-toast-action", { hasText: "Undo" }).last(),
+    undo: () => p.locator("[data-slot=toast-action]", { hasText: "Undo" }).last(),
     search: p.locator(".kl-tf-search input"),
     selectedTab: () =>
       p
@@ -89,7 +89,7 @@ test("app: async failure changes nothing", async ({ open, ok }) => {
   const before = await a.carriers(6);
   await p.locator(".kl-tf-bulk button", { hasText: "Assign carrier" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Rhenus Road" }).click();
-  await p.locator(".kl-toast", { hasText: "Nothing was changed" }).waitFor();
+  await p.locator("[data-slot=toast-root]", { hasText: "Nothing was changed" }).waitFor();
   ok("more than the capacity was selected", n > 5, { n });
   const after = await a.carriers(6);
   ok("carriers unchanged after the failure", same(after, before), { actual: after, expected: before });

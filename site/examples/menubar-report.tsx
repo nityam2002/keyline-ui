@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   Menubar,
   MenubarCheckboxItem,
-  MenubarContent,
+  MenubarPopup,
   MenubarItem,
   MenubarMenu,
   MenubarRadioGroup,
@@ -24,16 +24,16 @@ export function SalesReportMenus() {
       <Menubar aria-label="Sales report">
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem onClick={() => setLast("Saved a copy for David Wallace.")}>Save a copy</MenubarItem>
             <MenubarItem shortcut="⌘P" onClick={() => setLast("Sent to the printer by the annex.")}>
               Print
             </MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>View</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarCheckboxItem checked={targets} onCheckedChange={setTargets}>
               Branch targets
             </MenubarCheckboxItem>
@@ -46,22 +46,22 @@ export function SalesReportMenus() {
               <MenubarRadioItem value="quarter">This quarter</MenubarRadioItem>
               <MenubarRadioItem value="year">This year</MenubarRadioItem>
             </MenubarRadioGroup>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>Share</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem onClick={() => setLast("Emailed to the Scranton sales team.")}>
               Email the sales team
             </MenubarItem>
             <MenubarItem onClick={() => setLast("Posted on the break room board.")}>Post in the break room</MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>Help</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem onClick={() => setLast("Ticket opened with IT. Nick will be up shortly.")}>Ask IT</MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
       </Menubar>
       <p role="status" className="m-0 min-h-10 text-[14px] text-kl-ink-2">

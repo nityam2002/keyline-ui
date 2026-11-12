@@ -23,7 +23,9 @@ const GEOMETRY = () => {
     cutWhenOff: [],
     rounded: [],
   };
-  for (const el of document.querySelectorAll(".kl-cell, .kl-attached, .kl-ms-chip, .kl-check, .kl-toast, .kl-skel"))
+  for (const el of document.querySelectorAll(
+    ".kl-cell, .kl-attached, .kl-ms-chip, .kl-check, [data-slot=toast-root], .kl-skel",
+  ))
     if (cutOf(el)) out.cutOnCells.push(name(el));
   for (const el of document.querySelectorAll(".kl-frame, .kl-ctl")) {
     const off = getComputedStyle(el).getPropertyValue("--kl-cut").trim() === "0";

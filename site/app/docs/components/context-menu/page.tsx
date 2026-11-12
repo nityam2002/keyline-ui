@@ -18,7 +18,7 @@ export const metadata = componentMetadata(
 
 const IMPORT = `import {
   ContextMenu,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/keyline/ui/context-menu"`;
@@ -27,9 +27,9 @@ const USAGE = `<ContextMenu>
   <ContextMenuTrigger tabIndex={0} aria-label="Lackawanna County">
     Lackawanna County
   </ContextMenuTrigger>
-  <ContextMenuContent>
+  <ContextMenuPopup>
     <ContextMenuItem onClick={call}>Call</ContextMenuItem>
-  </ContextMenuContent>
+  </ContextMenuPopup>
 </ContextMenu>`;
 
 const PROPS: Prop[] = [
@@ -54,12 +54,34 @@ const PROPS: Prop[] = [
     ),
   },
   {
-    name: "container",
-    type: "Element",
-    default: "body",
+    name: "side \u00b7 align \u00b7 anchor",
+    type: "Base UI side \u00b7 align \u00b7 Element | ref",
+    default: "at the pointer",
     description: (
       <>
-        On <code>ContextMenuContent</code>: where the menu is portalled.
+        On <code>ContextMenuPopup</code>: the positioner&apos;s placement, lifted onto the popup. Base UI places the
+        menu at the pointer (or at the focused object, from the keyboard).
+      </>
+    ),
+  },
+  {
+    name: "sideOffset \u00b7 alignOffset \u00b7 collisionPadding",
+    type: "number",
+    default: "Base UI\u2019s \u00b7 Base UI\u2019s \u00b7 8",
+    description: (
+      <>
+        On <code>ContextMenuPopup</code>: the positioner&apos;s offsets, lifted onto the popup.
+      </>
+    ),
+  },
+  {
+    name: "container \u00b7 portalProps",
+    type: "Element | ref \u00b7 Portal props",
+    default: "<body>",
+    description: (
+      <>
+        On <code>ContextMenuPopup</code>: where the menu&apos;s portal renders, and props for the portal. It keeps the
+        theme, density, motion and direction of the place it is written either way.
       </>
     ),
   },
@@ -107,9 +129,20 @@ export default function ContextMenuPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Context menu props" props={PROPS} />
       <p className="s-small">
-        The rows are Menu&rsquo;s, re-exported as <code>ContextMenuItem</code>, <code>ContextMenuSeparator</code>,{" "}
-        <code>ContextMenuSubmenu</code> and the rest. Built on{" "}
-        <a href="https://base-ui.com/react/components/context-menu">Base UI Context Menu</a>.
+        Parts, named as Base UI names them: <code>ContextMenu</code> (also <code>ContextMenuRoot</code>),{" "}
+        <code>ContextMenuTrigger</code> and <code>ContextMenuPopup</code> (Base UI&apos;s Portal, Positioner and Popup
+        in one part). The rows are Menu&rsquo;s, re-exported as <code>ContextMenuItem</code>,{" "}
+        <code>ContextMenuCheckboxItem</code>, <code>ContextMenuRadioGroup</code>, <code>ContextMenuRadioItem</code>,{" "}
+        <code>ContextMenuSeparator</code>, <code>ContextMenuGroup</code>, <code>ContextMenuGroupLabel</code>,{" "}
+        <code>ContextMenuSubmenuRoot</code>, <code>ContextMenuSubmenuTrigger</code> and{" "}
+        <code>ContextMenuSubmenuPopup</code>. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. Each carries a <code>data-slot</code>:{" "}
+        <code>context-menu-trigger</code> (with Base UI&apos;s <code>data-popup-open</code> while its menu is open; when
+        it renders another part, such as an <code>Item</code>, the element keeps that part&apos;s slot),{" "}
+        <code>menu-popup</code> (Menu&apos;s surface, with Base UI&apos;s <code>data-side</code> and{" "}
+        <code>data-align</code>) and Menu&apos;s row slots. Built on{" "}
+        <a href="https://base-ui.com/react/components/context-menu">Base UI Context Menu</a>; its other props pass
+        through.
       </p>
     </DocPage>
   );

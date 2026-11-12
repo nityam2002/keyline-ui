@@ -16,7 +16,7 @@ import {
 import {
   ContextMenu,
   ContextMenuTrigger,
-  ContextMenuContent,
+  ContextMenuPopup,
   ContextMenuItem,
   ContextMenuCheckboxItem,
   ContextMenuSeparator,
@@ -92,7 +92,7 @@ export function MenuChoicesSpecimen() {
         >
           Right-click (or press the Menu key) on the board
         </ContextMenuTrigger>
-        <ContextMenuContent>
+        <ContextMenuPopup>
           <ContextMenuGroup>
             <ContextMenuGroupLabel>Sort by</ContextMenuGroupLabel>
             <ContextMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
@@ -109,7 +109,7 @@ export function MenuChoicesSpecimen() {
             Show carrier reference
           </ContextMenuCheckboxItem>
           <ContextMenuItem code="P">Print board</ContextMenuItem>
-        </ContextMenuContent>
+        </ContextMenuPopup>
       </ContextMenu>
     </div>
   );
