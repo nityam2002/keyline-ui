@@ -7,6 +7,6 @@ export default {
   description:
     'Page numbers as cells with a cobalt current page; constant width while paging; folds to "5 / 20" when narrow; buttons or links.',
   files: [{ path: "src/registry/keyline/ui/pagination.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/pagination.css",
+  dependencies: ["class-variance-authority"],
   registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/collection"],
 } satisfies KeylineItem;

@@ -103,6 +103,13 @@ export default function BreadcrumbPage() {
         The folded levels open in a Keyline Menu, so the arrow keys move through them. The chevrons mirror in
         right-to-left text.
       </p>
+      <p className="s-small">
+        Each element carries a <code>data-slot</code> to select it by: <code>breadcrumb</code> (the nav, which takes{" "}
+        <code>className</code> and the nav&apos;s props), <code>breadcrumb-list</code>, <code>breadcrumb-item</code>,{" "}
+        <code>breadcrumb-link</code>, <code>breadcrumb-page</code> (the current page), <code>breadcrumb-separator</code>{" "}
+        and <code>breadcrumb-more</code> (the folded levels&apos; cell). The nav carries <code>data-kl-folded</code>{" "}
+        while the levels fold by count.
+      </p>
     </DocPage>
   );
 }

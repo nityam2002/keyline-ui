@@ -49,6 +49,8 @@ check number-field number-field NumberField ".kl-field-frame"
 check switch switch Switch "file:src/components/keyline/ui/checkbox.tsx"
 check time-field time-field TimeField ".kl-field-frame"
 check app-shell app-shell AppShell ".kl-nav-ic"
+# Tabs has no CSS of its own: its scroll shadows are the spans scroll-edges writes, styled by the theme (.kl-more-fade);
+# its look is utilities in tabs.tsx (the build below checks they are generated)
 check tabs tabs Tabs ".kl-more-fade"
 check checkbox-group checkbox-group CheckboxGroup "file:src/components/keyline/ui/checkbox.tsx"
 # Table now composes toolbar (filter tokens in a toolbar), so its CSS must come with it
@@ -91,5 +93,7 @@ built "the OTP slot's width" '--kl-otp-u'
 # installs; the date-time picker's slot grid (a 4.5em minimum column) in none but date-picker.tsx
 built "the calendar's day size" '\[--kl-day\:44px\]'
 built "the date-time picker's slot grid" '4.5em'
+# the tab's count width (its data-has-count:min-w-[104px] utility) is in no installed file but tabs.tsx
+built "the tab's count width" 'data-has-count\:min-w-\[104px\]'
 echo "isolated: ${fails} missing"
 exit $fails

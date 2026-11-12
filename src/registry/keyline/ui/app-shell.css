@@ -78,12 +78,8 @@
     min-width: 0;
   }
   /* a Breadcrumb in the header is a run of cells the full height of the frame, not a strip along its top */
-  .kl-shell-crumbs > .kl-crumbs {
+  .kl-shell-crumbs > [data-slot="breadcrumb"] {
     display: flex;
-  }
-  .kl-shell-crumbs .kl-crumbs-list {
-    flex: 1 1 auto;
-    min-height: 0;
   }
   .kl-shell-actions {
     flex: none;
@@ -240,5 +236,15 @@
   .kl-shell-sheet > .kl-nav {
     display: flex;
     flex-direction: column;
+  }
+}
+
+/* Breadcrumb is written in utilities, and utilities beat @layer components: the header's override of its list's
+   height sits in @layer utilities, keyed on its attributes, until AppShell is converted too. The crumbs' list fills
+   the header frame's height rather than a row's. */
+@layer utilities {
+  .kl-shell-crumbs [data-slot="breadcrumb-list"] {
+    flex: 1 1 auto;
+    min-height: 0;
   }
 }

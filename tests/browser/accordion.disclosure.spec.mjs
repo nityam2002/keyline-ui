@@ -9,9 +9,9 @@ const READY = "#slider [data-slot=slider]";
 
 test("accordion (single): headings, caret column, single mode, panel position, Tab order", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const acc = p.locator("#disclosure .kl-accordion").first();
+  const acc = p.locator("#disclosure [data-slot=accordion]").first();
   await acc.scrollIntoViewIfNeeded();
-  const triggers = acc.locator(".kl-acc-trigger");
+  const triggers = acc.locator("[data-slot=accordion-trigger]");
   ok(
     "accordion: headers are buttons inside headings, the default item is expanded",
     (await acc.locator("h3 > button").count()) === 4 &&
@@ -19,7 +19,7 @@ test("accordion (single): headings, caret column, single mode, panel position, T
     null,
   );
   const carets = await acc
-    .locator(".kl-acc-caret")
+    .locator("[data-slot=accordion-caret]")
     .evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().left)));
   ok(
     "accordion: the caret column runs straight (rows with and without meta, long title)",
@@ -39,7 +39,7 @@ test("accordion (single): headings, caret column, single mode, panel position, T
       (await triggers.nth(0).getAttribute("aria-expanded")) === "false",
     null,
   );
-  const body = acc.locator(".kl-acc-item").nth(1).locator(".kl-acc-panel");
+  const body = acc.locator("[data-slot=accordion-item]").nth(1).locator("[data-slot=accordion-panel]");
   // the panel unfolds (JS-driven height); measure once its box has stopped moving
   await stable(body);
   const pbx = await box(body);
@@ -62,9 +62,9 @@ test("accordion (single): headings, caret column, single mode, panel position, T
 
 test("accordion (multiple, cell): opening one keeps the other open", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const inner = p.locator("#disclosure .kl-panel .kl-accordion");
+  const inner = p.locator("#disclosure .kl-panel [data-slot=accordion]");
   await inner.scrollIntoViewIfNeeded();
-  const it = inner.locator(".kl-acc-trigger");
+  const it = inner.locator("[data-slot=accordion-trigger]");
   ok(
     "accordion (multiple, cell): starts with Weights open; no own border",
     (await it.nth(0).getAttribute("aria-expanded")) === "true" &&
@@ -84,16 +84,16 @@ test("accordion (multiple, cell): opening one keeps the other open", async ({ op
 
 test("collapsible: starts closed, Enter opens, the spine sits under the caret box", async ({ open, ok }) => {
   const p = await open({ ready: READY });
-  const coll = p.locator("#disclosure .kl-collapsible");
+  const coll = p.locator("#disclosure [data-slot=collapsible]");
   await coll.scrollIntoViewIfNeeded();
-  const ct = coll.locator(".kl-coll-trigger");
+  const ct = coll.locator("[data-slot=collapsible-trigger]");
   ok("collapsible: starts closed", (await ct.getAttribute("aria-expanded")) === "false", null);
   await ct.focus();
   await p.keyboard.press("Enter");
   await until(async () => (await ct.getAttribute("aria-expanded")) === "true");
   await idle(p);
-  const cb = await box(coll.locator(".kl-coll-body"));
-  const bx = await box(coll.locator(".kl-coll-box"));
+  const cb = await box(coll.locator("[data-slot=collapsible-content]"));
+  const bx = await box(coll.locator("[data-slot=collapsible-box]"));
   ok(
     "collapsible: Enter opens; the spine is centred under the caret box",
     (await ct.getAttribute("aria-expanded")) === "true" && near(cb.x + 1, bx.x + bx.width / 2, 1.5),
@@ -104,13 +104,13 @@ test("collapsible: starts closed, Enter opens, the spine sits under the caret bo
 
 test("reduced motion: accordion panel and slider thumb do not transition", { tag: "@timing" }, async ({ open, ok }) => {
   const q = await open({ q: "motion=reduce", ready: READY });
-  const acc = q.locator("#disclosure .kl-accordion").first();
+  const acc = q.locator("#disclosure [data-slot=accordion]").first();
   await acc.scrollIntoViewIfNeeded();
   ok(
     "reduced motion: accordion panel and slider thumb have 0s transitions",
     (
       await acc
-        .locator(".kl-acc-panel")
+        .locator("[data-slot=accordion-panel]")
         .first()
         .evaluate((el) => getComputedStyle(el).transitionDuration)
     )
@@ -126,12 +126,12 @@ test("reduced motion: accordion panel and slider thumb do not transition", { tag
         .every((d) => parseFloat(d) === 0),
     null,
   );
-  await acc.locator(".kl-acc-trigger").nth(1).click();
+  await acc.locator("[data-slot=accordion-trigger]").nth(1).click();
   await q.waitForTimeout(60); // timing: the subject is "full height within one frame" (no transition under reduced motion)
   const h = await acc
-    .locator(".kl-acc-item")
+    .locator("[data-slot=accordion-item]")
     .nth(1)
-    .locator(".kl-acc-panel")
+    .locator("[data-slot=accordion-panel]")
     .evaluate((el) => [el.offsetHeight, el.scrollHeight]);
   ok("reduced motion: a panel is at full height within one frame", h[0] > 20 && near(h[0], h[1], 1), h);
 });

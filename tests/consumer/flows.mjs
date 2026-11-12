@@ -343,7 +343,7 @@ for (const [eng, type, opts] of [
     eng,
     "empty: no match shows an Empty row with the way out; pagination shows –",
     (await tbl.getByText("No bookings match “zzz”").isVisible()) &&
-      (await pages.locator(".kl-pg-of").innerText()) === "–",
+      (await pages.locator("[data-slot=pagination-status]").innerText()) === "–",
   );
   await tbl.getByRole("button", { name: "Clear search" }).click();
   ok(eng, "empty: Clear search recovers the rows", (await tbl.locator("tbody tr").count()) === 10);

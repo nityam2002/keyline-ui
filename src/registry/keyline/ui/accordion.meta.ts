@@ -7,7 +7,6 @@ export default {
   description:
     "Stacked sections in one frame: header rows on shared keylines, panels unfold from the header's keyline; one or many open.",
   files: [{ path: "src/registry/keyline/ui/accordion.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/accordion.css",
-  dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  dependencies: ["@base-ui/react", "class-variance-authority"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

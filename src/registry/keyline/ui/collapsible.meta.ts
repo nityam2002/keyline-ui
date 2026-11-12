@@ -6,7 +6,6 @@ export default {
   title: "Collapsible",
   description: "One unframed disclosure: a caret box whose keyline runs down the panel as a spine; the panel unfolds.",
   files: [{ path: "src/registry/keyline/ui/collapsible.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/collapsible.css",
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

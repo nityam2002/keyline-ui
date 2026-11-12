@@ -5,16 +5,11 @@
 @import "@fontsource/ibm-plex-mono/500.css";
 @import "../registry/keyline/theme/keyline.css";
 @import "../registry/keyline/theme/keyline-shadcn.css";
-@import "../registry/keyline/ui/tabs.css";
 @import "../registry/keyline/ui/panel.css";
 @import "../registry/keyline/ui/nav.css";
 @import "../registry/keyline/ui/table.css";
 @import "../registry/keyline/ui/inspector.css";
 @import "../registry/keyline/ui/scroll-area.css";
-@import "../registry/keyline/ui/accordion.css";
-@import "../registry/keyline/ui/collapsible.css";
-@import "../registry/keyline/ui/breadcrumb.css";
-@import "../registry/keyline/ui/pagination.css";
 @import "../registry/keyline/ui/app-shell.css";
 @import "../registry/keyline/ui/toolbar.css";
 @import "../registry/keyline/ui/resizable.css";

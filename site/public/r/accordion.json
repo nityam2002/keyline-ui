@@ -4,150 +4,21 @@
   "title": "Accordion",
   "description": "Stacked sections in one frame: header rows on shared keylines, panels unfold from the header's keyline; one or many open.",
   "dependencies": [
-    "@base-ui/react@1.9.0"
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/accordion.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Accordion as AccordionPrimitive } from \"@base-ui/react/accordion\";\n\nimport { cn } from \"@/lib/utils\";\n\ntype AccordionProps<V> = React.ComponentProps<typeof AccordionPrimitive.Root<V>> & {\n  /** control: its own 2px frame. cell: the rows sit directly in an enclosing frame (a panel body, an inspector). */\n  layout?: \"control\" | \"cell\";\n};\n\n/**\n * Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge,\n * one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the\n * header row never moves). Opening does not also flood: the caret turns, the panel arrives.\n *\n *   ┌─────────────────────────────────────────┬────┐\n *   │ Customs documents             3 files   │ ⌃  │   title (+ description) and meta · caret cell\n *   ├─────────────────────────────────────────┴────┤\n *   │ panel content                                │\n *   ├─────────────────────────────────────────┬────┤\n *   │ Billing                                 │ ⌄  │\n *   └─────────────────────────────────────────┴────┘\n *\n * The caret cell is the only divided column, so it runs straight down the frame whether or not a row\n * has meta (a column, once started, runs the full height). The caret turns on the unfold timing, as the\n * table's expand cell does.\n *\n * One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG\n * pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.\n */\nfunction Accordion<V>({ className, layout = \"control\", ...props }: AccordionProps<V>) {\n  return (\n    <AccordionPrimitive.Root<V>\n      data-slot=\"accordion\"\n      data-kl-layout={layout}\n      className={cn(\"kl-ctl kl-accordion\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction AccordionItem({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Item>) {\n  return <AccordionPrimitive.Item data-slot=\"accordion-item\" className={cn(\"kl-acc-item\", className)} {...props} />;\n}\n\ntype AccordionTriggerProps = React.ComponentProps<typeof AccordionPrimitive.Trigger> & {\n  description?: React.ReactNode;\n  /** Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does. */\n  meta?: React.ReactNode;\n  /** Heading level of the header (default 3). */\n  level?: 2 | 3 | 4 | 5 | 6;\n};\n\nfunction AccordionTrigger({ className, children, description, meta, level = 3, ...props }: AccordionTriggerProps) {\n  return (\n    <AccordionPrimitive.Header\n      data-slot=\"accordion-header\"\n      className=\"kl-acc-header\"\n      render={React.createElement(`h${level}`)}\n    >\n      <AccordionPrimitive.Trigger\n        data-slot=\"accordion-trigger\"\n        className={cn(\"kl-key kl-acc-trigger\", className)}\n        {...props}\n      >\n        <span className=\"kl-acc-title\">\n          <span>{children}</span>\n          {description ? <small>{description}</small> : null}\n        </span>\n        {meta != null ? <span className=\"kl-acc-meta\">{meta}</span> : null}\n        <span className=\"kl-acc-caret\" aria-hidden>\n          <svg\n            viewBox=\"0 0 16 16\"\n            width=\"16\"\n            height=\"16\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"1.75\"\n            strokeLinecap=\"square\"\n          >\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </AccordionPrimitive.Trigger>\n    </AccordionPrimitive.Header>\n  );\n}\n\ntype AccordionPanelProps = React.ComponentProps<typeof AccordionPrimitive.Panel> & {\n  /** Drop the panel's inset, for content that brings its own cells (an item list, a key/value grid). */\n  flush?: boolean;\n};\n\nfunction AccordionPanel({ className, children, flush, ...props }: AccordionPanelProps) {\n  return (\n    <AccordionPrimitive.Panel data-slot=\"accordion-panel\" className=\"kl-acc-panel\" {...props}>\n      <div className={cn(\"kl-acc-body\", className)} data-flush={flush || undefined}>\n        {children}\n      </div>\n    </AccordionPrimitive.Panel>\n  );\n}\n\nexport { Accordion, AccordionItem, AccordionTrigger, AccordionPanel };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Accordion as AccordionPrimitive } from \"@base-ui/react/accordion\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName } from \"../lib/keyline-render\";\n\n/*\n * ACCORDION: rows on shared keylines in one frame. Header rows are cells; a panel unfolds from its header's bottom\n * keyline. Only the caret column is divided, so it runs the full height.\n */\nconst rootVariants = cva(\"kl-ctl flex min-w-0 flex-col\", {\n  variants: {\n    // a cell leaves the surface to its frame (the foundation's layout=\"cell\" clears the background)\n    layout: { control: \"bg-kl-cell\", cell: \"\" },\n  },\n  defaultVariants: { layout: \"control\" },\n});\n\n/** A row after the first draws the seam above it. */\nconst item = \"not-first:border-t-(length:--kl-k1) not-first:border-t-kl-seam\";\n\nconst header = \"m-0 [font:inherit]\";\n\n/*\n * The header row is a cell: its ring sits inside, clear of the keylines. A disabled row is out of service: hatched,\n * and every voice in it (description, meta, caret) in the disabled ink.\n */\nconst trigger = cn(\n  \"group/accordion-trigger kl-key m-0 grid min-h-(--kl-row) w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto_40px] items-stretch\",\n  \"bg-transparent p-0 text-start font-(family-name:--kl-font) text-inherit\",\n  \"hover:not-data-disabled:bg-kl-tint focus-visible:outline-offset-(--kl-ring-in) active:not-data-disabled:bg-kl-press\",\n  \"data-disabled:cursor-not-allowed data-disabled:bg-(image:--kl-hatch) data-disabled:text-kl-dis\",\n  \"forced-colors:focus-visible:outline-[3px] forced-colors:focus-visible:-outline-offset-4 forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:outline-solid\",\n);\n\nconst title = \"grid min-w-0 content-center gap-0.5 px-(--kl-inset) py-[9px] leading-[1.3] wrap-anywhere\";\nconst descriptionClass =\n  \"text-(length:--kl-text-label) text-kl-ink-2 group-data-disabled/accordion-trigger:text-kl-dis\";\nconst metaClass = cn(\n  \"flex items-center gap-2 pe-(--kl-inset) text-(length:--kl-text-label) whitespace-nowrap text-kl-ink-2 tabular-nums\",\n  \"group-data-disabled/accordion-trigger:text-kl-dis\",\n);\n/* the caret turns on the unfold timing, as the table's expand cell does */\nconst caret = cn(\n  \"col-start-3 grid place-items-center border-s-(length:--kl-k1) border-s-kl-seam text-kl-ink-2\",\n  \"group-data-disabled/accordion-trigger:text-kl-dis group-data-panel-open/accordion-trigger:group-not-data-disabled/accordion-trigger:text-kl-ink\",\n);\nconst caretIcon = cn(\n  \"transition-[rotate] duration-(--kl-t-fold) ease-(--kl-ease-in)\",\n  \"group-data-panel-open/accordion-trigger:rotate-180 group-data-panel-open/accordion-trigger:duration-(--kl-t-unfold) group-data-panel-open/accordion-trigger:ease-(--kl-ease-out)\",\n);\n\n/*\n * UNFOLD from the header's keyline: Base UI measures the panel (--accordion-panel-height) and marks the start and\n * end of the transition; reduced motion makes both durations 0. The seam lives on the content, inside the clip, so\n * it folds away with it and never doubles the next row's rule.\n */\nconst panel = cn(\n  \"h-(--accordion-panel-height) overflow-hidden transition-[height] duration-(--kl-t-unfold) ease-(--kl-ease-out)\",\n  \"data-ending-style:h-0 data-ending-style:duration-(--kl-t-fold) data-ending-style:ease-(--kl-ease-in) data-starting-style:h-0\",\n);\nconst content = cn(\n  \"border-t-(length:--kl-k1) border-t-kl-seam p-(--kl-inset) pb-[calc(var(--kl-inset)+4px)] text-(length:--kl-text-body)/[1.5]\",\n  \"[&>:first-child]:mt-0 [&>:last-child]:mb-0\",\n);\n\ntype AccordionRootProps<V> = AccordionPrimitive.Root.Props<V> & {\n  /** control: its own 2px frame. cell: the rows sit directly in an enclosing frame (a panel body, an inspector). */\n  layout?: \"control\" | \"cell\";\n};\n\n/**\n * Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge,\n * one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the\n * header row never moves). Opening does not also flood: the caret turns, the panel arrives.\n *\n *   ┌─────────────────────────────────────────┬────┐\n *   │ Customs documents             3 files   │ ⌃  │   title (+ description) and meta · caret cell\n *   ├─────────────────────────────────────────┴────┤\n *   │ panel content                                │\n *   ├─────────────────────────────────────────┬────┤\n *   │ Billing                                 │ ⌄  │\n *   └─────────────────────────────────────────┴────┘\n *\n * The caret cell is the only divided column, so it runs straight down the frame whether or not a row\n * has meta (a column, once started, runs the full height).\n *\n * One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG\n * pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI\n * Accordion's.\n */\nfunction AccordionRoot<V>({ className, layout = \"control\", ...props }: AccordionRootProps<V>): React.ReactElement {\n  return (\n    <AccordionPrimitive.Root<V>\n      data-kl-layout={layout}\n      className={resolveClassName(cn(rootVariants({ layout })), className)}\n      {...props}\n      data-slot=\"accordion\"\n    />\n  );\n}\n\n/** A section: its header row and its panel (Base UI Accordion.Item). */\nfunction AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props): React.ReactElement {\n  return (\n    <AccordionPrimitive.Item className={resolveClassName(item, className)} {...props} data-slot=\"accordion-item\" />\n  );\n}\n\n/* Set inside an AccordionHeader, so a trigger composed in one doesn't render a second. */\nconst HeaderContext = React.createContext(false);\n\ntype AccordionHeaderProps = AccordionPrimitive.Header.Props & {\n  /** Heading level (default 3). */\n  level?: 2 | 3 | 4 | 5 | 6;\n};\n\n/** The heading that holds a trigger (Base UI Accordion.Header). AccordionTrigger renders one when it has none. */\nfunction AccordionHeader({ className, level = 3, render, ...props }: AccordionHeaderProps): React.ReactElement {\n  return (\n    <HeaderContext.Provider value>\n      <AccordionPrimitive.Header\n        render={render ?? React.createElement(`h${level}`)}\n        className={resolveClassName(header, className)}\n        {...props}\n        data-slot=\"accordion-header\"\n      />\n    </HeaderContext.Provider>\n  );\n}\n\ntype AccordionTriggerProps = AccordionPrimitive.Trigger.Props & {\n  description?: React.ReactNode;\n  /** Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does. */\n  meta?: React.ReactNode;\n  /** Heading level of the header it renders when it is not inside an AccordionHeader (default 3). */\n  level?: 2 | 3 | 4 | 5 | 6;\n};\n\n/** The header row (Base UI Accordion.Trigger): title, description and meta, and the caret cell. */\nfunction AccordionTrigger({\n  className,\n  children,\n  description,\n  meta,\n  level = 3,\n  ...props\n}: AccordionTriggerProps): React.ReactElement {\n  const inHeader = React.useContext(HeaderContext);\n  const row = (\n    <AccordionPrimitive.Trigger\n      className={resolveClassName(trigger, className)}\n      {...props}\n      data-slot=\"accordion-trigger\"\n    >\n      <span data-slot=\"accordion-title\" className={title}>\n        <span className=\"text-(length:--kl-text-lead) font-(--kl-weight-strong)\">{children}</span>\n        {description ? (\n          <small data-slot=\"accordion-description\" className={descriptionClass}>\n            {description}\n          </small>\n        ) : null}\n      </span>\n      {meta != null ? (\n        <span data-slot=\"accordion-meta\" className={metaClass}>\n          {meta}\n        </span>\n      ) : null}\n      <span data-slot=\"accordion-caret\" className={caret} aria-hidden>\n        <svg\n          className={caretIcon}\n          viewBox=\"0 0 16 16\"\n          width=\"16\"\n          height=\"16\"\n          fill=\"none\"\n          stroke=\"currentColor\"\n          strokeWidth=\"1.75\"\n          strokeLinecap=\"square\"\n        >\n          <path d=\"m4 6 4 4 4-4\" />\n        </svg>\n      </span>\n    </AccordionPrimitive.Trigger>\n  );\n  return inHeader ? row : <AccordionHeader level={level}>{row}</AccordionHeader>;\n}\n\ntype AccordionPanelProps = AccordionPrimitive.Panel.Props & {\n  /** Drop the content's inset, for content that brings its own cells (an item list, a key/value grid). */\n  flush?: boolean;\n  /** Classes for the content inside the panel's clip (its layout: `grid gap-4`). */\n  contentClassName?: string;\n};\n\n/** The section's content (Base UI Accordion.Panel). It unfolds; its content sits inside the clip. */\nfunction AccordionPanel({\n  className,\n  contentClassName,\n  children,\n  flush,\n  ...props\n}: AccordionPanelProps): React.ReactElement {\n  return (\n    <AccordionPrimitive.Panel className={resolveClassName(panel, className)} {...props} data-slot=\"accordion-panel\">\n      <div\n        data-slot=\"accordion-content\"\n        data-flush={flush || undefined}\n        className={cn(content, flush && \"p-0\", contentClassName)}\n      >\n        {children}\n      </div>\n    </AccordionPrimitive.Panel>\n  );\n}\n\n/** The root under its short name, as before the parts were named after Base UI's. */\nconst Accordion = AccordionRoot;\n\nexport {\n  Accordion,\n  AccordionRoot,\n  AccordionItem,\n  AccordionHeader,\n  AccordionTrigger,\n  AccordionPanel,\n  type AccordionRootProps,\n  type AccordionHeaderProps,\n  type AccordionTriggerProps,\n  type AccordionPanelProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/accordion.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-accordion": {
-        "display": "flex",
-        "flex-direction": "column",
-        "min-width": "0",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-accordion[data-kl-layout=\"cell\"]": {
-        "background-color": "transparent"
-      },
-      ".kl-acc-item + .kl-acc-item": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-acc-header": {
-        "margin": "0",
-        "font": "inherit"
-      },
-      ".kl-acc-trigger": {
-        "display": "grid",
-        "grid-template-columns": "minmax(0, 1fr) auto 40px",
-        "align-items": "stretch",
-        "width": "100%",
-        "min-height": "var(--kl-row)",
-        "margin": "0",
-        "padding": "0",
-        "border": "0",
-        "background": "none",
-        "color": "inherit",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "text-align": "start",
-        "cursor": "pointer"
-      },
-      ".kl-acc-trigger:hover:not([data-disabled])": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-acc-trigger:active:not([data-disabled])": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-acc-trigger:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-in)"
-      },
-      ".kl-acc-title": {
-        "display": "grid",
-        "align-content": "center",
-        "gap": "2px",
-        "min-width": "0",
-        "padding": "9px var(--kl-inset)",
-        "overflow-wrap": "anywhere",
-        "line-height": "1.3"
-      },
-      ".kl-acc-title > span": {
-        "font-size": "15px",
-        "font-weight": "var(--kl-weight-strong)"
-      },
-      ".kl-acc-title small": {
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-acc-meta": {
-        "display": "flex",
-        "align-items": "center",
-        "gap": "8px",
-        "padding-inline-end": "var(--kl-inset)",
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)",
-        "white-space": "nowrap",
-        "font-variant-numeric": "tabular-nums"
-      },
-      ".kl-acc-caret": {
-        "grid-column": "3",
-        "display": "grid",
-        "place-items": "center",
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-acc-caret svg": {
-        "transition": "rotate var(--kl-t-fold) var(--kl-ease-in)"
-      },
-      ".kl-acc-trigger[data-panel-open] .kl-acc-caret": {
-        "color": "var(--kl-ink)"
-      },
-      ".kl-acc-trigger[data-panel-open] .kl-acc-caret svg": {
-        "rotate": "180deg",
-        "transition": "rotate var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-acc-trigger[data-disabled]": {
-        "cursor": "not-allowed",
-        "color": "var(--kl-dis)",
-        "background-image": "var(--kl-hatch)"
-      },
-      ".kl-acc-trigger[data-disabled] :is(small, .kl-acc-meta, .kl-acc-caret)": {
-        "color": "var(--kl-dis)"
-      },
-      ".kl-acc-panel": {
-        "height": "var(--accordion-panel-height)",
-        "overflow": "hidden",
-        "transition": "height var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-acc-panel:is([data-starting-style], [data-ending-style])": {
-        "height": "0"
-      },
-      ".kl-acc-panel[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)",
-        "transition-timing-function": "var(--kl-ease-in)"
-      },
-      ".kl-acc-body": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)",
-        "padding": "var(--kl-inset) var(--kl-inset) calc(var(--kl-inset) + 4px)",
-        "font-size": "14px",
-        "line-height": "1.5"
-      },
-      ".kl-acc-body[data-flush]": {
-        "padding": "0"
-      },
-      ".kl-acc-body > :first-child": {
-        "margin-block-start": "0"
-      },
-      ".kl-acc-body > :last-child": {
-        "margin-block-end": "0"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-acc-trigger:focus-visible": {
-          "outline": "3px solid Highlight",
-          "outline-offset": "-4px"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

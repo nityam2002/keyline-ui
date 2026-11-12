@@ -94,6 +94,7 @@ const TOC: TocGroup[] = [
     items: [
       { id: "views-without-panels", label: "Views without panels" },
       { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
     ],
   },
 ];
@@ -137,6 +138,20 @@ export default function TabsPage() {
       <p className="s-small">
         Built on <a href="https://base-ui.com/react/components/tabs">Base UI Tabs</a>; its other props pass through. For
         an app&apos;s sections use Nav; for pages of a site, Navigation menu.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>TabsRoot</code> (also exported as <code>Tabs</code>),{" "}
+        <code>TabsList</code>, <code>TabsTab</code> and <code>TabsPanel</code>. Every part takes <code>render</code>,
+        and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>tabs</code>, <code>tabs-list</code>,{" "}
+        <code>tabs-tab</code>, <code>tabs-panel</code>; inside a tab, <code>tabs-tab-label</code> and{" "}
+        <code>tabs-tab-count</code>), and Base UI&apos;s state attributes: <code>data-active</code> on the chosen tab,{" "}
+        <code>data-disabled</code>, <code>data-orientation</code> and <code>data-activation-direction</code>. A tab with
+        a <code>count</code> carries <code>data-has-count</code>.
       </p>
     </DocPage>
   );

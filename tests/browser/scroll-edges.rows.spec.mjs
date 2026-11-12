@@ -45,7 +45,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
   const p = await open({ ready: READY });
   const sec = p.locator("#edges");
   await sec.scrollIntoViewIfNeeded();
-  const tabs = sec.locator(".kl-tabs-list").first();
+  const tabs = sec.locator("[data-slot=tabs-list]").first();
   const more = () => tabs.getAttribute("data-kl-more");
   await until(async () => (await more()) !== null);
   ok("edges: a row with hidden items marks its end (data-kl-more=end)", (await more()) === "end", await more());
@@ -88,7 +88,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
     fade.op === "1" && fade.hidden === "true" && fade.pe === "none" && Math.abs(fade.gap) <= 1,
     fade,
   );
-  for (const sel of [".kl-tabs-list", "[data-slot=segmented]", "[data-slot=toggle-group]"]) {
+  for (const sel of ["[data-slot=tabs-list]", "[data-slot=segmented]", "[data-slot=toggle-group]"]) {
     const row = sec.locator(sel).first();
     if (!(await row.count())) continue;
     const pn = await pinned(row);
@@ -140,7 +140,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
     );
   ok(
     "edges: a row that fits is not marked",
-    (await sec.locator(".kl-tabs-list").nth(1).getAttribute("data-kl-more")) === null,
+    (await sec.locator("[data-slot=tabs-list]").nth(1).getAttribute("data-kl-more")) === null,
     null,
   );
   ok("specimen: no page errors", p.errs.length === 0, p.errs);
@@ -148,7 +148,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
 
 test("edges (rtl, reduced motion): logical end, pinned shadows, scrolled to the end", async ({ open, ok }) => {
   const q = await open({ q: "dir=rtl&motion=reduce", ready: READY });
-  const tabs = q.locator("#edges .kl-tabs-list").first();
+  const tabs = q.locator("#edges [data-slot=tabs-list]").first();
   await tabs.scrollIntoViewIfNeeded();
   const more = () => tabs.getAttribute("data-kl-more");
   await until(async () => (await more()) !== null);

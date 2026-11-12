@@ -3,7 +3,9 @@
   "name": "pagination",
   "title": "Pagination",
   "description": "Page numbers as cells with a cobalt current page; constant width while paging; folds to \"5 / 20\" when narrow; buttons or links.",
-  "dependencies": [],
+  "dependencies": [
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
@@ -12,107 +14,10 @@
   "files": [
     {
       "path": "src/registry/keyline/ui/pagination.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\nimport { pageWindow } from \"../lib/collection\";\n\ntype PaginationProps = Omit<React.ComponentProps<\"nav\">, \"children\" | \"onChange\"> & {\n  /** The current page, 1-based (the number printed). */\n  page: number;\n  /** How many pages. null while unknown: the numbers show \"–\" and every cell is out of service. */\n  pageCount: number | null;\n  onPageChange?: (page: number) => void;\n  /** Links instead of buttons: the page's URL. Each number is then an <a>, so pages open in new tabs. */\n  getHref?: (page: number) => string;\n  /** Pages shown on each side of the current one (default 1). */\n  siblings?: number;\n  /** control: its own 2px frame. cell: a row of an enclosing frame (a panel's or table's footer). */\n  layout?: \"control\" | \"cell\";\n  /** Name of the navigation landmark. */\n  label?: string;\n  /** Text read for a page number (default \"Page 4\"). */\n  pageLabel?: (page: number) => string;\n};\n\nconst Arrow = ({ d }: { d: string }) => (\n  <svg\n    viewBox=\"0 0 16 16\"\n    width=\"16\"\n    height=\"16\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"1.75\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d={d} />\n  </svg>\n);\n\n/**\n * Page numbers as cells in one frame:\n *\n *   ┌───┬───┬───┬───┬━━━┳───┬───┬────┬───┐\n *   │ ‹ │ 1 │ … │ 4 │ 5 ┃ 6 │ … │ 20 │ › │      the current page is the cobalt cell\n *   └───┴───┴───┴───┴━━━┻───┴───┴────┴───┘\n *\n * - The window keeps a constant number of cells (first, last, the current page and its siblings, and\n *   gaps), and number cells are as wide as the largest page number: the frame never changes width while\n *   you page, so Previous and Next stay under the pointer.\n * - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing.\n * - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next.\n * - Previous and Next mirror in RTL; they are out of service (hatched) at the ends.\n * - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).\n */\nfunction Pagination({\n  page,\n  pageCount,\n  onPageChange,\n  getHref,\n  siblings = 1,\n  layout = \"control\",\n  label = \"Pagination\",\n  pageLabel = (p) => `Page ${p}`,\n  className,\n  style,\n  ...props\n}: PaginationProps) {\n  const known = pageCount != null && pageCount > 0;\n  const slots = known ? pageWindow(page, pageCount, siblings) : [];\n  const digits = String(pageCount ?? 0).length;\n\n  const cell = (\n    target: number | null,\n    content: React.ReactNode,\n    extra: { className: string; label?: string; current?: boolean },\n  ) => {\n    const disabled = target == null || !known;\n    const common = {\n      className: cn(\"kl-cell kl-key\", extra.className),\n      \"aria-label\": extra.label,\n      \"aria-current\": extra.current ? (\"page\" as const) : undefined,\n    };\n    if (getHref) {\n      if (disabled)\n        return (\n          <span {...common} aria-disabled=\"true\" data-disabled=\"\">\n            {content}\n          </span>\n        );\n      return (\n        <a\n          {...common}\n          href={getHref(target)}\n          onClick={onPageChange ? (e) => (e.preventDefault(), onPageChange(target)) : undefined}\n        >\n          {content}\n        </a>\n      );\n    }\n    return (\n      <button\n        type=\"button\"\n        {...common}\n        disabled={disabled}\n        onClick={() => !extra.current && target != null && onPageChange?.(target)}\n      >\n        {content}\n      </button>\n    );\n  };\n\n  return (\n    <nav\n      aria-label={label}\n      data-slot=\"pagination\"\n      data-kl-layout={layout}\n      className={cn(\"kl-pg\", className)}\n      style={{ \"--kl-pg-ch\": digits, ...style } as React.CSSProperties}\n      {...props}\n    >\n      <div data-kl-layout={layout} className=\"kl-ctl kl-cells kl-pg-frame\">\n        {cell(known && page > 1 ? page - 1 : null, <Arrow d=\"m10 4-4 4 4 4\" />, {\n          className: \"kl-pg-step\",\n          label: \"Previous page\",\n        })}\n        {slots.map((s) =>\n          typeof s === \"number\" ? (\n            <React.Fragment key={s}>\n              {cell(s, <span>{s}</span>, { className: \"kl-pg-n\", label: pageLabel(s), current: s === page })}\n            </React.Fragment>\n          ) : (\n            <span key={s} className=\"kl-cell kl-pg-gap\" aria-hidden>\n              …\n            </span>\n          ),\n        )}\n        <span className=\"kl-cell kl-code kl-pg-of\" aria-live=\"polite\">\n          {known ? (\n            <bdi>\n              {page} / {pageCount}\n            </bdi>\n          ) : (\n            \"–\"\n          )}\n        </span>\n        {cell(known && page < pageCount ? page + 1 : null, <Arrow d=\"m6 4 4 4-4 4\" />, {\n          className: \"kl-pg-step\",\n          label: \"Next page\",\n        })}\n      </div>\n    </nav>\n  );\n}\n\nexport { Pagination, type PaginationProps };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { pageWindow } from \"../lib/collection\";\n\ntype PaginationProps = Omit<React.ComponentProps<\"nav\">, \"children\" | \"onChange\"> & {\n  /** The current page, 1-based (the number printed). */\n  page: number;\n  /** How many pages. null while unknown: the numbers show \"–\" and every cell is out of service. */\n  pageCount: number | null;\n  onPageChange?: (page: number) => void;\n  /** Links instead of buttons: the page's URL. Each number is then an <a>, so pages open in new tabs. */\n  getHref?: (page: number) => string;\n  /** Pages shown on each side of the current one (default 1). */\n  siblings?: number;\n  /** control: its own 2px frame. cell: a row of an enclosing frame (a panel's or table's footer). */\n  layout?: \"control\" | \"cell\";\n  /** Name of the navigation landmark. */\n  label?: string;\n  /** Text read for a page number (default \"Page 4\"). */\n  pageLabel?: (page: number) => string;\n};\n\n/*\n * PAGINATION: the frame hugs its cells. Number cells are as wide as the largest page number (tabular figures, and one\n * weight for every cell, so `ch` is the same in numbers and gaps): paging never changes the frame's width. The nav is\n * the size container (kl-pg) the narrow layout measures, and the outermost Keyline element (kl-type). --kl-pg-sw is\n * a step cell's width: square in the frame.\n */\nconst frameVariants = cva(\"kl-ctl kl-cells box-border max-w-full align-top [@container_kl-pg_(max-width:360px)]:flex\", {\n  variants: {\n    // as a row of a wider frame, the rest of the row is an empty cell: its seam closes the last key\n    layout: {\n      control: \"inline-flex min-h-(--kl-ctl) bg-kl-cell [--kl-pg-sw:calc(var(--kl-ctl)-2*var(--kl-bw,0px))]\",\n      cell: cn(\n        \"flex min-h-(--kl-row) [--kl-pg-sw:var(--kl-row)]\",\n        \"after:flex-[1_1_0] after:border-s-(length:--kl-k1) after:border-s-kl-line after:content-['']\",\n      ),\n    },\n  },\n  defaultVariants: { layout: \"control\" },\n});\nconst cellBase = \"kl-cell min-h-0 justify-center font-(--kl-weight-strong) tabular-nums\";\nconst numberWidth = \"box-border min-w-[calc((var(--kl-pg-ch,2)+0.5)*1ch+2*var(--kl-inset))]\";\nconst narrowHidden = \"[@container_kl-pg_(max-width:360px)]:hidden\";\nconst parts = {\n  /* Previous and Next: out of service (hatched) at the ends. The first cell (Previous) widens by the cut's room. */\n  step: cn(\n    \"w-(--kl-pg-sw) flex-none p-0\",\n    \"first:w-[calc(var(--kl-pg-sw)+var(--kl-c,0px)*0.35)] first:ps-[calc(var(--kl-c,0px)*0.35)]\",\n    \"disabled:cursor-not-allowed disabled:bg-(image:--kl-hatch) disabled:text-kl-dis\",\n    \"data-disabled:cursor-not-allowed data-disabled:bg-(image:--kl-hatch) data-disabled:text-kl-dis\",\n  ),\n  /* here: the location cell */\n  page: cn(\n    numberWidth,\n    narrowHidden,\n    \"px-(--kl-inset) aria-[current=page]:cursor-default aria-[current=page]:bg-kl-cobalt aria-[current=page]:text-kl-on-cobalt\",\n    \"aria-[current=page]:focus-visible:outline-current\",\n    \"forced-colors:aria-[current=page]:bg-[Highlight] forced-colors:aria-[current=page]:text-[HighlightText] forced-colors:aria-[current=page]:forced-color-adjust-none\",\n  ),\n  gap: cn(numberWidth, narrowHidden, \"px-1 text-kl-ink-2\"),\n  /* \"5 / 20\": shown when narrow, and with \"–\" while the count is unknown */\n  status: cn(\n    \"kl-code min-w-[calc(var(--kl-pg-ch,2)*2ch+3ch+2*var(--kl-inset))] text-(length:--kl-text-label) text-kl-ink\",\n    \"[@container_kl-pg_(max-width:360px)]:flex [@container_kl-pg_(max-width:360px)]:flex-1\",\n  ),\n};\n\nconst Arrow = ({ d }: { d: string }) => (\n  <svg\n    className=\"kl-rtl:-scale-x-100\"\n    viewBox=\"0 0 16 16\"\n    width=\"16\"\n    height=\"16\"\n    fill=\"none\"\n    stroke=\"currentColor\"\n    strokeWidth=\"1.75\"\n    strokeLinecap=\"square\"\n    aria-hidden\n  >\n    <path d={d} />\n  </svg>\n);\n\n/**\n * Page numbers as cells in one frame:\n *\n *   ┌───┬───┬───┬───┬━━━┳───┬───┬────┬───┐\n *   │ ‹ │ 1 │ … │ 4 │ 5 ┃ 6 │ … │ 20 │ › │      the current page is the cobalt cell\n *   └───┴───┴───┴───┴━━━┻───┴───┴────┴───┘\n *\n * - The window keeps a constant number of cells (first, last, the current page and its siblings, and\n *   gaps), and number cells are as wide as the largest page number: the frame never changes width while\n *   you page, so Previous and Next stay under the pointer.\n * - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing.\n * - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next.\n * - Previous and Next mirror in RTL; they are out of service (hatched) at the ends.\n * - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).\n */\nfunction Pagination({\n  page,\n  pageCount,\n  onPageChange,\n  getHref,\n  siblings = 1,\n  layout = \"control\",\n  label = \"Pagination\",\n  pageLabel = (p) => `Page ${p}`,\n  className,\n  style,\n  ...props\n}: PaginationProps): React.ReactElement {\n  const known = pageCount != null && pageCount > 0;\n  const slots = known ? pageWindow(page, pageCount, siblings) : [];\n  const digits = String(pageCount ?? 0).length;\n\n  const cell = (\n    target: number | null,\n    content: React.ReactNode,\n    extra: { slot: string; className: string; label?: string; current?: boolean },\n  ) => {\n    const disabled = target == null || !known;\n    const common = {\n      \"data-slot\": extra.slot,\n      className: cn(cellBase, \"kl-key\", extra.className),\n      \"aria-label\": extra.label,\n      \"aria-current\": extra.current ? (\"page\" as const) : undefined,\n    };\n    if (getHref) {\n      if (disabled)\n        return (\n          // a link out of service (the APG's disabled link): aria-disabled needs the link role, a bare span forbids it\n          <span {...common} role=\"link\" aria-disabled=\"true\" data-disabled=\"\">\n            {content}\n          </span>\n        );\n      return (\n        <a\n          {...common}\n          href={getHref(target)}\n          onClick={onPageChange ? (e) => (e.preventDefault(), onPageChange(target)) : undefined}\n        >\n          {content}\n        </a>\n      );\n    }\n    return (\n      <button\n        type=\"button\"\n        {...common}\n        disabled={disabled}\n        onClick={() => !extra.current && target != null && onPageChange?.(target)}\n      >\n        {content}\n      </button>\n    );\n  };\n\n  return (\n    <nav\n      aria-label={label}\n      data-kl-layout={layout}\n      className={cn(\"kl-type @container/kl-pg min-w-0\", className)}\n      style={{ \"--kl-pg-ch\": digits, ...style } as React.CSSProperties}\n      {...props}\n      data-slot=\"pagination\"\n    >\n      <div data-slot=\"pagination-frame\" data-kl-layout={layout} className={cn(frameVariants({ layout }))}>\n        {cell(known && page > 1 ? page - 1 : null, <Arrow d=\"m10 4-4 4 4 4\" />, {\n          slot: \"pagination-previous\",\n          className: parts.step,\n          label: \"Previous page\",\n        })}\n        {slots.map((s) =>\n          typeof s === \"number\" ? (\n            <React.Fragment key={s}>\n              {cell(s, <span>{s}</span>, {\n                slot: \"pagination-page\",\n                className: parts.page,\n                label: pageLabel(s),\n                current: s === page,\n              })}\n            </React.Fragment>\n          ) : (\n            <span key={s} data-slot=\"pagination-ellipsis\" className={cn(cellBase, parts.gap)} aria-hidden>\n              …\n            </span>\n          ),\n        )}\n        <span\n          data-slot=\"pagination-status\"\n          className={cn(cellBase, parts.status, known ? \"hidden\" : \"flex\")}\n          aria-live=\"polite\"\n        >\n          {known ? (\n            <bdi>\n              {page} / {pageCount}\n            </bdi>\n          ) : (\n            \"–\"\n          )}\n        </span>\n        {cell(known && page < pageCount ? page + 1 : null, <Arrow d=\"m6 4 4 4-4 4\" />, {\n          slot: \"pagination-next\",\n          className: parts.step,\n          label: \"Next page\",\n        })}\n      </div>\n    </nav>\n  );\n}\n\nexport { Pagination, type PaginationProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/pagination.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-pg": {
-        "container": "kl-pg / inline-size",
-        "min-width": "0"
-      },
-      ".kl-pg-frame": {
-        "display": "inline-flex",
-        "max-width": "100%",
-        "box-sizing": "border-box",
-        "min-height": "var(--kl-ctl)",
-        "background-color": "var(--kl-cell)",
-        "vertical-align": "top",
-        "--kl-pg-sw": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 0px))"
-      },
-      ".kl-pg-frame[data-kl-layout=\"cell\"]": {
-        "display": "flex",
-        "min-height": "var(--kl-row)",
-        "--kl-pg-sw": "var(--kl-row)"
-      },
-      ".kl-pg-frame[data-kl-layout=\"cell\"]::after": {
-        "content": "\"\"",
-        "flex": "1 1 0",
-        "border-inline-start": "var(--kl-k1) solid var(--kl-line)"
-      },
-      ".kl-pg-frame > .kl-cell": {
-        "min-height": "0",
-        "justify-content": "center",
-        "font-variant-numeric": "tabular-nums",
-        "font-weight": "var(--kl-weight-strong)"
-      },
-      ".kl-pg-n": {
-        "min-width": "calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset))",
-        "padding-inline": "var(--kl-inset)",
-        "box-sizing": "border-box"
-      },
-      ".kl-pg-step": {
-        "width": "var(--kl-pg-sw)",
-        "padding": "0",
-        "flex": "none"
-      },
-      ".kl-pg-step:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) svg": {
-        "scale": "-1 1"
-      },
-      ".kl-pg-frame > .kl-pg-step:first-child": {
-        "width": "calc(var(--kl-pg-sw) + var(--kl-c, 0px) * 0.35)",
-        "padding-inline-start": "calc(var(--kl-c, 0px) * 0.35)"
-      },
-      ".kl-pg-gap": {
-        "min-width": "calc((var(--kl-pg-ch, 2) + 0.5) * 1ch + 2 * var(--kl-inset))",
-        "box-sizing": "border-box",
-        "padding-inline": "4px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-pg-n[aria-current=\"page\"]": {
-        "background-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)",
-        "cursor": "default"
-      },
-      ".kl-pg-n[aria-current=\"page\"]:focus-visible": {
-        "outline-color": "currentColor"
-      },
-      ".kl-pg-step:is(:disabled, [data-disabled])": {
-        "color": "var(--kl-dis)",
-        "background-image": "var(--kl-hatch)",
-        "cursor": "not-allowed"
-      },
-      ".kl-pg-of": {
-        "display": "none",
-        "min-width": "calc(var(--kl-pg-ch, 2) * 2ch + 3ch + 2 * var(--kl-inset))",
-        "font-size": "13px",
-        "color": "var(--kl-ink)"
-      },
-      ".kl-pg-frame:not(:has(.kl-pg-n)) .kl-pg-of": {
-        "display": "flex"
-      },
-      "@container kl-pg (max-width: 360px)": {
-        ".kl-pg-n, .kl-pg-gap": {
-          "display": "none"
-        },
-        ".kl-pg-of": {
-          "display": "flex",
-          "flex": "1"
-        },
-        ".kl-pg-frame": {
-          "display": "flex"
-        }
-      },
-      "@media (forced-colors: active)": {
-        ".kl-pg-n[aria-current=\"page\"]": {
-          "forced-color-adjust": "none",
-          "background": "Highlight",
-          "color": "HighlightText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

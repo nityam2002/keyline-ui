@@ -54,6 +54,17 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  {
+    name: "contentClassName",
+    type: "string",
+    default: "\u2014",
+    description: (
+      <>
+        On <code>CollapsiblePanel</code>: classes for the content on the spine, inside the panel&apos;s clip, such as
+        its layout (<code>grid gap-4</code>). <code>className</code> goes to the panel itself.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -64,7 +75,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function CollapsiblePage() {
@@ -97,6 +114,21 @@ export default function CollapsiblePage() {
       <p className="s-small">
         Built on <a href="https://base-ui.com/react/components/collapsible">Base UI Collapsible</a>. For several
         sections in one frame, use Accordion.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>CollapsibleRoot</code> (also exported as{" "}
+        <code>Collapsible</code>), <code>CollapsibleTrigger</code> and <code>CollapsiblePanel</code>. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>collapsible</code>,{" "}
+        <code>collapsible-trigger</code>, <code>collapsible-panel</code>; inside them, <code>collapsible-box</code>,{" "}
+        <code>collapsible-label</code>, <code>collapsible-meta</code> and <code>collapsible-content</code>), and Base
+        UI&apos;s state attributes: <code>data-open</code> on the root and panel, <code>data-panel-open</code> on the
+        trigger, <code>data-disabled</code>, and <code>data-starting-style</code> and <code>data-ending-style</code>{" "}
+        while the panel unfolds or folds.
       </p>
     </DocPage>
   );

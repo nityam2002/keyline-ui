@@ -310,7 +310,7 @@
       ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], .kl-skel ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
         "--kl-run-dir": "reverse"
       },
-      ":where( .kl-attached, [data-slot=\"popover-popup\"], .kl-tabs-list, [data-slot=\"segmented\"], [data-slot=\"toggle-group\"], .kl-nav-list )": {
+      ":where( .kl-attached, [data-slot=\"popover-popup\"], [data-slot=\"tabs-list\"], [data-slot=\"segmented\"], [data-slot=\"toggle-group\"], .kl-nav-list )": {
         "scrollbar-width": "thin",
         "scrollbar-color": "var(--kl-ink-3) transparent"
       },
@@ -603,10 +603,10 @@
       ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled])": {
         "--kl-key-y": "1px"
       },
-      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is(.kl-slot, [data-slot=\"button-affix\"], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot=\"item-media\"])": {
+      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is( .kl-slot, [data-slot=\"button-affix\"], .kl-tb-affix, .kl-radio-meta, [data-slot=\"accordion-caret\"], [data-slot=\"item-media\"] )": {
         "translate": "none"
       },
-      ":is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot=\"item-media\"])": {
+      ":is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, [data-slot=\"accordion-caret\"], [data-slot=\"item-media\"])": {
         "box-sizing": "border-box",
         "padding-block-start": "calc(2 * var(--kl-key-y, 0px))"
       },

@@ -46,17 +46,9 @@
   .kl-tf-views {
     min-height: 58px;
   }
-  /* .kl-tabs.kl-tf-tabs-root outranks tabs.css's .kl-tabs, whichever order the CLI appended them in */
-  .kl-tabs.kl-tf-tabs-root {
-    display: flex;
-    gap: 0;
-    flex: none;
-  }
+  /* (the views row's Tabs root and tabs: the rules sit in @layer utilities, below) */
   .kl-tf-tabs {
     background: transparent;
-  }
-  .kl-tf-tabs .kl-tab {
-    min-width: 112px;
   }
   /* the first cell of a cut region frame reserves the cut's room; it collapses to 0 when the cut is off */
   .kl-frame > .kl-tf-views:first-child,
@@ -81,10 +73,6 @@
     padding-inline: 0;
     gap: 0;
     border-inline-start: var(--kl-k1) solid var(--kl-seam);
-  }
-  .kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tabs.kl-tf-tabs-root {
-    flex: 0 1 auto;
-    min-width: 0;
   }
   /* a row of the frame (the status row): rows never grow (the cell toolbar's flex-grow is along the row) */
   .kl-tf > .kl-tb.kl-tb {
@@ -585,5 +573,25 @@
   }
   .kl-ix-in:active [data-slot="checkbox"]:not([data-disabled]) > [data-slot="checkbox-indicator"] {
     translate: 0 1px;
+  }
+}
+
+/* Tabs is written in utilities, and utilities beat @layer components: the views row's overrides of the Tabs root (a
+   flex item of the row, not a grid) and of its tabs' width sit in @layer utilities, keyed on attributes, until Table
+   is converted too. The tab rule keys on Base UI's data-orientation, which the stretch engine's copy of the row keeps
+   (it drops data-slot), with the list's class twice so it outranks the tab's own data-has-count width. */
+@layer utilities {
+  .kl-tf-tabs-root[data-slot="tabs"] {
+    display: flex;
+    gap: 0;
+    flex: none;
+  }
+  /* the tabs scroll before the toolbar gives up its last cell, so "More" always stays in the row */
+  .kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tf-tabs-root[data-slot="tabs"] {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .kl-tf-tabs.kl-tf-tabs > [data-orientation] {
+    min-width: 112px;
   }
 }

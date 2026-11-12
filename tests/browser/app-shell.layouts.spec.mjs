@@ -24,7 +24,7 @@ test("shell: medium and narrow layouts, sidebar toggle, sheets, focus return", a
     const cs = getComputedStyle(e);
     return e.getBoundingClientRect().height - 2 * parseFloat(cs.borderTopWidth);
   });
-  const cb = (await shell.locator(".kl-crumbs-list").boundingBox()).height;
+  const cb = (await shell.locator("[data-slot=breadcrumb-list]").boundingBox()).height;
   ok("shell: the breadcrumb cells fill the header frame's height", near(cb, hb), [cb, hb]);
   ok(
     "shell: the toggle cell names and controls the sidebar",

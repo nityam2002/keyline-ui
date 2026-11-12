@@ -23,18 +23,18 @@ test("breadcrumb: landmarks, current page, folding, … menu, narrow", async ({ 
   );
   ok(
     "breadcrumb: short path shows every level, no … cell",
-    !(await short.locator(".kl-crumb-more").isVisible()) && (await short.getByRole("link").count()) === 2,
+    !(await short.locator("[data-slot=breadcrumb-more]").isVisible()) && (await short.getByRole("link").count()) === 2,
     null,
   );
   const long = crumbs.nth(1);
   ok(
     "breadcrumb: six levels fold to … · parent · here",
-    (await long.locator(".kl-crumb-more").isVisible()) &&
+    (await long.locator("[data-slot=breadcrumb-more]").isVisible()) &&
       (await long.getByRole("link", { name: "Network" }).isVisible()) === false &&
       (await long.getByRole("link", { name: "Maasvlakte II" }).isVisible()),
     null,
   );
-  const here = await box(long.locator(".kl-crumb-cur"));
+  const here = await box(long.locator("[data-slot=breadcrumb-page]"));
   const navBox = await box(long);
   ok(
     "breadcrumb: a very long current label stays inside the frame",
@@ -54,7 +54,7 @@ test("breadcrumb: landmarks, current page, folding, … menu, narrow", async ({ 
   const narrow = crumbs.nth(2);
   ok(
     "breadcrumb: under 480px of width it folds even with four levels",
-    (await narrow.locator(".kl-crumb-more").isVisible()) &&
+    (await narrow.locator("[data-slot=breadcrumb-more]").isVisible()) &&
       !(await narrow.getByRole("link", { name: "Network" }).isVisible()),
     null,
   );
@@ -65,11 +65,11 @@ test("breadcrumb: rtl chevrons mirror; cut off keeps no corner room", async ({ o
   const q = await open({ q: "dir=rtl&cut=off&density=compact", ready: READY });
   const w = q.locator("#wayfinding");
   await w.scrollIntoViewIfNeeded();
-  const sep = q.locator("#wayfinding .kl-crumb-sep").first();
+  const sep = q.locator("#wayfinding [data-slot=breadcrumb-separator]").first();
   ok("rtl: breadcrumb chevrons mirror", (await css(sep, "scale")) === "-1 1", await css(sep, "scale"));
   ok(
     "cut off: the breadcrumb keeps no corner room",
-    (await css(w.locator(".kl-crumbs-list").first(), "padding-inline-start")) === "0px",
+    (await css(w.locator("[data-slot=breadcrumb-list]").first(), "padding-inline-start")) === "0px",
     null,
   );
   ok("no page errors (rtl, cut off, compact)", q.errs.length === 0, q.errs);

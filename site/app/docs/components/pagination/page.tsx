@@ -110,6 +110,14 @@ export default function PaginationPage() {
       <p className="s-small">
         Inside a Table, use <code>TablePagination</code>, which also shows the range of rows.
       </p>
+      <p className="s-small">
+        Each element carries a <code>data-slot</code> to select it by: <code>pagination</code> (the nav, which takes{" "}
+        <code>className</code> and the nav&apos;s props), <code>pagination-frame</code>,{" "}
+        <code>pagination-previous</code>, <code>pagination-next</code>, <code>pagination-page</code> (the current one
+        with <code>aria-current=&quot;page&quot;</code>), <code>pagination-ellipsis</code> and{" "}
+        <code>pagination-status</code> (the &quot;5 / 20&quot; cell). A step out of service is <code>disabled</code>,
+        or, as a link, <code>data-disabled</code>.
+      </p>
     </DocPage>
   );
 }

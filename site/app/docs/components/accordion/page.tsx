@@ -25,6 +25,15 @@ const USAGE = `<Accordion multiple defaultValue={["returns"]}>
   </AccordionItem>
 </Accordion>`;
 
+const PARTS = `<AccordionRoot>
+  <AccordionItem value="returns">
+    <AccordionHeader level={2}>
+      <AccordionTrigger meta="30 days">Returns</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel contentClassName="grid gap-4">…</AccordionPanel>
+  </AccordionItem>
+</AccordionRoot>`;
+
 const PROPS: Prop[] = [
   {
     name: "multiple",
@@ -86,6 +95,17 @@ const PROPS: Prop[] = [
       </>
     ),
   },
+  {
+    name: "contentClassName",
+    type: "string",
+    default: "\u2014",
+    description: (
+      <>
+        On <code>AccordionPanel</code>: classes for the content inside the panel&apos;s clip, such as its layout (
+        <code>grid gap-4</code>). <code>className</code> goes to the panel itself.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -96,7 +116,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function AccordionPage() {
@@ -129,6 +155,25 @@ export default function AccordionPage() {
       <p className="s-small">
         Built on <a href="https://base-ui.com/react/components/accordion">Base UI Accordion</a>. For one disclosure on
         its own, use Collapsible.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>AccordionRoot</code> (also exported as <code>Accordion</code>),{" "}
+        <code>AccordionItem</code>, <code>AccordionHeader</code>, <code>AccordionTrigger</code> and{" "}
+        <code>AccordionPanel</code>. A trigger brings its own header at <code>level</code>; compose an{" "}
+        <code>AccordionHeader</code> around it to set the heading yourself. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>accordion</code>, <code>accordion-item</code>,{" "}
+        <code>accordion-header</code>, <code>accordion-trigger</code>, <code>accordion-panel</code>; inside them,{" "}
+        <code>accordion-title</code>, <code>accordion-description</code>, <code>accordion-meta</code>,{" "}
+        <code>accordion-caret</code> and <code>accordion-content</code>), and Base UI&apos;s state attributes:{" "}
+        <code>data-open</code> on the item and panel, <code>data-panel-open</code> on the trigger,{" "}
+        <code>data-disabled</code>, <code>data-index</code>, and <code>data-starting-style</code> and{" "}
+        <code>data-ending-style</code> while a panel unfolds or folds.
       </p>
     </DocPage>
   );

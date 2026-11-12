@@ -20,7 +20,7 @@ export function DeliveryOptions() {
       </Field>
       <Collapsible>
         <CollapsibleTrigger meta={set ? `${set} set` : undefined}>Delivery options</CollapsibleTrigger>
-        <CollapsiblePanel className="grid gap-4">
+        <CollapsiblePanel contentClassName="grid gap-4">
           <SwitchField
             label="Liftgate truck"
             description="For a dock without a ramp."

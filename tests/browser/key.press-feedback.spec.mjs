@@ -101,7 +101,7 @@ test("key: a shipment ID answers the press", async ({ open, ok }) => {
 });
 
 const CELLS =
-  ".kl-slot[data-open] > span > span, [data-slot=button-affix], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot=item-media]";
+  ".kl-slot[data-open] > span > span, [data-slot=button-affix], .kl-tb-affix, .kl-radio-meta, [data-slot=accordion-caret], [data-slot=item-media]";
 async function cellsCheck(p, ok, sel, name) {
   const el = p.locator(sel).filter({ visible: true }).first();
   if (!(await el.count())) {
@@ -140,7 +140,7 @@ async function cellsCheck(p, ok, sel, name) {
 }
 
 test("key cells: specimen families keep their cells on the frame", async ({ open, ok }) => {
-  const p = await open({ ...VP, route: "specimen", ready: ".kl-acc-trigger" });
+  const p = await open({ ...VP, route: "specimen", ready: "[data-slot=accordion-trigger]" });
   await uncv(p);
   const families = [
     ['[data-slot="button"][data-signal=failed]', "failed button (! cell)"],
@@ -151,7 +151,7 @@ test("key cells: specimen families keep their cells on the frame", async ({ open
     ['[data-slot="button"]:has([data-slot=button-affix])', "button with an affix"],
     [".kl-tb-item:has(> .kl-tb-affix)", "toolbar item with an affix"],
     ["[data-slot=radio-group-item]:has(> .kl-radio-meta):not([data-checked])", "radio row with a meta cell"],
-    [".kl-acc-trigger", "accordion trigger"],
+    ["[data-slot=accordion-trigger]", "accordion trigger"],
   ];
   for (const [sel, name] of families) await cellsCheck(p, ok, sel, name);
 });

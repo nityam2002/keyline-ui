@@ -133,7 +133,7 @@ test("time: invalid and disabled parts; a controlled range with a cross-field ru
 test("rtl: a clock time reads hours then minutes; the zone sits at the end", async ({ open, ok }) => {
   const q = await open({ q: "dir=rtl&motion=reduce", ready: READY });
   // bring the scroll-edge rows into view first, so the time field sits where the checks expect it
-  await q.locator("#edges .kl-tabs-list").first().scrollIntoViewIfNeeded();
+  await q.locator("#edges [data-slot=tabs-list]").first().scrollIntoViewIfNeeded();
   const tf = q.locator("#time [data-slot=time-field]").first();
   const [hx, mx, zx] = await Promise.all(
     [

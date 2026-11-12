@@ -368,7 +368,10 @@
      purpose: Tailwind's preflight sets `button, input, select { font: inherit }` in this same layer at
      (0,0,1). Components that reset `font: inherit` themselves re-state `font-family: var(--kl-font)`
      for the same reason: a standalone Keyline button must not take the host font. Change the face with
-     --kl-font; unlayered app CSS still wins. */
+     --kl-font; unlayered app CSS still wins.
+     kl-type has no rule of its own: it marks the root of a component written in utilities whose root carries no
+     other foundation class (Tabs, Collapsible, Breadcrumb, Pagination), so the root stays the outermost Keyline
+     element: its content takes Keyline's type from it, and nested inside another Keyline element it inherits. */
   :is([class^="kl-"], [class*=" kl-"]):not(:where([class^="kl-"], [class*=" kl-"]) *) {
     color: var(--kl-ink);
     font-family: var(--kl-font);
@@ -451,7 +454,7 @@
   :where(
     .kl-attached,
     [data-slot="popover-popup"],
-    .kl-tabs-list,
+    [data-slot="tabs-list"],
     [data-slot="segmented"],
     [data-slot="toggle-group"],
     .kl-nav-list
@@ -901,10 +904,17 @@
     --kl-key-y: 1px;
   }
   .kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled])
-    > :is(.kl-slot, [data-slot="button-affix"], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot="item-media"]) {
+    > :is(
+      .kl-slot,
+      [data-slot="button-affix"],
+      .kl-tb-affix,
+      .kl-radio-meta,
+      [data-slot="accordion-caret"],
+      [data-slot="item-media"]
+    ) {
     translate: none;
   }
-  :is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot="item-media"]) {
+  :is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, [data-slot="accordion-caret"], [data-slot="item-media"]) {
     box-sizing: border-box;
     padding-block-start: calc(2 * var(--kl-key-y, 0px));
   }

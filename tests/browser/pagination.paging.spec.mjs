@@ -17,11 +17,11 @@ test("pagination: paging, fixed width, ends, many pages, loading, links, narrow,
     (await pg.locator("[aria-current=page]").innerText()) === "5",
     null,
   );
-  const width0 = (await box(pg.locator(".kl-pg-frame"))).width;
+  const width0 = (await box(pg.locator("[data-slot=pagination-frame]"))).width;
   const widths = [];
   for (const target of ["Page 1", "Page 4", "Page 20", "Page 17", "Next page", "Previous page"]) {
     await pg.getByRole("button", { name: target, exact: true }).click();
-    widths.push((await box(pg.locator(".kl-pg-frame"))).width);
+    widths.push((await box(pg.locator("[data-slot=pagination-frame]"))).width);
   }
   ok(
     "pagination: the frame keeps its width while paging",
@@ -41,13 +41,13 @@ test("pagination: paging, fixed width, ends, many pages, loading, links, narrow,
   );
   const many = w.getByRole("navigation", { name: "Pagination, many pages" });
   const cells = await many
-    .locator(".kl-pg-n")
+    .locator("[data-slot=pagination-page]")
     .evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().width)));
   ok("pagination: four-digit page cells all share one width", new Set(cells).size === 1, cells);
   const loading = w.getByRole("navigation", { name: "Pagination, loading" });
   ok(
     "pagination: unknown count shows – and both steps are out of service",
-    (await loading.locator(".kl-pg-of").innerText()) === "–" &&
+    (await loading.locator("[data-slot=pagination-status]").innerText()) === "–" &&
       (await loading.getByRole("button", { name: "Previous page" }).isDisabled()) &&
       (await loading.getByRole("button", { name: "Next page" }).isDisabled()),
     null,
@@ -62,9 +62,9 @@ test("pagination: paging, fixed width, ends, many pages, loading, links, narrow,
   const narrow = w.getByRole("navigation", { name: "Pagination, narrow" });
   ok(
     "pagination: under 360px the numbers fold to one “20 / 20” cell",
-    !(await narrow.locator(".kl-pg-n").first().isVisible()) &&
-      (await narrow.locator(".kl-pg-of").innerText()).replace(/\s/g, "") === "20/20",
-    await narrow.locator(".kl-pg-of").innerText(),
+    !(await narrow.locator("[data-slot=pagination-page]").first().isVisible()) &&
+      (await narrow.locator("[data-slot=pagination-status]").innerText()).replace(/\s/g, "") === "20/20",
+    await narrow.locator("[data-slot=pagination-status]").innerText(),
   );
   // keyboard: Tab reaches the numbers in order (WebKit on macOS skips plain buttons on Tab by default;
   // Alt+Tab is the platform's all-controls key)

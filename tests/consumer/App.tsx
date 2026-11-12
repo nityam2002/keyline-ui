@@ -683,7 +683,7 @@ function CarrierRules() {
         </AccordionItem>
         <AccordionItem value="limits">
           <AccordionTrigger meta={`${gross} t`}>Limits</AccordionTrigger>
-          <AccordionPanel className="grid gap-4">
+          <AccordionPanel contentClassName="grid gap-4">
             <Slider
               label="Max gross weight"
               unit="t"
@@ -704,7 +704,7 @@ function CarrierRules() {
             />
             <Collapsible>
               <CollapsibleTrigger meta="2">Tolerances</CollapsibleTrigger>
-              <CollapsiblePanel className="grid gap-4">
+              <CollapsiblePanel contentClassName="grid gap-4">
                 <Slider label="Weight tolerance" unit="%" defaultValue={5} max={20} />
               </CollapsiblePanel>
             </Collapsible>

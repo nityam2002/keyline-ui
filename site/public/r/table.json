@@ -67,16 +67,8 @@
       ".kl-tf-views": {
         "min-height": "58px"
       },
-      ".kl-tabs.kl-tf-tabs-root": {
-        "display": "flex",
-        "gap": "0",
-        "flex": "none"
-      },
       ".kl-tf-tabs": {
         "background": "transparent"
-      },
-      ".kl-tf-tabs .kl-tab": {
-        "min-width": "112px"
       },
       ".kl-frame > .kl-tf-views:first-child, .kl-frame > :first-child": {
         "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
@@ -95,10 +87,6 @@
         "padding-inline": "0",
         "gap": "0",
         "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tabs.kl-tf-tabs-root": {
-        "flex": "0 1 auto",
-        "min-width": "0"
       },
       ".kl-tf > .kl-tb.kl-tb": {
         "flex": "none"
@@ -538,6 +526,18 @@
       },
       ".kl-ix-in:active [data-slot=\"checkbox\"]:not([data-disabled]) > [data-slot=\"checkbox-indicator\"]": {
         "translate": "0 1px"
+      },
+      ".kl-tf-tabs-root[data-slot=\"tabs\"]": {
+        "display": "flex",
+        "gap": "0",
+        "flex": "none"
+      },
+      ".kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tf-tabs-root[data-slot=\"tabs\"]": {
+        "flex": "0 1 auto",
+        "min-width": "0"
+      },
+      ".kl-tf-tabs.kl-tf-tabs > [data-orientation]": {
+        "min-width": "112px"
       }
     }
   },

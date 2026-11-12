@@ -41,6 +41,12 @@ Menu and Combobox were converted this way first; their diffs are the worked exam
   component's root, resolved with an empty state, and takes a second prop for what it holds (`contentClassName`).
   A component that reuses another's whole popup (Command's dialog is `DialogPopup`) passes its own classes in
   `className`; `cn()` drops the popup's conflicting ones.
+- **A panel whose content sits inside its clip** (Accordion, Collapsible: Base UI's Panel is the clip that unfolds,
+  the content inside it carries the inset and the seam) sends `className` to the Panel and takes
+  `contentClassName` for the content. This is a breaking change where `className` used to reach the content:
+  move a caller's layout classes (`grid gap-4`) to `contentClassName`.
+- **A convenience part may bring its Base UI wrapper.** `AccordionTrigger` renders inside its own `AccordionHeader`
+  (at `level`) unless it is composed in one already; a context tells it which.
 - **A field component keeps its convenience API** (`Combobox` with `options` and `loadOptions`), built from the
   exported parts in the same file. Change callbacks pass Base UI's `eventDetails` through as their last argument.
 - **A display component composes from its parts too** (`Progress`, `Meter`): its props are a union of the
@@ -150,12 +156,16 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   clone's `data-slot`, so a rule keyed on a part's slot (`**:data-[slot=…]`) misses the clone. Give each item its
   classes, pass sizes down through context, and key covered labels on `data-kl-covered`. The clone keeps a hidden
   placeholder for the band in first place, so position rules count children (`[&>:nth-child(2)]:` for the first
-  cell after the band) rather than read the band's markers.
+  cell after the band) rather than read the band's markers. A parent's rule over the row's items (a table's view
+  tabs are 112px wide) keys on an attribute the clone keeps (`data-orientation`), not on the slot.
 - **Know which element is the outermost Keyline element.** The foundation gives Keyline's type and ink to the first
   element with a `kl-` class and no `kl-` ancestor, and a `kl-rtl:` utility counts as one. When a part's root carries
   no foundation class (a toast on its ink fill, a portalled viewport), the outermost element is somewhere inside it
   and turns ink: put Keyline's type and ink on the portalled root, and `text-inherit` on inner `kl-` elements that sit
-  on a coloured fill.
+  on a coloured fill. When a converted root lost the `kl-` class that made it outermost (Tabs, Collapsible,
+  Breadcrumb's and Pagination's nav), give it `kl-type`, a marker with no rule of its own: the root stays the
+  outermost element, and a root nested in another Keyline element still inherits. Type utilities on the root
+  would override what a nested one inherits.
 - **Foundation classes stay as classes**: `kl-ctl`, `kl-frame`, `kl-cells`, `kl-edge`, `kl-attached kl-dock`,
   `kl-slot`, `kl-pending`, `kl-code`, `kl-count`, `kl-key`. They carry the construction rules that utilities can't
   express. A rule that only one component used moves into its classes; a rule shared across components moves into
