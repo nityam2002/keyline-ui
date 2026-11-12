@@ -30,7 +30,7 @@ test("menubar: keyboard, docking, items, submenu, disabled title", async ({ open
       (await css(edit, "background-color")) !== (await css(file, "background-color")),
     null,
   );
-  const menu = p.locator(".kl-mbar-menu");
+  const menu = p.locator("[data-slot=menu-popup]").first();
   const mb = await menu.boundingBox();
   const bb = await bar.boundingBox();
   ok("menubar: the menu's top border lies on the bar's bottom keyline", near(mb.y, bb.y + bb.height - 2, 1.5), [

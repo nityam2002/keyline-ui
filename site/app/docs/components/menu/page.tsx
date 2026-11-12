@@ -17,14 +17,14 @@ export const metadata = componentMetadata(
 );
 
 const IMPORT = `import { Button } from "@/components/keyline/ui/button"
-import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu"`;
+import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu"`;
 
 const USAGE = `<Menu>
   <MenuTrigger render={<Button />}>Actions</MenuTrigger>
-  <MenuContent>
+  <MenuPopup>
     <MenuItem onClick={duplicate}>Duplicate order</MenuItem>
     <MenuItem variant="destructive" onClick={cancel}>Cancel order</MenuItem>
-  </MenuContent>
+  </MenuPopup>
 </Menu>`;
 
 const PROPS: Prop[] = [
@@ -34,7 +34,7 @@ const PROPS: Prop[] = [
     default: '"start"',
     description: (
       <>
-        On <code>MenuContent</code>: which edge of the trigger the menu lines up with.
+        On <code>MenuPopup</code>: which edge of the trigger the menu lines up with.
       </>
     ),
   },
@@ -44,7 +44,7 @@ const PROPS: Prop[] = [
     default: '"bottom"',
     description: (
       <>
-        On <code>MenuContent</code>: the trigger edge it docks to.
+        On <code>MenuPopup</code>: the trigger edge it docks to.
       </>
     ),
   },
@@ -54,7 +54,7 @@ const PROPS: Prop[] = [
     default: "2",
     description: (
       <>
-        On <code>MenuContent</code>: the weight of the edge it shares. Use 1 when the trigger is a cell.
+        On <code>MenuPopup</code>: the weight of the edge it shares. Use 1 when the trigger is a cell.
       </>
     ),
   },
@@ -64,7 +64,18 @@ const PROPS: Prop[] = [
     default: "the trigger",
     description: (
       <>
-        On <code>MenuContent</code>: dock to another element, such as the frame around the trigger.
+        On <code>MenuPopup</code>: dock to another element, such as the frame around the trigger.
+      </>
+    ),
+  },
+  {
+    name: "container",
+    type: "Element | Ref",
+    default: "<body>",
+    description: (
+      <>
+        On <code>MenuPopup</code>: where the menu&apos;s portal renders. It keeps the theme, density and direction of
+        the place it is written either way. <code>portalProps</code> passes props to the portal.
       </>
     ),
   },
@@ -143,10 +154,13 @@ export default function MenuPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Menu props" props={PROPS} />
       <p className="s-small">
-        Parts: <code>Menu</code>, <code>MenuTrigger</code>, <code>MenuContent</code>, <code>MenuItem</code>,{" "}
+        Parts: <code>Menu</code>, <code>MenuTrigger</code>, <code>MenuPopup</code>, <code>MenuItem</code>,{" "}
         <code>MenuCheckboxItem</code>, <code>MenuRadioGroup</code>, <code>MenuRadioItem</code>,{" "}
-        <code>MenuSeparator</code>, <code>MenuGroup</code>, <code>MenuGroupLabel</code>, <code>MenuSubmenu</code>,{" "}
-        <code>MenuSubmenuTrigger</code>, <code>MenuSubmenuContent</code>. Built on{" "}
+        <code>MenuSeparator</code>, <code>MenuGroup</code>, <code>MenuGroupLabel</code>, <code>MenuSubmenuRoot</code>,{" "}
+        <code>MenuSubmenuTrigger</code>, and <code>MenuSurface</code> (the styled popup without a portal, for a menu you
+        position yourself). <code>MenuPopup</code> also takes the positioner&apos;s <code>sideOffset</code>,{" "}
+        <code>alignOffset</code> and <code>collisionPadding</code>. Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state. Built on{" "}
         <a href="https://base-ui.com/react/components/menu">Base UI Menu</a>.
       </p>
     </DocPage>

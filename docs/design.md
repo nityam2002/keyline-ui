@@ -206,7 +206,8 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
 
 - **Base UI is the primitive layer.** It is unstyled, owns behaviour, ARIA and keyboard models (menus,
   dialogs, toolbar, scroll area, forms, fields, drawer, toast), and composes through `render` props, which
-  lets Keyline add cells and frames without forking behaviour. Keyline's CSS styles its state attributes.
+  lets Keyline add cells and frames without forking behaviour. Keyline's utilities and foundation style its state
+  attributes.
 - **Wrap the maintained library; draw it in Keyline.** Where the reference libraries (shadcn and its
   ecosystem) build on a library, Keyline wraps the same one, pinned exactly, and never re-implements its
   behaviour:
@@ -229,8 +230,9 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
 ## Rules for a new component
 
 1. Build on a Base UI primitive or the library the references use; don't hand-code behaviour.
-2. Declare its role: region (`.kl-frame`), control (`.kl-ctl`) or cell. If it can sit in another frame,
-   accept `layout="control" | "cell"`.
+2. Declare its role with the foundation classes: region (`kl-frame`), control (`kl-ctl`) or cell; a row of
+   cells is `kl-cells`, a text-entry frame adds `kl-edge`, a docked surface is `kl-attached kl-dock`. If it can
+   sit in another frame, accept `layout="control" | "cell"`.
 3. One edge, one owner: let the row of cells draw dividers; never double a line.
 4. Name colour roles, never colours. No per-component dark values.
 5. Use the five motion behaviours and their tokens only; never a hard-coded duration.

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ui from "../demo-ui";
 import { Button } from "@/registry/keyline/ui/button";
-import { Menu, MenuTrigger, MenuContent, MenuItem } from "@/registry/keyline/ui/menu";
+import { Menu, MenuTrigger, MenuPopup, MenuItem } from "@/registry/keyline/ui/menu";
 import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator } from "@/registry/keyline/ui/button-group";
 
 /* ------------------------------------------------------------------ *
@@ -53,10 +53,10 @@ export function ButtonGroupSpecimen() {
           <Button layout="cell">Copy link</Button>
           <Menu>
             <MenuTrigger render={<Button layout="cell" />}>Share ▾</MenuTrigger>
-            <MenuContent align="end">
+            <MenuPopup align="end">
               <MenuItem>Email</MenuItem>
               <MenuItem>Slack</MenuItem>
-            </MenuContent>
+            </MenuPopup>
           </Menu>
         </ButtonGroup>
       </div>

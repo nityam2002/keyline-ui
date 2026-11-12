@@ -22,8 +22,9 @@ shadcn CLI copies into someone else's project. Everything else in the repository
 document those items.
 
 - **`src/registry/`** is the product. `src/registry/keyline/` holds the source (each component is
-  `ui/<name>.tsx` with its `ui/<name>.css`). Each item has a `<name>.meta.ts` beside its source (typed by
-  `src/registry/item.ts`): its title, description, files, CSS file and dependencies. `sidebar` and `alert-dialog`,
+  `ui/<name>.tsx` with its `ui/<name>.meta.ts`; a component not yet converted to utilities also has a
+  `ui/<name>.css`). Each item has a `<name>.meta.ts` beside its source (typed by `src/registry/item.ts`): its
+  title, description, files, CSS file if any, and dependencies. `sidebar` and `alert-dialog`,
   which only install other items, live in `src/registry/keyline/virtual/`.
 - **`site/public/r/`** is the built registry, one JSON file per item, which is what `npx shadcn add` downloads.
   The documentation site serves it at `/r/{name}.json`, so deploying the site publishes the registry. It is
@@ -91,9 +92,11 @@ All test, capture and consumer output goes to `.artifacts/`, which is ignored.
 
 ## Adding a component
 
-A new component is done when it has all of these:
+Follow [docs/recipe.md](../docs/recipe.md): it says how a component's source, parts, classes and tests are
+written. A new component is done when it has all of these:
 
-- source in `src/registry/keyline/ui/`, following [docs/design.md](../docs/design.md)
+- source in `src/registry/keyline/ui/` (`ui/<name>.tsx`, no CSS file), following [docs/design.md](../docs/design.md)
+  and the recipe
 - a `ui/<name>.meta.ts` beside it (copy a neighbour's), with `site/public/r/` rebuilt
 - a specimen in `src/demo/specimens/`, wired into `src/demo/App.tsx`
 - a page and example in `site/`

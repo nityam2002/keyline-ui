@@ -204,17 +204,17 @@
   /* INPUT GROUP: buttons, toggles and bars inside the frame. A Button or Toggle with
      layout="cell" is a key cell of the frame: it takes the frame's height (not a cell button's 48px), a
      seam before it, its own inside ring; the frame's edge stays the input's. */
-  .kl-field-frame > :is(.kl-button-cell, .kl-toggle) {
+  .kl-field-frame > .kl-toggle {
     flex: none;
     min-height: 0;
     align-self: stretch;
     cursor: pointer;
   }
-  .kl-field-frame > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon]) {
+  .kl-field-frame > .kl-toggle[data-kl-icon] {
     width: calc(var(--kl-ctl) - 2 * var(--kl-bw, 2px));
     min-width: 0;
   }
-  .kl-field-frame[data-kl-layout="cell"] > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon]) {
+  .kl-field-frame[data-kl-layout="cell"] > .kl-toggle[data-kl-icon] {
     width: var(--kl-row);
   }
   /* a bar spans the frame: the frame wraps, the bar takes a whole line above or below the input row */
@@ -251,10 +251,10 @@
     border-inline-start: 0;
   }
   /* a bar's cells never drop under the 24px target (WCAG 2.5.8; compact measured 24x23 with no spacing exception) */
-  .kl-field-bar > :is(.kl-button-cell, .kl-toggle) {
+  .kl-field-bar > .kl-toggle {
     min-height: 24px;
   }
-  .kl-field-bar > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon]) {
+  .kl-field-bar > .kl-toggle[data-kl-icon] {
     width: max(24px, calc(var(--kl-row) - 4px));
     min-width: 0;
   }
@@ -347,5 +347,32 @@
     [data-kl-form-orientation="responsive"] > :is(.kl-form-actions, [data-kl-span="control"]) {
       margin-inline-start: calc(var(--kl-form-label) + var(--kl-form-gap));
     }
+  }
+}
+
+/* A converted part (Button) writes its look as utilities, which sit in a later layer than this file's
+   @layer components: a rule here that changes one of its properties sits in @layer utilities, keyed on its
+   attributes, until Field is converted too. */
+@layer utilities {
+  /* the same rules as for a Toggle cell above (INPUT GROUP) */
+  .kl-field-frame > [data-slot="button"][data-kl-layout="cell"] {
+    flex: none;
+    min-height: 0;
+    align-self: stretch;
+    cursor: pointer;
+  }
+  .kl-field-frame > [data-slot="button"][data-kl-layout="cell"][data-size="icon"] {
+    width: calc(var(--kl-ctl) - 2 * var(--kl-bw, 2px));
+    min-width: 0;
+  }
+  .kl-field-frame[data-kl-layout="cell"] > [data-slot="button"][data-kl-layout="cell"][data-size="icon"] {
+    width: var(--kl-row);
+  }
+  .kl-field-bar > [data-slot="button"][data-kl-layout="cell"] {
+    min-height: 24px;
+  }
+  .kl-field-bar > [data-slot="button"][data-kl-layout="cell"][data-size="icon"] {
+    width: max(24px, calc(var(--kl-row) - 4px));
+    min-width: 0;
   }
 }

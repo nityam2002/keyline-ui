@@ -5,11 +5,13 @@ import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu
 
 import { cn } from "@/lib/utils";
 import { scopeProps, useKeylineScope } from "../lib/keyline-scope";
+import { resolveClassName } from "../lib/keyline-render";
+import { MenuSurface } from "./menu";
 
 /**
  * A menu opened on an object (right-click, long-press, the Menu key or Shift+F10 on a focused target).
  * Rows are Menu's rows: build the content from MenuItem, MenuSeparator, MenuGroup / MenuGroupLabel and
- * MenuSubmenu from `./menu`, so a context menu and a menu button read the same.
+ * MenuSubmenuRoot from `./menu`, so a context menu and a menu button read the same.
  *
  * - The area (`ContextMenuTrigger`) marks the object the menu acts on while it is open: an inset ink
  *   keyline on its own edge (the object, not the page, is the subject). Nothing else changes.
@@ -38,7 +40,7 @@ function ContextMenuContent({
   className,
   container,
   ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Popup> & {
+}: React.ComponentProps<typeof MenuSurface> & {
   container?: React.ComponentProps<typeof ContextMenuPrimitive.Portal>["container"];
 }) {
   const [marker, scope, probe] = useKeylineScope(false, container);
@@ -48,11 +50,8 @@ function ContextMenuContent({
       <ContextMenuPrimitive.Portal container={container}>
         {probe}
         <ContextMenuPrimitive.Positioner collisionPadding={8} {...scopeProps(scope, { className: "kl-positioner" })}>
-          <ContextMenuPrimitive.Popup
-            data-slot="context-menu"
-            className={cn("kl-attached kl-dock kl-menu kl-ctx-menu", className)}
-            {...props}
-          />
+          {/* not docked to an owner: control weight on every side, a minimum width of its own */}
+          <MenuSurface className={resolveClassName("min-w-[220px]", className)} {...props} />
         </ContextMenuPrimitive.Positioner>
       </ContextMenuPrimitive.Portal>
     </>
@@ -71,7 +70,7 @@ export {
   MenuSeparator as ContextMenuSeparator,
   MenuGroup as ContextMenuGroup,
   MenuGroupLabel as ContextMenuGroupLabel,
-  MenuSubmenu as ContextMenuSubmenu,
+  MenuSubmenuRoot as ContextMenuSubmenu,
   MenuSubmenuTrigger as ContextMenuSubmenuTrigger,
-  MenuSubmenuContent as ContextMenuSubmenuContent,
+  MenuPopup as ContextMenuSubmenuContent,
 } from "./menu";

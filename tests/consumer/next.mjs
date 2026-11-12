@@ -31,6 +31,31 @@ for (const [eng, type, opts] of [
   const light = p.getByTestId("kl-light"),
     dark = p.getByTestId("kl-dark"),
     stock = p.getByTestId("shadcn");
+  // Button carries its styles as Tailwind utilities in src/components/keyline/: the app's Tailwind (PostCSS,
+  // which finds sources by scanning the project) must have generated them. Compared with the tokens, in place.
+  const generated = await light.evaluate((e) => {
+    const token = (prop, value) => {
+      const probe = document.createElement("span");
+      probe.style.setProperty(prop, value);
+      e.append(probe);
+      const v = getComputedStyle(probe).getPropertyValue(prop);
+      probe.remove();
+      return v;
+    };
+    const s = getComputedStyle(e);
+    return {
+      fill: [s.backgroundColor, token("background-color", "var(--kl-cell)")],
+      height: [s.minHeight, token("min-height", "var(--kl-ctl)")],
+    };
+  });
+  ok(
+    eng,
+    "Keyline's utilities were generated: the button is filled with --kl-cell and is --kl-ctl tall",
+    generated.fill[0] === generated.fill[1] &&
+      generated.height[0] === generated.height[1] &&
+      generated.height[0] !== "0px",
+    generated,
+  );
   const L = await style(light, "font-family", "color", "background-color", "border-top-width");
   const D = await style(dark, "color", "background-color");
   const S = await style(stock, "font-family");

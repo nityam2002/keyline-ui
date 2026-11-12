@@ -111,7 +111,7 @@
   .kl-q-actions > [hidden] {
     display: none;
   }
-  .kl-q-actions > .kl-button-cell {
+  .kl-q-actions > [data-slot="button"][data-kl-layout="cell"] {
     flex: none;
     min-width: 96px;
     --kl-button-px: 32px;

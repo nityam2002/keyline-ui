@@ -17,6 +17,11 @@ function describeViolations(violations: axe.Result[]): string {
  * a `<main>`: the `region` rule expects content inside a landmark, which is the consuming page's job.
  */
 export async function expectNoAxeViolations(container: Element = document.body): Promise<void> {
-  const { violations } = await axe.run(container, { resultTypes: ["violations"] });
+  // Base UI's focus guards (around an open popup's portal) are its own: in Safari they carry role="button", so
+  // VoiceOver can reach them, without a name. They are not the part's markup, so axe does not judge them.
+  const { violations } = await axe.run(
+    { include: [container], exclude: ["[data-base-ui-focus-guard]"] },
+    { resultTypes: ["violations"] },
+  );
   expect(violations, describeViolations(violations)).toHaveLength(0);
 }

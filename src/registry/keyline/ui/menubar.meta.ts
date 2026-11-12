@@ -15,5 +15,6 @@ export default {
     "@keyline-ui/keyline-scope",
     "@keyline-ui/scroll-edges",
     "@keyline-ui/menu",
+    "@keyline-ui/keyline-render",
   ],
 } satisfies KeylineItem;

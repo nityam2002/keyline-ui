@@ -5,7 +5,7 @@ import * as React from "react";
 import { Button } from "@/components/keyline/ui/button";
 import { ButtonGroup } from "@/components/keyline/ui/button-group";
 import { Kbd, KbdGroup } from "@/components/keyline/ui/kbd";
-import { Menu, MenuContent, MenuRadioGroup, MenuRadioItem, MenuTrigger } from "@/components/keyline/ui/menu";
+import { Menu, MenuPopup, MenuRadioGroup, MenuRadioItem, MenuTrigger } from "@/components/keyline/ui/menu";
 import { storeChoice, THEME_LABEL, type ThemeChoice } from "@site/lib/theme";
 import { useThemeChoice } from "@site/lib/use-theme";
 import { useSiteCommand } from "./site-command";
@@ -57,7 +57,7 @@ export function SiteControls({ className, layout = "frame" }: { className?: stri
         >
           <ThemeIcon size={16} aria-hidden="true" />
         </MenuTrigger>
-        <MenuContent align="end">
+        <MenuPopup align="end">
           <MenuRadioGroup value={theme} onValueChange={(v) => storeChoice(v as ThemeChoice)}>
             {(Object.keys(THEME_LABEL) as ThemeChoice[]).map((c) => (
               <MenuRadioItem key={c} value={c}>
@@ -65,7 +65,7 @@ export function SiteControls({ className, layout = "frame" }: { className?: stri
               </MenuRadioItem>
             ))}
           </MenuRadioGroup>
-        </MenuContent>
+        </MenuPopup>
       </Menu>
     </>
   );

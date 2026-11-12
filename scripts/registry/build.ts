@@ -176,7 +176,9 @@ const CLIENT_ONLY =
 function checkClientBoundary(file: string) {
   const src = read(file);
   const directive = src.match(/^(?:\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*(["']use client["'];?)/)?.[1];
-  if (CLIENT_ONLY.test(src) && !directive)
+  // a type-only import emits no code, so it never makes a module a client module
+  const code = src.replace(/^import\s+type\s[^;]*;/gm, "");
+  if (CLIENT_ONLY.test(code) && !directive)
     fail(`${file} uses hooks, handlers or a client-only library: start it with "use client";`);
   if (directive && !directive.endsWith(";"))
     fail(`${file}: write the directive as "use client"; with the semicolon (see the comment above)`);

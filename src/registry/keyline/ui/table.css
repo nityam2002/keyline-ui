@@ -342,7 +342,7 @@
   }
   /* a button inside a body cell nearly fills the row: an outside ring would cross the row keyline (and be
      clipped by the scroller in the last row). Like every cell, it takes the inset ring. */
-  :is(.kl-xp button, .kl-td .kl-button):focus-visible {
+  :is(.kl-xp button, .kl-td [data-slot="button"]):focus-visible {
     outline-offset: var(--kl-ring-in);
   }
   .kl-xp svg {

@@ -28,6 +28,19 @@ const USAGE = `<Combobox
   onValueChange={(value, option) => setClient(option)}
 />`;
 
+const PARTS = `<ComboboxRoot items={ports}>
+  <ComboboxInputGroup>
+    <ComboboxInput aria-label="Port" />
+    <ComboboxTrigger aria-label="Show ports" />
+  </ComboboxInputGroup>
+  <ComboboxPopup>
+    <ComboboxEmpty>No ports match.</ComboboxEmpty>
+    <ComboboxList>
+      {(port: string) => <ComboboxItem key={port} value={port}>{port}</ComboboxItem>}
+    </ComboboxList>
+  </ComboboxPopup>
+</ComboboxRoot>`;
+
 const PROPS: Prop[] = [
   { name: "label", type: "ReactNode", default: "—", description: "Names the field. Required." },
   {
@@ -58,7 +71,8 @@ const PROPS: Prop[] = [
     default: "—",
     description: (
       <>
-        The chosen option&apos;s value. <code>onValueChange</code> also gets the option.
+        The chosen option&apos;s value. <code>onValueChange</code> also gets the option and Base UI&apos;s event details
+        (the reason for the change, and the event).
       </>
     ),
   },
@@ -111,7 +125,13 @@ const TOC: TocGroup[] = [
     ],
   },
   { label: "Examples", items: [{ id: "async", label: "Async search" }] },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function ComboboxPage() {
@@ -157,6 +177,19 @@ export default function ComboboxPage() {
         Escape closes the list. For several values, use Multiselect. Built on{" "}
         <a href="https://base-ui.com/react/components/combobox">Base UI Combobox</a>.
       </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Combobox</code> is built from parts you can compose yourself, named as Base UI names them:{" "}
+        <code>ComboboxRoot</code>, <code>ComboboxInputGroup</code>, <code>ComboboxInput</code>,{" "}
+        <code>ComboboxTrigger</code>, <code>ComboboxClear</code>, <code>ComboboxPopup</code>,{" "}
+        <code>ComboboxStatus</code>, <code>ComboboxList</code>, <code>ComboboxCollection</code>,{" "}
+        <code>ComboboxItem</code>, <code>ComboboxGroup</code>, <code>ComboboxGroupLabel</code>,{" "}
+        <code>ComboboxEmpty</code>, and for several values <code>ComboboxChips</code>, <code>ComboboxChip</code> and{" "}
+        <code>ComboboxChipRemove</code>. <code>ComboboxRoot</code> is generic over the item and <code>multiple</code>.
+        The clear and chip-remove cells show only a cross, so they require an <code>aria-label</code>.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
     </DocPage>
   );
 }

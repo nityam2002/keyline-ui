@@ -5,13 +5,12 @@ import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
 import {
   Menu,
-  MenuContent,
+  MenuPopup,
   MenuItem,
   MenuRadioGroup,
   MenuRadioItem,
   MenuSeparator,
-  MenuSubmenu,
-  MenuSubmenuContent,
+  MenuSubmenuRoot,
   MenuSubmenuTrigger,
   MenuTrigger,
 } from "@/components/keyline/ui/menu";
@@ -44,7 +43,7 @@ export function OrderActions() {
             Actions
             <ChevronDown size={16} aria-hidden="true" />
           </MenuTrigger>
-          <MenuContent align="end">
+          <MenuPopup align="end">
             <MenuItem
               disabled={cancelled}
               onClick={() => {
@@ -62,9 +61,9 @@ export function OrderActions() {
             >
               Duplicate order
             </MenuItem>
-            <MenuSubmenu>
+            <MenuSubmenuRoot>
               <MenuSubmenuTrigger disabled={cancelled}>Assign to</MenuSubmenuTrigger>
-              <MenuSubmenuContent>
+              <MenuPopup>
                 <MenuRadioGroup
                   value={rep}
                   onValueChange={(r: string) => {
@@ -78,8 +77,8 @@ export function OrderActions() {
                     </MenuRadioItem>
                   ))}
                 </MenuRadioGroup>
-              </MenuSubmenuContent>
-            </MenuSubmenu>
+              </MenuPopup>
+            </MenuSubmenuRoot>
             <MenuSeparator />
             <MenuItem
               variant="destructive"
@@ -91,7 +90,7 @@ export function OrderActions() {
             >
               Cancel order
             </MenuItem>
-          </MenuContent>
+          </MenuPopup>
         </Menu>
       </div>
       <div className="flex min-h-8 flex-wrap items-center gap-3">

@@ -5,7 +5,7 @@ import * as React from "react";
 
 import { Button, ButtonAffix } from "@/registry/keyline/ui/button";
 import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/registry/keyline/ui/split-button";
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
+import { Menu, MenuTrigger, MenuPopup, MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
 import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
 import { ToggleGroup, ToggleGroupItem } from "@/registry/keyline/ui/toggle-group";
 import {
@@ -451,7 +451,7 @@ function Records() {
                     <MenuTrigger render={<Button size="icon" variant="quiet" aria-label={`Actions for ${r.id}`} />}>
                       ⋯
                     </MenuTrigger>
-                    <MenuContent align="end">
+                    <MenuPopup align="end">
                       <MenuItem code="1" shortcut="R">
                         Reschedule
                       </MenuItem>
@@ -460,7 +460,7 @@ function Records() {
                       <MenuItem code="3" variant="destructive">
                         Cancel shipment
                       </MenuItem>
-                    </MenuContent>
+                    </MenuPopup>
                   </Menu>
                 </TableCell>
               </TableRow>

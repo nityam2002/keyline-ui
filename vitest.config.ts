@@ -24,6 +24,13 @@ export default defineConfig({
     ],
   },
   cacheDir: ".artifacts/vite-parts",
+  // Pre-bundle every dependency the parts can import before the first test runs. A dependency Vite meets only at
+  // run time (a new Base UI subpath, say) makes it re-bundle and reload the page mid-run, and the test file then
+  // fails with "Vitest failed to find the runner". Scanning all registry source on every start costs a second.
+  optimizeDeps: {
+    entries: ["tests/parts/**/*.browser.test.tsx", "src/registry/keyline/**/*.{ts,tsx}"],
+    force: true,
+  },
   test: {
     name: "parts",
     include: ["tests/parts/**/*.browser.test.tsx"],

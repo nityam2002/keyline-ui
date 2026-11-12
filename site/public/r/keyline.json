@@ -276,6 +276,7 @@
         "outline-offset": "var(--kl-ring-out)"
       }
     },
+    "@custom-variant kl-rtl (&:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)))": {},
     "@layer components": {
       ".kl-positioner": {
         "outline": "0",
@@ -301,7 +302,7 @@
       ":where(.kl-pending, .kl-progress-fill, .kl-skeleton, .kl-skel):is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) )": {
         "--kl-run-dir": "reverse"
       },
-      ":where( .kl-attached, .kl-select-panel, .kl-ms-list, .kl-menu, .kl-cmd-list, .kl-popover, .kl-tabs-list, .kl-segmented, .kl-toggle-group, .kl-nav-list )": {
+      ":where( .kl-attached, .kl-select-panel, .kl-ms-list, .kl-cmd-list, .kl-popover, .kl-tabs-list, .kl-segmented, .kl-toggle-group, .kl-nav-list )": {
         "scrollbar-width": "thin",
         "scrollbar-color": "var(--kl-ink-3) transparent"
       },
@@ -594,7 +595,7 @@
       ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled])": {
         "--kl-key-y": "1px"
       },
-      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is(.kl-slot, .kl-button-affix, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media)": {
+      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is(.kl-slot, [data-slot=\"button-affix\"], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media)": {
         "translate": "none"
       },
       ":is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media)": {

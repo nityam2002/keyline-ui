@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/keyline/ui/button";
 import { ButtonGroup } from "@/components/keyline/ui/button-group";
-import { Menu, MenuContent, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu";
+import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/keyline/ui/menu";
 
 export function TrackingLink() {
   const [sent, setSent] = useState<string | null>(null);
@@ -20,11 +20,11 @@ export function TrackingLink() {
             Send
             <ChevronDown size={16} aria-hidden="true" />
           </MenuTrigger>
-          <MenuContent align="end">
+          <MenuPopup align="end">
             <MenuItem onClick={() => setSent("Emailed to the Lackawanna County clerk.")}>Email the client</MenuItem>
             <MenuItem onClick={() => setSent("Texted to Jim Halpert.")}>Text the sales rep</MenuItem>
             <MenuItem onClick={() => setSent("Printed at reception. Pam has it.")}>Print for reception</MenuItem>
-          </MenuContent>
+          </MenuPopup>
         </Menu>
       </ButtonGroup>
       <p role="status" className="m-0 min-h-5 text-[14px] text-kl-ink-2">

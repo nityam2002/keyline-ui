@@ -207,17 +207,17 @@
         "color": "var(--kl-ink-2)",
         "font-size": "12px"
       },
-      ".kl-field-frame > :is(.kl-button-cell, .kl-toggle)": {
+      ".kl-field-frame > .kl-toggle": {
         "flex": "none",
         "min-height": "0",
         "align-self": "stretch",
         "cursor": "pointer"
       },
-      ".kl-field-frame > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon])": {
+      ".kl-field-frame > .kl-toggle[data-kl-icon]": {
         "width": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 2px))",
         "min-width": "0"
       },
-      ".kl-field-frame[data-kl-layout=\"cell\"] > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon])": {
+      ".kl-field-frame[data-kl-layout=\"cell\"] > .kl-toggle[data-kl-icon]": {
         "width": "var(--kl-row)"
       },
       ".kl-field-frame:has(> .kl-field-bar)": {
@@ -251,10 +251,10 @@
         "flex": "1",
         "border-inline-start": "0"
       },
-      ".kl-field-bar > :is(.kl-button-cell, .kl-toggle)": {
+      ".kl-field-bar > .kl-toggle": {
         "min-height": "24px"
       },
-      ".kl-field-bar > :is(.kl-button-cell.kl-button-icon, .kl-toggle[data-kl-icon])": {
+      ".kl-field-bar > .kl-toggle[data-kl-icon]": {
         "width": "max(24px, calc(var(--kl-row) - 4px))",
         "min-width": "0"
       },
@@ -313,6 +313,28 @@
         "[data-kl-form-orientation=\"responsive\"] > :is(.kl-form-actions, [data-kl-span=\"control\"])": {
           "margin-inline-start": "calc(var(--kl-form-label) + var(--kl-form-gap))"
         }
+      }
+    },
+    "@layer utilities": {
+      ".kl-field-frame > [data-slot=\"button\"][data-kl-layout=\"cell\"]": {
+        "flex": "none",
+        "min-height": "0",
+        "align-self": "stretch",
+        "cursor": "pointer"
+      },
+      ".kl-field-frame > [data-slot=\"button\"][data-kl-layout=\"cell\"][data-size=\"icon\"]": {
+        "width": "calc(var(--kl-ctl) - 2 * var(--kl-bw, 2px))",
+        "min-width": "0"
+      },
+      ".kl-field-frame[data-kl-layout=\"cell\"] > [data-slot=\"button\"][data-kl-layout=\"cell\"][data-size=\"icon\"]": {
+        "width": "var(--kl-row)"
+      },
+      ".kl-field-bar > [data-slot=\"button\"][data-kl-layout=\"cell\"]": {
+        "min-height": "24px"
+      },
+      ".kl-field-bar > [data-slot=\"button\"][data-kl-layout=\"cell\"][data-size=\"icon\"]": {
+        "width": "max(24px, calc(var(--kl-row) - 4px))",
+        "min-width": "0"
       }
     }
   },

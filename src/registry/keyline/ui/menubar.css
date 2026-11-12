@@ -51,9 +51,6 @@
     background-image: var(--kl-hatch);
     cursor: not-allowed;
   }
-  .kl-mbar-menu {
-    min-width: max(220px, var(--anchor-width));
-  }
   @media (forced-colors: active) {
     .kl-mbar-trigger[data-popup-open] {
       outline: 3px solid Highlight;

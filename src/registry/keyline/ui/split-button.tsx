@@ -4,7 +4,7 @@ import * as React from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 
 import { cn } from "@/lib/utils";
-import { MenuContent } from "./menu";
+import { MenuPopup } from "./menu";
 
 type Ctx = {
   frame: React.RefObject<HTMLDivElement | null>;
@@ -64,7 +64,7 @@ function SplitButtonMenu({
   label: string;
   children: React.ReactNode;
   contentClassName?: string;
-  finalFocus?: React.ComponentProps<typeof MenuContent>["finalFocus"];
+  finalFocus?: React.ComponentProps<typeof MenuPopup>["finalFocus"];
 }) {
   const ctx = React.useContext(SplitCtx);
   return (
@@ -89,14 +89,14 @@ function SplitButtonMenu({
           </svg>
         </span>
       </MenuPrimitive.Trigger>
-      <MenuContent
+      <MenuPopup
         anchor={ctx?.frame}
         attachWeight={ctx?.layout === "cell" ? 1 : 2}
         className={contentClassName}
         finalFocus={finalFocus}
       >
         {children}
-      </MenuContent>
+      </MenuPopup>
     </MenuPrimitive.Root>
   );
 }

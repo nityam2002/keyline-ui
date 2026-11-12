@@ -187,7 +187,7 @@ test("toolbar: editor row — roving focus, seams, toggles, band, spacer, docked
   // menu docked to the frame
   const insert = tb.getByRole("button", { name: "Insert" });
   await insert.click();
-  const menu = p.locator('[data-slot="toolbar-menu"]');
+  const menu = p.locator('[data-slot="menu-popup"]').first();
   await menu.waitFor({ state: "visible" });
   await idle(p);
   await stableBox(menu);
@@ -277,7 +277,7 @@ test("toolbar cell: panel — separator, filler, input caret, docked menu", asyn
   const edge = await poll(edgeOf, (v) => parseFloat(v) >= 2, 2000);
   ok("toolbar input: focus is the cell's own edge band (kl-edge)", parseFloat(edge) >= 2, edge);
   await pt.getByRole("button", { name: "Columns" }).click();
-  const cm = p.locator('[data-slot="toolbar-menu"]');
+  const cm = p.locator('[data-slot="menu-popup"]').first();
   await cm.waitFor({ state: "visible" });
   ok(
     "toolbar cell: its menu docks at cell weight (1px)",
@@ -381,7 +381,7 @@ test("toolbar RTL: arrows follow reading order, row and menu mirror", async ({ o
   });
   ok("toolbar RTL: the row mirrors (first item at the right)", r, null);
   await tb.getByRole("button", { name: "Insert" }).click();
-  const menu = p.locator('[data-slot="toolbar-menu"]');
+  const menu = p.locator('[data-slot="menu-popup"]').first();
   await menu.waitFor({ state: "visible" });
   await idle(p);
   await stableBox(menu);

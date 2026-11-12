@@ -299,7 +299,7 @@ test("block 420: command rows overflow into More", async ({ open, ok }) => {
   const cnt = await p.evaluate(() => {
     const m = [...document.querySelectorAll("[role=menu]")].pop();
     return {
-      counts: m.querySelectorAll(".kl-menu-label .kl-tb-menu-count").length,
+      counts: m.querySelectorAll("[data-slot=menu-item-label] .kl-tb-menu-count").length,
       keys: m.querySelectorAll("kbd").length,
     };
   });

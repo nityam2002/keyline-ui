@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import { Button } from "@/components/keyline/ui/button";
+import { cn } from "@/lib/utils";
+import { ACTION_BUTTONS } from "@site/lib/action-buttons";
 import { Progress } from "@/components/keyline/ui/progress";
 import { createTracer, f64, isIndex, nth, splineFlat, TENTHS, type Bump } from "@site/lib/contours";
 import { Mark } from "@site/components/land";
@@ -500,7 +502,7 @@ export function KeylineTrace() {
                 </>
               )}
             </p>
-            <div className="s-kt-acts">
+            <div className={cn("s-kt-acts", ACTION_BUTTONS)}>
               {phase === "won" ? (
                 <Button ref={primaryRef} variant="primary" onClick={() => newLine((run?.level ?? 1) + 1)}>
                   Next line
@@ -543,7 +545,7 @@ export function KeylineTrace() {
             detail={detail}
           />
         </div>
-        <div className="s-tb-act s-kt-act">
+        <div className={cn("s-tb-act s-kt-act **:data-[slot=button]:justify-center", ACTION_BUTTONS)}>
           <PrimaryLink href="/">Back to the homepage</PrimaryLink>
           <Button onClick={openSearch} className="items-center gap-2">
             <Search size={16} aria-hidden="true" />

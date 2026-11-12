@@ -3,7 +3,7 @@ import * as ui from "../demo-ui";
 import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
 import { AppShell } from "@/registry/keyline/ui/app-shell";
 import { Nav, NavIdentity, NavAction, type NavGroup } from "@/registry/keyline/ui/nav";
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
+import { Menu, MenuTrigger, MenuPopup, MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
 import { Panel, PanelHeader, PanelBody } from "@/registry/keyline/ui/panel";
 
 /* ------------------------------------------------------------------ *
@@ -35,14 +35,14 @@ function ViewActions({ name, onRemove }: { name: string; onRemove: () => void })
   return (
     <Menu>
       <MenuTrigger render={<NavAction label={`More for ${name}`} />} />
-      <MenuContent align="end" attachWeight={1}>
+      <MenuPopup align="end" attachWeight={1}>
         <MenuItem>Rename</MenuItem>
         <MenuItem>Duplicate</MenuItem>
         <MenuSeparator />
         <MenuItem variant="destructive" onClick={onRemove}>
           Delete view
         </MenuItem>
-      </MenuContent>
+      </MenuPopup>
     </Menu>
   );
 }

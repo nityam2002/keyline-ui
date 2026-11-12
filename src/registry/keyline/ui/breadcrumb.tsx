@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRender } from "@base-ui/react/use-render";
 
 import { cn } from "@/lib/utils";
-import { Menu, MenuTrigger, MenuContent, MenuItem } from "./menu";
+import { Menu, MenuTrigger, MenuPopup, MenuItem } from "./menu";
 
 type Crumb = {
   label: React.ReactNode;
@@ -98,13 +98,13 @@ function Breadcrumb({
                 <span aria-hidden>…</span>
                 <Chevron />
               </MenuTrigger>
-              <MenuContent attachWeight={layout === "cell" ? 1 : 2}>
+              <MenuPopup attachWeight={layout === "cell" ? 1 : 2}>
                 {early.map((c, i) => (
                   <MenuItem key={i} code={i + 1} render={c.render ?? <a href={c.href} />}>
                     {c.label}
                   </MenuItem>
                 ))}
-              </MenuContent>
+              </MenuPopup>
             </Menu>
           </li>
         ) : null}

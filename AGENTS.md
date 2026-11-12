@@ -3,6 +3,7 @@
 - Read [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) before any change: it is the single source for the layout, the change
   loop and the rules.
 - Read [docs/design.md](docs/design.md) before changing how a component looks or is structured.
+- Read [docs/recipe.md](docs/recipe.md) before converting or adding a component.
 - Read [tests/browser/README.md](tests/browser/README.md) before writing or moving a browser spec.
 - While iterating, run the affected part tests (`pnpm test:parts <name>`) and page specs
   (`pnpm exec playwright test <name>`). Finish with `pnpm check` green, and

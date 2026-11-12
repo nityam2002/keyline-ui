@@ -21,10 +21,12 @@ import {
   MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
-  MenuSubmenu,
+  MenuSubmenuRoot,
   MenuSubmenuTrigger,
-  MenuSubmenuContent,
+  MenuPopup,
+  MenuSurface,
 } from "./menu";
+import { resolveClassName } from "../lib/keyline-render";
 
 type Layout = "control" | "cell";
 type Orientation = "horizontal" | "vertical";
@@ -363,14 +365,14 @@ function toMenu(el: El, key: React.Key): React.ReactNode {
     const content = kids.find((c) => c.type === ToolbarMenuContent);
     if (!trigger || !content) return null;
     return (
-      <MenuSubmenu key={key}>
+      <MenuSubmenuRoot key={key}>
         <MenuSubmenuTrigger disabled={trigger.props["disabled"] as boolean | undefined}>
           {labelOf(trigger.props)}
         </MenuSubmenuTrigger>
-        <MenuSubmenuContent container={content.props["container"] as never}>
+        <MenuPopup container={content.props["container"] as never}>
           {content.props["children"] as React.ReactNode}
-        </MenuSubmenuContent>
-      </MenuSubmenu>
+        </MenuPopup>
+      </MenuSubmenuRoot>
     );
   }
   return null;
@@ -936,7 +938,7 @@ function ToolbarMenuContent({
   style,
   align = "start",
   ...props
-}: React.ComponentProps<typeof MenuPrimitive.Popup> & {
+}: React.ComponentProps<typeof MenuSurface> & {
   container?: React.ComponentProps<typeof MenuPrimitive.Portal>["container"];
   align?: "start" | "end";
 }) {
@@ -955,15 +957,10 @@ function ToolbarMenuContent({
           collisionPadding={12}
           {...scopeProps(scope, { className: "kl-positioner" })}
         >
-          <MenuPrimitive.Popup
-            data-slot="toolbar-menu"
-            className={cn("kl-attached kl-dock kl-menu kl-tb-menu-panel", className)}
-            style={(state) =>
-              ({
-                "--kl-attach": `${weight}px`,
-                ...(typeof style === "function" ? style(state) : style),
-              }) as React.CSSProperties
-            }
+          <MenuSurface
+            attachWeight={weight}
+            className={resolveClassName("min-w-[max(13rem,var(--anchor-width))]", className)}
+            style={style}
             {...props}
           />
         </MenuPrimitive.Positioner>

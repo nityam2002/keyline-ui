@@ -10,7 +10,8 @@
 //   class-name-state     a function `className` receives the part's state, and its result is applied
 //   style-state          a function `style` receives the part's state, and its result is applied
 //   data-slot            the element carries the part's `data-slot`
-//   native-button        `nativeButton={false}` with a non-button render element keeps button semantics
+//   native-button        `nativeButton={false}` with a non-button render element keeps button semantics (role
+//                        button, and the part's tab index)
 //
 // Failures recorded in known-failures.ts run as expected failures.
 import * as React from "react";
@@ -52,6 +53,9 @@ export interface Part {
   slot: string;
   /** The part renders a button and accepts `nativeButton`. */
   button?: boolean | undefined;
+  /** The button's tab index under `nativeButton={false}`: -1 for a cell Base UI keeps out of the tab order (a
+   *  combobox's clear, caret and chip-remove cells are reached from the input). Default 0. */
+  buttonTabIndex?: number | undefined;
   /** Puts the part in the context it needs (its Root, a Provider); defaults to rendering it alone. */
   wrap?: ((part: React.ReactNode) => React.ReactNode) | undefined;
 }
@@ -198,7 +202,7 @@ export function describeConformance(component: string, parts: Record<string, Par
             const el = byTestId(TEST_ID);
             expect(el.tagName).toBe("DIV");
             expect(el.getAttribute("role")).toBe("button");
-            expect(el.tabIndex).toBe(0);
+            expect(el.tabIndex).toBe(part.buttonTabIndex ?? 0);
           });
         }
       });

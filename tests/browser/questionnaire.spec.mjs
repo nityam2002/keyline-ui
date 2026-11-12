@@ -16,7 +16,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   const heading = async () => (await step().locator('[data-slot="questionnaire-heading"]').textContent())?.trim();
   const errShown = () => step().evaluate((f) => !!f.querySelector(".kl-q-error:not([hidden])"));
   // Next with nothing chosen: blocked, the error shows on this step and describes it
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(errShown);
   const e1 = await step().evaluate((f) => {
     const err = f.querySelector(".kl-q-error:not([hidden])");
@@ -54,7 +54,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
     (await step().locator(".kl-q-error:not([hidden])").count()) === 0,
   );
   // Next: focus moves to the new step's heading
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(async () => (await focused(p)).text?.startsWith("Which docks"));
   const f2 = await focused(p);
   ok(
@@ -65,7 +65,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   ok(
     "questionnaire: an optional step says so and offers Skip",
     (await step().locator(".kl-q-opt").count()) === 1 &&
-      (await q.locator('[data-slot="questionnaire-skip"]').isVisible()),
+      (await q.getByRole("button", { name: "Skip", exact: true }).isVisible()),
   );
   ok(
     "questionnaire: question 1's error is not on question 2",
@@ -74,7 +74,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   // multiple choice, then Back and Next keep every answer
   await step().locator('[data-slot="questionnaire-choice"]', { hasText: "Rotterdam" }).click();
   await step().locator('[data-slot="questionnaire-choice"]', { hasText: "Hamburg" }).click();
-  await q.locator('[data-slot="questionnaire-previous"]').click();
+  await q.getByRole("button", { name: "Back", exact: true }).click();
   await until(async () => (await focused(p)).text?.startsWith("How should"));
   const f1 = await focused(p);
   const kept1 = await step().locator('input[value="rail"]').isChecked();
@@ -88,17 +88,17 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   await until(() => step().locator('input[value="sea"]').isChecked());
   ok("questionnaire: letter shortcut C chooses Sea", await step().locator('input[value="sea"]').isChecked());
   await p.keyboard.press("b");
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(async () => (await heading())?.startsWith("Which docks"));
   const kept2 = await step().evaluate((f) => [...f.querySelectorAll("input:checked")].map((i) => i.value));
   ok("questionnaire: question 2 still has Rotterdam and Hamburg", kept2.join() === "rtm,ham", kept2);
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(async () => !(await heading())?.startsWith("Which docks"));
   // free text: a malformed address is invalid on its own step, with the ! cell and aria-invalid
   const input = step().locator("input");
   await input.fill("planner");
   await input.blur();
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(errShown);
   const e3 = await step().evaluate((f) => ({
     err: f.querySelector(".kl-q-error:not([hidden])")?.textContent?.trim(),
@@ -114,16 +114,16 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
     e3,
   );
   await input.fill("planner@northwind.eu");
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(async () => (await heading())?.startsWith("Anything the planner"));
   ok(
     "questionnaire: a valid email goes on to question 4 (optional), where Submit replaces Next",
     (await heading())?.startsWith("Anything the planner") &&
-      (await q.locator('[data-slot="questionnaire-submit"]').isVisible()) &&
-      !(await q.locator('[data-slot="questionnaire-next"]').isVisible()),
+      (await q.getByRole("button", { name: "Send request" }).isVisible()) &&
+      !(await q.getByRole("button", { name: "Next", exact: true }).isVisible()),
   );
   // an optional step must be answered or skipped (the library's rule): an empty Submit says so; Skip sends
-  await q.locator('[data-slot="questionnaire-submit"]').click();
+  await q.getByRole("button", { name: "Send request" }).click();
   await until(errShown);
   const e4 = await step()
     .locator(".kl-q-error:not([hidden])")
@@ -131,19 +131,21 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
     .catch(() => null);
   ok("questionnaire: Submit on an empty optional last step asks for a note or Skip", e4?.includes("Skip to send"), e4);
   // submit: fails once (pending first), Retry sends the same answers
-  await q.locator('[data-slot="questionnaire-skip"]').click();
+  await q.getByRole("button", { name: "Skip", exact: true }).click();
   await until(
-    async () => (await q.locator('[data-slot="questionnaire-submit"]').getAttribute("aria-busy")) === "true",
+    async () => (await q.getByRole("button", { name: "Send request" }).getAttribute("aria-busy")) === "true",
     1000,
   );
   ok(
     "questionnaire: Submit shows the pending signal",
-    (await q.locator('[data-slot="questionnaire-submit"]').getAttribute("aria-busy")) === "true",
+    (await q.getByRole("button", { name: "Send request" }).getAttribute("aria-busy")) === "true",
   );
   const failState = () =>
     q.evaluate((f) => ({
       alert: f.querySelector('[data-slot="notice"][role="alert"]')?.textContent,
-      signal: f.querySelector('[data-slot="questionnaire-submit"]')?.getAttribute("data-signal"),
+      signal: f
+        .querySelector('.kl-q-actions [data-slot="button"][data-variant="primary"]:not([hidden])')
+        ?.getAttribute("data-signal"),
     }));
   await until(async () => {
     const s = await failState();
@@ -158,11 +160,11 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   // The ! cell starts at the Submit cell's edge (the container widens the label, not the button), and
   // the seam before it stays the row's seam (only a framed button turns its frame red)
   await idle(p);
-  const bang = await q.locator('[data-slot="questionnaire-submit"]').evaluate((b) => {
+  const bang = await q.getByRole("button", { name: "Send request" }).evaluate((b) => {
     const c = getComputedStyle(b),
       r = b.getBoundingClientRect(),
-      f = b.querySelector(".kl-button-fail > span").getBoundingClientRect();
-    const red = getComputedStyle(b.querySelector(".kl-button-fail > span")).backgroundColor;
+      f = b.querySelector("[data-slot=button-fail] > span").getBoundingClientRect();
+    const red = getComputedStyle(b.querySelector("[data-slot=button-fail] > span")).backgroundColor;
     return {
       gap: Math.round(
         (c.direction === "rtl" ? r.right - f.right : f.left - r.left) -
@@ -207,7 +209,7 @@ test("questionnaire: rtl and dark", async ({ open, ok }) => {
     .locator('[data-slot="questionnaire-item"]:not([hidden])')
     .locator('[data-slot="questionnaire-choice"]', { hasText: "Rail" })
     .click();
-  await q.locator('[data-slot="questionnaire-next"]').click();
+  await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(() =>
     q.evaluate((f) =>
       f
@@ -217,15 +219,18 @@ test("questionnaire: rtl and dark", async ({ open, ok }) => {
     ),
   );
   await idle(p);
-  const pos = await q.evaluate((f) => {
-    const r = (s) => f.querySelector(s).getBoundingClientRect();
-    return {
-      back: r('[data-slot="questionnaire-previous"]').left,
-      next: r('[data-slot="questionnaire-next"]').left,
-      box: r(".kl-q-item:not([hidden]) .kl-choice-box").left,
-      label: r(".kl-q-item:not([hidden]) .kl-choice-text").left,
-    };
-  });
+  const pos = {
+    ...(await q.evaluate((f) => {
+      const r = (s) => f.querySelector(s).getBoundingClientRect();
+      return {
+        box: r(".kl-q-item:not([hidden]) .kl-choice-box").left,
+        label: r(".kl-q-item:not([hidden]) .kl-choice-text").left,
+      };
+    })),
+    // the nav buttons are Buttons (their slot): found by role and name
+    back: (await q.getByRole("button", { name: "Back", exact: true }).boundingBox()).x,
+    next: (await q.getByRole("button", { name: "Next", exact: true }).boundingBox()).x,
+  };
   ok(
     "rtl: Back sits at the inline start (right), the box before the label (right of it)",
     pos.back > pos.next && pos.box > pos.label,

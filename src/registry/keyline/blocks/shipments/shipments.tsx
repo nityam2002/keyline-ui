@@ -12,9 +12,9 @@ import {
   MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
-  MenuSubmenu,
+  MenuSubmenuRoot,
   MenuSubmenuTrigger,
-  MenuSubmenuContent,
+  MenuPopup,
 } from "../../ui/menu";
 import {
   Toolbar,
@@ -970,9 +970,9 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
                     </MenuItem>
                   ))}
                   {sort.length < sortable.length ? (
-                    <MenuSubmenu>
+                    <MenuSubmenuRoot>
                       <MenuSubmenuTrigger>{sort.length ? "Then by" : "Sort by"}</MenuSubmenuTrigger>
-                      <MenuSubmenuContent container={container}>
+                      <MenuPopup container={container}>
                         {sortable
                           .filter((k) => !sort.some((lv) => lv.key === k))
                           .map((k) => (
@@ -983,8 +983,8 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
                               {colLabel(k)}
                             </MenuItem>
                           ))}
-                      </MenuSubmenuContent>
-                    </MenuSubmenu>
+                      </MenuPopup>
+                    </MenuSubmenuRoot>
                   ) : null}
                   {sort.length ? (
                     <MenuItem

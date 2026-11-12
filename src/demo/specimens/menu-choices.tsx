@@ -4,7 +4,7 @@ import { Button } from "@/registry/keyline/ui/button";
 import {
   Menu,
   MenuTrigger,
-  MenuContent,
+  MenuPopup,
   MenuItem,
   MenuCheckboxItem,
   MenuRadioGroup,
@@ -36,7 +36,7 @@ export function MenuChoicesSpecimen() {
       <div className={ui.row}>
         <Menu>
           <MenuTrigger render={<Button />}>View options</MenuTrigger>
-          <MenuContent>
+          <MenuPopup>
             <MenuGroup>
               <MenuGroupLabel>Columns</MenuGroupLabel>
               <MenuCheckboxItem
@@ -72,7 +72,7 @@ export function MenuChoicesSpecimen() {
             <MenuItem code="R" closeOnClick>
               Reset view
             </MenuItem>
-          </MenuContent>
+          </MenuPopup>
         </Menu>
       </div>
       <p className={ui.note} data-testid="menu-choices-state">

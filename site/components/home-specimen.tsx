@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@/lib/utils";
+import { ACTION_BUTTONS } from "@site/lib/action-buttons";
 import { HeroPlates } from "@site/components/hero-plates";
 
 /* Sheet 1's body: the plates on the land, and the title block where a drawing keeps its name, its legend and
@@ -47,7 +49,7 @@ export function HomeSpecimen({ identity, actions }: { identity: React.ReactNode;
             </span>
           </li>
         </ol>
-        <div className="s-tb-act">{actions}</div>
+        <div className={cn("s-tb-act **:data-[slot=button]:justify-center", ACTION_BUTTONS)}>{actions}</div>
       </footer>
     </>
   );

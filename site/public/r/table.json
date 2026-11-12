@@ -332,7 +332,7 @@
       ".kl-xp button:active svg": {
         "translate": "0 1px"
       },
-      ":is(.kl-xp button, .kl-td .kl-button):focus-visible": {
+      ":is(.kl-xp button, .kl-td [data-slot=\"button\"]):focus-visible": {
         "outline-offset": "var(--kl-ring-in)"
       },
       ".kl-xp svg": {

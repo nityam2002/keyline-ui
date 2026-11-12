@@ -1,7 +1,8 @@
 // Every Keyline variable a registry item reads is defined, and every kl- Tailwind utility it uses exists.
 // A variable is defined by the theme (theme/keyline.css) or, for a component's private variable, by the item's
-// own files (its CSS, or a style prop / setProperty in its source). A read with a fallback (var(--kl-x, 6)) is
-// allowed to be undefined. A utility such as bg-kl-cell or px-kl-inset needs a Tailwind theme entry ending in its
+// own files (its CSS, a style prop / setProperty in its source, or an arbitrary-property utility such as
+// [--kl-cut-line:…]). A read is var(--kl-x) or a utility's variable form, (--kl-x) or (length:--kl-x); one with a
+// fallback (var(--kl-x, 6), px-(--kl-x,14px)) is allowed to be undefined. A utility such as bg-kl-cell or px-kl-inset needs a Tailwind theme entry ending in its
 // name (tokens.ts THEME_ENTRIES).
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -13,7 +14,7 @@ const read = (f: string) => readFileSync(ROOT + f, "utf8");
 const metas = await loadMetas();
 const theme = metas.filter((m) => m.theme);
 const declared = (text: string) =>
-  new Set([...text.matchAll(/["'\s{;(]--(kl-[a-z0-9-]+)["']?\s*[:,]/g)].map((m) => m[1] ?? ""));
+  new Set([...text.matchAll(/["'\s{;([]--(kl-[a-z0-9-]+)["']?\s*[:,]/g)].map((m) => m[1] ?? ""));
 const themeVars = new Set(theme.flatMap((m) => [...declared(read(m.cssFile ?? ""))]));
 
 test("the theme defines its tokens (sanity)", () => {
@@ -46,7 +47,7 @@ test("every var(--kl-…) a registry item reads is defined by the theme, the ite
       }),
     );
     for (const [i, t] of texts.entries())
-      for (const [, name, fallback] of t.matchAll(/var\(\s*--(kl-[a-z0-9-]+)\s*(,)?/g))
+      for (const [, name, fallback] of t.matchAll(/(?:var)?\((?:[a-z-]+:)?\s*--(kl-[a-z0-9-]+)\s*(,)?/g))
         if (name && !fallback && !themeVars.has(name) && !own.has(name)) missing.push(`${files[i]}: --${name}`);
   }
   assert.deepEqual([...new Set(missing)], []);

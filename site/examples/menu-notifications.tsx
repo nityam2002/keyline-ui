@@ -5,7 +5,7 @@ import { Button } from "@/components/keyline/ui/button";
 import {
   Menu,
   MenuCheckboxItem,
-  MenuContent,
+  MenuPopup,
   MenuGroup,
   MenuGroupLabel,
   MenuRadioGroup,
@@ -26,7 +26,7 @@ export function NotificationMenu() {
     <div className="grid gap-4">
       <Menu>
         <MenuTrigger render={<Button className="justify-self-start" />}>Notify me</MenuTrigger>
-        <MenuContent>
+        <MenuPopup>
           <MenuGroup>
             <MenuGroupLabel>When</MenuGroupLabel>
             {(Object.keys(EVENTS) as Event[]).map((e) => (
@@ -43,7 +43,7 @@ export function NotificationMenu() {
               Daily digest
             </MenuRadioItem>
           </MenuRadioGroup>
-        </MenuContent>
+        </MenuPopup>
       </Menu>
       <p role="status" className="m-0 min-h-10 max-w-[52ch] text-[14px] text-kl-ink-2">
         {chosen.length

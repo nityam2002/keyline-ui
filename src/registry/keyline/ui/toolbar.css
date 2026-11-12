@@ -235,9 +235,6 @@
     align-items: center;
     padding-inline-end: calc(var(--kl-inset) - 2px);
   }
-  .kl-tb-menu-panel {
-    min-width: max(13rem, var(--anchor-width));
-  }
 
   /* affix: a count or a shortcut, divided inside the item as ButtonAffix is */
   .kl-tb-affix {
@@ -276,7 +273,7 @@
     font-variant-numeric: tabular-nums;
     color: var(--kl-ink-2);
   }
-  .kl-menu-item[data-highlighted] .kl-tb-menu-count {
+  [data-kl-menu-row][data-highlighted] .kl-tb-menu-count {
     color: inherit;
   }
 

@@ -3,10 +3,8 @@
 
 /* The real Keyline theme and the CSS of the items this site renders, exactly as the registry ships them (the registry is the source). */
 @import "../../src/registry/keyline/theme/keyline.css";
-@import "../../src/registry/keyline/ui/button.css";
 @import "../../src/registry/keyline/ui/toggle.css";
 @import "../../src/registry/keyline/ui/segmented.css";
-@import "../../src/registry/keyline/ui/menu.css";
 @import "../../src/registry/keyline/ui/toolbar.css";
 @import "../../src/registry/keyline/ui/checkbox.css";
 @import "../../src/registry/keyline/ui/tabs.css";
@@ -33,7 +31,6 @@
 @import "../../src/registry/keyline/ui/native-select.css";
 @import "../../src/registry/keyline/ui/slider.css";
 @import "../../src/registry/keyline/ui/number-field.css";
-@import "../../src/registry/keyline/ui/combobox.css";
 @import "../../src/registry/keyline/ui/multiselect.css";
 @import "../../src/registry/keyline/ui/otp-field.css";
 @import "../../src/registry/keyline/ui/time-field.css";

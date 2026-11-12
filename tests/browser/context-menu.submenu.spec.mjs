@@ -18,7 +18,7 @@ for (const dir of ["ltr", "rtl"]) {
     // press near the row's inline-start, so the submenu has room on the inline-end side (else it flips, correctly)
     const px = dir === "ltr" ? rb.x + 120 : rb.x + rb.width - 120;
     await q.mouse.click(px, rb.y + 20, { button: "right" });
-    const menu = q.locator(".kl-ctx-menu").first();
+    const menu = q.locator("[data-slot=menu-popup]").first();
     await menu.waitFor();
     await idle(q);
     const mb = await box(menu);
@@ -39,7 +39,7 @@ for (const dir of ["ltr", "rtl"]) {
       `context menu (${dir}): carries the page direction into the portal`,
       (await q
         .locator(".kl-positioner")
-        .filter({ has: q.locator(".kl-ctx-menu") })
+        .filter({ has: q.locator("[data-slot=menu-popup]") })
         .getAttribute("dir")) === dir,
       null,
     );
@@ -48,7 +48,7 @@ for (const dir of ["ltr", "rtl"]) {
     await q.keyboard.press("ArrowDown");
     await q.keyboard.press("ArrowDown");
     await q.keyboard.press(dir === "ltr" ? "ArrowRight" : "ArrowLeft");
-    const sub = q.locator(".kl-menu-subpanel").first();
+    const sub = q.locator("[data-slot=menu-popup]").filter({ hasText: "Customs broker" });
     await sub.waitFor();
     await until(async () => (await active(q)).text.startsWith("Customs broker"));
     await idle(q);
@@ -59,7 +59,7 @@ for (const dir of ["ltr", "rtl"]) {
       (await sub.isVisible()) && (dir === "ltr" ? near(sb.x, mb2.x + mb2.width - 2) : near(sb.x + sb.width, mb2.x + 2)),
       { sb, mb2 },
     );
-    const trig = menu.locator(".kl-menu-sub");
+    const trig = menu.locator("[data-slot=menu-submenu-trigger]");
     const tb = await box(trig);
     ok(
       `submenu (${dir}): its first row is level with the trigger row; the trigger keeps the cursor`,
@@ -91,7 +91,7 @@ for (const dir of ["ltr", "rtl"]) {
       await rows
         .nth(2)
         .dispatchEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: 0, clientY: 0 });
-      const m3 = q.locator(".kl-ctx-menu").first();
+      const m3 = q.locator("[data-slot=menu-popup]").first();
       await until(async () => (await m3.isVisible()) && /EUR1/.test(await m3.innerText()));
       ok(
         "context menu: a keyboard contextmenu event on a focused row opens its menu (focus inside)",

@@ -1250,6 +1250,8 @@ for (const [width, reduce] of run("actions")
   }
   await p.keyboard.press("ArrowRight");
   await p.getByRole("menuitemradio", { name: "Jim Halpert" }).waitFor();
+  // Base UI moves focus into the submenu after it shows: a key pressed before that goes to the parent menu
+  await p.waitForFunction(() => document.activeElement?.getAttribute("role") === "menuitemradio");
   await p.keyboard.press("ArrowDown");
   await p.keyboard.press("Enter");
   await p.waitForTimeout(150);
@@ -1680,7 +1682,7 @@ for (const [width, reduce] of run("inputs2")
   await who.fill("utica"); // one input event into the closed field, as a paste is
   await p.getByRole("option", { name: /Karen Filippelli/ }).waitFor({ timeout: 3000 });
   ok(
-    (await p.locator(".kl-cb-status").first().textContent()).includes("1 match"),
+    (await p.locator("[data-slot=combobox-status]").first().textContent()).includes("1 match"),
     `${tag} combobox: the status line counts the matches`,
   );
   await p.getByRole("option", { name: /Karen Filippelli/ }).click();
@@ -1704,7 +1706,7 @@ for (const [width, reduce] of run("inputs2")
     .waitFor({ timeout: 3000 })
     .catch(() => {});
   ok(
-    (await p.locator(".kl-cb-status").first().textContent()).includes("timed out") &&
+    (await p.locator("[data-slot=combobox-status]").first().textContent()).includes("timed out") &&
       (await p.getByRole("button", { name: "Retry" }).count()) === 1,
     `${tag} combobox: a failed search says so and offers Retry`,
   );

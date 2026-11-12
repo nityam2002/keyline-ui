@@ -423,13 +423,6 @@
     gap: 12px;
     padding: 18px 20px;
   }
-  .s-tb-act .kl-button {
-    min-height: 44px;
-    font-size: 15px;
-    padding-inline: 18px;
-    text-decoration: none;
-    justify-content: center;
-  }
 
   /* the legend: always in the title block, never moves */
   .s-legend {

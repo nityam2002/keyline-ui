@@ -6,7 +6,6 @@ export default {
   title: "Button",
   description: "Framed button with affix cells, key travel and pending/done/failed signals.",
   files: [{ path: "src/registry/keyline/ui/button.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/button.css",
   dependencies: ["@base-ui/react", "class-variance-authority"],
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/keyline-render", "utils"],
 } satisfies KeylineItem;

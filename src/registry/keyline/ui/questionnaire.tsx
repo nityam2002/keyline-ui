@@ -276,7 +276,6 @@ type NavProps<T extends React.ElementType> = Omit<React.ComponentProps<T>, "rend
 function QuestionnairePrevious({ className, children, signal, ...props }: NavProps<typeof Q.Previous>) {
   return (
     <Q.Previous
-      data-slot="questionnaire-previous"
       className={cn("kl-q-prev", className)}
       render={<Button layout="cell" variant="quiet" signal={signal} />}
       {...props}
@@ -288,7 +287,6 @@ function QuestionnairePrevious({ className, children, signal, ...props }: NavPro
 function QuestionnaireSkip({ className, children, signal, ...props }: NavProps<typeof Q.Skip>) {
   return (
     <Q.Skip
-      data-slot="questionnaire-skip"
       className={cn("kl-q-skip", className)}
       render={<Button layout="cell" variant="quiet" signal={signal} />}
       {...props}
@@ -300,7 +298,6 @@ function QuestionnaireSkip({ className, children, signal, ...props }: NavProps<t
 function QuestionnaireNext({ className, children, signal, ...props }: NavProps<typeof Q.Next>) {
   return (
     <Q.Next
-      data-slot="questionnaire-next"
       className={cn("kl-q-next", className)}
       render={<Button layout="cell" variant="primary" signal={signal} />}
       {...props}
@@ -313,7 +310,6 @@ function QuestionnaireNext({ className, children, signal, ...props }: NavProps<t
 function QuestionnaireSubmit({ className, children, signal, ...props }: NavProps<typeof Q.Submit>) {
   return (
     <Q.Submit
-      data-slot="questionnaire-submit"
       className={cn("kl-q-next", className)}
       render={<Button layout="cell" variant="primary" signal={signal} />}
       {...props}

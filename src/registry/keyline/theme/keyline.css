@@ -238,7 +238,9 @@
    never :dir(rtl). Next.js (Turbopack) runs LightningCSS with browser targets older than :dir() support and
    lowers it to a list of :lang() selectors, so an English page with dir="rtl" did not mirror. The attribute form
    has the same specificity as :dir() (the guard is in :where) and leaves an LTR island inside RTL alone; a third
-   level (RTL inside LTR inside RTL) reads as LTR. */
+   level (RTL inside LTR inside RTL) reads as LTR. Components written in utilities use the same selector as the
+   kl-rtl: variant (kl-rtl:-scale-x-100), never Tailwind's rtl:, which is :dir() and an unguarded [dir="rtl"] *. */
+@custom-variant kl-rtl (&:is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)));
 @layer base {
   /* DERIVED. Declared on every element that can change a source or the theme, so each scope recomputes
      from its own sources (a custom property resolves var() where it is declared, then inherits a value). */
@@ -435,7 +437,6 @@
     .kl-attached,
     .kl-select-panel,
     .kl-ms-list,
-    .kl-menu,
     .kl-cmd-list,
     .kl-popover,
     .kl-tabs-list,
@@ -888,7 +889,7 @@
     --kl-key-y: 1px;
   }
   .kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled])
-    > :is(.kl-slot, .kl-button-affix, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media) {
+    > :is(.kl-slot, [data-slot="button-affix"], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media) {
     translate: none;
   }
   :is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media) {

@@ -9,5 +9,11 @@ export default {
   files: [{ path: "src/registry/keyline/ui/context-menu.tsx", type: "registry:ui" }],
   cssFile: "src/registry/keyline/ui/context-menu.css",
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-scope", "@keyline-ui/menu"],
+  registryDependencies: [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/menu",
+    "@keyline-ui/keyline-render",
+  ],
 } satisfies KeylineItem;

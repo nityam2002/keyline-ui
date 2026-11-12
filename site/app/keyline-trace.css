@@ -207,12 +207,6 @@
     flex-wrap: wrap;
     gap: 10px;
   }
-  .s-kt-acts > .kl-button {
-    min-height: 44px;
-    padding-inline: 18px;
-    font-size: 15px;
-    text-decoration: none;
-  }
 
   /* the title block, cut to one row: who, how far, the way out */
   .s-kt-block {
@@ -241,13 +235,6 @@
     flex-direction: row;
     align-items: center;
     padding: 14px 20px;
-  }
-  .s-kt-act .kl-button {
-    min-height: 44px;
-  }
-  /* a control Button lets its label wrap; these two short labels hold one line at every width */
-  .s-lost .s-kt-act .kl-button > .kl-button-label {
-    white-space: nowrap;
   }
 
   @media (prefers-reduced-motion: reduce) {

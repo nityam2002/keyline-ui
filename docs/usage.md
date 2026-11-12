@@ -65,7 +65,7 @@ the `ui` alias does not move it, which keeps Keyline apart from shadcn's `compon
 | | |
 |---|---|
 | **Files** | Go to `components/keyline/{ui,lib,blocks}/` (under `src/` if your project uses it). Import them as `@/components/keyline/ui/button`. shadcn's own `components/ui/*` are untouched, so Keyline's `Button` and shadcn's `Button` coexist. |
-| **CSS** | Each item merges its own `kl-` rules (and the theme item its `--kl-*` tokens) into the CSS file named in `components.json`. Re-adding an item updates its rules in place rather than duplicating them. |
+| **CSS** | The theme item merges its `--kl-*` tokens and the shared construction rules into the CSS file named in `components.json`. Converted components (Button, Menu, Combobox) are styled with Tailwind utilities in their source, which your Tailwind picks up from `components/keyline/`; the others still merge their own `kl-` rules. Re-adding an item updates its rules in place rather than duplicating them. |
 | **Theme** | Every component item depends on `@keyline-ui/keyline`, the theme item: the `--kl-*` tokens, the shared construction rules and the `kl-` Tailwind utilities. |
 | **Dependencies** | Each item declares its npm and registry dependencies, so Base UI, the fonts and any wrapped library arrive with it. Libraries Keyline wraps are pinned exactly: `react-resizable-panels@4.14.8`, `react-day-picker@9.14.0`, `recharts@3.10.1`, `embla-carousel-react@8.6.0`, `@shadcn/react@0.3.1`. |
 | **Fonts** | Atkinson Hyperlegible Next and Atkinson Hyperlegible Mono come with `@keyline-ui/keyline`. |
@@ -301,10 +301,11 @@ Installed items are your code; nothing changes until you add them again. To take
 npx shadcn@latest add @keyline-ui/button --overwrite
 ```
 
-Without `--overwrite`, the CLI skips unchanged files and asks before replacing one you edited. Changed CSS rules
-update in place. The CLI only adds or updates, so a rule removed or renamed in Keyline, or the `@import` lines of
-a font you switched away from, stay in your CSS until you delete them. To remove an item, delete its files and
-its `kl-` rules yourself.
+Without `--overwrite`, the CLI skips unchanged files and asks before replacing one you edited. Button, Menu and
+Combobox are styled with Tailwind utilities in their source and add no CSS of their own, so updating them is only
+their files. For the other items, changed CSS rules update in place, but the CLI only adds or updates: a rule
+removed or renamed in Keyline, or the `@import` lines of a font you switched away from, stay in your CSS until
+you delete them. To remove an item, delete its files, and its `kl-` rules if it added any.
 
 ## Known limitations
 

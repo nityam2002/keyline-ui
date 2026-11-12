@@ -94,7 +94,7 @@ import { Pagination } from "@/components/keyline/ui/pagination";
 import {
   Menu,
   MenuTrigger,
-  MenuContent,
+  MenuPopup,
   MenuCheckboxItem,
   MenuRadioGroup,
   MenuRadioItem,
@@ -996,7 +996,7 @@ function Dispatch() {
               />
               <Menu>
                 <MenuTrigger render={<Button layout="cell" />}>View</MenuTrigger>
-                <MenuContent attachWeight={1} align="end">
+                <MenuPopup attachWeight={1} align="end">
                   <MenuGroup>
                     <MenuGroupLabel>Columns</MenuGroupLabel>
                     <MenuCheckboxItem
@@ -1017,7 +1017,7 @@ function Dispatch() {
                       <MenuRadioItem value="10">10</MenuRadioItem>
                     </MenuRadioGroup>
                   </MenuGroup>
-                </MenuContent>
+                </MenuPopup>
               </Menu>
             </TableToolbar>
             <TableScroll>
@@ -1983,9 +1983,9 @@ function Intake() {
                     action: (
                       <Menu>
                         <MenuTrigger render={<NavAction label={`More for ${v}`} />} />
-                        <MenuContent align="end" attachWeight={1}>
+                        <MenuPopup align="end" attachWeight={1}>
                           <MenuItem onClick={() => setViews(views.filter((x) => x !== v))}>Remove</MenuItem>
-                        </MenuContent>
+                        </MenuPopup>
                       </Menu>
                     ),
                   })),

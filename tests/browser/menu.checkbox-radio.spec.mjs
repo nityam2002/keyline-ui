@@ -27,7 +27,9 @@ test("menu: checkbox and radio items, in a Menu and a ContextMenu", async ({ ope
     (await menu.isVisible()) && (await carrier.getAttribute("aria-checked")) === "true",
     null,
   );
-  const filled = await carrier.locator(".kl-menu-box").evaluate((e) => getComputedStyle(e).backgroundColor);
+  const filled = await carrier
+    .locator("[data-slot=menu-item-box]")
+    .evaluate((e) => getComputedStyle(e).backgroundColor);
   ok(
     "menu: a checked box is filled (shape, not colour alone: tick inside)",
     filled !== "rgba(0, 0, 0, 0)" && (await carrier.locator("svg").count()) === 1,
@@ -55,7 +57,9 @@ test("menu: checkbox and radio items, in a Menu and a ContextMenu", async ({ ope
       (await p.getByRole("menuitemradio", { name: "Default" }).getAttribute("aria-checked")) === "false",
     null,
   );
-  const dot = await compact.locator(".kl-menu-dot").count();
+  const dot = await compact
+    .locator("[data-slot=menu-item-box][data-kind=radio] [data-slot=menu-item-indicator]")
+    .count();
   ok("menu: a chosen radio shows the filled square (a different shape from the tick)", dot === 1, dot);
   await p.keyboard.press("Escape");
   await until(async () => !(await menu.isVisible()));

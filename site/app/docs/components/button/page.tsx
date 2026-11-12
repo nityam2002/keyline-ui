@@ -153,9 +153,11 @@ export default function ButtonPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Button props" props={PROPS} />
       <p className="s-small">
-        Also exported: <code>ButtonAffix</code>, and <code>buttonVariants</code> for styling a link or a trigger as a
-        button. Built on <a href="https://base-ui.com/react/components/button">Base UI Button</a>; its other props pass
-        through.
+        Also exported: <code>ButtonAffix</code>, and <code>buttonVariants</code> for styling a plain link as a button.
+        To make the button itself a link, pass <code>render={'{<a href="…" />}'}</code> with{" "}
+        <code>nativeButton={"{false}"}</code>. <code>className</code> and <code>style</code> also take a function of the
+        button&apos;s state. Built on <a href="https://base-ui.com/react/components/button">Base UI Button</a>; its
+        other props pass through.
       </p>
     </DocPage>
   );

@@ -64,7 +64,7 @@ test("participants: validate, values, slider validate, server errors, cells", as
       (await p.getByRole("option", { name: "Standard" }).count()) === 0 ||
       !(await p.getByRole("option", { name: "Standard" }).isVisible()),
   );
-  const cbInput = carrier.locator("input.kl-cb-input");
+  const cbInput = carrier.locator("[data-slot=combobox-input]");
   await cbInput.fill("Mae");
   await p.getByRole("option", { name: /^Maersk/ }).click();
   await until(

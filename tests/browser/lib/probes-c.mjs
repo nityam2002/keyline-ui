@@ -77,7 +77,7 @@ export const menuRows = (p) =>
     return [...m.querySelectorAll("[role^=menuitem], [role=group] > [role=presentation], [role=separator]")].map(
       (e) => ({
         role: e.getAttribute("role"),
-        name: (e.querySelector(".kl-menu-label > span")?.textContent || e.textContent || "").trim(),
+        name: (e.querySelector("[data-slot=menu-item-label] > span")?.textContent || e.textContent || "").trim(),
         checked: e.getAttribute("aria-checked"),
         disabled: e.hasAttribute("data-disabled") || e.getAttribute("aria-disabled") === "true",
       }),

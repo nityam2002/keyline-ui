@@ -7,6 +7,8 @@ import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { cn } from "@/lib/utils";
 import { scopeProps, useKeylineScope, useMergedRef } from "../lib/keyline-scope";
 import { useScrollEdges } from "../lib/scroll-edges";
+import { resolveClassName } from "../lib/keyline-render";
+import { MenuSurface } from "./menu";
 
 type Layout = "control" | "cell";
 const MenubarLayout = React.createContext<Layout>("control");
@@ -27,7 +29,7 @@ const MenubarLayout = React.createContext<Layout>("control");
  *   bottom keyline at the frame's weight, so the two read as one shape. No cut on the menu.
  * - Narrow: the row scrolls sideways and marks the hidden edge (scroll edges).
  * - The rows are Menu's: import MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator,
- *   MenuGroup(Label) and MenuSubmenu* from ./menu (re-exported here under Menubar names too).
+ *   MenuGroup(Label) and MenuSubmenuRoot* from ./menu (re-exported here under Menubar names too).
  */
 function Menubar({
   className,
@@ -68,7 +70,7 @@ function MenubarContent({
   container,
   style,
   ...props
-}: React.ComponentProps<typeof MenuPrimitive.Popup> & {
+}: React.ComponentProps<typeof MenuSurface> & {
   container?: React.ComponentProps<typeof MenuPrimitive.Portal>["container"];
 }) {
   const layout = React.useContext(MenubarLayout);
@@ -87,15 +89,10 @@ function MenubarContent({
           collisionPadding={12}
           {...scopeProps(scope, { className: "kl-positioner" })}
         >
-          <MenuPrimitive.Popup
-            data-slot="menubar-content"
-            className={cn("kl-attached kl-dock kl-menu kl-mbar-menu", className)}
-            style={(state) =>
-              ({
-                "--kl-attach": `${weight}px`,
-                ...(typeof style === "function" ? style(state) : style),
-              }) as React.CSSProperties
-            }
+          <MenuSurface
+            attachWeight={weight}
+            className={resolveClassName("min-w-[max(220px,var(--anchor-width))]", className)}
+            style={style}
             {...props}
           />
         </MenuPrimitive.Positioner>
@@ -113,7 +110,7 @@ export {
   MenuSeparator as MenubarSeparator,
   MenuGroup as MenubarGroup,
   MenuGroupLabel as MenubarGroupLabel,
-  MenuSubmenu as MenubarSubmenu,
+  MenuSubmenuRoot as MenubarSubmenu,
   MenuSubmenuTrigger as MenubarSubmenuTrigger,
-  MenuSubmenuContent as MenubarSubmenuContent,
+  MenuPopup as MenubarSubmenuContent,
 } from "./menu";
