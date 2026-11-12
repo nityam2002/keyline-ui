@@ -209,16 +209,59 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   - a position guard measures after the entry has landed: wait for `data-starting-style` to go and for
     `popup.getAnimations()` to finish, not for a time. Give the fixture whole-pixel rows and line heights, so the
     edges it compares are whole.
-  - style guards: prove each one fails by breaking the class it guards, then restore it. A guard that compares
+  - style guards are for a style the page's behaviour depends on (a hit area, a geometry another part reads), not
+    for showing the look survived a conversion: `pnpm test:visual` does that. Prove each guard fails by breaking
+    the class it guards, then restore it. A guard that compares
     parts with each other can pass on broken code (size-contained stats with no flex basis all collapse to the same
     width); assert the expected value.
   - Remove the component's entries from `tests/parts/known-failures.ts`.
 - **Page specs** select by `data-slot` and roles, never by the removed `kl-` classes. Run them in Chromium and WebKit.
 - `pnpm test` checks that every `--kl-*` a part reads, including the `(--kl-x)` forms, is defined.
-- **Parity.** Before you delete the CSS, dump the computed styles of the component on the specimen and the records
-  app (closed and open, in default, compact-dark and comfortable-cut modes). Dump them again after converting, and
-  diff the two. Each remaining difference must be invisible (a zero-width border's colour) or intended (a size now
-  on the type scale).
+- **Parity** is proven with screenshots: see [Visual parity](#visual-parity) below. A style guard is no longer
+  needed to show a conversion kept the look; the behaviour tests (keyboard, focus, axe, conformance,
+  `eventDetails`) stay.
+
+### Visual parity
+
+`pnpm test:visual` shoots the demo app at a base commit and in your working tree and compares the shots pixel for
+pixel, with no tolerance. It shoots every specimen entry's section and the app and playground routes, in light and
+dark, default and compact density, LTR and RTL, in Chromium and WebKit, at rest and in the states listed in
+`tests/visual/states.mjs`. It exits non-zero on any difference and lists each differing shot with its before, after
+and diff images (`.artifacts/visual/`; the diff marks changed pixels in magenta).
+
+```sh
+pnpm test:visual --base <commit before the change> --only toolbar,toolbar-overflow   # while iterating
+pnpm test:visual --base <commit before the change>                                    # once, at the end
+pnpm test:visual --only chat --engines chromium                                       # against HEAD, one engine
+```
+
+1. Pick the base: the commit before the conversion (`--base` defaults to `HEAD`, which is right while the
+   conversion is still uncommitted). The base is shot once, from a git worktree, and cached by commit, so later
+   runs shoot only the working tree.
+2. While iterating, run with `--only` and the entries that show the component (and the routes `app` or
+   `playground` when it appears there). One entry in both engines takes about 20 seconds; a full run takes
+   about 4.5 minutes once the base is cached.
+3. Finish with a full run, with no `--only`: a shared token or a cascade change shows up in entries you did not
+   touch.
+4. Every differing shot is either fixed or explained in the pull request (an intended fix: a size now on the type
+   scale). Nothing is waved through as noise: two runs of the same code give identical shots, so a difference is a
+   change.
+5. To explain one differing shot, dump the computed styles of the elements in its diff box
+   (`.artifacts/styles/`): the dump is now a drill-down for one shot, not the parity proof.
+
+**Adding a state.** A style that shows only under interaction (hover, keyboard focus, an open popup, a pressed
+toggle, a scroll position) is shot only if a state asks for it. Add one to `tests/visual/states.mjs` under the entry
+id, using roles, names, `data-testid` and `data-slot` (never `.kl-*`):
+
+```js
+toolbar: [
+  { name: "focus-primary", do: [["focus", `#toolbar >> role=button[name="Publish"s]`]] },
+  { name: "menu-open", do: [["focus", "…Insert…"], ["press", "Enter"], ["wait", "role=menu"]], show: "role=menu" },
+],
+```
+
+Steps are `focus`, `hover`, `click`, `press`, `wait` and `wheel`; `show` adds a portaled popup to the shot. A new
+state is shot at the base on the next run (only that state; the rest stays cached).
 
 ## 5. Site and demo
 

@@ -27,6 +27,7 @@
     "test:types": "tsc -p tests/types --noEmit",
     "test:browser": "playwright test",
     "test:css-order": "node scripts/css-order-check.mjs",
+    "test:visual": "node scripts/visual.mjs",
     "test:consumer": "bash scripts/consumer-check.sh",
     "test:site": "node scripts/site-check.mjs",
     "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm test:types && pnpm registry:build && pnpm registry:verify && pnpm test:parts && pnpm test:browser && pnpm test:css-order",

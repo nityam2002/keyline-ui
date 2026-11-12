@@ -61,6 +61,11 @@ document those items.
    in light, dark, compact, RTL, narrow and reduced-motion configurations in both engines, and writes the images to
    `.artifacts/captures/`. The specs assert on geometry, styles and the accessibility tree rather than pixels, so
    this is how a visual change gets seen.
+   When a change must not alter the look (a refactor, a CSS-to-Tailwind conversion), prove it with
+   `pnpm test:visual [--base <commit>] [--only <entries>]`: it screenshots every specimen entry and the app and
+   playground routes across theme, density, direction and both engines, at the base commit and in the working
+   tree, and fails on any pixel that differs. See [docs/recipe.md](../docs/recipe.md#visual-parity). It is not
+   part of `pnpm check`.
 4. If the change affects what an item installs (its files, CSS, imports, or its meta), run
    `pnpm registry:build` and commit `site/public/r/` and `registry.json` with it. `pnpm test` and CI fail when
    they are out of date.
