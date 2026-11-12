@@ -76,7 +76,7 @@ test("form: orientation, label column, validation, server error, success", async
   ok(
     "form: success shows a done notice with the submitted values",
     await f.getByText("SH-77 · 12 PLT · std").isVisible(),
-    await f.locator(".kl-notice").allInnerTexts(),
+    await f.locator("[data-slot=notice]").allInnerTexts(),
   );
   ok("no page errors (default page)", p.errs.length === 0, p.errs);
 });

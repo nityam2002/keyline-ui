@@ -8,117 +8,16 @@
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/progress.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Progress as ProgressPrimitive } from \"@base-ui/react/progress\";\n\nimport { cn } from \"@/lib/utils\";\n\ntype ProgressProps = Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, \"children\"> & {\n  /** What is in progress (\"Uploading manifest.pdf\"). Visible unless `hideLabel`. */\n  label: React.ReactNode;\n  /** A line under the rail: amounts, time left, the failure's reason and what to do. */\n  detail?: React.ReactNode;\n  /** The task stopped. The fill turns attention-red and the readout says so; `value` keeps how far it got. */\n  failed?: boolean;\n  /** Readout text when failed. Default \"Failed\". */\n  failedText?: string;\n  /** Hide the label and readout when the surrounding text already says both (a table cell, a toast). */\n  hideLabel?: boolean;\n};\n\n/**\n * Task progress: how far a job has got, not a measurement (that is Meter). It is the pending signal\n * made determinate. Pending runs a yellow segment along a keyline; Progress fills the rail with the\n * same yellow, and draws the fill's leading end as a keyline so the boundary reads in every theme.\n *\n *   Uploading manifest.pdf                 64%\n *   [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓|                    ]     k1 rail · yellow fill · ink leading edge\n *   3.2 of 5 MB · about 12 s left\n *\n * - `value={null}`: indeterminate. The pending segment runs inside the rail (hatched and still under\n *   reduced motion).\n * - Complete: the readout gains the done glyph.\n * - `failed`: the fill turns red where it stopped and the readout says \"Failed\" with the attention glyph;\n *   say why and what to do in `detail`.\n *\n * Semantics (role=\"progressbar\", value text, status attributes) and number formatting are Base UI Progress's.\n */\nfunction Progress({\n  label,\n  detail,\n  failed,\n  failedText = \"Failed\",\n  hideLabel,\n  className,\n  getAriaValueText,\n  ...props\n}: ProgressProps) {\n  const detailId = React.useId();\n  return (\n    <ProgressPrimitive.Root\n      data-slot=\"progress\"\n      data-failed={failed || undefined}\n      aria-describedby={detail ? detailId : undefined}\n      aria-label={hideLabel && typeof label === \"string\" ? label : undefined}\n      getAriaValueText={\n        failed ? (formatted) => `${failedText}${formatted ? ` at ${formatted}` : \"\"}` : getAriaValueText\n      }\n      className={cn(\"kl-progress\", className)}\n      {...props}\n    >\n      {hideLabel ? null : (\n        <span className=\"kl-progress-head\">\n          <ProgressPrimitive.Label className=\"kl-progress-l\">{label}</ProgressPrimitive.Label>\n          {failed ? (\n            <span className=\"kl-progress-v\" data-tone=\"failed\">\n              <span className=\"kl-glyph\" data-kind=\"attention\" aria-hidden />\n              {failedText}\n            </span>\n          ) : (\n            <ProgressPrimitive.Value className=\"kl-progress-v\">\n              {(formatted, value) =>\n                value == null ? null : (\n                  <>\n                    {value >= (props.max ?? 100) ? <span className=\"kl-glyph\" data-kind=\"done\" aria-hidden /> : null}\n                    <bdi>{formatted}</bdi>\n                  </>\n                )\n              }\n            </ProgressPrimitive.Value>\n          )}\n        </span>\n      )}\n      <ProgressPrimitive.Track className=\"kl-progress-rail\">\n        <ProgressPrimitive.Indicator className=\"kl-progress-fill\" />\n      </ProgressPrimitive.Track>\n      {detail ? (\n        <span id={detailId} className=\"kl-progress-detail\">\n          {detail}\n        </span>\n      ) : null}\n    </ProgressPrimitive.Root>\n  );\n}\n\nexport { Progress, type ProgressProps };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { Progress as ProgressPrimitive } from \"@base-ui/react/progress\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\n/* What the parts need from the root that Base UI does not carry: the failure, and the max for the done glyph. */\nconst ProgressContext = React.createContext<{ failed: boolean; failedText: string; max: number }>({\n  failed: false,\n  failedText: \"Failed\",\n  max: 100,\n});\n\n/*\n * PROGRESS: the Meter's rail (k1, 10px), the pending signal's colour. The fill's leading end is an ink keyline, so\n * the boundary holds where yellow on paper is faint (light) and reads as one edge in dark. Indeterminate runs the\n * pending segment inside the rail. The root is a two-column grid: the label and the readout share the first row on\n * their baselines, the rail and the detail span both columns.\n */\nconst root = \"group/progress grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1\";\n\ntype ProgressState = ProgressPrimitive.Root.State;\n\ntype ProgressProps = Omit<ProgressPrimitive.Root.Props, \"children\"> & {\n  /** The task stopped. The fill turns attention-red and the readout says so; `value` keeps how far it got. */\n  failed?: boolean;\n  /** Readout text when failed. Default \"Failed\". */\n  failedText?: string;\n} & (\n    | {\n        /** What is in progress (\"Uploading manifest.pdf\"). Visible unless `hideLabel`. */\n        label: React.ReactNode;\n        /** A line under the rail: amounts, time left, the failure's reason and what to do. */\n        detail?: React.ReactNode;\n        /** Hide the label and readout when the surrounding text already says both (a table cell, a toast). */\n        hideLabel?: boolean;\n        children?: undefined;\n      }\n    | {\n        /** The parts, composed: ProgressLabel, ProgressValue, ProgressTrack with ProgressIndicator, ProgressDetail. */\n        children: React.ReactNode;\n        label?: undefined;\n        detail?: undefined;\n        hideLabel?: undefined;\n      }\n  );\n\n/**\n * Task progress: how far a job has got, not a measurement (that is Meter). It is the pending signal\n * made determinate. Pending runs a yellow segment along a keyline; Progress fills the rail with the\n * same yellow, and draws the fill's leading end as a keyline so the boundary reads in every theme.\n *\n *   Uploading manifest.pdf                 64%\n *   [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓|                    ]     k1 rail · yellow fill · ink leading edge\n *   3.2 of 5 MB · about 12 s left\n *\n * - `value={null}`: indeterminate. The pending segment runs inside the rail (hatched and still under\n *   reduced motion).\n * - Complete: the readout gains the done glyph.\n * - `failed`: the fill turns red where it stopped and the readout says \"Failed\" with the attention glyph;\n *   say why and what to do in `detail`.\n *\n * Given `label`, it renders its parts itself; pass children (the parts) to compose them instead.\n * Semantics (role=\"progressbar\", value text, status attributes) and number formatting are Base UI Progress's.\n */\nfunction Progress({\n  label,\n  detail,\n  failed = false,\n  failedText = \"Failed\",\n  hideLabel,\n  className,\n  style,\n  getAriaValueText,\n  children,\n  ...props\n}: ProgressProps): React.ReactElement {\n  const detailId = React.useId();\n  const context = React.useMemo(() => ({ failed, failedText, max: props.max ?? 100 }), [failed, failedText, props.max]);\n  return (\n    <ProgressContext.Provider value={context}>\n      <ProgressPrimitive.Root\n        data-failed={failed ? \"\" : undefined}\n        aria-describedby={detail ? detailId : undefined}\n        aria-label={hideLabel && typeof label === \"string\" ? label : undefined}\n        getAriaValueText={\n          failed ? (formatted) => `${failedText}${formatted ? ` at ${formatted}` : \"\"}` : getAriaValueText\n        }\n        className={resolveClassName(root, className)}\n        style={resolveStyle(undefined, style)}\n        {...props}\n        data-slot=\"progress\"\n      >\n        {children ?? (\n          <>\n            {hideLabel ? null : (\n              <>\n                <ProgressLabel>{label}</ProgressLabel>\n                <ProgressValue />\n              </>\n            )}\n            <ProgressTrack>\n              <ProgressIndicator />\n            </ProgressTrack>\n            {detail ? <ProgressDetail id={detailId}>{detail}</ProgressDetail> : null}\n          </>\n        )}\n      </ProgressPrimitive.Root>\n    </ProgressContext.Provider>\n  );\n}\n\nconst label = \"col-start-1 min-w-0 self-baseline text-(length:--kl-text-label) font-(--kl-weight-strong) wrap-anywhere\";\n\n/** What is in progress (Base UI Progress.Label): it names the bar. */\nfunction ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props): React.ReactElement {\n  return (\n    <ProgressPrimitive.Label className={resolveClassName(label, className)} {...props} data-slot=\"progress-label\" />\n  );\n}\n\nconst value = cn(\n  \"col-start-2 inline-flex flex-none items-center gap-1.5 self-baseline\",\n  \"text-(length:--kl-text-label) font-(--kl-weight-strong) whitespace-nowrap tabular-nums\",\n  \"group-data-failed/progress:text-kl-red-text\",\n);\n\n/** The readout (Base UI Progress.Value): the formatted value, with the done glyph when complete, or the failure\n * with the attention glyph. Hidden from assistive technology; the bar's value text says the same. Pass children (a\n * function of the formatted value and the value) to write it yourself. */\nfunction ProgressValue({ className, children, ...props }: ProgressPrimitive.Value.Props): React.ReactElement {\n  const { failed, failedText, max } = React.useContext(ProgressContext);\n  return (\n    <ProgressPrimitive.Value className={resolveClassName(value, className)} {...props} data-slot=\"progress-value\">\n      {children ??\n        (failed\n          ? () => (\n              <>\n                <span className=\"kl-glyph\" data-kind=\"attention\" aria-hidden />\n                {failedText}\n              </>\n            )\n          : (formatted, current) =>\n              current == null ? null : (\n                <>\n                  {current >= max ? <span className=\"kl-glyph -translate-y-px\" data-kind=\"done\" aria-hidden /> : null}\n                  <bdi>{formatted}</bdi>\n                </>\n              ))}\n    </ProgressPrimitive.Value>\n  );\n}\n\nconst track = cn(\n  \"relative col-span-full box-border block h-2.5 overflow-hidden\",\n  \"border-(length:--kl-k1) border-kl-line bg-kl-cell\",\n);\n\n/** The rail (Base UI Progress.Track): a k1 keyline box, 10px tall. */\nfunction ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props): React.ReactElement {\n  return (\n    <ProgressPrimitive.Track className={resolveClassName(track, className)} {...props} data-slot=\"progress-track\" />\n  );\n}\n\n/* Base UI sizes the fill while it has a value. Indeterminate, it leaves the indicator unsized and the pending\n   segment runs instead: kl-run (theme), 1100ms linear, reversed in RTL through --kl-run-dir. Reduced motion (the\n   system's, or data-kl-motion=\"reduce\") stills it as a hatched full rail. */\nconst indicator = cn(\n  \"box-border block h-full bg-kl-yellow transition-[width] duration-(--kl-t-unfold) ease-(--kl-ease-out)\",\n  \"data-progressing:border-e-(length:--kl-k1) data-progressing:border-e-kl-line\",\n  \"group-data-failed/progress:bg-kl-red group-data-failed/progress:data-progressing:border-e-kl-red\",\n  \"data-indeterminate:absolute data-indeterminate:inset-y-0 data-indeterminate:left-0 data-indeterminate:w-[34%]\",\n  \"data-indeterminate:border-x-(length:--kl-k1) data-indeterminate:border-x-kl-line\",\n  \"data-indeterminate:animate-[kl-run_1100ms_linear_infinite_var(--kl-run-dir,normal)]\",\n  \"in-data-[kl-motion=reduce]:data-indeterminate:start-0 in-data-[kl-motion=reduce]:data-indeterminate:w-full\",\n  \"in-data-[kl-motion=reduce]:data-indeterminate:animate-none in-data-[kl-motion=reduce]:data-indeterminate:border-0\",\n  \"in-data-[kl-motion=reduce]:data-indeterminate:bg-(image:--kl-hatch)\",\n  \"motion-reduce:data-indeterminate:start-0 motion-reduce:data-indeterminate:w-full\",\n  \"motion-reduce:data-indeterminate:animate-none motion-reduce:data-indeterminate:border-0\",\n  \"motion-reduce:data-indeterminate:bg-(image:--kl-hatch)\",\n  \"forced-colors:bg-[Highlight] forced-colors:forced-color-adjust-none\",\n  \"forced-colors:group-data-failed/progress:bg-[CanvasText]\",\n);\n\n/** The fill (Base UI Progress.Indicator): yellow with an ink leading edge; red where a failed task stopped. */\nfunction ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.Props): React.ReactElement {\n  return (\n    <ProgressPrimitive.Indicator\n      className={resolveClassName(indicator, className)}\n      {...props}\n      data-slot=\"progress-indicator\"\n    />\n  );\n}\n\nconst detailClass = cn(\n  \"col-span-full text-(length:--kl-text-label) wrap-anywhere text-kl-ink-2\",\n  \"group-data-failed/progress:text-kl-ink\",\n);\n\ntype ProgressDetailState = { failed: boolean };\n\n/** A line under the rail: amounts, time left, or why the task failed and what to do. Point the root's\n * `aria-describedby` at its id when you compose the parts. */\nfunction ProgressDetail({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"span\", ProgressDetailState>): React.ReactElement {\n  const { failed } = React.useContext(ProgressContext);\n  const state: ProgressDetailState = { failed };\n  const own = {\n    \"data-slot\": \"progress-detail\",\n    className: resolveClassName(detailClass, className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  return useRender({ defaultTagName: \"span\", render, state, props: mergeProps<\"span\">(props, own) });\n}\n\nexport {\n  Progress,\n  ProgressLabel,\n  ProgressValue,\n  ProgressTrack,\n  ProgressIndicator,\n  ProgressDetail,\n  type ProgressProps,\n  type ProgressState,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/progress.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-progress": {
-        "display": "grid",
-        "gap": "4px",
-        "min-width": "0"
-      },
-      ".kl-progress-head": {
-        "display": "flex",
-        "align-items": "baseline",
-        "justify-content": "space-between",
-        "gap": "12px",
-        "min-width": "0"
-      },
-      ".kl-progress-l": {
-        "min-width": "0",
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-progress-v": {
-        "flex": "none",
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "6px",
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-variant-numeric": "tabular-nums",
-        "white-space": "nowrap"
-      },
-      ".kl-progress-v[data-tone=\"failed\"]": {
-        "color": "var(--kl-red-text)"
-      },
-      ".kl-progress-v .kl-glyph[data-kind=\"done\"]": {
-        "translate": "0 -1px"
-      },
-      ".kl-progress-rail": {
-        "position": "relative",
-        "display": "block",
-        "height": "10px",
-        "box-sizing": "border-box",
-        "border": "var(--kl-k1) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)",
-        "overflow": "hidden"
-      },
-      ".kl-progress-fill": {
-        "display": "block",
-        "height": "100%",
-        "box-sizing": "border-box",
-        "background-color": "var(--kl-yellow)",
-        "transition": "width var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-progress[data-progressing] .kl-progress-fill": {
-        "border-inline-end": "var(--kl-k1) solid var(--kl-line)"
-      },
-      ".kl-progress[data-failed] .kl-progress-fill": {
-        "background-color": "var(--kl-red)",
-        "border-inline-end-color": "var(--kl-red)"
-      },
-      ".kl-progress[data-indeterminate] .kl-progress-fill": {
-        "position": "absolute",
-        "inset-block": "0",
-        "left": "0",
-        "width": "34%",
-        "border-inline": "var(--kl-k1) solid var(--kl-line)",
-        "animation": "kl-run 1100ms linear infinite var(--kl-run-dir, normal)"
-      },
-      "[data-kl-motion=\"reduce\"] .kl-progress[data-indeterminate] .kl-progress-fill": {
-        "animation": "none",
-        "inset-inline-start": "0",
-        "width": "100%",
-        "border": "0",
-        "background": "var(--kl-hatch), var(--kl-yellow)"
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        ".kl-progress[data-indeterminate] .kl-progress-fill": {
-          "animation": "none",
-          "inset-inline-start": "0",
-          "width": "100%",
-          "border": "0",
-          "background": "var(--kl-hatch), var(--kl-yellow)"
-        }
-      },
-      ".kl-progress-detail": {
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-progress[data-failed] .kl-progress-detail": {
-        "color": "var(--kl-ink)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-progress-fill": {
-          "forced-color-adjust": "none",
-          "background": "Highlight"
-        },
-        ".kl-progress[data-failed] .kl-progress-fill": {
-          "background": "CanvasText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

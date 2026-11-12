@@ -3,120 +3,22 @@
   "name": "notice",
   "title": "Notice",
   "description": "Inline message: a tone cell with a glyph, the message, and action cells; folds away; narrow layout drops actions to their own row.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/notice.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\ntype Tone = \"info\" | \"done\" | \"attention\" | \"neutral\";\n\ntype NoticeProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  /** info: cobalt, \"i\" · done: the working-set yellow, ✓ · attention: red, ! · neutral: ink rule, no fill */\n  tone?: Tone;\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** Actions: Buttons with layout=\"cell\". They share the notice's keylines and wrap below on narrow widths. */\n  actions?: React.ReactNode;\n  /** control: its own 2px frame. cell: a row of an enclosing frame (top of a panel, above a table). */\n  layout?: \"control\" | \"cell\";\n  /** false folds the notice back to its top keyline (and makes it inert); true unfolds it. */\n  open?: boolean;\n  /** Renders a close cell. */\n  onDismiss?: () => void;\n  dismissLabel?: string;\n  /** Announce when it appears. Use for results of something the user just did, not for page furniture. */\n  live?: boolean;\n};\n\nconst GLYPH: Record<Tone, React.ReactNode> = {\n  info: \"i\",\n  attention: \"!\",\n  neutral: <span className=\"kl-glyph\" data-kind=\"none\" />,\n  done: <span className=\"kl-glyph\" data-kind=\"done\" />,\n};\n\n/**\n * An inline message about the place it sits in. One frame: a signal cell carrying the tone's glyph\n * (shape, not only colour), the message, and its actions as cells. It never floats: a toast is a record\n * of something that happened; a notice describes a condition that is still true.\n */\nfunction Notice({\n  tone = \"info\",\n  title,\n  description,\n  actions,\n  layout = \"control\",\n  open = true,\n  onDismiss,\n  dismissLabel = \"Dismiss\",\n  live,\n  className,\n  ...props\n}: NoticeProps) {\n  const role = live ? (tone === \"attention\" ? \"alert\" : \"status\") : undefined;\n  return (\n    <div\n      data-slot=\"notice-root\"\n      className=\"kl-unfold kl-notice-fold\"\n      data-open={open ? \"\" : undefined}\n      inert={!open || undefined}\n    >\n      <div>\n        <div\n          data-slot=\"notice\"\n          data-tone={tone}\n          data-kl-layout={layout}\n          role={role}\n          className={cn(\"kl-ctl kl-notice\", className)}\n          {...props}\n        >\n          <span className=\"kl-notice-sig\" aria-hidden>\n            {GLYPH[tone]}\n          </span>\n          <div className=\"kl-notice-body\">\n            <p className=\"kl-notice-title\">{title}</p>\n            {description ? <div className=\"kl-notice-desc\">{description}</div> : null}\n          </div>\n          {actions ? <div className=\"kl-cells kl-notice-actions\">{actions}</div> : null}\n          {onDismiss ? (\n            <button type=\"button\" className=\"kl-cell kl-key kl-notice-x\" aria-label={dismissLabel} onClick={onDismiss}>\n              <svg\n                viewBox=\"0 0 16 16\"\n                width=\"14\"\n                height=\"14\"\n                fill=\"none\"\n                stroke=\"currentColor\"\n                strokeWidth=\"1.75\"\n                strokeLinecap=\"square\"\n                aria-hidden\n              >\n                <path d=\"m4 4 8 8M12 4l-8 8\" />\n              </svg>\n            </button>\n          ) : null}\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport { Notice, type Tone as NoticeTone };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype Tone = \"info\" | \"done\" | \"attention\" | \"neutral\";\ntype NoticeLayout = \"control\" | \"cell\";\n\n/*\n * The notice is a size container (kl-notice): at 520px and under its actions drop to their own row of cells, under\n * the message. Every narrow rule is written in full ([@container_kl-notice_(max-width:520px)]:…).\n */\nconst noticeVariants = cva(\n  [\n    \"kl-ctl @container/kl-notice grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto_auto] items-stretch\",\n    \"bg-kl-cell text-kl-ink\",\n  ],\n  {\n    variants: {\n      tone: { info: \"\", done: \"\", attention: \"border-kl-red\", neutral: \"\" },\n    },\n  },\n);\n\n/* the signal cell: the tone's fill and glyph. A cut frame's first cell keeps its glyph clear of the diagonal. The\n   font shorthand it replaces also reset numerals and style, so they are set back here. */\nconst signalVariants = cva(\n  [\n    \"grid min-h-(--kl-row) w-[calc(40px+var(--kl-c,0px)*0.35)] place-items-center ps-[calc(var(--kl-c,0px)*0.35)]\",\n    \"border-e-(length:--kl-k1) border-e-kl-seam\",\n    \"font-(family-name:--kl-font) text-[16px]/none font-(--kl-weight-display) not-italic normal-nums\",\n    \"forced-colors:bg-[Mark] forced-colors:text-[MarkText] forced-colors:forced-color-adjust-none\",\n  ],\n  {\n    variants: {\n      tone: {\n        info: \"bg-kl-cobalt text-kl-on-cobalt\",\n        done: \"bg-kl-yellow text-kl-on-yellow\",\n        attention: \"bg-kl-red text-kl-on-red\",\n        neutral: \"\",\n      },\n    },\n  },\n);\n\nconst actionsClass = cn(\n  \"kl-cells border-s-(length:--kl-k1) border-s-kl-seam *:min-w-max\",\n  \"[@container_kl-notice_(max-width:520px)]:col-span-full [@container_kl-notice_(max-width:520px)]:row-2\",\n  \"[@container_kl-notice_(max-width:520px)]:border-s-0 [@container_kl-notice_(max-width:520px)]:border-t-(length:--kl-k1)\",\n  \"[@container_kl-notice_(max-width:520px)]:border-t-kl-seam\",\n  \"[@container_kl-notice_(max-width:520px)]:*:min-w-0 [@container_kl-notice_(max-width:520px)]:*:flex-[1_1_0]\",\n);\n\nconst GLYPH: Record<Tone, React.ReactNode> = {\n  info: \"i\",\n  attention: \"!\",\n  neutral: <span className=\"kl-glyph\" data-kind=\"none\" />,\n  done: <span className=\"kl-glyph\" data-kind=\"done\" />,\n};\n\ntype NoticeState = { tone: Tone; layout: NoticeLayout; open: boolean };\n\ntype NoticeProps = Omit<PartProps<\"div\", NoticeState>, \"title\" | \"children\"> & {\n  /** info: cobalt, \"i\" · done: the working-set yellow, ✓ · attention: red, ! · neutral: ink rule, no fill */\n  tone?: Tone;\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** Actions: Buttons with layout=\"cell\". They share the notice's keylines and wrap below on narrow widths. */\n  actions?: React.ReactNode;\n  /** control: its own 2px frame. cell: a row of an enclosing frame (top of a panel, above a table). */\n  layout?: NoticeLayout;\n  /** false folds the notice back to its top keyline (and makes it inert); true unfolds it. */\n  open?: boolean;\n  /** Renders a close cell. */\n  onDismiss?: () => void;\n  dismissLabel?: string;\n  /** Announce when it appears. Use for results of something the user just did, not for page furniture. */\n  live?: boolean;\n};\n\n/**\n * An inline message about the place it sits in. One frame: a signal cell carrying the tone's glyph\n * (shape, not only colour), the message, and its actions as cells. It never floats: a toast is a record\n * of something that happened; a notice describes a condition that is still true.\n *\n * The frame (data-slot=\"notice\") takes the props; it sits in a fold (data-slot=\"notice-root\") that `open`\n * unfolds from the top keyline.\n */\nfunction Notice({\n  tone = \"info\",\n  title,\n  description,\n  actions,\n  layout = \"control\",\n  open = true,\n  onDismiss,\n  dismissLabel = \"Dismiss\",\n  live,\n  render,\n  className,\n  style,\n  ...props\n}: NoticeProps): React.ReactElement {\n  const state: NoticeState = { tone, layout, open };\n  const own = {\n    ...dataAttrs({ tone, \"kl-layout\": layout }),\n    \"data-slot\": \"notice\",\n    className: resolveClassName(cn(noticeVariants({ tone })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        <span data-slot=\"notice-signal\" className={cn(signalVariants({ tone }))} aria-hidden>\n          {GLYPH[tone]}\n        </span>\n        <div data-slot=\"notice-content\" className=\"grid min-w-0 content-center gap-0.5 px-(--kl-inset) py-[9px]\">\n          <p\n            data-slot=\"notice-title\"\n            className={cn(\n              \"m-0 leading-[1.3] font-(--kl-weight-strong) wrap-anywhere\",\n              tone === \"attention\" && \"text-kl-red-text\",\n            )}\n          >\n            {title}\n          </p>\n          {description ? (\n            <div\n              data-slot=\"notice-description\"\n              className=\"text-(length:--kl-text-label)/[1.4] wrap-anywhere text-kl-ink-2 [&>:is(p,ul)]:m-0\"\n            >\n              {description}\n            </div>\n          ) : null}\n        </div>\n        {actions ? (\n          <div data-slot=\"notice-actions\" className={actionsClass}>\n            {actions}\n          </div>\n        ) : null}\n        {onDismiss ? (\n          <button\n            type=\"button\"\n            data-slot=\"notice-dismiss\"\n            className=\"kl-cell kl-key w-(--kl-row) justify-center border-s-(length:--kl-k1) border-s-kl-seam p-0\"\n            aria-label={dismissLabel}\n            onClick={onDismiss}\n          >\n            <svg\n              viewBox=\"0 0 16 16\"\n              width=\"14\"\n              height=\"14\"\n              fill=\"none\"\n              stroke=\"currentColor\"\n              strokeWidth=\"1.75\"\n              strokeLinecap=\"square\"\n              aria-hidden\n            >\n              <path d=\"m4 4 8 8M12 4l-8 8\" />\n            </svg>\n          </button>\n        ) : null}\n      </>\n    ),\n  };\n  const frame = useRender({\n    defaultTagName: \"div\",\n    render,\n    state,\n    props: mergeProps<\"div\">({ role: live ? (tone === \"attention\" ? \"alert\" : \"status\") : undefined }, props, own),\n  });\n  return (\n    <div\n      data-slot=\"notice-root\"\n      className=\"kl-unfold min-w-0\"\n      data-open={open ? \"\" : undefined}\n      inert={!open || undefined}\n    >\n      <div>{frame}</div>\n    </div>\n  );\n}\n\nexport { Notice, type NoticeProps, type Tone as NoticeTone };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/notice.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-notice-fold": {
-        "min-width": "0"
-      },
-      ".kl-notice": {
-        "container": "kl-notice / inline-size",
-        "display": "grid",
-        "grid-template-columns": "auto minmax(0, 1fr) auto auto",
-        "align-items": "stretch",
-        "background-color": "var(--kl-cell)",
-        "color": "var(--kl-ink)",
-        "min-width": "0"
-      },
-      ".kl-notice[data-kl-layout=\"cell\"]": {
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-notice-sig": {
-        "display": "grid",
-        "place-items": "center",
-        "width": "calc(40px + var(--kl-c, 0px) * 0.35)",
-        "min-height": "var(--kl-row)",
-        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
-        "font": "var(--kl-weight-display) 16px/1 var(--kl-font)",
-        "padding-inline-start": "calc(var(--kl-c, 0px) * 0.35)"
-      },
-      ".kl-notice[data-tone=\"info\"] .kl-notice-sig": {
-        "background-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)"
-      },
-      ".kl-notice[data-tone=\"done\"] .kl-notice-sig": {
-        "background-color": "var(--kl-yellow)",
-        "color": "var(--kl-on-yellow)"
-      },
-      ".kl-notice[data-tone=\"attention\"] .kl-notice-sig": {
-        "background-color": "var(--kl-red)",
-        "color": "var(--kl-on-red)"
-      },
-      ".kl-notice[data-tone=\"attention\"]": {
-        "border-color": "var(--kl-red)"
-      },
-      ".kl-notice-body": {
-        "display": "grid",
-        "align-content": "center",
-        "gap": "2px",
-        "padding": "9px var(--kl-inset)",
-        "min-width": "0"
-      },
-      ".kl-notice-title": {
-        "margin": "0",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.3",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-notice-desc": {
-        "color": "var(--kl-ink-2)",
-        "font-size": "13px",
-        "line-height": "1.4",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-notice-desc > :is(p, ul)": {
-        "margin": "0"
-      },
-      ".kl-notice[data-tone=\"attention\"] .kl-notice-title": {
-        "color": "var(--kl-red-text)"
-      },
-      ".kl-notice-actions": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-notice-actions > *": {
-        "min-width": "max-content"
-      },
-      ".kl-notice-x": {
-        "justify-content": "center",
-        "width": "var(--kl-row)",
-        "padding": "0",
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam) !important"
-      },
-      "@container kl-notice (max-width: 520px)": {
-        ".kl-notice": {
-          "grid-template-columns": "auto minmax(0, 1fr) auto"
-        },
-        ".kl-notice-actions": {
-          "grid-column": "1 / -1",
-          "grid-row": "2",
-          "border-inline-start": "0",
-          "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-        },
-        ".kl-notice-actions > *": {
-          "flex": "1 1 0",
-          "min-width": "0"
-        }
-      },
-      "@media (forced-colors: active)": {
-        ".kl-notice-sig": {
-          "forced-color-adjust": "none",
-          "background": "Mark !important",
-          "color": "MarkText !important"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

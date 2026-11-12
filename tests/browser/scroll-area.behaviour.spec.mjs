@@ -24,7 +24,7 @@ async function setup(open) {
         bar: bar && bar.getBoundingClientRect().toJSON(),
         thumb: th && th.getBoundingClientRect().toJSON(),
         cRight: c.getBoundingClientRect().right,
-        items: [...c.querySelectorAll("[data-slot=item], .kl-item")].map((i) => i.getBoundingClientRect().right),
+        items: [...c.querySelectorAll("[data-slot=item]")].map((i) => i.getBoundingClientRect().right),
       };
     });
   await until(async () => (await sa()).bar);

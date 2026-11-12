@@ -94,10 +94,10 @@
       ".kl-insp-row > .kl-insp-s + .kl-insp-s": {
         "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
       },
-      ".kl-insp > .kl-notice-fold": {
+      ".kl-insp > [data-slot=\"notice-root\"]": {
         "flex": "none"
       },
-      ".kl-insp > .kl-notice-fold[data-open]": {
+      ".kl-insp > [data-slot=\"notice-root\"][data-open]": {
         "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
       },
       ".kl-insp-a": {

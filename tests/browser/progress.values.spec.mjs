@@ -19,7 +19,7 @@ test("progress: values, states, fill width, advance and recovery", async ({ open
   ok(
     "progress: failed says so in the value text and in the readout",
     /Failed at 38/.test((await bars.nth(3).getAttribute("aria-valuetext")) || "") &&
-      /Failed/.test(await bars.nth(3).locator(".kl-progress-v").innerText()),
+      /Failed/.test(await bars.nth(3).locator("[data-slot=progress-value]").innerText()),
     await bars.nth(3).getAttribute("aria-valuetext"),
   );
   ok(
@@ -27,8 +27,8 @@ test("progress: values, states, fill width, advance and recovery", async ({ open
     (await bars.nth(3).getAttribute("aria-describedby")) !== null,
     null,
   );
-  const rail = await box(bars.nth(1).locator(".kl-progress-rail"));
-  const fill = await box(bars.nth(1).locator(".kl-progress-fill"));
+  const rail = await box(bars.nth(1).locator("[data-slot=progress-track]"));
+  const fill = await box(bars.nth(1).locator("[data-slot=progress-indicator]"));
   ok("progress: the fill is 64% of the rail's inner width", near(fill.width, (rail.width - 2) * 0.64, 1.5), {
     rail,
     fill,

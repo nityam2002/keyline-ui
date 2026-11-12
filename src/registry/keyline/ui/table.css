@@ -382,10 +382,7 @@
   .kl-tr-state > td {
     padding: 0;
   }
-  .kl-tr-state .kl-empty.kl-tf-state {
-    min-height: 240px;
-    white-space: normal;
-  }
+  /* (the empty or error row's Empty: the rule sits in @layer utilities, below) */
   .kl-skel {
     display: block;
     height: 10px;
@@ -567,5 +564,14 @@
     .kl-sort[data-dir="descending"] .kl-sort-down {
       fill: CanvasText;
     }
+  }
+}
+
+/* Empty writes its look as utilities, which sit in a later layer than this file's @layer components: a rule here that
+   changes one of its properties sits in @layer utilities, keyed on its attributes, until Table is converted too. */
+@layer utilities {
+  .kl-tr-state [data-slot="empty"].kl-tf-state {
+    min-height: 240px;
+    white-space: normal;
   }
 }

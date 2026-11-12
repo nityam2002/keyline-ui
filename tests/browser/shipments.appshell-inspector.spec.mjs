@@ -57,12 +57,12 @@ test("block wide (1440): Inspector as the shell's aside, Notice when filtered ou
   );
   ok(
     "block: the Notice owns the keyline under it",
-    (await aside.locator(".kl-notice-fold").evaluate((e) => getComputedStyle(e).borderBottomWidth)) === "1px",
+    (await aside.locator("[data-slot=notice-root]").evaluate((e) => getComputedStyle(e).borderBottomWidth)) === "1px",
     null,
   );
   await notice.getByRole("button", { name: "Show in table" }).click();
   const fold = await poll(
-    () => aside.locator(".kl-notice-fold").getAttribute("data-open"),
+    () => aside.locator("[data-slot=notice-root]").getAttribute("data-open"),
     (v) => v === null,
     3000,
   );

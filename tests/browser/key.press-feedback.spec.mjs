@@ -85,7 +85,7 @@ test("key: a shipment ID answers the press", async ({ open, ok }) => {
 });
 
 const CELLS =
-  ".kl-slot[data-open] > span > span, [data-slot=button-affix], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media";
+  ".kl-slot[data-open] > span > span, [data-slot=button-affix], .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, [data-slot=item-media]";
 async function cellsCheck(p, ok, sel, name) {
   const el = p.locator(sel).filter({ visible: true }).first();
   if (!(await el.count())) {
@@ -141,6 +141,6 @@ test("key cells: specimen families keep their cells on the frame", async ({ open
 });
 
 test("key cells: an item with media keeps its cells on the frame", async ({ open, ok }) => {
-  const p = await open({ ...VP, route: "playground", ready: ".kl-key.kl-item" });
-  await cellsCheck(p, ok, ".kl-key.kl-item:has(> .kl-item-media)", "item with media");
+  const p = await open({ ...VP, route: "playground", ready: "[data-slot=item][data-interactive]" });
+  await cellsCheck(p, ok, "[data-slot=item][data-interactive]:has(> [data-slot=item-media])", "item with media");
 });

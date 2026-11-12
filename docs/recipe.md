@@ -34,6 +34,12 @@ Menu and Combobox were converted this way first; their diffs are the worked exam
   components position it themselves (`MenuSurface`).
 - **A field component keeps its convenience API** (`Combobox` with `options` and `loadOptions`), built from the
   exported parts in the same file. Change callbacks pass Base UI's `eventDetails` through as their last argument.
+- **A display component composes from its parts too** (`Progress`, `Meter`): its props are a union of the
+  convenience props (`label`, `detail`) and `children` (the parts). A wrapper that only laid out parts (a head row
+  for the label and the value) becomes a grid on the root, so composed parts are its direct children and land in
+  the same cells: `grid-cols-[minmax(0,1fr)_auto]` with the label in column 1, the value in column 2, and the
+  track `col-span-full`. A state the parts need that Base UI doesn't carry (`failed`) goes on the root as an
+  attribute (`data-failed`) for a named group (`group-data-failed/progress:`), and through context for content.
 - **A button that shows only an icon requires a name in its type**: `ComboboxClear` and `ComboboxChipRemove` take
   `{ "aria-label": string }`.
 
@@ -73,6 +79,13 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
 - Forced colours: `forced-colors:` with system colours (`forced-colors:bg-[Highlight]`).
 - A child styles itself from its part's state with a named group: `group/menu-item` on the row,
   `group-data-highlighted/menu-item:text-inherit` on the cell.
+- **Container breakpoints keep the stylesheet's inclusive bound.** A part that is its own size container
+  (`@container/kl-empty`) writes its narrow rules as `[@container_kl-empty_(max-width:520px)]:…`.
+  `@max-[520px]/kl-empty:` compiles to `width < 520px`, which moves the bound by a pixel.
+- **`in-data-[…]:` adds no specificity**: it compiles to `:where([data-…]) &`. An ancestor setting that must
+  outrank another variant on the same property (compact density over a container query) is written as a
+  descendant selector, `[[data-kl-density=compact]_&]:min-w-32`, one attribute more. Use `in-data-` where nothing
+  competes (`in-data-[kl-motion=reduce]:`).
 
 ### Edges and the cascade
 
@@ -108,7 +121,12 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   - axe, closed and open. Portal the popup into the test's `<main>` (`container`), as a page would put it in its
     landmark.
   - keyboard: Escape, and Tab out at both edges. Use text fields as the neighbours: WebKit on macOS doesn't Tab to
-    buttons.
+    buttons. To reach a native `<button>` the component renders itself (a dismiss cell, an Item rendered as a
+    button), press Option+Tab in WebKit, the key a Safari user presses for the same order:
+    `const TAB = server.browser === "webkit" ? "{Alt>}{Tab}{/Alt}" : "{Tab}"`.
+  - style guards: prove each one fails by breaking the class it guards, then restore it. A guard that compares
+    parts with each other can pass on broken code (size-contained stats with no flex basis all collapse to the same
+    width); assert the expected value.
   - Remove the component's entries from `tests/parts/known-failures.ts`.
 - **Page specs** select by `data-slot` and roles, never by the removed `kl-` classes. Run them in Chromium and WebKit.
 - `pnpm test` checks that every `--kl-*` a part reads, including the `(--kl-x)` forms, is defined.

@@ -171,7 +171,7 @@ test("notice: dismiss folds it away and makes it inert", async ({ open, ok }) =>
 
 test("item: rows are real controls; the link row is a link", async ({ open, ok }) => {
   const { p, scope } = await setup(open);
-  const items = scope.locator("[data-slot=item-list], .kl-item-list").first();
+  const items = scope.locator("[data-slot=item-list]").first();
   ok(
     "item: switch inside a row toggles from the keyboard",
     await (async () => {

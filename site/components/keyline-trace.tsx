@@ -533,6 +533,7 @@ export function KeylineTrace() {
         </div>
         <div className="s-kt-status">
           <Progress
+            className="**:data-[slot=progress-label]:font-bold"
             label={
               <>
                 Level {level}

@@ -53,8 +53,8 @@ test("sort: aria-sort, band, press cycle, end-aligned mark, empty result", async
   await s.getByRole("button", { name: "Filter to nothing" }).click();
   ok(
     "sort: an empty result is an Empty cell inside the table",
-    (await s.locator(".kl-tr-state .kl-empty").count()) === 1 &&
-      (await s.locator(".kl-tr-state .kl-empty").getByText("No shipments match").isVisible()),
+    (await s.locator(".kl-tr-state [data-slot=empty]").count()) === 1 &&
+      (await s.locator(".kl-tr-state [data-slot=empty]").getByText("No shipments match").isVisible()),
     null,
   );
   await s.getByRole("button", { name: "Clear filter" }).click();

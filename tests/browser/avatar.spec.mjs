@@ -176,13 +176,13 @@ test("avatar: photo, initials, status, group, square, the count's list", async (
   await p.keyboard.press("Enter");
   const pop = p.locator(".kl-popover:visible");
   await pop
-    .locator(".kl-item")
+    .locator("[data-slot=item]")
     .nth(5)
     .waitFor({ state: "visible", timeout: 3000 })
     .catch(() => {});
   ok(
     "count button: Enter opens the full list (6 people)",
-    (await pop.locator(".kl-item").count()) === 6 && (await more.getAttribute("aria-expanded")) === "true",
+    (await pop.locator("[data-slot=item]").count()) === 6 && (await more.getAttribute("aria-expanded")) === "true",
     null,
   );
   await p.keyboard.press("Escape");

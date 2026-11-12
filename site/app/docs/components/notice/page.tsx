@@ -108,6 +108,16 @@ export default function NoticePage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Notice props" props={PROPS} />
       <p className="s-small">
+        Part: <code>Notice</code> (a <code>div</code>; Base UI has no inline notice). The frame takes the props,{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state (
+        <code>tone</code>, <code>layout</code>, <code>open</code>). It carries <code>data-slot=&quot;notice&quot;</code>
+        , <code>data-tone</code> and <code>data-kl-layout</code>; its cells are <code>notice-signal</code>,{" "}
+        <code>notice-content</code> (<code>notice-title</code>, <code>notice-description</code>),{" "}
+        <code>notice-actions</code> and <code>notice-dismiss</code>. The frame sits in a fold,{" "}
+        <code>data-slot=&quot;notice-root&quot;</code>, which has <code>data-open</code> while open. At 520px of its own
+        width and under, the actions drop to a row of cells under the message.
+      </p>
+      <p className="s-small">
         The signal is a shape as well as a colour, so it reads without colour vision. For a record of something that
         just happened, use Toast.
       </p>

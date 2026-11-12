@@ -119,6 +119,15 @@ export default function EmptyPage() {
 
       <h2 id="props">Props</h2>
       <PropsReference label="Empty props" props={PROPS} />
+      <p className="s-small">
+        Part: <code>Empty</code> (a <code>div</code>; Base UI has no empty state). It takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state (<code>kind</code>,{" "}
+        <code>layout</code>). It carries <code>data-slot=&quot;empty&quot;</code>, <code>data-kind</code> and{" "}
+        <code>data-kl-layout</code>; its cells are <code>empty-count</code> (with <code>empty-figure</code> and{" "}
+        <code>empty-code</code>), <code>empty-content</code> (<code>empty-title</code>, <code>empty-description</code>)
+        and <code>empty-actions</code>. At 520px of its own width and under, the count becomes a band across the top and
+        the actions a row under the message.
+      </p>
       <p className="s-small">The title is a heading, so place it where the outline expects one.</p>
     </DocPage>
   );

@@ -788,7 +788,7 @@ for (const [eng, type, opts] of [
     eng,
     "handover: item avatars are decorative beside printed names",
     await ho
-      .locator(".kl-item [data-slot=avatar]")
+      .locator("[data-slot=item] [data-slot=avatar]")
       .evaluateAll((xs) => xs.length === 3 && xs.every((x) => x.getAttribute("aria-hidden") === "true")),
   );
   // reach the name by keyboard (WebKit tabs to links only with Option), so the focus is focus-visible

@@ -76,10 +76,10 @@
   }
   /* a Notice (layout="cell") under the header is a row of the inspector: like a section it owns its bottom
      keyline; folded away it owns none */
-  .kl-insp > .kl-notice-fold {
+  .kl-insp > [data-slot="notice-root"] {
     flex: none;
   }
-  .kl-insp > .kl-notice-fold[data-open] {
+  .kl-insp > [data-slot="notice-root"][data-open] {
     border-block-end: var(--kl-k1) solid var(--kl-seam);
   }
   .kl-insp-a {

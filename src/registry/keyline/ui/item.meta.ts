@@ -7,7 +7,6 @@ export default {
   description:
     "List rows on shared keylines: media cell, content, meta and action cells; render-prop rows for links and buttons.",
   files: [{ path: "src/registry/keyline/ui/item.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/item.css",
   dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils"],
+  registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/keyline-render", "utils"],
 } satisfies KeylineItem;

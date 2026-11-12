@@ -224,9 +224,6 @@
     min-width: 0;
     padding: 12px 20px;
   }
-  .s-kt-status .kl-progress-l {
-    font-weight: 700;
-  }
   .s-kt-best {
     font-weight: 400;
     color: var(--kl-ink-3);

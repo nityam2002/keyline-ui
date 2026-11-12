@@ -365,10 +365,6 @@
       ".kl-tr-state > td": {
         "padding": "0"
       },
-      ".kl-tr-state .kl-empty.kl-tf-state": {
-        "min-height": "240px",
-        "white-space": "normal"
-      },
       ".kl-skel": {
         "display": "block",
         "height": "10px",
@@ -530,6 +526,12 @@
       },
       ".kl-th-sort[data-kl-level]:not([data-kl-level=\"1\"])": {
         "box-shadow": "none"
+      }
+    },
+    "@layer utilities": {
+      ".kl-tr-state [data-slot=\"empty\"].kl-tf-state": {
+        "min-height": "240px",
+        "white-space": "normal"
       }
     }
   },

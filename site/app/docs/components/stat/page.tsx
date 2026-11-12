@@ -19,6 +19,16 @@ export const metadata = componentMetadata(
 
 const IMPORT = `import { Meter, Stat } from "@/components/keyline/ui/stat"`;
 
+const COMPOSED = `import { Meter, MeterIndicator, MeterLabel, MeterTrack, MeterValue } from "@/components/keyline/ui/stat"
+
+<Meter value={88} max={120} high={100}>
+  <MeterLabel>Warehouse floor</MeterLabel>
+  <MeterValue>{(_, value) => \`\${value} PLT\`}</MeterValue>
+  <MeterTrack>
+    <MeterIndicator />
+  </MeterTrack>
+</Meter>`;
+
 const USAGE = `<Stat
   label="Paper sold"
   value="19,880"
@@ -96,6 +106,7 @@ const TOC: TocGroup[] = [
     label: "Reference",
     items: [
       { id: "meter-limit", label: "Meter with a limit" },
+      { id: "meter-parts", label: "Composing a meter" },
       { id: "props", label: "Props" },
     ],
   },
@@ -139,8 +150,26 @@ export default function StatPage() {
         code={code("stat-warehouse.tsx", "meter with a limit example code")}
       />
 
+      <h3 id="meter-parts">Composing a meter</h3>
+      <p>
+        Given <code>label</code>, Meter renders its parts itself. Pass the parts as children to write the readout
+        yourself or style one part.
+      </p>
+      <CodeBlock code={COMPOSED} lang="tsx" copyLabel="composed meter example" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Stat and meter props" props={PROPS} />
+      <p className="s-small">
+        Parts: <code>Stat</code> (a <code>div</code>, <code>data-slot=&quot;stat&quot;</code>; inside it{" "}
+        <code>stat-label</code>, <code>stat-value</code>, and <code>stat-delta</code> with <code>data-tone</code> and
+        its <code>stat-arrow</code> with <code>data-dir</code>). The meter&rsquo;s parts are named as Base UI names
+        them: <code>Meter</code> (Base UI <code>Meter.Root</code>, <code>data-slot=&quot;meter&quot;</code>,{" "}
+        <code>data-over</code> past <code>high</code>), <code>MeterLabel</code> (<code>Meter.Label</code>),{" "}
+        <code>MeterValue</code> (<code>Meter.Value</code>, hidden from screen readers because the meter says its value),{" "}
+        <code>MeterTrack</code> (<code>Meter.Track</code>) and <code>MeterIndicator</code> (<code>Meter.Indicator</code>
+        ), each with its <code>data-slot</code>. Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state.
+      </p>
       <p className="s-small">
         A stat has no frame and no width of its own: set stats in a row inside a panel, and they share it. The meter is
         built on <a href="https://base-ui.com/react/components/meter">Base UI Meter</a>.

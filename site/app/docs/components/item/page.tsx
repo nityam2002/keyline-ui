@@ -77,7 +77,7 @@ const PROPS: Prop[] = [
     name: "ItemMeta \u00b7 ItemActions",
     type: "span",
     default: "\u2014",
-    description: "A trailing value in the code voice, and the row&apos;s controls.",
+    description: "A trailing value in the code voice, and the row\u2019s controls.",
   },
 ];
 
@@ -115,6 +115,18 @@ export default function ItemPage() {
 
       <h2 id="props">Props</h2>
       <PropsReference label="Item props" props={PROPS} />
+      <p className="s-small">
+        Parts: <code>ItemList</code> (a <code>div</code> with the list role), <code>Item</code> (a <code>div</code>, a
+        list item inside a list; with <code>render</code> it is that element, wrapped in a list item), and{" "}
+        <code>ItemMedia</code>, <code>ItemContent</code>, <code>ItemMeta</code> and <code>ItemActions</code> (each a{" "}
+        <code>span</code>). Base UI has no list part. They carry <code>data-slot</code>: <code>item-list</code> (with{" "}
+        <code>data-kl-layout</code>), <code>item</code> (with <code>data-current</code> and{" "}
+        <code>data-interactive</code>), <code>item-media</code>, <code>item-content</code> (holding{" "}
+        <code>item-title</code> and <code>item-description</code>), <code>item-meta</code>, <code>item-actions</code>,
+        and <code>item-row</code> for the list item around an interactive row. Every part takes <code>render</code>, and
+        a <code>className</code> or <code>style</code> that may be a function of its state. At 420px of list width and
+        under, the meta moves under the title.
+      </p>
       <p className="s-small">The Inspector, Resizable and Scroll area examples use clickable Item rows.</p>
     </DocPage>
   );

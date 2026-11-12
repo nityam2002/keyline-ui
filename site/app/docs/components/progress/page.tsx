@@ -18,6 +18,24 @@ export const metadata = componentMetadata(
 
 const IMPORT = `import { Progress } from "@/components/keyline/ui/progress"`;
 
+const COMPOSED = `import {
+  Progress,
+  ProgressDetail,
+  ProgressIndicator,
+  ProgressLabel,
+  ProgressTrack,
+  ProgressValue,
+} from "@/components/keyline/ui/progress"
+
+<Progress value={sent} aria-describedby="eta">
+  <ProgressLabel>Q4 sales report.xlsx</ProgressLabel>
+  <ProgressValue />
+  <ProgressTrack>
+    <ProgressIndicator />
+  </ProgressTrack>
+  <ProgressDetail id="eta">about 3 s left</ProgressDetail>
+</Progress>`;
+
 const USAGE = `<Progress
   label="Q4 sales report.xlsx to corporate"
   value={sent}
@@ -61,6 +79,16 @@ const PROPS: Prop[] = [
     default: "false",
     description: "Only when the text around it already gives the label and figure, as in a table cell.",
   },
+  {
+    name: "children",
+    type: "ReactNode",
+    default: "\u2014",
+    description: (
+      <>
+        The parts, in place of <code>label</code>, <code>detail</code> and <code>hideLabel</code>.
+      </>
+    ),
+  },
 ];
 
 const TOC: TocGroup[] = [
@@ -75,6 +103,7 @@ const TOC: TocGroup[] = [
     label: "Reference",
     items: [
       { id: "indeterminate", label: "Before there is a figure" },
+      { id: "composed", label: "Composing the parts" },
       { id: "props", label: "Props" },
     ],
   },
@@ -118,8 +147,27 @@ export default function ProgressPage() {
         code={code("progress-print.tsx", "before there is a figure example code")}
       />
 
+      <h3 id="composed">Composing the parts</h3>
+      <p>
+        Given <code>label</code>, Progress renders its parts itself. Pass the parts as children to arrange them or style
+        one: the label and readout share the first row, and the rail and detail span it.
+      </p>
+      <CodeBlock code={COMPOSED} lang="tsx" copyLabel="composed example" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Progress props" props={PROPS} />
+      <p className="s-small">
+        Parts, named as Base UI names them: <code>Progress</code> (Base UI <code>Progress.Root</code>),{" "}
+        <code>ProgressLabel</code> (<code>Progress.Label</code>), <code>ProgressValue</code> (
+        <code>Progress.Value</code>, hidden from screen readers because the bar says its value),{" "}
+        <code>ProgressTrack</code> (<code>Progress.Track</code>), <code>ProgressIndicator</code> (
+        <code>Progress.Indicator</code>) and <code>ProgressDetail</code> (a <code>span</code>). Each carries its{" "}
+        <code>data-slot</code>: <code>progress</code>, <code>progress-label</code>, <code>progress-value</code>,{" "}
+        <code>progress-track</code>, <code>progress-indicator</code>, <code>progress-detail</code>. The root adds{" "}
+        <code>data-failed</code> when failed, and Base UI&rsquo;s <code>data-progressing</code>,{" "}
+        <code>data-complete</code> and <code>data-indeterminate</code> are on every part. Every part takes{" "}
+        <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function of its state.
+      </p>
       <p className="s-small">
         Under reduced motion the pending segment is hatched and still. Built on{" "}
         <a href="https://base-ui.com/react/components/progress">Base UI Progress</a>; <code>format</code>,{" "}
