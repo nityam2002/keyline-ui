@@ -34,6 +34,10 @@ crossing a keyline.
 
 ## Construction
 
+Every token (sources, rhythm, the type scale, keyline weights, motion, layering) is data in
+`src/registry/keyline/theme/tokens.ts`; `theme/keyline.css` is generated from it and `theme/foundation.css`
+(`pnpm registry:build`). Edit those two, never `keyline.css`.
+
 - **Frames and controls.** `.kl-frame` is a region (3px, cell background); `.kl-ctl` is a control (2px).
   Both get their weight from `--kl-bw` and have `border-radius: 0`.
 - **Layout is declared, never inferred.** A control that can sit inside another frame takes
@@ -131,7 +135,8 @@ commit first; motion explains them afterwards. Never two behaviours on one trans
 
 ## Colour hierarchy
 
-Components name a **role**; `keyline.css` decides its tone per theme. No per-component dark overrides.
+Components name a **role**; the theme decides its tone per theme (derived in `theme/foundation.css` from the
+sources in `theme/tokens.ts`). No per-component dark overrides.
 
 | Role | Tokens | Purpose |
 |---|---|---|

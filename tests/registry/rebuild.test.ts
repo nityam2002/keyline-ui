@@ -5,8 +5,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { buildRegistry, ROOT, OUTPUT, INDEX } from "../../scripts/registry/build.ts";
+import { generateTheme } from "../../scripts/registry/theme.ts";
 
 const built = await buildRegistry();
+
+test("the theme CSS is what theme/tokens.ts and theme/foundation.css generate (run pnpm registry:build)", () => {
+  for (const [file, css] of generateTheme())
+    assert.ok(readFileSync(ROOT + file, "utf8") === css, `${file} is stale: run pnpm registry:build`);
+});
 
 test("site/public/r holds exactly the items the metas define", () => {
   assert.deepEqual(readdirSync(ROOT + OUTPUT).toSorted(), [...built.items.keys()].toSorted());

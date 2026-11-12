@@ -33,6 +33,11 @@ document those items.
   under the meta's `requires`, with its reason. It also fails when a file that needs `"use client";` lacks it
   (written with the semicolon; the build script says why). `pnpm registry:verify` then checks the built JSON on
   its own terms: every import is declared and every dependency is built.
+- **The theme is generated.** Every token is data in `src/registry/keyline/theme/tokens.ts`; the shared CSS that
+  derives colours and draws frames, rows and focus is `theme/foundation.css`. `pnpm registry:build` first runs
+  `scripts/registry/theme.ts`, which writes `theme/keyline.css` and `theme/keyline-shadcn.css` from them. Edit
+  those two sources, never the generated files; a unit test fails when they differ. `tests/theme/` installs the
+  built theme through the shadcn CLI's own CSS updaters and fails if any rule or value is lost or moved.
 - **`src/lib/utils.ts` and `components.json`** stand in for a consumer's shadcn setup. Components import `cn()`
   from `@/lib/utils`, as they will in an installed project (`@/` is `src/`).
 - **`src/demo/`** is the demo app (`pnpm dev`). Its specimen page shows every component in its states, one

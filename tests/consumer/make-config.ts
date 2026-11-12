@@ -1,6 +1,6 @@
 // Writes the registry item the playground's "Download keyline-config.json" produces, for a configuration
 // given as JSON (same normalisation as the playground). Usage:
-//   node tests/consumer/make-config.ts '<config json>' out.json
+//   node --import ./tests/resolve-ts.ts tests/consumer/make-config.ts '<config json>' out.json
 import { writeFileSync } from "node:fs";
 import {
   configToRegistryItem,

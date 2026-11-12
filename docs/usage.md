@@ -103,8 +103,11 @@ signal jobs, the motion behaviours and "one edge, one owner" are not configurabl
 
 ### Tokens
 
-Ten source tokens are configurable. Keyline's defaults live in `@layer base`, so any unlayered declaration of
-yours wins, wherever it sits in the file.
+Ten source tokens are configurable. Installing the `keyline` item writes the colour and type defaults into your
+stylesheet's own `:root` and `.dark` (shadcn `cssVars`, beside shadcn's tokens): edit them there. Adding
+components never touches them; adding the `keyline` item again resets them. `--kl-cut`'s default sits in
+`@layer base`, so a declaration of yours wins wherever it is in the file. Keyline's own defaults are defined in
+`src/registry/keyline/theme/tokens.ts`.
 
 | Token | Default | Meaning |
 |---|---|---|

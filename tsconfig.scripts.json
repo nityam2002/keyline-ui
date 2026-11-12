@@ -7,5 +7,12 @@
     "tsBuildInfoFile": ".artifacts/tsconfig.scripts.tsbuildinfo",
     "types": ["node"]
   },
-  "include": ["scripts/**/*.ts", "scripts/**/*.mts", "scripts/**/*.mjs", "lint/**/*.ts", "src/registry/item.ts"]
+  "include": [
+    "scripts/**/*.ts",
+    "scripts/**/*.mts",
+    "scripts/**/*.mjs",
+    "lint/**/*.ts",
+    "src/registry/item.ts",
+    "src/registry/keyline/theme/tokens.ts"
+  ]
 }

@@ -9,6 +9,7 @@ import type { TocGroup } from "@site/components/page-toc";
 import { ReferenceTable, type ReferenceRow } from "@site/components/reference-table";
 import { ThemingRoles } from "@site/components/guide-previews";
 import { installCommand } from "@site/lib/registry";
+import { CUT_DEFAULT, PALETTE, TEXT, TYPE as FACES } from "@/components/keyline/theme/tokens";
 
 export const metadata = pageMetadata({
   title: "Theming",
@@ -19,23 +20,27 @@ export const metadata = pageMetadata({
 const TOKENS: ReferenceRow[] = [
   {
     name: <code>--kl-working</code>,
-    value: <code>oklch(0.9 0.17 98)</code>,
+    value: <code>{PALETTE.working}</code>,
     description: "The working set: selection, tokens, ranges.",
   },
   {
     name: <code>--kl-commit</code>,
-    value: <code>oklch(0.48 0.2 262)</code>,
+    value: <code>{PALETTE.commit}</code>,
     description: "Location and commitment: the current place, the primary action, focus.",
   },
   {
     name: <code>--kl-attention</code>,
-    value: <code>oklch(0.55 0.2 33)</code>,
+    value: <code>{PALETTE.attention}</code>,
     description: "Invalid, failed, destructive, overdue.",
   },
-  { name: <code>--kl-neutral-h</code>, value: <code>262</code>, description: "The hue of paper, ink and keylines." },
+  {
+    name: <code>--kl-neutral-h</code>,
+    value: <code>{PALETTE.neutralHue}</code>,
+    description: "The hue of paper, ink and keylines.",
+  },
   {
     name: <code>--kl-neutral-c</code>,
-    value: <code>1</code>,
+    value: <code>{PALETTE.neutralTint}</code>,
     description: (
       <>
         How tinted the neutrals are: <code>0</code> is grey, <code>1</code> the default, up to <code>3</code>.
@@ -50,13 +55,17 @@ const TOKENS: ReferenceRow[] = [
   },
   {
     name: <code>--kl-weight-strong</code>,
-    value: <code>700</code>,
+    value: <code>{FACES.strong}</code>,
     description: "Labels, table headers and the Count.",
   },
-  { name: <code>--kl-weight-display</code>, value: <code>800</code>, description: "Titles and glyph cells." },
+  {
+    name: <code>--kl-weight-display</code>,
+    value: <code>{FACES.display}</code>,
+    description: "Titles and glyph cells.",
+  },
   {
     name: <code>--kl-cut</code>,
-    value: <code>0</code>,
+    value: <code>{CUT_DEFAULT}</code>,
     description: (
       <>
         The cut accent: <code>0</code> off, <code>0.5</code> quiet, <code>1</code> full. See{" "}
@@ -208,6 +217,65 @@ const TYPE: ReferenceRow[] = [
   {
     name: (
       <>
+        <code>kl-ctl</code> <code>kl-row</code>
+      </>
+    ),
+    value: <code>spacing</code>,
+    description: (
+      <>
+        The density&apos;s control height and row height: <code>h-kl-ctl</code>, <code>min-h-kl-row</code>.
+      </>
+    ),
+  },
+  {
+    name: (
+      <>
+        <code>kl-k1</code> <code>kl-k2</code> <code>kl-k3</code>
+      </>
+    ),
+    value: <code>spacing</code>,
+    description: "The keyline weights (1, 2 and 3px), for offsets that meet a frame's edge.",
+  },
+  {
+    name: (
+      <>
+        <code>kl-cut-region</code> <code>kl-cut-control</code> <code>kl-cut-nested</code>
+      </>
+    ),
+    value: <code>spacing</code>,
+    description: "The cut's size on a region, a control and a nested part, by density.",
+  },
+  {
+    name: (
+      <>
+        {Object.keys(TEXT.default).map((t) => (
+          <code key={t}>text-kl-{t} </code>
+        ))}
+      </>
+    ),
+    value: <code>font-size</code>,
+    description: (
+      <>
+        The type scale, by role. At default density:{" "}
+        {Object.entries(TEXT.default)
+          .map(([t, v]) => `${t} ${v}`)
+          .join(", ")}
+        . Each size steps with the density.
+      </>
+    ),
+  },
+  {
+    name: (
+      <>
+        <code>ease-kl-out</code> <code>ease-kl-in</code>
+      </>
+    ),
+    value: <code>transition-timing-function</code>,
+    description: "Keyline's two eases: an entrance and an exit.",
+  },
+  {
+    name: (
+      <>
         <code>kl-code</code> <code>kl-count</code>
       </>
     ),
@@ -244,7 +312,7 @@ const FONTS: ReferenceRow[] = [
   },
 ];
 
-const OVERRIDE = `/* your stylesheet, after Tailwind; unlayered, so it wins over Keyline's defaults */
+const OVERRIDE = `/* your stylesheet: \`shadcn add\` wrote Keyline's defaults into this :root; edit them here */
 :root {
   --kl-commit: oklch(0.47 0.12 222);
   --kl-neutral-h: 225;
@@ -312,8 +380,11 @@ export default function ThemingPage() {
 
       <h2 id="tokens">Source tokens</h2>
       <p>
-        These are the only colour, type and cut values you configure. Keyline&apos;s defaults sit in{" "}
-        <code>@layer base</code>, so any unlayered declaration of yours wins, wherever it is in the file.
+        These are the only colour, type and cut values you configure. Installing the <code>keyline</code> item writes
+        their defaults into your stylesheet&apos;s own <code>:root</code> and <code>.dark</code>, beside shadcn&apos;s
+        tokens: change them there. Adding components never touches them; adding the <code>keyline</code> item again
+        resets them to Keyline&apos;s defaults. The cut is the exception: its default sits in <code>@layer base</code>,
+        so a <code>--kl-cut</code> of yours wins wherever it is in the file.
       </p>
       <ReferenceTable label="Source tokens" head={["Token", "Default", "Meaning"]} rows={TOKENS} />
       <CodeBlock code={OVERRIDE} lang="css" copyLabel="token override" />

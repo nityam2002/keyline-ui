@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import postcss from "postcss";
 import { defined } from "./defined.ts";
+import { SPACING, TEXT } from "../src/registry/keyline/theme/tokens.ts";
 
 const css = postcss.parse(readFileSync(new URL("../src/registry/keyline/theme/keyline.css", import.meta.url), "utf8"));
 const decls = (node: postcss.Container) =>
@@ -68,5 +69,36 @@ test("the density spacing is Tailwind spacing", () => {
       .filter((d) => d.prop.startsWith("--spacing-"))
       .map((d) => [d.prop, d.value]),
   );
-  assert.deepEqual(spacing, { "--spacing-kl-inset": "var(--kl-inset)", "--spacing-kl-gutter": "var(--kl-gutter)" });
+  assert.deepEqual(spacing, Object.fromEntries(SPACING.map((s) => [`--spacing-kl-${s}`, `var(--kl-${s})`])));
+  assert.ok(SPACING.includes("ctl") && SPACING.includes("inset") && SPACING.includes("k2"));
+});
+
+test("the type scale is Tailwind text sizes that follow density", () => {
+  const text = Object.fromEntries(
+    decls(defined(theme, "@theme block"))
+      .filter((d) => d.prop.startsWith("--text-"))
+      .map((d) => [d.prop, d.value]),
+  );
+  assert.deepEqual(
+    text,
+    Object.fromEntries(Object.keys(TEXT.default).map((t) => [`--text-kl-${t}`, `var(--kl-text-${t})`])),
+  );
+  // every density states every size, so a compact scope inside a comfortable one never inherits its sizes
+  for (const d of ["comfortable", "default", "compact"] as const) {
+    let found: string[] = [];
+    css.walkRules(`[data-kl-density="${d}"]`, (r) => {
+      found = decls(r)
+        .map((x) => x.prop)
+        .filter((p) => p.startsWith("--kl-text-"));
+    });
+    assert.deepEqual(
+      found.toSorted(),
+      Object.keys(TEXT[d])
+        .map((t) => `--kl-text-${t}`)
+        .toSorted(),
+      d,
+    );
+  }
+  // nothing moves at default density: body is the body size
+  assert.equal(TEXT.default["body"], "14px");
 });

@@ -84,13 +84,16 @@ function convert(file: string, theme: boolean): { css: CssObject; cssVars?: CssV
   // in the order shadcn build writes them
   const cssVars: CssVars = { theme: {}, light: {}, dark: {} };
   const css: CssObject = {};
+  let mirrorLight = false;
   const vars = (node: Container, into: Record<string, string>) =>
     node.each((d) => {
       if (d.type === "decl") into[d.prop.slice(2)] = d.value;
     });
   ast.each((node) => {
-    if (theme && node.type === "rule" && isRoot(node.selector)) vars(node, cssVars.light);
-    else if (theme && node.type === "rule" && node.selector === ".dark") vars(node, cssVars.dark);
+    if (theme && node.type === "rule" && isRoot(node.selector)) {
+      vars(node, cssVars.light);
+      if (node.selector.split(",").some((x) => x.trim() === ".light")) mirrorLight = true;
+    } else if (theme && node.type === "rule" && node.selector === ".dark") vars(node, cssVars.dark);
     else if (theme && node.type === "atrule" && node.name === "theme") vars(node, cssVars.theme);
     else if (node.type !== "comment") merge(css, toObject(postcss.root().append(node.clone())));
   });
@@ -106,9 +109,9 @@ function convert(file: string, theme: boolean): { css: CssObject; cssVars?: CssV
     for (const k of path) o = typeof o === "object" ? o[k] : undefined;
     if (!o) fail(`${file}: rule ${path.join(" > ")} did not reach the registry item`);
   });
-  // `.light` mirrors :root so a light subtree (or a portal scoped to one) can sit inside a dark page
-  if (theme && Object.keys(cssVars.light).length)
-    css[".light"] = Object.fromEntries(Object.entries(cssVars.light).map(([k, v]) => [`--${k}`, v]));
+  // The CLI writes cssVars.light to :root only. A rule written for `:root, .light` (keyline-shadcn's mapping) also
+  // needs `.light`, so a light subtree (or a portal scoped to one) can sit inside a dark page; it goes to css.
+  if (mirrorLight) css[".light"] = Object.fromEntries(Object.entries(cssVars.light).map(([k, v]) => [`--${k}`, v]));
   const hasVars = Object.values(cssVars).some((v) => Object.keys(v).length);
   return theme && hasVars ? { cssVars, css } : { css };
 }

@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { CUT as CUT_VALUES, PALETTE, TYPE } from "../theme/tokens";
+
 /* ------------------------------------------------------------------ *
  * KEYLINE CONFIGURATION
  * One plain object describes everything a developer may configure. It is applied in three ways that
@@ -38,14 +40,8 @@ export type KeylineConfig = {
 
 /** Palette presets. Each was checked for signal contrast in both themes. */
 export const PALETTES = {
-  signal: {
-    label: "Signal",
-    working: "oklch(0.9 0.17 98)",
-    commit: "oklch(0.48 0.2 262)",
-    attention: "oklch(0.55 0.2 33)",
-    neutralHue: 262,
-    neutralTint: 1,
-  },
+  // Keyline's defaults (theme/tokens.ts)
+  signal: { label: "Signal", ...PALETTE },
   harbor: {
     label: "Harbor",
     working: "oklch(0.89 0.15 82)",
@@ -127,8 +123,8 @@ export const FONTS: Record<
 > = {
   atkinson: {
     label: "Atkinson Hyperlegible",
-    sans: '"Atkinson Hyperlegible Next Variable", ui-sans-serif, system-ui, sans-serif',
-    mono: '"Atkinson Hyperlegible Mono Variable", ui-monospace, monospace',
+    sans: TYPE.sans,
+    mono: TYPE.mono,
     weights: [200, 800],
     install: null, // bundled with the keyline item
     imports: [],
@@ -158,14 +154,14 @@ export const FONTS: Record<
 export const DEFAULT_CONFIG: KeylineConfig = {
   palette: { ...PALETTES.signal },
   font: "atkinson",
-  strong: 700,
+  strong: TYPE.strong,
   cut: "off",
   density: "default",
   theme: "light",
   motion: "full",
 };
 
-const CUT = { full: "1", quiet: "0.5", off: "0" } as const;
+const CUT = { full: CUT_VALUES.on, quiet: CUT_VALUES.quiet, off: CUT_VALUES.off } as const;
 
 /** Strong and display weights the chosen font can actually render. */
 export function weights(cfg: Pick<KeylineConfig, "font" | "strong">) {
@@ -214,7 +210,8 @@ export function configAttributes(cfg: KeylineConfig): {
 /** A configuration scope's selector: :root for the whole app, or [data-kl-config="name"] for a subtree. */
 export const scopeSelector = (scope?: string) => (scope ? `[data-kl-config="${scope}"]` : ":root");
 
-/** Readable CSS for the tokens. Unlayered, so it wins over the theme's @layer base defaults anywhere in the file. */
+/** Readable CSS for the tokens. Paste it over the :root the keyline item installed, or after it (the later rule
+ * wins); --kl-cut's default is layered, so that one wins anywhere in the file. */
 export function configToCss(cfg: KeylineConfig, opts: { scope?: string; all?: boolean } = {}) {
   const tokens = opts.all ? configTokens(cfg) : changedTokens(cfg);
   const sel = scopeSelector(opts.scope);

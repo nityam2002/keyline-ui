@@ -4549,12 +4549,17 @@
     },
     {
       "name": "keyline",
-      "type": "registry:style",
-      "extends": "none",
+      "type": "registry:theme",
       "title": "Keyline",
-      "description": "Keyline tokens and construction primitives: role weights, the optional cut (--kl-cut), cells, flood, lamp, unfold, dock, pending.",
+      "description": "Keyline tokens and construction primitives: role weights, the optional cut (--kl-cut), cells, flood, lamp, unfold, dock, pending. Source tokens go to your :root and .dark; theme/tokens.ts holds them as data.",
       "docs": "Shape: square by default (--kl-cut: 0). Set --kl-cut to 0.5 (quiet) or 1 (full) on :root or any subtree for the cut accent, or use data-kl-cut=\"quiet\" | \"on\" | \"off\". Density: data-kl-density=\"compact\". Reduced motion: honours prefers-reduced-motion; data-kl-motion=\"reduce\" forces it.",
-      "files": [],
+      "files": [
+        {
+          "path": "src/registry/keyline/theme/tokens.ts",
+          "type": "registry:lib",
+          "target": "components/keyline/theme/tokens.ts"
+        }
+      ],
       "dependencies": [
         "@fontsource-variable/atkinson-hyperlegible-mono",
         "@fontsource-variable/atkinson-hyperlegible-next"
@@ -4601,31 +4606,63 @@
           "font-kl-mono": "var(--kl-font-mono)",
           "font-weight-kl-strong": "var(--kl-weight-strong)",
           "font-weight-kl-display": "var(--kl-weight-display)",
+          "spacing-kl-ctl": "var(--kl-ctl)",
+          "spacing-kl-row": "var(--kl-row)",
           "spacing-kl-inset": "var(--kl-inset)",
-          "spacing-kl-gutter": "var(--kl-gutter)"
+          "spacing-kl-gutter": "var(--kl-gutter)",
+          "spacing-kl-k1": "var(--kl-k1)",
+          "spacing-kl-k2": "var(--kl-k2)",
+          "spacing-kl-k3": "var(--kl-k3)",
+          "spacing-kl-cut-region": "var(--kl-cut-region)",
+          "spacing-kl-cut-control": "var(--kl-cut-control)",
+          "spacing-kl-cut-nested": "var(--kl-cut-nested)",
+          "text-kl-code": "var(--kl-text-code)",
+          "text-kl-meta": "var(--kl-text-meta)",
+          "text-kl-label": "var(--kl-text-label)",
+          "text-kl-body": "var(--kl-text-body)",
+          "text-kl-lead": "var(--kl-text-lead)",
+          "text-kl-title": "var(--kl-text-title)",
+          "text-kl-display": "var(--kl-text-display)",
+          "ease-kl-out": "var(--kl-ease-out)",
+          "ease-kl-in": "var(--kl-ease-in)"
         },
-        "light": {},
-        "dark": {}
+        "light": {
+          "kl-working": "oklch(0.9 0.17 98)",
+          "kl-commit": "oklch(0.48 0.2 262)",
+          "kl-attention": "oklch(0.55 0.2 33)",
+          "kl-neutral-h": "262",
+          "kl-neutral-c": "1",
+          "kl-font": "\"Atkinson Hyperlegible Next Variable\", ui-sans-serif, system-ui, sans-serif",
+          "kl-font-mono": "\"Atkinson Hyperlegible Mono Variable\", ui-monospace, monospace",
+          "kl-weight-strong": "700",
+          "kl-weight-display": "800",
+          "kl-dark": "0"
+        },
+        "dark": {
+          "kl-dark": "1"
+        }
       },
       "css": {
         "@import \"@fontsource-variable/atkinson-hyperlegible-next\"": {},
         "@import \"@fontsource-variable/atkinson-hyperlegible-mono\"": {},
         "@layer base": {
           ":root": {
-            "--kl-working": "oklch(0.9 0.17 98)",
-            "--kl-commit": "oklch(0.48 0.2 262)",
-            "--kl-attention": "oklch(0.55 0.2 33)",
-            "--kl-neutral-h": "262",
-            "--kl-neutral-c": "1",
-            "--kl-font": "\"Atkinson Hyperlegible Next Variable\", ui-sans-serif, system-ui, sans-serif",
-            "--kl-font-mono": "\"Atkinson Hyperlegible Mono Variable\", ui-monospace, monospace",
-            "--kl-weight-strong": "700",
-            "--kl-weight-display": "800",
             "--kl-cut": "0",
-            "--kl-dark": "0",
+            "--kl-ctl": "36px",
+            "--kl-row": "40px",
+            "--kl-inset": "12px",
+            "--kl-gutter": "12px",
+            "--kl-fs": "14px",
             "--kl-cut-region": "18px",
             "--kl-cut-control": "9px",
             "--kl-cut-nested": "5px",
+            "--kl-text-code": "11px",
+            "--kl-text-meta": "12px",
+            "--kl-text-label": "13px",
+            "--kl-text-body": "14px",
+            "--kl-text-lead": "15px",
+            "--kl-text-title": "20px",
+            "--kl-text-display": "32px",
             "--kl-k3": "3px",
             "--kl-k2": "2px",
             "--kl-k1": "1px",
@@ -4634,11 +4671,6 @@
             "--kl-ring-in": "calc(-1 * var(--kl-ring))",
             "--kl-edge-band": "1px",
             "--kl-snap": "48px",
-            "--kl-ctl": "36px",
-            "--kl-row": "40px",
-            "--kl-inset": "12px",
-            "--kl-gutter": "12px",
-            "--kl-fs": "14px",
             "--kl-t-flood": "140ms",
             "--kl-t-unflood": "110ms",
             "--kl-t-unfold": "160ms",
@@ -4653,11 +4685,90 @@
             "--kl-z-overlay": "60",
             "--kl-z-toast": "70"
           },
-          ".dark": {
-            "--kl-dark": "1"
-          },
           ".light": {
             "--kl-dark": "0"
+          },
+          "[data-kl-cut=\"off\"]": {
+            "--kl-cut": "0"
+          },
+          "[data-kl-cut=\"quiet\"]": {
+            "--kl-cut": "0.5"
+          },
+          "[data-kl-cut=\"on\"]": {
+            "--kl-cut": "1"
+          },
+          "[data-kl-density=\"comfortable\"]": {
+            "--kl-ctl": "40px",
+            "--kl-row": "48px",
+            "--kl-inset": "16px",
+            "--kl-gutter": "16px",
+            "--kl-fs": "15px",
+            "--kl-cut-region": "20px",
+            "--kl-cut-control": "10px",
+            "--kl-cut-nested": "6px",
+            "--kl-text-code": "12px",
+            "--kl-text-meta": "13px",
+            "--kl-text-label": "14px",
+            "--kl-text-body": "15px",
+            "--kl-text-lead": "16px",
+            "--kl-text-title": "22px",
+            "--kl-text-display": "36px"
+          },
+          "[data-kl-density=\"default\"]": {
+            "--kl-ctl": "36px",
+            "--kl-row": "40px",
+            "--kl-inset": "12px",
+            "--kl-gutter": "12px",
+            "--kl-fs": "14px",
+            "--kl-cut-region": "18px",
+            "--kl-cut-control": "9px",
+            "--kl-cut-nested": "5px",
+            "--kl-text-code": "11px",
+            "--kl-text-meta": "12px",
+            "--kl-text-label": "13px",
+            "--kl-text-body": "14px",
+            "--kl-text-lead": "15px",
+            "--kl-text-title": "20px",
+            "--kl-text-display": "32px"
+          },
+          "[data-kl-density=\"compact\"]": {
+            "--kl-ctl": "28px",
+            "--kl-row": "28px",
+            "--kl-inset": "8px",
+            "--kl-gutter": "12px",
+            "--kl-fs": "13px",
+            "--kl-cut-region": "14px",
+            "--kl-cut-control": "7px",
+            "--kl-cut-nested": "4px",
+            "--kl-text-code": "11px",
+            "--kl-text-meta": "12px",
+            "--kl-text-label": "12px",
+            "--kl-text-body": "13px",
+            "--kl-text-lead": "14px",
+            "--kl-text-title": "18px",
+            "--kl-text-display": "28px"
+          },
+          "[data-kl-motion=\"reduce\"]": {
+            "--kl-t-flood": "0ms",
+            "--kl-t-unflood": "0ms",
+            "--kl-t-unfold": "0ms",
+            "--kl-t-fold": "0ms",
+            "--kl-t-tick": "0ms",
+            "--kl-stretch-lead": "0",
+            "--kl-stretch-trail": "0",
+            "--kl-stretch-tug": "0"
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            ":root": {
+              "--kl-t-flood": "0ms",
+              "--kl-t-unflood": "0ms",
+              "--kl-t-unfold": "0ms",
+              "--kl-t-fold": "0ms",
+              "--kl-t-tick": "0ms",
+              "--kl-stretch-lead": "0",
+              "--kl-stretch-trail": "0",
+              "--kl-stretch-tug": "0"
+            }
           },
           ":root, .light, .dark, [data-kl-config]": {
             "--kl-paper": "oklch(\n      calc(0.952 - 0.772 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
@@ -4696,67 +4807,6 @@
             "--kl-data-mark": "var(--kl-yellow)",
             "--kl-data-alert": "var(--kl-red)",
             "--kl-hatch": "repeating-linear-gradient(\n      -45deg,\n      transparent 0 5px,\n      color-mix(in oklab, var(--kl-ink) 14%, transparent) 5px 6px\n    )"
-          },
-          "[data-kl-cut=\"off\"]": {
-            "--kl-cut": "0"
-          },
-          "[data-kl-cut=\"quiet\"]": {
-            "--kl-cut": "0.5"
-          },
-          "[data-kl-cut=\"on\"]": {
-            "--kl-cut": "1"
-          },
-          "[data-kl-density=\"comfortable\"]": {
-            "--kl-ctl": "40px",
-            "--kl-row": "48px",
-            "--kl-inset": "16px",
-            "--kl-gutter": "16px",
-            "--kl-fs": "15px",
-            "--kl-cut-region": "20px",
-            "--kl-cut-control": "10px",
-            "--kl-cut-nested": "6px"
-          },
-          "[data-kl-density=\"default\"]": {
-            "--kl-ctl": "36px",
-            "--kl-row": "40px",
-            "--kl-inset": "12px",
-            "--kl-gutter": "12px",
-            "--kl-fs": "14px",
-            "--kl-cut-region": "18px",
-            "--kl-cut-control": "9px",
-            "--kl-cut-nested": "5px"
-          },
-          "[data-kl-density=\"compact\"]": {
-            "--kl-ctl": "28px",
-            "--kl-row": "28px",
-            "--kl-inset": "8px",
-            "--kl-gutter": "12px",
-            "--kl-fs": "13px",
-            "--kl-cut-region": "14px",
-            "--kl-cut-control": "7px",
-            "--kl-cut-nested": "4px"
-          },
-          "[data-kl-motion=\"reduce\"]": {
-            "--kl-t-flood": "0ms",
-            "--kl-t-unflood": "0ms",
-            "--kl-t-unfold": "0ms",
-            "--kl-t-fold": "0ms",
-            "--kl-t-tick": "0ms",
-            "--kl-stretch-lead": "0",
-            "--kl-stretch-trail": "0",
-            "--kl-stretch-tug": "0"
-          },
-          "@media (prefers-reduced-motion: reduce)": {
-            ":root": {
-              "--kl-t-flood": "0ms",
-              "--kl-t-unflood": "0ms",
-              "--kl-t-unfold": "0ms",
-              "--kl-t-fold": "0ms",
-              "--kl-t-tick": "0ms",
-              "--kl-stretch-lead": "0",
-              "--kl-stretch-trail": "0",
-              "--kl-stretch-tug": "0"
-            }
           },
           ":is([class^=\"kl-\"], [class*=\" kl-\"]):not(:where([class^=\"kl-\"], [class*=\" kl-\"]) *)": {
             "color": "var(--kl-ink)",
