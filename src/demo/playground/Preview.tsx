@@ -4,7 +4,13 @@
 import * as React from "react";
 
 import { Button, ButtonAffix } from "@/registry/keyline/ui/button";
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/registry/keyline/ui/split-button";
+import {
+  SplitButton,
+  SplitButtonAction,
+  SplitButtonMenu,
+  SplitButtonPopup,
+  SplitButtonTrigger,
+} from "@/registry/keyline/ui/split-button";
 import { Menu, MenuTrigger, MenuPopup, MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
 import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
 import { ToggleGroup, ToggleGroupItem } from "@/registry/keyline/ui/toggle-group";
@@ -143,15 +149,18 @@ function Actions() {
       <Button onClick={() => run("failed")}>Retry sync</Button>
       <SplitButton>
         <SplitButtonAction>Export</SplitButtonAction>
-        <SplitButtonMenu label="More export formats">
-          <MenuItem code="1" shortcut="C">
-            CSV
-          </MenuItem>
-          <MenuItem code="2">Excel workbook</MenuItem>
-          <MenuSeparator />
-          <MenuItem code="3" disabled description="Needs an admin">
-            Scheduled export
-          </MenuItem>
+        <SplitButtonMenu>
+          <SplitButtonTrigger aria-label="More export formats" />
+          <SplitButtonPopup>
+            <MenuItem code="1" shortcut="C">
+              CSV
+            </MenuItem>
+            <MenuItem code="2">Excel workbook</MenuItem>
+            <MenuSeparator />
+            <MenuItem code="3" disabled description="Needs an admin">
+              Scheduled export
+            </MenuItem>
+          </SplitButtonPopup>
         </SplitButtonMenu>
       </SplitButton>
       <Segmented aria-label="Period" value={view} onValueChange={setView}>

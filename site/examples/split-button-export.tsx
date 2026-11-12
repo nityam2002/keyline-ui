@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { MenuItem } from "@/components/keyline/ui/menu";
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/components/keyline/ui/split-button";
+import {
+  SplitButton,
+  SplitButtonAction,
+  SplitButtonMenu,
+  SplitButtonPopup,
+  SplitButtonTrigger,
+} from "@/components/keyline/ui/split-button";
 
 const FORMATS = ["PDF", "CSV", "Excel"] as const;
 type Format = (typeof FORMATS)[number];
@@ -21,12 +27,15 @@ export function ExportReport() {
     <div className="grid gap-4">
       <SplitButton className="justify-self-start">
         <SplitButtonAction onClick={() => exportAs(format)}>Export as {format}</SplitButtonAction>
-        <SplitButtonMenu label="Export formats">
-          {FORMATS.map((f) => (
-            <MenuItem key={f} onClick={() => exportAs(f)}>
-              {f}
-            </MenuItem>
-          ))}
+        <SplitButtonMenu>
+          <SplitButtonTrigger aria-label="Export formats" />
+          <SplitButtonPopup>
+            {FORMATS.map((f) => (
+              <MenuItem key={f} onClick={() => exportAs(f)}>
+                {f}
+              </MenuItem>
+            ))}
+          </SplitButtonPopup>
         </SplitButtonMenu>
       </SplitButton>
       <p role="status" className="m-0 min-h-5 text-[14px] text-kl-ink-2">

@@ -7,7 +7,6 @@ export default {
   description:
     "One on/off button (Base UI Toggle, aria-pressed): pressed floods yellow and fills the lamp; icon toggles show a floor keyline. Control or cell, alone or as a cell of a field frame. ToggleGroup composes its cells.",
   files: [{ path: "src/registry/keyline/ui/toggle.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/toggle.css",
-  dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-motion"],
+  dependencies: ["@base-ui/react", "class-variance-authority"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-motion", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

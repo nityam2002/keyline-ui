@@ -106,8 +106,14 @@ export default function SegmentedPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Segmented props" props={PROPS} />
       <p className="s-small">
-        It is a radio group: Tab enters at the chosen cell and arrow keys move and choose. Name it with{" "}
-        <code>aria-label</code>. Built on <a href="https://base-ui.com/react/components/radio">Base UI Radio Group</a>.
+        Parts: <code>Segmented</code> (Base UI <code>RadioGroup</code>) and <code>SegmentedItem</code> (Base UI{" "}
+        <code>Radio.Root</code>). Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. The group carries{" "}
+        <code>data-slot=&quot;segmented&quot;</code>, <code>data-size</code> and <code>data-kl-layout</code>; an item{" "}
+        <code>data-slot=&quot;segmented-item&quot;</code>, Base UI&rsquo;s <code>data-checked</code> and{" "}
+        <code>data-disabled</code>, and <code>data-kl-covered</code> while the band lies under it. It is a radio group:
+        Tab enters at the chosen cell and arrow keys move and choose. Name it with <code>aria-label</code>. Built on{" "}
+        <a href="https://base-ui.com/react/components/radio">Base UI Radio Group</a>.
       </p>
     </DocPage>
   );

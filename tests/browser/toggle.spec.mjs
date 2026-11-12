@@ -10,7 +10,7 @@ test("toggle: controlled, keyboard, icon, disabled, group lamp, RTL", async ({ o
   const p = await open({ route: "specimen", q: "theme=light", ready: "#toggle" });
   const mine = p.getByTestId("tg-mine");
   await mine.scrollIntoViewIfNeeded();
-  const lamp = (t) => t.locator(".kl-lamp").evaluate((l) => getComputedStyle(l).borderTopWidth);
+  const lamp = (t) => t.locator("[data-slot=toggle-lamp]").evaluate((l) => getComputedStyle(l).borderTopWidth);
   ok(
     "toggle: controlled, pressed: aria-pressed and a full lamp",
     (await mine.getAttribute("aria-pressed")) === "true" && (await lamp(mine)) === "5px",
@@ -21,7 +21,7 @@ test("toggle: controlled, keyboard, icon, disabled, group lamp, RTL", async ({ o
     const t = document.querySelector("[data-testid=tg-mine]");
     return (
       t.getAttribute("aria-pressed") === "false" &&
-      getComputedStyle(t.querySelector(".kl-lamp")).borderTopWidth === "2px"
+      getComputedStyle(t.querySelector("[data-slot=toggle-lamp]")).borderTopWidth === "2px"
     );
   });
   ok(
@@ -72,12 +72,12 @@ test("toggle: controlled, keyboard, icon, disabled, group lamp, RTL", async ({ o
     null,
   );
   const grp = await p
-    .locator(".kl-toggle-group [data-pressed] .kl-lamp")
+    .locator("[data-slot=toggle-group] [data-pressed] [data-slot=toggle-lamp]")
     .evaluateAll((ls) => ls.map((l) => getComputedStyle(l).borderTopWidth));
   ok("toggle group: a pressed cell's lamp is full", grp.length > 0 && grp.every((w) => w === "5px"), grp);
   const trtl = await p.getByTestId("tg-rtl").evaluate((el) => {
-    const l = el.querySelector(".kl-lamp").getBoundingClientRect(),
-      t = el.querySelector(".kl-toggle").getBoundingClientRect();
+    const l = el.querySelector("[data-slot=toggle-lamp]").getBoundingClientRect(),
+      t = el.querySelector("[data-slot=toggle]").getBoundingClientRect();
     return l.left > t.left + t.width / 2;
   });
   ok("toggle: in RTL the lamp leads at the right", trtl, null);

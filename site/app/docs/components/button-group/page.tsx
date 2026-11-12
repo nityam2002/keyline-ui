@@ -117,8 +117,13 @@ export default function ButtonGroupPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Button group props" props={PROPS} />
       <p className="s-small">
-        Parts: <code>ButtonGroup</code>, <code>ButtonGroupText</code>, <code>ButtonGroupSeparator</code>. Other{" "}
-        <code>div</code> props pass through.
+        Parts: <code>ButtonGroup</code> (a <code>div</code>, <code>role=&quot;group&quot;</code>),{" "}
+        <code>ButtonGroupText</code> (a <code>span</code>) and <code>ButtonGroupSeparator</code> (Base UI{" "}
+        <code>Separator</code>, oriented across the group). Every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state. The group carries{" "}
+        <code>data-slot=&quot;button-group&quot;</code> and <code>data-orientation</code>; the others{" "}
+        <code>data-slot=&quot;button-group-text&quot;</code> and{" "}
+        <code>data-slot=&quot;button-group-separator&quot;</code>.
       </p>
     </DocPage>
   );

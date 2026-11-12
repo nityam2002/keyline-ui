@@ -38,7 +38,7 @@ test("portal: menu inherits the section's cut", async ({ open, ok }) => {
   await cutOff("Split button", true);
   // the menu reads its scope when it renders; an attribute set outside React needs one render to reach it
   await col("Split button").getByRole("radio", { name: "Day" }).click();
-  await col("Split button").locator(".kl-split-caret").first().click();
+  await col("Split button").locator("[data-slot=split-button-trigger]").first().click();
   await p.locator("[role=menu]:visible").waitFor();
   const cut = await popupVar("[role=menu]", "--kl-cut");
   ok("menu in the cut-off section reads --kl-cut 0", same(cut, "0"), { actual: cut, expected: "0" });

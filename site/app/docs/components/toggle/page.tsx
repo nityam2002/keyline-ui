@@ -114,7 +114,11 @@ export default function TogglePage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Toggle props" props={PROPS} />
       <p className="s-small">
-        For several independent toggles in one frame, use Toggle group. For one choice of many, use Segmented. Built on{" "}
+        Part: <code>Toggle</code> (Base UI <code>Toggle</code>). It takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state. It carries{" "}
+        <code>data-slot=&quot;toggle&quot;</code>, <code>data-kl-layout</code>, <code>data-kl-icon</code> on an icon
+        toggle, and Base UI&rsquo;s <code>data-pressed</code> and <code>data-disabled</code>. For several independent
+        toggles in one frame, use Toggle group. For one choice of many, use Segmented. Built on{" "}
         <a href="https://base-ui.com/react/components/toggle">Base UI Toggle</a>.
       </p>
     </DocPage>

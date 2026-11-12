@@ -88,7 +88,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
     fade.op === "1" && fade.hidden === "true" && fade.pe === "none" && Math.abs(fade.gap) <= 1,
     fade,
   );
-  for (const sel of [".kl-tabs-list", ".kl-segmented", ".kl-toggle-group"]) {
+  for (const sel of [".kl-tabs-list", "[data-slot=segmented]", "[data-slot=toggle-group]"]) {
     const row = sec.locator(sel).first();
     if (!(await row.count())) continue;
     const pn = await pinned(row);
@@ -123,8 +123,8 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
     await more(),
   );
   const rows = [
-    ["toggle group", ".kl-toggle-group"],
-    ["segmented", ".kl-segmented"],
+    ["toggle group", "[data-slot=toggle-group]"],
+    ["segmented", "[data-slot=segmented]"],
     ["nav row", ".kl-nav-list"],
   ];
   await until(async () => {

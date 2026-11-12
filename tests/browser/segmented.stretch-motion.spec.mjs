@@ -4,7 +4,7 @@ import { test, idle } from "./fixtures.mjs";
 const Q = "theme=light&cut=on&density=default&motion=normal&dir=ltr";
 const sample = (page, action) =>
   page.evaluate(async (action) => {
-    const host = document.querySelector("[data-testid=motion-lab] .kl-segmented");
+    const host = document.querySelector("[data-testid=motion-lab] [data-slot=segmented]");
     const band = host.querySelector(":scope > [data-kl-band]");
     const items = [...host.querySelectorAll("[data-kl-item]")];
     const hr = host.getBoundingClientRect();
@@ -51,7 +51,7 @@ const sum = (s) => {
     stretched: Math.max(...f.map((x) => x.r - x.l)) > Math.max(f[0].r - f[0].l, end.r - end.l) + 8,
   };
 };
-const SEG = "[data-testid=motion-lab] .kl-segmented";
+const SEG = "[data-testid=motion-lab] [data-slot=segmented]";
 
 test("motion: stretch band, forward and reversal mid-flight", { tag: "@timing" }, async ({ open, ok, eng }) => {
   test.skip(eng !== "chromium", "per-frame band sampling is calibrated for Chromium");

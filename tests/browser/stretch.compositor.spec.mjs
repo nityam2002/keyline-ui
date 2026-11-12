@@ -4,7 +4,7 @@
 import { test, idle, landed } from "./fixtures.mjs";
 
 const Q = "theme=light&cut=on&density=default&motion=normal&dir=ltr";
-const SEG = "[data-testid=motion-lab] .kl-segmented";
+const SEG = "[data-testid=motion-lab] [data-slot=segmented]";
 
 test("stretch: a move is compositor transforms, survives a long task, and lands clean", async ({ open, ok }) => {
   const p = await open({ route: "motion", q: Q, width: 1200, height: 900, ready: SEG });

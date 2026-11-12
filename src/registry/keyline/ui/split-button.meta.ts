@@ -6,7 +6,6 @@ export default {
   title: "Split button",
   description: "One control frame, two cells: the action and its menu. The menu docks to the frame.",
   files: [{ path: "src/registry/keyline/ui/split-button.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/split-button.css",
-  dependencies: ["@base-ui/react"],
-  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/menu"],
+  dependencies: ["@base-ui/react", "class-variance-authority"],
+  registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/menu", "@keyline-ui/keyline-render"],
 } satisfies KeylineItem;

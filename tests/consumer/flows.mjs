@@ -873,7 +873,7 @@ for (const [eng, type, opts] of [
     .last()
     .evaluate((f) => {
       const r = f.getBoundingClientRect();
-      return [...f.querySelectorAll('[data-slot="button"][data-kl-layout="cell"], .kl-toggle')].every((c) => {
+      return [...f.querySelectorAll('[data-slot="button"][data-kl-layout="cell"], [data-slot="toggle"]')].every((c) => {
         const b = c.getBoundingClientRect();
         return b.left >= r.left - 0.5 && b.right <= r.right + 0.5;
       });

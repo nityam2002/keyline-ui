@@ -4,7 +4,13 @@ import { cn } from "@/lib/utils";
 import * as ui from "./demo-ui";
 
 import { Button, ButtonAffix } from "@/registry/keyline/ui/button";
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/registry/keyline/ui/split-button";
+import {
+  SplitButton,
+  SplitButtonAction,
+  SplitButtonMenu,
+  SplitButtonPopup,
+  SplitButtonTrigger,
+} from "@/registry/keyline/ui/split-button";
 import { MenuItem, MenuSeparator } from "@/registry/keyline/ui/menu";
 import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
 import { ToggleGroup, ToggleGroupItem } from "@/registry/keyline/ui/toggle-group";
@@ -740,17 +746,20 @@ function Specimen() {
               <div className={ui.row}>
                 <SplitButton variant="primary">
                   <SplitButtonAction>Book pickup</SplitButtonAction>
-                  <SplitButtonMenu label="More booking options">
-                    <MenuItem code="1" shortcut="B">
-                      Book for tomorrow
-                    </MenuItem>
-                    <MenuItem code="2" description="Needs a dock slot first" disabled>
-                      Book recurring
-                    </MenuItem>
-                    <MenuSeparator />
-                    <MenuItem code="3" variant="destructive">
-                      Release slot
-                    </MenuItem>
+                  <SplitButtonMenu>
+                    <SplitButtonTrigger aria-label="More booking options" />
+                    <SplitButtonPopup>
+                      <MenuItem code="1" shortcut="B">
+                        Book for tomorrow
+                      </MenuItem>
+                      <MenuItem code="2" description="Needs a dock slot first" disabled>
+                        Book recurring
+                      </MenuItem>
+                      <MenuSeparator />
+                      <MenuItem code="3" variant="destructive">
+                        Release slot
+                      </MenuItem>
+                    </SplitButtonPopup>
                   </SplitButtonMenu>
                 </SplitButton>
               </div>

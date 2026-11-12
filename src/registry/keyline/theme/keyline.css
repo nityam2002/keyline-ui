@@ -440,8 +440,8 @@
     .kl-cmd-list,
     .kl-popover,
     .kl-tabs-list,
-    .kl-segmented,
-    .kl-toggle-group,
+    [data-slot="segmented"],
+    [data-slot="toggle-group"],
     .kl-nav-list
   ) {
     scrollbar-width: thin;

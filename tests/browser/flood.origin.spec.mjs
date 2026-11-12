@@ -4,8 +4,13 @@ import { test } from "./fixtures.mjs";
 test.use({ only: ["split"] });
 
 test("flood origin: set for the press, cleared after its flood", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", width: 1440, height: 900, ready: ".kl-toggle.kl-flood" });
-  const cell = p.locator(".kl-toggle.kl-flood").first();
+  const p = await open({
+    route: "specimen",
+    width: 1440,
+    height: 900,
+    ready: ":is([data-slot=toggle], [data-slot=toggle-group-item])",
+  });
+  const cell = p.locator(":is([data-slot=toggle], [data-slot=toggle-group-item])").first();
   await cell.scrollIntoViewIfNeeded();
   // the press is held while "during" is read: the origin is cleared 180ms (--kl-t-flood + 40) after release, which
   // a click-then-read round trip can outrun on a loaded machine

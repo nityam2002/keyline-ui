@@ -119,8 +119,12 @@ export default function ToggleGroupPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Toggle group props" props={PROPS} />
       <p className="s-small">
-        Tab enters the group at one item; arrow keys move between items. Built on{" "}
-        <a href="https://base-ui.com/react/components/toggle-group">Base UI Toggle Group</a>.
+        Parts: <code>ToggleGroup</code> (Base UI <code>ToggleGroup</code>) and <code>ToggleGroupItem</code> (Base UI{" "}
+        <code>Toggle</code>). Every part takes <code>render</code>, and a <code>className</code> or <code>style</code>{" "}
+        that may be a function of its state. The group carries <code>data-slot=&quot;toggle-group&quot;</code> and{" "}
+        <code>data-kl-layout</code>; an item <code>data-slot=&quot;toggle-group-item&quot;</code> and Base UI&rsquo;s{" "}
+        <code>data-pressed</code> and <code>data-disabled</code>. Tab enters the group at one item; arrow keys move
+        between items. Built on <a href="https://base-ui.com/react/components/toggle-group">Base UI Toggle Group</a>.
       </p>
     </DocPage>
   );

@@ -60,7 +60,7 @@ check hover-card hover-card HoverCardContent ".kl-positioner"
 check otp-field otp-field OtpField ".kl-field-bang"
 # Kbd and toggle need only the theme; native-select brings Field's frame and ! cell; command now brings kbd
 check kbd kbd KbdGroup ".kl-kbd-group"
-check toggle toggle Toggle ".kl-toggle-solo"
+check toggle toggle Toggle ".kl-flood"
 check native-select native-select NativeSelect ".kl-field-bang"
 check command command CommandDialog ".kl-kbd"
 # Resizable needs only the theme (and react-resizable-panels from npm); navigation-menu the theme's positioner and dock

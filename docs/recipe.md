@@ -78,6 +78,12 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
   part's property moves that rule into `@layer utilities`, keyed on attributes (`[data-slot="button"]
   [data-kl-layout="cell"]`), with a comment saying why. It goes back when the parent converts. A rule that doesn't
   compete keeps its layer and only swaps its class selector for the attribute.
+- **A flood owns the filled state.** A `kl-flood` part (Toggle, ToggleGroupItem) sets its own background and text
+  colour only while it is off (`not-data-pressed:bg-kl-cell`): a utility would beat the foundation's flood fill.
+  Change the fill through its variables (`data-disabled:data-pressed:[--kl-fc:var(--kl-press)]`).
+- **A stretch row styles each element on itself.** The stretch engine clones the row for a move and drops the
+  clone's `data-slot`, so a rule keyed on a part's slot (`**:data-[slot=…]`) misses the clone. Give each item its
+  classes, pass sizes down through context, and key covered labels on `data-kl-covered`.
 - **Foundation classes stay as classes**: `kl-ctl`, `kl-frame`, `kl-cells`, `kl-edge`, `kl-attached kl-dock`,
   `kl-slot`, `kl-pending`, `kl-code`, `kl-count`, `kl-key`. They carry the construction rules that utilities can't
   express. A rule that only one component used moves into its classes; a rule shared across components moves into

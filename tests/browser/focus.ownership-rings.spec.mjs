@@ -108,7 +108,7 @@ test("ring geometry: traversal in dark, cut off, compact; a ring on a band takes
   const onFill = await scope
     .locator("[data-kl-covered], .kl-flood[data-kl-on]")
     .evaluateAll((es) => es.slice(0, 1).map((e) => e.className));
-  const covered = scope.locator("[role=radio][data-kl-covered], .kl-segmented-item[data-kl-covered]").first();
+  const covered = scope.locator("[role=radio][data-kl-covered], [data-slot=segmented-item][data-kl-covered]").first();
   await covered.focus();
   await p.keyboard.press("ArrowRight");
   await p.keyboard.press("ArrowLeft");

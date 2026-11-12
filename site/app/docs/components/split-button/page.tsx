@@ -17,12 +17,15 @@ export const metadata = componentMetadata(
 );
 
 const IMPORT = `import { MenuItem } from "@/components/keyline/ui/menu"
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from "@/components/keyline/ui/split-button"`;
+import { SplitButton, SplitButtonAction, SplitButtonMenu, SplitButtonPopup, SplitButtonTrigger } from "@/components/keyline/ui/split-button"`;
 
 const USAGE = `<SplitButton variant="primary">
   <SplitButtonAction onClick={book}>Book delivery</SplitButtonAction>
-  <SplitButtonMenu label="Other ways to deliver">
-    <MenuItem onClick={bookTomorrow}>Tomorrow morning</MenuItem>
+  <SplitButtonMenu>
+    <SplitButtonTrigger aria-label="Other ways to deliver" />
+    <SplitButtonPopup>
+      <MenuItem onClick={bookTomorrow}>Tomorrow morning</MenuItem>
+    </SplitButtonPopup>
   </SplitButtonMenu>
 </SplitButton>`;
 
@@ -44,12 +47,24 @@ const PROPS: Prop[] = [
     ),
   },
   {
-    name: "label",
+    name: "aria-label",
     type: "string",
     default: "required",
     description: (
       <>
-        On <code>SplitButtonMenu</code>: the caret&rsquo;s accessible name. Say what the menu holds.
+        On <code>SplitButtonTrigger</code>: the caret&rsquo;s accessible name. Say what the menu holds.
+      </>
+    ),
+  },
+  {
+    name: "container",
+    type: "Element | Ref",
+    default: "<body>",
+    description: (
+      <>
+        On <code>SplitButtonPopup</code>: where the menu&apos;s portal renders. It takes every <code>MenuPopup</code>{" "}
+        prop (<code>align</code>, <code>portalProps</code>, <code>finalFocus</code>…) and docks to the frame unless you
+        pass <code>anchor</code>.
       </>
     ),
   },
@@ -105,8 +120,15 @@ export default function SplitButtonPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Split button props" props={PROPS} />
       <p className="s-small">
-        Parts: <code>SplitButton</code>, <code>SplitButtonAction</code> (a <code>button</code>; its props pass through),{" "}
-        <code>SplitButtonMenu</code>. The menu is <a href="https://base-ui.com/react/components/menu">Base UI Menu</a>.
+        Parts: <code>SplitButton</code> (the frame), <code>SplitButtonAction</code> (Base UI <code>Button</code>),{" "}
+        <code>SplitButtonMenu</code> (Base UI <code>Menu.Root</code>), <code>SplitButtonTrigger</code> (
+        <code>Menu.Trigger</code>, the caret cell) and <code>SplitButtonPopup</code> (Menu&rsquo;s{" "}
+        <code>MenuPopup</code>). Every part takes <code>render</code>, and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state. The frame carries <code>data-variant</code> and{" "}
+        <code>data-kl-layout</code>; each part its <code>data-slot</code> (<code>split-button</code>,{" "}
+        <code>split-button-action</code>, <code>split-button-trigger</code>, <code>menu-popup</code>), and the trigger{" "}
+        <code>data-popup-open</code> while its menu is open. The menu is{" "}
+        <a href="https://base-ui.com/react/components/menu">Base UI Menu</a>.
       </p>
     </DocPage>
   );
