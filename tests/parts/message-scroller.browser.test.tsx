@@ -249,6 +249,11 @@ describe("message-scroller: the reader leaves the end", () => {
   });
 
   it("scrolls up with no reader input (focus moving to a control above) show Latest and leave the thumb hidden", async () => {
+    // No reader input means no pointer over the log either. Base UI takes a pointerenter or pointermove on the
+    // viewport for the reader's (and reveals the thumb for the scrolls after it), and the pointer is wherever an
+    // earlier test in this page left it: park it in the frame's far corner before the log appears under it.
+    await render(<span data-testid="park" style={{ position: "fixed", right: 0, bottom: 0, width: 8, height: 8 }} />);
+    await userEvent.hover(document.querySelector<HTMLElement>("[data-testid=park]")!);
     await render(
       <main>
         <Log />
