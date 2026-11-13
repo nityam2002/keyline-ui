@@ -19,7 +19,7 @@ type File = { path: string; content?: string; target?: string };
 type Item = { name: string; dependencies?: string[]; registryDependencies?: string[]; files?: File[] };
 
 const items = new Map<string, Item>();
-for (const f of readdirSync(DIR).filter((f) => f.endsWith(".json") && f !== "registry.json"))
+for (const f of readdirSync(DIR).filter((f) => f.endsWith(".json") && f !== "registry.json" && f !== "versions.json"))
   items.set(f.slice(0, -5), JSON.parse(readFileSync(DIR + f, "utf8")) as Item);
 
 const shipped = new Map<string, string>(); // install target without extension -> item name

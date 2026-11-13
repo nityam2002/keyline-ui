@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { buildRegistry, ROOT, OUTPUT, INDEX } from "../../scripts/registry/build.ts";
 import { generateTheme } from "../../scripts/registry/theme.ts";
+import { VERSIONS } from "../../scripts/registry/versions.ts";
 
 const built = await buildRegistry();
 
@@ -14,8 +15,12 @@ test("the theme CSS is what theme/tokens.ts and theme/foundation.css generate (r
     assert.ok(readFileSync(ROOT + file, "utf8") === css, `${file} is stale: run pnpm registry:build`);
 });
 
-test("site/public/r holds exactly the items the metas define", () => {
-  assert.deepEqual(readdirSync(ROOT + OUTPUT).toSorted(), [...built.items.keys()].toSorted());
+test("site/public/r holds exactly the items the metas define, and versions.json", () => {
+  assert.deepEqual(readdirSync(ROOT + OUTPUT).toSorted(), [...built.items.keys(), VERSIONS].toSorted());
+});
+
+test("versions.json matches a fresh build (run pnpm registry:build)", () => {
+  assert.ok(readFileSync(`${ROOT}${OUTPUT}/${VERSIONS}`, "utf8") === built.versions, `${VERSIONS} is stale`);
 });
 
 test("every built item matches a fresh build (run pnpm registry:build)", () => {

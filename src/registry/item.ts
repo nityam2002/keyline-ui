@@ -11,11 +11,54 @@ type Dependencies = {
   registryDependencies?: string[];
 };
 
+/**
+ * What a breaking entry must give someone who already copied the item (coss's template). The note says what
+ * changed; the re-add command is generated from the item's name.
+ */
+export type Migration = {
+  /** Before/after code for a project that uses the item: a unified diff against `@/components/keyline/…`. */
+  diff: string;
+  /** The smallest diff for someone who keeps a locally modified copy and will not re-add it. */
+  modified: string;
+  /** A prompt an agent can follow: the steps, what not to do, and how to check the result (visually too). */
+  prompt: string;
+};
+
+/** One line of an item's history. scripts/changelog.ts turns these into CHANGELOG.md and the site's changelog. */
+export type ChangelogEntry = {
+  /** The item's version this entry ships in (semver). */
+  version: string;
+  /** ISO date, YYYY-MM-DD. */
+  date: string;
+  /** What changed, for someone using the item. */
+  note: string;
+} & ({ breaking?: false } | { breaking: true; migration: Migration });
+
+/**
+ * Release fields. scripts/registry/versions.ts hashes everything the item installs and fails when that changes
+ * without a bump, a version goes backwards, or a bump has no changelog entry. They are not part of the built item:
+ * the build publishes them in r/versions.json.
+ */
+type Release = {
+  /** Semver. Bump it whenever anything the item installs changes; a breaking change bumps the major. */
+  version: string;
+  /** The date of the latest changelog entry (ISO, YYYY-MM-DD). */
+  updated: string;
+  /** Newest first; the first entry is for `version`. */
+  changelog: ChangelogEntry[];
+  /**
+   * A tombstone: the item was removed and this names its replacement. Its file re-exports from the replacement (or
+   * throws a pointer error), so a project that still adds it by name keeps working for one more minor release.
+   */
+  deprecated?: string;
+};
+
 export type KeylineItem = Without<
   RegistryItem,
   "$schema" | "css" | "cssVars" | "dependencies" | "registryDependencies"
 > &
-  Dependencies & {
+  Dependencies &
+  Release & {
     /** The CSS file the build converts into the item's `css` (and, with `theme`, its `cssVars`). Theme and block
      *  items only: a ui item draws with utilities, and the build fails if one names a CSS file. */
     cssFile?: string;

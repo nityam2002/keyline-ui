@@ -157,6 +157,13 @@ export const GUIDES: Guide[] = [
     description:
       "How Keyline components fit together: controls and cells, one owner per edge, sizing, overlay stacking, the public API, shared helpers and known limitations.",
   },
+  {
+    name: "Changelog",
+    href: "/docs/changelog",
+    keywords: "changelog versions release breaking migration upgrade update history",
+    description:
+      "What changed in each Keyline item, newest first: every item's version, and for a breaking change the diff, the re-add command and an agent prompt.",
+  },
 ];
 
 /** Registry blocks: whole screens composed from the components. Each names the item it installs, like the catalogue. */

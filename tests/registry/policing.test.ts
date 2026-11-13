@@ -15,7 +15,7 @@ type Item = {
   cssVars?: unknown;
 };
 const items: Item[] = readdirSync(DIR)
-  .filter((f) => f.endsWith(".json") && f !== "registry.json")
+  .filter((f) => f.endsWith(".json") && f !== "registry.json" && f !== "versions.json")
   .map((f) => JSON.parse(readFileSync(DIR + f, "utf8")) as Item);
 
 test("no shipped file or CSS carries Radix idioms (radix-ui, --radix-, data-state)", () => {

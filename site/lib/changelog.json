@@ -1,0 +1,1226 @@
+{
+  "releases": [
+    {
+      "date": "2026-11-13",
+      "entries": [
+        {
+          "item": "accordion",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "alert-dialog",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "app-shell",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "attachment",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "avatar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "breadcrumb",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "bubble",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "calendar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "carousel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "chart",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "collapsible",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "collection",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "combobox",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "command",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "context-menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "data-table",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "data-table-model",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-picker",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-range",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "dialog",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "direction",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "drawer",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "empty",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "hover-card",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "inspector",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "item",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "kbd",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-config",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-motion",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-render",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-scope",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-shadcn",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "marker",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menubar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message-scroller",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "multiselect",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "native-select",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "nav",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "navigation-menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "notice",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "number-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "options",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "otp-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "pagination",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "popover",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "progress",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "questionnaire",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "radio-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "resizable",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "scroll-area",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "scroll-edges",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "segmented",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "select",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "selection",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sheet",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "shipments-demo",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sidebar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "skeleton",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "slider",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "split-button",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "stat",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "status",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "switch",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "table",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tabs",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "time-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toast",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-overflow",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tooltip",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        }
+      ]
+    }
+  ],
+  "items": {
+    "accordion": [
+      {
+        "item": "accordion",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "alert-dialog": [
+      {
+        "item": "alert-dialog",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "app-shell": [
+      {
+        "item": "app-shell",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "attachment": [
+      {
+        "item": "attachment",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "avatar": [
+      {
+        "item": "avatar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "breadcrumb": [
+      {
+        "item": "breadcrumb",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "bubble": [
+      {
+        "item": "bubble",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button": [
+      {
+        "item": "button",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-group": [
+      {
+        "item": "button-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "calendar": [
+      {
+        "item": "calendar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "carousel": [
+      {
+        "item": "carousel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "chart": [
+      {
+        "item": "chart",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox": [
+      {
+        "item": "checkbox",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-group": [
+      {
+        "item": "checkbox-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "collapsible": [
+      {
+        "item": "collapsible",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "collection": [
+      {
+        "item": "collection",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "combobox": [
+      {
+        "item": "combobox",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "command": [
+      {
+        "item": "command",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "context-menu": [
+      {
+        "item": "context-menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "data-table": [
+      {
+        "item": "data-table",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "data-table-model": [
+      {
+        "item": "data-table-model",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-picker": [
+      {
+        "item": "date-picker",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-range": [
+      {
+        "item": "date-range",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "dialog": [
+      {
+        "item": "dialog",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "direction": [
+      {
+        "item": "direction",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "drawer": [
+      {
+        "item": "drawer",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "empty": [
+      {
+        "item": "empty",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "field": [
+      {
+        "item": "field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "hover-card": [
+      {
+        "item": "hover-card",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "inspector": [
+      {
+        "item": "inspector",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "item": [
+      {
+        "item": "item",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "kbd": [
+      {
+        "item": "kbd",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline": [
+      {
+        "item": "keyline",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-config": [
+      {
+        "item": "keyline-config",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-motion": [
+      {
+        "item": "keyline-motion",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-render": [
+      {
+        "item": "keyline-render",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-scope": [
+      {
+        "item": "keyline-scope",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-shadcn": [
+      {
+        "item": "keyline-shadcn",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "marker": [
+      {
+        "item": "marker",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menu": [
+      {
+        "item": "menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menubar": [
+      {
+        "item": "menubar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message": [
+      {
+        "item": "message",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message-scroller": [
+      {
+        "item": "message-scroller",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "multiselect": [
+      {
+        "item": "multiselect",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "native-select": [
+      {
+        "item": "native-select",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "nav": [
+      {
+        "item": "nav",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "navigation-menu": [
+      {
+        "item": "navigation-menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "notice": [
+      {
+        "item": "notice",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "number-field": [
+      {
+        "item": "number-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "options": [
+      {
+        "item": "options",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "otp-field": [
+      {
+        "item": "otp-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "pagination": [
+      {
+        "item": "pagination",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "panel": [
+      {
+        "item": "panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "popover": [
+      {
+        "item": "popover",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "progress": [
+      {
+        "item": "progress",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "questionnaire": [
+      {
+        "item": "questionnaire",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "radio-group": [
+      {
+        "item": "radio-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "resizable": [
+      {
+        "item": "resizable",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "scroll-area": [
+      {
+        "item": "scroll-area",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "scroll-edges": [
+      {
+        "item": "scroll-edges",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "segmented": [
+      {
+        "item": "segmented",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "select": [
+      {
+        "item": "select",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "selection": [
+      {
+        "item": "selection",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sheet": [
+      {
+        "item": "sheet",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "shipments-demo": [
+      {
+        "item": "shipments-demo",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sidebar": [
+      {
+        "item": "sidebar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "skeleton": [
+      {
+        "item": "skeleton",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "slider": [
+      {
+        "item": "slider",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "split-button": [
+      {
+        "item": "split-button",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "stat": [
+      {
+        "item": "stat",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "status": [
+      {
+        "item": "status",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "switch": [
+      {
+        "item": "switch",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "table": [
+      {
+        "item": "table",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tabs": [
+      {
+        "item": "tabs",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "time-field": [
+      {
+        "item": "time-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toast": [
+      {
+        "item": "toast",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle": [
+      {
+        "item": "toggle",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-group": [
+      {
+        "item": "toggle-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar": [
+      {
+        "item": "toolbar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-overflow": [
+      {
+        "item": "toolbar-overflow",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tooltip": [
+      {
+        "item": "tooltip",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ]
+  }
+}
