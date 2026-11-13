@@ -523,11 +523,11 @@ if (run("shell")) {
         const e = document.querySelector(s);
         return !!e && getComputedStyle(e).display !== "none" && e.getBoundingClientRect().width > 0;
       };
-      const main = document.querySelector(".kl-shell-main").getBoundingClientRect();
-      const head = document.querySelector(".kl-shell-h").getBoundingClientRect();
+      const main = document.querySelector("[data-slot=app-shell-main]").getBoundingClientRect();
+      const head = document.querySelector("[data-slot=app-shell-header]").getBoundingClientRect();
       return {
-        nav: shown(".kl-shell-nav"),
-        aside: shown(".kl-shell-aside"),
+        nav: shown("[data-slot=app-shell-nav]"),
+        aside: shown("[data-slot=app-shell-aside]"),
         mainW: Math.round(main.width),
         headW: Math.round(head.width),
         overflow: document.documentElement.scrollWidth - innerWidth,
@@ -647,7 +647,15 @@ for (const width of run("docs") ? [1440, 390] : []) {
   ok((await active(p)).slot === "toolbar-more", `${tag}: Escape returns focus to More`);
   // back to Standard: the room returns, so the items return to the row
   await d0.getByRole("radio", { name: /Standard/ }).click();
-  await p.waitForTimeout(250);
+  // the box closes back over 280ms, and the band follows it a frame behind (measured by a ResizeObserver): compare
+  // them once the box has stopped, and the band has had the frame that reports its last size
+  await d0
+    .getByTestId("preview-box")
+    .evaluate((e) =>
+      Promise.all(e.getAnimations().map((a) => a.finished)).then(
+        () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+      ),
+    );
   ok(
     (await cm().count()) === inRow,
     `${tag}: back at Standard the row is as it started (${inRow ? "Comments in the row" : "phone: Comments in More"})`,
@@ -683,7 +691,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
     // the frame holds still: header, index and page index at the same place at every section and at the end
     const where = () =>
       p.evaluate(() =>
-        [".kl-shell-h", ".kl-shell-nav", ".kl-shell-aside"]
+        ["[data-slot=app-shell-header]", "[data-slot=app-shell-nav]", "[data-slot=app-shell-aside]"]
           .map((q) => {
             const r = document.querySelector(q).getBoundingClientRect();
             return `${Math.round(r.top)}:${Math.round(r.height)}`;
@@ -724,7 +732,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
       `${tag}: after scrolling, choosing Installation keeps the band on it`,
     );
     const ih = await p.locator("#installation").evaluate((e) => e.getBoundingClientRect().top);
-    const hb = await p.locator(".kl-shell-h").evaluate((e) => e.getBoundingClientRect().bottom);
+    const hb = await p.locator("[data-slot=app-shell-header]").evaluate((e) => e.getBoundingClientRect().bottom);
     ok(
       ih >= hb && ih < hb + 60,
       `${tag}: Installation lands just below the sticky header, not under it (${Math.round(ih)} / header ends ${Math.round(hb)})`,

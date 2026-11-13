@@ -218,14 +218,13 @@
      highlighted option into view; tab, segmented, toggle and nav rows scroll sideways) stay native, so
      their refs, active-option scrolling and keyboard behaviour are untouched. They share the Scroll Area's
      tones instead of its DOM: a thin bar, ink-3 thumb on the surface they sit on. (Lists converted to utilities
-     write the same two declarations themselves: Combobox's and Command's.) */
+     write the same two declarations themselves: Combobox's, Command's and Nav's.) */
   :where(
     .kl-attached,
     [data-slot="popover-popup"],
     [data-slot="tabs-list"],
     [data-slot="segmented"],
-    [data-slot="toggle-group"],
-    .kl-nav-list
+    [data-slot="toggle-group"]
   ) {
     scrollbar-width: thin;
     scrollbar-color: var(--kl-ink-3) transparent;

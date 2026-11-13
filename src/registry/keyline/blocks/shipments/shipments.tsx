@@ -855,7 +855,7 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
                     onClick={(e) => {
                       // the sheet returns focus to whichever trigger opened this menu (Alerts, or More)
                       opener.current = e.currentTarget.ownerDocument.querySelector<HTMLElement>(
-                        '.kl-shell-actions [aria-expanded="true"]',
+                        '[data-slot="app-shell-actions"] [aria-expanded="true"]',
                       );
                       setInspect(s.id);
                     }}

@@ -21,10 +21,10 @@ test("block wide (1440): Inspector as the shell's aside, Notice when filtered ou
   const row = a.locator(".kl-sx-open").nth(2);
   const id = (await row.textContent()).trim();
   await row.click();
-  const aside = a.locator(".kl-shell-aside [data-slot=inspector]");
+  const aside = a.locator("[data-slot=app-shell-aside] [data-slot=inspector]");
   await aside.waitFor({ state: "visible" }).catch(() => {});
   ok("block: inspecting a row opens the Inspector inline as the shell's aside", await aside.isVisible(), null);
-  const crumb = a.locator('.kl-shell-h [aria-current="page"]');
+  const crumb = a.locator('[data-slot=app-shell-header] [aria-current="page"]');
   const crumbText = await poll(
     () => crumb.textContent(),
     (t) => t.includes(id),
@@ -108,10 +108,10 @@ test("block narrow (600): navigation sheet", async ({ open, ok }) => {
   ok(
     "block: narrow at 600 (sidebar and aside are sheets)",
     (await nn.locator(".kl-sx").getAttribute("data-kl-shell")) === "narrow" &&
-      (await nn.locator(".kl-shell-nav").count()) === 0,
+      (await nn.locator("[data-slot=app-shell-nav]").count()) === 0,
     null,
   );
-  await nn.locator(".kl-shell-toggle").click();
+  await nn.locator("[data-slot=app-shell-toggle]").click();
   const nav = nn.getByRole("dialog", { name: "Navigation" });
   await nav.waitFor({ state: "visible" }).catch(() => {});
   ok("block narrow: the toggle opens the navigation sheet", await nav.isVisible(), null);

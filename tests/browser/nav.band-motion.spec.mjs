@@ -74,8 +74,8 @@ test("nav link: lean held through release, band leaves at the commit", { tag: "@
 
 for (const q of ["?motion=slow", "?motion=slow&dir=rtl"]) {
   test(`nav ${q}: the ink key column moves with the band`, { tag: "@timing" }, async ({ open, ok }) => {
-    const p = await open({ ...VP, route: "app", q, ready: ".kl-nav[data-kl-icons] [data-kl-stretch]" });
-    const list = p.locator(".kl-nav[data-kl-icons] [data-kl-stretch]").first();
+    const p = await open({ ...VP, route: "app", q, ready: "[data-slot=nav][data-kl-icons] [data-kl-stretch]" });
+    const list = p.locator("[data-slot=nav][data-kl-icons] [data-kl-stretch]").first();
     await list.locator("[data-kl-item]", { hasText: "Carriers" }).first().click();
     await p.waitForTimeout(300); // timing: samples the band mid-travel under motion=slow
     const mid = await list.evaluate((h) => {
@@ -85,7 +85,7 @@ for (const q of ["?motion=slow", "?motion=slow&dir=rtl"]) {
       return {
         ink: parseFloat(cs.backgroundSize),
         pos: cs.backgroundPositionX,
-        cells: [...h.querySelectorAll(".kl-nav-ic")]
+        cells: [...h.querySelectorAll("[data-slot=nav-item-icon]")]
           .map((c) => getComputedStyle(c).backgroundColor)
           .filter((x) => x !== "rgba(0, 0, 0, 0)"),
       };

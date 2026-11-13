@@ -728,9 +728,9 @@ for (const [eng, type, opts] of [
       (await wnav.getByRole("list", { name: "Work" }).getByRole("button").count()) ===
       2 && (await wnav.getByRole("list", { name: "Admin" }).getByRole("button").count()) === 1,
   );
-  const wcol = ws.locator(".kl-shell-nav");
+  const wcol = ws.locator("[data-slot=app-shell-nav]");
   const geo = await ws.evaluate((r) => {
-    const n = r.querySelector(".kl-shell-nav").getBoundingClientRect(),
+    const n = r.querySelector("[data-slot=app-shell-nav]").getBoundingClientRect(),
       m = r.querySelector("main").getBoundingClientRect();
     return [n.bottom, m.bottom, Math.min(innerHeight, m.bottom)];
   });

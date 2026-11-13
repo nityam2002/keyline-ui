@@ -75,7 +75,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function SidebarPage() {
@@ -109,6 +115,16 @@ export default function SidebarPage() {
       <p className="s-small">
         <code>@keyline-ui/sidebar</code> installs AppShell and Nav together. Nav&apos;s own page covers groups, nested
         items and counts.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The sidebar is <code>AppShellNav</code> holding a <code>Nav</code>, with <code>AppShellToggle</code> in the
+        header: compose them from <Link href="/docs/components/app-shell#parts">AppShell&apos;s parts</Link> to place
+        the toggle or the column yourself. The column carries <code>data-slot=&quot;app-shell-nav&quot;</code> and, as a
+        rail, <code>data-kl-rail</code>; on a narrow shell the sheet carries{" "}
+        <code>data-kl-shell-sheet=&quot;nav&quot;</code>.{" "}
+        <Link href="/docs/components/nav#parts">Nav&apos;s parts</Link> name every element inside.
       </p>
     </DocPage>
   );

@@ -7,11 +7,12 @@ export default {
   description:
     "Vertical (or wrapping) location list; the cobalt band stretches between items. Labelled groups, icon key cells, nested links under a disclosure, row actions (NavAction), a brand identity block and a footer; a rail of key cells with tooltips inside AppShell. With AppShell it is the sidebar (@keyline-ui/sidebar).",
   files: [{ path: "src/registry/keyline/ui/nav.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/nav.css",
+  dependencies: ["@base-ui/react"],
   registryDependencies: [
     "@keyline-ui/keyline",
     "utils",
     "@keyline-ui/keyline-motion",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/scroll-edges",
     "@keyline-ui/tooltip",
   ],

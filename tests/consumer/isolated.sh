@@ -48,7 +48,9 @@ check number-field number-field NumberField ".kl-field-frame"
 # build below must generate its rules
 check switch switch Switch "file:src/components/keyline/ui/checkbox.tsx"
 check time-field time-field TimeField ".kl-field-frame"
-check app-shell app-shell AppShell ".kl-nav-ic"
+# AppShell has no CSS of its own: its sidebar is a Nav, whose look is utilities in nav.tsx (reached only through
+# app-shell here), which must arrive (the build below checks they are generated)
+check app-shell app-shell AppShell "file:src/components/keyline/ui/nav.tsx"
 # Tabs has no CSS of its own: its scroll shadows are the spans scroll-edges writes, styled by the theme (.kl-more-fade);
 # its look is utilities in tabs.tsx (the build below checks they are generated)
 check tabs tabs Tabs ".kl-more-fade"
@@ -102,5 +104,7 @@ built "the tab's count width" 'data-has-count\:min-w-\[104px\]'
 # the resizable grip's states key on its handle's named group (group/resizable-handle), which is in no installed file
 # but resizable.tsx
 built "the resizable grip's states" '/resizable-handle'
+# the nav's responsive row keys on its named container (@container/kl-nav), which is in no installed file but nav.tsx
+built "the nav's responsive row" '@container kl-nav (min-width:300px)'
 echo "isolated: ${fails} missing"
 exit $fails

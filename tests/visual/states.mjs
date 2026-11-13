@@ -137,16 +137,53 @@ export const STATES = {
     },
     { name: "hover-status", do: [["hover", `${role("toolbar", "Status filters")} >> role=button >> nth=1`]] },
     { name: "focus-status", do: [["focus", `${role("toolbar", "Status filters")} >> role=button >> nth=0`]] },
+    // the shell around it: a nav link hovered, the sidebar collapsed to its rail
+    { name: "hover-nav", do: [["hover", `${MAIN} >> role=link >> nth=2`]] },
+    { name: "rail", do: [["click", role("button", "Collapse navigation")]] },
   ],
   shell: [
     { name: "hover-nav", do: [["hover", `#shell >> ${MAIN} >> role=button[name=/^Carriers/]`]] },
     { name: "focus-nav", do: [["focus", `#shell >> ${MAIN} >> role=button[name=/^Carriers/]`]] },
+    { name: "focus-current", do: [["focus", `#shell >> ${MAIN} >> role=button[name=/^Shipments/]`]] },
     { name: "focus-hide", do: [["focus", `#shell >> ${role("button", "Hide navigation")}`]] },
+    { name: "hover-hide", do: [["hover", `#shell >> ${role("button", "Hide navigation")}`]] },
+    { name: "nav-hidden", do: [["click", `#shell >> ${role("button", "Hide navigation")}`]] },
+    // a row opens the aside: inline beside the page at this width
+    { name: "aside-open", do: [["click", `#shell >> role=button[name=/^Rotterdam Europoort/]`]] },
+    // 600px: below narrowAt, the sidebar and the aside are sheets
+    { name: "narrow", do: [["click", `#shell >> ${role("radio", "600px (sheets)")}`]] },
+    {
+      name: "narrow-nav-open",
+      do: [
+        // chosen from the keyboard: a click would end :focus-visible for the next focus
+        ["focus", `#shell >> ${role("radio", "Wide")}`],
+        ["press", "ArrowRight"],
+        ["focus", `#shell >> ${role("button", "Show navigation")}`],
+        ["press", "Enter"],
+        ["wait", "role=dialog"],
+      ],
+    },
+    {
+      name: "narrow-aside-open",
+      do: [
+        ["click", `#shell >> ${role("radio", "600px (sheets)")}`],
+        ["click", `#shell >> role=button[name=/^Hamburg Waltershof/]`],
+        ["wait", "role=dialog"],
+      ],
+    },
   ],
   sidebar: [
     { name: "hover-nav", do: [["hover", `#sidebar >> ${MAIN} >> role=button[name=/^Carriers/]`]] },
     { name: "focus-nav", do: [["focus", `#sidebar >> ${MAIN} >> role=button[name=/^Carriers/]`]] },
     { name: "focus-child", do: [["focus", `#sidebar >> ${MAIN} >> ${role("button", "On-time")}`]] },
+    { name: "hover-parent", do: [["hover", `#sidebar >> ${MAIN} >> role=button[name=/^Reports/]`]] },
+    { name: "hover-action", do: [["hover", `#sidebar >> ${role("button", "More for Customs holds")}`]] },
+    // the nested list folded: the band rests on its parent (reduced motion: the fold and the band land at once)
+    {
+      name: "parent-closed",
+      reducedMotion: true,
+      do: [["click", `#sidebar >> ${MAIN} >> role=button[name=/^Reports/]`]],
+    },
     {
       name: "item-menu-open",
       do: [
@@ -155,6 +192,64 @@ export const STATES = {
         ["wait", "role=menu"],
       ],
       show: "role=menu",
+    },
+    // the icon rail: key cells only, a label as a tooltip on hover and on keyboard focus
+    { name: "rail", do: [["click", `#sidebar >> ${role("button", "Collapse navigation")}`]] },
+    {
+      name: "rail-hover",
+      do: [
+        ["focus", `#sidebar >> ${role("button", "Collapse navigation")}`],
+        ["press", "Enter"],
+        ["hover", `#sidebar >> ${MAIN} >> role=button[name=/^Carriers/]`],
+      ],
+    },
+    {
+      name: "rail-focus-current",
+      do: [
+        ["focus", `#sidebar >> ${role("button", "Collapse navigation")}`],
+        ["press", "Enter"],
+        ["focus", `#sidebar >> ${MAIN} >> role=button[name=/^Reports/]`],
+      ],
+    },
+    // 600px: the sidebar is a start sheet
+    { name: "narrow", do: [["click", `#sidebar >> ${role("radio", "600px (sheet)")}`]] },
+    {
+      name: "narrow-sheet-open",
+      do: [
+        ["focus", `#sidebar >> ${role("radio", "Wide (toggle: rail)")}`],
+        ["press", "ArrowRight"],
+        ["focus", `#sidebar >> ${role("button", "Show navigation")}`],
+        ["press", "Enter"],
+        ["wait", "role=dialog"],
+      ],
+    },
+    {
+      name: "narrow-sheet-menu-open",
+      do: [
+        ["focus", `#sidebar >> ${role("radio", "Wide (toggle: rail)")}`],
+        ["press", "ArrowRight"],
+        ["focus", `#sidebar >> ${role("button", "Show navigation")}`],
+        ["press", "Enter"],
+        ["wait", "role=dialog"],
+        ["focus", `role=dialog >> ${role("button", "More for Late arrivals")}`],
+        ["press", "Enter"],
+        ["wait", "role=menu"],
+      ],
+    },
+  ],
+  // Nav on its own: a disabled item, the current item under the band, a plain item
+  location: [
+    {
+      name: "hover-nav",
+      do: [["hover", `#location >> ${role("navigation", "Specimen nav")} >> ${role("button", "Shipments 64")}`]],
+    },
+    {
+      name: "focus-current",
+      do: [["focus", `#location >> ${role("navigation", "Specimen nav")} >> ${role("button", "Carriers 9")}`]],
+    },
+    {
+      name: "hover-disabled",
+      do: [["hover", `#location >> ${role("navigation", "Specimen nav")} >> ${role("button", "Invoices 3")}`]],
     },
   ],
   // Nav: the demo bar's page links on a whole route

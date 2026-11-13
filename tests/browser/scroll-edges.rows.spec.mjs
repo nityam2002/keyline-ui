@@ -125,7 +125,7 @@ test("edges: marks, no rubber band or bar, pinned shadows, keyboard scrolling", 
   const rows = [
     ["toggle group", "[data-slot=toggle-group]"],
     ["segmented", "[data-slot=segmented]"],
-    ["nav row", ".kl-nav-list"],
+    ["nav row", "[data-slot=nav-list]"],
   ];
   await until(async () => {
     for (const [, sel] of rows)

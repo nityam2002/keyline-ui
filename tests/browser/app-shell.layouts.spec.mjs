@@ -17,10 +17,10 @@ test("shell: medium and narrow layouts, sidebar toggle, sheets, focus return", a
     (await shell.getAttribute("data-kl-shell")) === "medium",
     [await shell.getAttribute("data-kl-shell"), (await shell.boundingBox()).width],
   );
-  const toggle = shell.locator(".kl-shell-toggle");
-  const nav = shell.locator(".kl-shell-nav");
+  const toggle = shell.locator("[data-slot=app-shell-toggle]");
+  const nav = shell.locator("[data-slot=app-shell-nav]");
   // regression: the breadcrumb sat as a strip along the header's top; its cells must fill the frame's height
-  const hb = await shell.locator(".kl-shell-h").evaluate((e) => {
+  const hb = await shell.locator("[data-slot=app-shell-header]").evaluate((e) => {
     const cs = getComputedStyle(e);
     return e.getBoundingClientRect().height - 2 * parseFloat(cs.borderTopWidth);
   });
@@ -40,7 +40,7 @@ test("shell: medium and narrow layouts, sidebar toggle, sheets, focus return", a
     !(await nav.isVisible()) && (await toggle.getAttribute("aria-expanded")) === "false",
     null,
   );
-  const main = shell.locator(".kl-shell-main");
+  const main = shell.locator("[data-slot=app-shell-main]");
   await idle(p);
   const wMain = (await main.boundingBox()).width;
   await toggle.click();
@@ -70,11 +70,13 @@ test("shell: medium and narrow layouts, sidebar toggle, sheets, focus return", a
   await sec.getByRole("radio", { name: "600px (sheets)" }).click();
   await until(
     async () =>
-      (await shell.getAttribute("data-kl-shell")) === "narrow" && (await shell.locator(".kl-shell-nav").count()) === 0,
+      (await shell.getAttribute("data-kl-shell")) === "narrow" &&
+      (await shell.locator("[data-slot=app-shell-nav]").count()) === 0,
   );
   ok(
     "shell: at 600px of its own width the shell is narrow and the sidebar leaves the page",
-    (await shell.getAttribute("data-kl-shell")) === "narrow" && (await shell.locator(".kl-shell-nav").count()) === 0,
+    (await shell.getAttribute("data-kl-shell")) === "narrow" &&
+      (await shell.locator("[data-slot=app-shell-nav]").count()) === 0,
     null,
   );
   await idle(p);
@@ -120,9 +122,9 @@ test("shell: wide layout, aside inline, inspector close", async ({ open, ok }) =
     await shell.getAttribute("data-kl-shell"),
     (await shell.boundingBox()).width,
   ]);
-  const main = shell.locator(".kl-shell-main");
+  const main = shell.locator("[data-slot=app-shell-main]");
   await main.getByRole("button", { name: /Rotterdam/ }).click();
-  const inline = () => shell.locator(".kl-shell-aside").getByText("SHP-24018").first().isVisible();
+  const inline = () => shell.locator("[data-slot=app-shell-aside]").getByText("SHP-24018").first().isVisible();
   await until(inline);
   await idle(w);
   ok(
@@ -137,8 +139,12 @@ test("shell: wide layout, aside inline, inspector close", async ({ open, ok }) =
     (await main.boundingBox()).width >= 320,
     (await main.boundingBox()).width,
   );
-  await shell.locator(".kl-shell-aside").getByRole("button", { name: "Close inspector" }).click();
-  await until(async () => (await shell.locator(".kl-shell-aside").count()) === 0);
-  ok("shell: closing the inspector removes the aside", (await shell.locator(".kl-shell-aside").count()) === 0, null);
+  await shell.locator("[data-slot=app-shell-aside]").getByRole("button", { name: "Close inspector" }).click();
+  await until(async () => (await shell.locator("[data-slot=app-shell-aside]").count()) === 0);
+  ok(
+    "shell: closing the inspector removes the aside",
+    (await shell.locator("[data-slot=app-shell-aside]").count()) === 0,
+    null,
+  );
   ok("shell (wide page): no page errors", w.errs.length === 0, w.errs);
 });

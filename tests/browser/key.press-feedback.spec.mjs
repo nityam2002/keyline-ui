@@ -38,11 +38,11 @@ test("seed: held press seeds the flood, leaving withdraws it", async ({ open, ok
 });
 
 test("key: specimen families answer the press before release", async ({ open, ok }) => {
-  const p = await open({ ...VP, route: "specimen", ready: "[data-cv], .kl-nav-i" });
+  const p = await open({ ...VP, route: "specimen", ready: "[data-cv], [data-slot=nav-item]" });
   await uncv(p);
   // what shows: the background of the pressed thing (or of its box), never a hidden child
   const families = [
-    [".kl-nav-i:not([aria-current])", "nav item", ""],
+    ["[data-slot=nav-item]:not([aria-current])", "nav item", ""],
     [
       ":is([data-slot=checkbox-field-row], [data-slot=checkbox-group-item-row]):has([data-slot=checkbox]:not([data-checked], [data-disabled]))",
       "checkbox row",

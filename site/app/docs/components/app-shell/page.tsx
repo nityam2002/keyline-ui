@@ -31,6 +31,25 @@ const USAGE = `<AppShell
   …the page
 </AppShell>`;
 
+const PARTS = `<AppShellRoot navLabel="Scranton branch" asideOpen={!!order} onAsideOpenChange={…}>
+  <AppShellHeader>
+    <AppShellToggle />
+    <AppShellCrumbs>
+      <Breadcrumb layout="cell" items={…} />
+    </AppShellCrumbs>
+    <AppShellActions>
+      <Button layout="cell" variant="primary">New order</Button>
+    </AppShellActions>
+  </AppShellHeader>
+  <AppShellNav>
+    <Nav layout="cell" label="Scranton branch" items={…} />
+  </AppShellNav>
+  <AppShellMain>…the page</AppShellMain>
+  <AppShellAside label="Order">
+    <Inspector>…</Inspector>
+  </AppShellAside>
+</AppShellRoot>`;
+
 const PROPS: Prop[] = [
   {
     name: "nav",
@@ -116,7 +135,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function AppShellPage() {
@@ -150,6 +175,28 @@ export default function AppShellPage() {
       <p className="s-small">
         The example sets <code>narrowAt</code> low so the sidebar stays in a preview this size. Choose an order to open
         the aside: on this page&apos;s width it opens as a sheet. This site&apos;s docs pages are a Keyline AppShell.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>AppShell</code> is built from parts you can compose yourself: <code>AppShellRoot</code> (the grid, its
+        width and the sidebar&apos;s state; it takes the props above but the slot ones), <code>AppShellHeader</code>{" "}
+        holding <code>AppShellToggle</code>, <code>AppShellCrumbs</code> and <code>AppShellActions</code>, then{" "}
+        <code>AppShellNav</code>, <code>AppShellMain</code> and <code>AppShellAside</code> (<code>label</code> and{" "}
+        <code>finalFocus</code> for its sheet). Keyline renders each one; every part takes <code>render</code>, and a{" "}
+        <code>className</code> or <code>style</code> that may be a function of its state (<code>layout</code> on the
+        root, <code>expanded</code> on the toggle, <code>rail</code> on the sidebar). On the sidebar and the aside they
+        reach the column; on a narrow shell those parts are sheets.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>app-shell</code>, <code>app-shell-header</code>
+        , <code>app-shell-toggle</code>, <code>app-shell-crumbs</code>, <code>app-shell-actions</code>,{" "}
+        <code>app-shell-nav</code>, <code>app-shell-main</code>, <code>app-shell-aside</code>); the root carries its
+        layout as <code>data-kl-shell</code> (<code>wide</code>, <code>medium</code>, <code>narrow</code>) and{" "}
+        <code>data-kl-nav</code> (<code>open</code>, <code>rail</code>, <code>closed</code>), and the sheets carry{" "}
+        <code>data-kl-shell-sheet</code> (<code>nav</code> or <code>aside</code>). <code>onAsideOpenChange</code>{" "}
+        receives Base UI&apos;s <code>eventDetails</code> as its second argument.
       </p>
     </DocPage>
   );

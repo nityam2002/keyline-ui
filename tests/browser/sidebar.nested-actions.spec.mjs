@@ -11,7 +11,7 @@ const shell = async (p) => (await at(p, "sidebar")).locator('[data-slot="app-she
 // the band has landed and the folds have come to rest (both are animations on the document timeline)
 const rest = async (p) => {
   await idle(p);
-  await landed(p.locator("#sidebar .kl-nav-list > .kl-nav-band").first());
+  await landed(p.locator("#sidebar [data-slot=nav-list] > [data-kl-band]").first());
 };
 
 test("sidebar: nested list and the band", async ({ open, ok }) => {
@@ -51,24 +51,24 @@ test("sidebar: nested list and the band", async ({ open, ok }) => {
     p.evaluate(
       () =>
         new Promise((res) => {
-          const list = document.querySelector("#sidebar .kl-nav-list");
-          const band = list.querySelector(":scope > .kl-nav-band");
+          const list = document.querySelector("#sidebar [data-slot=nav-list]");
+          const band = list.querySelector(":scope > [data-kl-band]");
           const out = [];
           const t0 = performance.now();
           const f = () => {
             const br = window.__klBand(band);
-            const rows = [...list.querySelectorAll(".kl-nav-i")]
+            const rows = [...list.querySelectorAll("[data-slot=nav-item]")]
               .filter((e) => !e.closest("[data-kl-ghost]"))
               .map((e) => {
                 let { top, bottom } = e.getBoundingClientRect();
-                const fold = e.closest(".kl-nav-fold");
+                const fold = e.closest("[data-slot=nav-fold]");
                 if (fold) {
                   const fr = fold.getBoundingClientRect();
                   top = Math.max(top, fr.top);
                   bottom = Math.max(top, Math.min(bottom, fr.bottom));
                 }
                 return {
-                  t: e.querySelector(".kl-nav-l")?.textContent,
+                  t: e.querySelector("[data-slot=nav-item-label]")?.textContent,
                   h: bottom - top,
                   ov: Math.min(br.bottom, bottom) - Math.max(br.top, top),
                   c: e.hasAttribute("data-kl-covered"),
@@ -126,7 +126,7 @@ test("sidebar: nested list and the band", async ({ open, ok }) => {
   await rest(p);
   const fast = await reports.evaluate((el) => ({
     exp: el.getAttribute("aria-expanded"),
-    cov: [...el.closest(".kl-nav-list").querySelectorAll("[data-kl-covered]")].length,
+    cov: [...el.closest("[data-slot=nav-list]").querySelectorAll("[data-kl-covered]")].length,
     holds: el.hasAttribute("data-kl-covered"),
   }));
   ok(
@@ -180,13 +180,13 @@ test("sidebar: icon rail", async ({ open, ok }) => {
   const p = await open({ ...VP, ready: "#sidebar" });
   const s = await shell(p);
   // rail: key cells only, no row actions; a nested item widens the sidebar with its list open
-  await s.locator(".kl-shell-toggle").click();
+  await s.locator("[data-slot=app-shell-toggle]").click();
   await until(() => s.evaluate((el) => el.getAttribute("data-kl-nav") === "rail"));
   await idle(p);
   const rail = await s.evaluate((el) => ({
     nav: el.getAttribute("data-kl-nav"),
-    acts: el.querySelectorAll(".kl-shell-nav .kl-nav-act").length,
-    subs: el.querySelectorAll(".kl-shell-nav .kl-nav-sub").length,
+    acts: el.querySelectorAll("[data-slot=app-shell-nav] [data-slot=nav-action]").length,
+    subs: el.querySelectorAll("[data-slot=app-shell-nav] [data-slot=nav-sub]").length,
   }));
   ok(
     "sidebar: collapse to the icon rail hides labels' lists and row actions",
@@ -194,17 +194,17 @@ test("sidebar: icon rail", async ({ open, ok }) => {
     rail,
   );
   // (not the covered copy of the list that rides inside a moving band)
-  await s.locator('.kl-shell-nav button:not([data-kl-ghost] *):has-text("Reports")').click();
+  await s.locator('[data-slot=app-shell-nav] button:not([data-kl-ghost] *):has-text("Reports")').click();
   await until(() =>
     s.evaluate(
       (el) =>
         el.getAttribute("data-kl-nav") === "open" &&
-        el.querySelector(".kl-nav-parent")?.getAttribute("aria-expanded") === "true",
+        el.querySelector("[data-slot=nav-item][aria-expanded]")?.getAttribute("aria-expanded") === "true",
     ),
   );
   const wide = await s.evaluate((el) => ({
     nav: el.getAttribute("data-kl-nav"),
-    exp: el.querySelector(".kl-nav-parent")?.getAttribute("aria-expanded"),
+    exp: el.querySelector("[data-slot=nav-item][aria-expanded]")?.getAttribute("aria-expanded"),
   }));
   ok(
     "sidebar: pressing a nested item on the rail widens the sidebar with its list open",
@@ -221,9 +221,15 @@ test("sidebar: narrow start sheet", async ({ open, ok }) => {
   await (await at(p, "sidebar")).getByText("600px (sheet)").click();
   await idle(p);
   await stable(s);
-  await s.locator(".kl-shell-toggle").click();
+  // the box settling is not the shell switching: its band is set when its ResizeObserver reports, a React update
+  // after that. The toggle reads the band, so a press before it is narrow hides the medium column instead.
+  ok(
+    "sidebar: at 600px the shell is narrow",
+    await until(() => s.evaluate((el) => el.getAttribute("data-kl-shell") === "narrow")),
+  );
+  await s.locator("[data-slot=app-shell-toggle]").click();
   const sheet = p.getByRole("dialog", { name: "Navigation" });
-  await sheet.waitFor({ timeout: 5000 }).catch(() => {});
+  await sheet.waitFor({ timeout: 5000 });
   await idle(p);
   ok("sidebar: narrow, the toggle opens the start sheet", await sheet.isVisible());
   await sheet.getByRole("button", { name: "Reports" }).click();
@@ -231,7 +237,7 @@ test("sidebar: narrow start sheet", async ({ open, ok }) => {
   await idle(p);
   ok("sidebar: a disclosure in the sheet keeps the sheet open", await sheet.isVisible());
   await sheet.getByRole("button", { name: "Carrier scorecards" }).click();
-  await sheet.waitFor({ state: "hidden", timeout: 5000 }).catch(() => {});
+  await sheet.waitFor({ state: "hidden", timeout: 5000 });
   ok("sidebar: choosing a link closes the sheet", !(await sheet.isVisible()));
   ok("sidebar: no page errors", p.errs.length === 0, p.errs);
 });
@@ -240,11 +246,11 @@ test("sidebar: rtl nested list", async ({ open, ok }) => {
   const p = await open({ ...VP, q: "dir=rtl&theme=dark", ready: "#sidebar" });
   const s = await shell(p);
   const sub = await s
-    .locator(".kl-nav-sub")
+    .locator("[data-slot=nav-sub]")
     .first()
     .evaluate((el) => ({
       side: getComputedStyle(el).borderRightWidth,
-      caret: getComputedStyle(el.closest("li").querySelector(".kl-nav-caret svg")).transform,
+      caret: getComputedStyle(el.closest("li").querySelector("[data-slot=nav-item-caret] svg")).transform,
     }));
   ok(
     "rtl: the nested list hangs on the right-hand seam; the caret mirrors",

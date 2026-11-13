@@ -3,7 +3,7 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, lastMenu } from "./lib/probes-c.mjs";
 
-const READY = ".kl-shell-h [data-slot=toolbar]";
+const READY = "[data-slot=app-shell-header] [data-slot=toolbar]";
 const active = (p) =>
   p.evaluate(() => {
     const a = document.activeElement;
@@ -62,7 +62,7 @@ test("header 1440: an alert opens its shipment in the inspector", async ({ open,
   const id = /SH-\d+/.exec(firstText)?.[0];
   await first.click();
   const aside = await poll(
-    () => p.locator(".kl-shell-aside").textContent(),
+    () => p.locator("[data-slot=app-shell-aside]").textContent(),
     (t) => !!id && t?.includes(id),
     3000,
   );
@@ -102,8 +102,8 @@ for (const w of [520, 390]) {
     const tb = p.getByRole("toolbar", { name: "Page actions" });
     const geoOf = () =>
       p.evaluate(() => {
-        const h = document.querySelector(".kl-shell-h");
-        const c = h.querySelector(".kl-shell-crumbs").getBoundingClientRect().width;
+        const h = document.querySelector("[data-slot=app-shell-header]");
+        const c = h.querySelector("[data-slot=app-shell-crumbs]").getBoundingClientRect().width;
         return {
           fits: h.scrollWidth <= h.clientWidth + 1,
           crumbs: c,

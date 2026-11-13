@@ -7,9 +7,9 @@ const H = 820;
 
 for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]) {
   test(`shell sidebar: open column (${q})`, async ({ open, ok }) => {
-    const p = await open({ route: "app", q, width: 1280, height: H, ready: ".kl-shell-h" });
+    const p = await open({ route: "app", q, width: 1280, height: H, ready: "[data-slot=app-shell-header]" });
     const nav = p.getByRole("navigation", { name: "Main" });
-    const col = p.locator(".kl-shell-nav");
+    const col = p.locator("[data-slot=app-shell-nav]");
     await stable(col);
     // groups
     const ops = nav.getByRole("list", { name: "Operations" });
@@ -20,12 +20,12 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
       null,
     );
     // brand block
-    const brand = await col.locator(".kl-nav-h").evaluate((h) => {
+    const brand = await col.locator("[data-slot=nav-header]").evaluate((h) => {
       const s = getComputedStyle(h);
       return [
         s.backgroundColor,
         s.color,
-        getComputedStyle(document.querySelector(".kl-shell-nav")).getPropertyValue("--kl-inverse"),
+        getComputedStyle(document.querySelector("[data-slot=app-shell-nav]")).getPropertyValue("--kl-inverse"),
         h.textContent,
       ];
     });
@@ -35,7 +35,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
       brand,
     );
     // key column
-    const keys = await col.locator(".kl-nav-ic").evaluateAll((xs) =>
+    const keys = await col.locator("[data-slot=nav-item-icon]").evaluateAll((xs) =>
       xs.map((x) => {
         const r = x.getBoundingClientRect();
         return [Math.round(r.width), Math.round(r.left), Math.round(r.right)];
@@ -54,7 +54,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
       { keys: keys[0], navBox },
     );
     // the current item's key is ink on the cobalt band (the band's own ink column; the cell stays transparent)
-    const cur = await nav.locator("[aria-current=page] .kl-nav-ic").evaluate((x) => {
+    const cur = await nav.locator("[aria-current=page] [data-slot=nav-item-icon]").evaluate((x) => {
       const band = x.closest("[data-kl-stretch]").querySelector(":scope > [data-kl-band]");
       const bs = getComputedStyle(band),
         r = x.getBoundingClientRect(),
@@ -75,7 +75,7 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
       cur,
     );
     // column to the viewport bottom; footer in view
-    const foot = await col.locator(".kl-nav-f").boundingBox();
+    const foot = await col.locator("[data-slot=nav-footer]").boundingBox();
     ok(
       `${q}: the column reaches the viewport's bottom (one gutter) and the footer is in view`,
       Math.abs(navBox.y + navBox.height - (H - 16)) <= 18 && foot.y + foot.height <= H,
@@ -104,9 +104,9 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off", "dir=rtl"]
 }
 
 test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, expand)", async ({ open, ok, eng }) => {
-  const p = await open({ route: "app", width: 1280, height: H, ready: ".kl-shell-h" });
-  const toggle = p.locator(".kl-shell-toggle");
-  const col = p.locator(".kl-shell-nav");
+  const p = await open({ route: "app", width: 1280, height: H, ready: "[data-slot=app-shell-header]" });
+  const toggle = p.locator("[data-slot=app-shell-toggle]");
+  const col = p.locator("[data-slot=app-shell-nav]");
   const tooltip = p.locator("[data-slot=tooltip-popup]");
   ok(
     "rail: the toggle says Collapse navigation and is expanded",
@@ -116,7 +116,9 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   );
   await toggle.click();
   await p
-    .waitForFunction(() => Math.round(document.querySelector(".kl-shell-nav").getBoundingClientRect().width) <= 60)
+    .waitForFunction(
+      () => Math.round(document.querySelector("[data-slot=app-shell-nav]").getBoundingClientRect().width) <= 60,
+    )
     .catch(() => {});
   await idle(p);
   await stable(col);
@@ -135,12 +137,12 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
     await nav.getByRole("link").allTextContents(),
   );
   const vis = await nav
-    .locator(".kl-nav-l")
+    .locator("[data-slot=nav-item-label]")
     .first()
     .evaluate((x) => x.getBoundingClientRect().width);
   ok("rail: labels are visually hidden", vis <= 1, vis);
   const cur = await nav
-    .locator("[aria-current=page] .kl-nav-ic")
+    .locator("[aria-current=page] [data-slot=nav-item-icon]")
     .evaluate((x) => [getComputedStyle(x).backgroundColor, getComputedStyle(x).color]);
   ok("rail: the current item shows the cobalt band (its key cell is transparent)", cur[0] === "rgba(0, 0, 0, 0)", cur);
   await nav.getByRole("link", { name: /^Carriers/ }).hover();
@@ -155,7 +157,7 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   while (!inRail && n++ < 20) {
     // WebKit on macOS skips links on Tab by default; Alt+Tab is the platform's all-controls key
     await p.keyboard.press(eng === "webkit" ? "Alt+Tab" : "Tab");
-    inRail = await p.evaluate(() => !!document.activeElement?.closest(".kl-shell-nav"));
+    inRail = await p.evaluate(() => !!document.activeElement?.closest("[data-slot=app-shell-nav]"));
   }
   const shipTip = tooltip.filter({ hasText: "Shipments" });
   await shipTip.waitFor({ state: "visible", timeout: 3000 }).catch(() => {});
@@ -174,7 +176,7 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   await p
     .waitForFunction(
       () =>
-        [...document.querySelectorAll(".kl-shell-nav a")].some(
+        [...document.querySelectorAll("[data-slot=app-shell-nav] a")].some(
           (a) => a.textContent.trim().startsWith("Dock schedule") && a.getAttribute("aria-current") === "page",
         ),
       null,
@@ -184,7 +186,9 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
   ok("rail: choosing an item moves the current item", (await dock.getAttribute("aria-current")) === "page", null);
   await toggle.click();
   await p
-    .waitForFunction(() => Math.round(document.querySelector(".kl-shell-nav").getBoundingClientRect().width) >= 200)
+    .waitForFunction(
+      () => Math.round(document.querySelector("[data-slot=app-shell-nav]").getBoundingClientRect().width) >= 200,
+    )
     .catch(() => {});
   await idle(p);
   await stable(col);
@@ -197,24 +201,24 @@ test("shell sidebar: the rail (collapse, names, tooltips on hover and focus, exp
 });
 
 test("shell sidebar: the narrow sheet (390px)", async ({ open, ok }) => {
-  const p = await open({ route: "app", width: 390, height: 760, ready: ".kl-shell-h" });
-  await p.locator(".kl-shell-toggle").click();
+  const p = await open({ route: "app", width: 390, height: 760, ready: "[data-slot=app-shell-header]" });
+  await p.locator("[data-slot=app-shell-toggle]").click();
   const sheet = p.getByRole("dialog", { name: "Navigation" });
   await sheet.waitFor({ state: "visible" });
   await idle(p);
-  await stable(sheet.locator(".kl-nav-f"));
+  await stable(sheet.locator("[data-slot=nav-footer]"));
   ok(
     "sheet: the sidebar opens as a sheet with both groups and the footer",
     (await sheet.getByRole("list", { name: "Operations" }).count()) === 1 &&
       (await sheet.getByText("Mila Jansen").isVisible()),
     null,
   );
-  const f = await sheet.locator(".kl-nav-f").boundingBox();
+  const f = await sheet.locator("[data-slot=nav-footer]").boundingBox();
   ok("sheet: the footer sits at the sheet's bottom", f && Math.abs(f.y + f.height - 760) <= 4, f);
   ok(
     "sheet: labels are not a rail there (visible)",
     (await sheet
-      .locator(".kl-nav-l")
+      .locator("[data-slot=nav-item-label]")
       .first()
       .evaluate((x) => x.getBoundingClientRect().width)) > 40,
     null,

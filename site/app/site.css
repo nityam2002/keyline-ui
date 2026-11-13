@@ -706,14 +706,10 @@
     display: none;
   }
   /* the index scrolls in a ScrollArea that fills the sidebar column; the Nav inside is one long list */
-  .s-docs .kl-shell-nav > .s-dnav,
-  .kl-shell-sheet > .s-dnav {
+  .s-docs [data-slot="app-shell-nav"] > .s-dnav,
+  [data-kl-shell-sheet="nav"] > .s-dnav {
     flex: 1 1 auto;
     min-height: 0;
-  }
-  /* the page index sits at the top of its column; it does not stretch to the viewport */
-  .s-docs .kl-shell-aside > .s-toc {
-    flex: none;
   }
 
   /* a drafting rule along the top and the start edge of the stage */
@@ -1009,5 +1005,14 @@
       opacity: 0;
       transform: translateY(-4px);
     }
+  }
+}
+
+/* AppShell is written in utilities, and utilities beat @layer components: its aside's children fill the column
+   (a :where rule with no specificity), so the page index's own height sits here, keyed on the aside's slot */
+@layer utilities {
+  /* the page index sits at the top of its column; it does not stretch to the viewport */
+  .s-docs [data-slot="app-shell-aside"] > .s-toc {
+    flex: none;
   }
 }

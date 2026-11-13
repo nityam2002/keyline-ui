@@ -109,7 +109,11 @@ describe("tabs: keyboard", () => {
     await expect.poll(() => tab("Held").getAttribute("aria-selected")).toBe("true");
     expect(seen.at(-1)![0]).toBe("held");
     expect(seen.at(-1)![1].reason).toBeTypeOf("string");
-    expect(document.querySelector('[data-slot="tabs-panel"]:not([hidden])')!.textContent).toBe("Held shipments");
+    // Base UI hides the panel left behind once its exit has finished (useOpenChangeComplete), a frame or more after
+    // the tab is selected: the shown panel is read when that has happened
+    await expect
+      .poll(() => [...document.querySelectorAll('[data-slot="tabs-panel"]:not([hidden])')].map((e) => e.textContent))
+      .toEqual(["Held shipments"]);
     await userEvent.keyboard("{ArrowLeft}");
     await expect.poll(() => tab("Open").getAttribute("aria-selected")).toBe("true");
     // the panel is the next stop, then out

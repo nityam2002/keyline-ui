@@ -92,7 +92,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function NavPage() {
@@ -120,6 +126,25 @@ export default function NavPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Nav props" props={PROPS} />
       <p className="s-small">This site&apos;s component list and page contents are Keyline Nav.</p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Nav</code> draws its list from <code>items</code> or <code>groups</code>, because its band, nested lists
+        and rail are planned over the whole list. <code>NavIdentity</code> (a header or footer identity) and{" "}
+        <code>NavAction</code> (a row&apos;s ⋯ cell, rendered by a <code>MenuTrigger</code>) are parts Keyline renders:
+        each takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function.
+      </p>
+      <p className="s-small">
+        Every element carries a <code>data-slot</code> for styling from outside: <code>nav</code>,{" "}
+        <code>nav-header</code>, <code>nav-list</code>, <code>nav-group</code>, <code>nav-group-label</code>,{" "}
+        <code>nav-group-list</code>, <code>nav-item</code> (with <code>nav-item-icon</code>, <code>nav-item-label</code>
+        , <code>nav-item-count</code> and <code>nav-item-caret</code>), <code>nav-row</code> and{" "}
+        <code>nav-item-action</code> for a row with an action, <code>nav-fold</code> and <code>nav-sub</code> for a
+        nested list, <code>nav-footer</code>, <code>nav-identity</code> and <code>nav-action</code>. The root mirrors
+        its state as <code>data-orientation</code>, <code>data-kl-layout</code>, <code>data-kl-icons</code> and{" "}
+        <code>data-kl-rail</code>; the current item has <code>aria-current=&quot;page&quot;</code>, and the item the
+        band covers <code>data-kl-covered</code>.
+      </p>
     </DocPage>
   );
 }
