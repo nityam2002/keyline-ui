@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider-discount",
+  "title": "Slider: county discount",
+  "description": "An example of Slider: county discount.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/slider"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/slider-discount.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Slider } from \"../ui/slider\";\n\nconst ORDER = 12_400; // Lackawanna County's annual paper order, in dollars\nconst usd = (n: number) => n.toLocaleString(\"en-US\", { style: \"currency\", currency: \"USD\", maximumFractionDigits: 0 });\n\nexport function CountyDiscount() {\n  const [pct, setPct] = useState(6);\n  const needsMichael = pct > 10;\n\n  return (\n    <div className=\"grid max-w-[440px] gap-3\">\n      <Slider\n        label=\"Discount for Lackawanna County\"\n        unit=\"%\"\n        min={0}\n        max={15}\n        value={pct}\n        onValueChange={(v) => setPct(v as number)}\n        description=\"Over 10% needs Michael's sign-off.\"\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {usd((ORDER * pct) / 100)} off {usd(ORDER)}: they pay {usd(ORDER - (ORDER * pct) / 100)}.\n        {needsMichael ? \" Michael has to approve this one.\" : \"\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/slider-discount.tsx"
+    }
+  ],
+  "categories": [
+    "slider"
+  ],
+  "type": "registry:block"
+}

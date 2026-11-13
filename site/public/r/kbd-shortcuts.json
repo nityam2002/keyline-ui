@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd-shortcuts",
+  "title": "Kbd: order shortcuts",
+  "description": "An example of Kbd: order shortcuts.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/kbd",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/kbd-shortcuts.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Kbd, KbdGroup } from \"../ui/kbd\";\n\nconst SHORTCUTS = [\n  { id: \"new\", keys: [\"N\"], does: \"New order\" },\n  { id: \"find\", keys: [\"/\"], does: \"Find a client\" },\n  { id: \"save\", keys: [\"Ctrl\", \"S\"], does: \"Save the order\" },\n  { id: \"invoices\", keys: [\"G\", \"I\"], sep: \"then\", does: \"Go to invoices\" },\n];\n\nexport function OrderShortcuts() {\n  const [hit, setHit] = useState<string | null>(null);\n  const pendingG = useRef(false);\n  const area = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    const el = area.current;\n    if (!el) return;\n    const onKey = (e: KeyboardEvent) => {\n      const k = e.key.toLowerCase();\n      let id: string | null = null;\n      if ((e.ctrlKey || e.metaKey) && k === \"s\") id = \"save\";\n      else if (e.ctrlKey || e.metaKey || e.altKey) return;\n      else if (pendingG.current && k === \"i\") id = \"invoices\";\n      else if (k === \"n\") id = \"new\";\n      else if (k === \"/\") id = \"find\";\n      pendingG.current = k === \"g\";\n      if (id) {\n        e.preventDefault();\n        setHit(id);\n      }\n    };\n    el.addEventListener(\"keydown\", onKey);\n    return () => el.removeEventListener(\"keydown\", onKey);\n  }, []);\n\n  const done = SHORTCUTS.find((s) => s.id === hit);\n\n  return (\n    <div\n      ref={area}\n      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- the area takes focus so its shortcuts have somewhere to land\n      tabIndex={0}\n      aria-label=\"Order screen. Try a shortcut.\"\n      className=\"grid gap-4 outline-offset-4 focus-visible:outline-2 focus-visible:outline-current\"\n    >\n      <dl className=\"m-0 grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-3 text-[14px]\">\n        {SHORTCUTS.map((s) => (\n          <div key={s.id} className=\"contents\">\n            <dt className=\"flex items-center gap-2\">\n              {s.sep === \"then\" ? (\n                // a sequence: the group would draw it exactly like a chord, so the word \"then\" is printed between the keys\n                s.keys.map((k, i) => (\n                  <span key={k} className=\"contents\">\n                    {i > 0 ? <span className=\"text-[13px] text-kl-ink-3\">then</span> : null}\n                    <Kbd>{k}</Kbd>\n                  </span>\n                ))\n              ) : s.keys.length > 1 ? (\n                <KbdGroup>\n                  {s.keys.map((k) => (\n                    <Kbd key={k}>{k}</Kbd>\n                  ))}\n                </KbdGroup>\n              ) : (\n                <Kbd label={s.keys[0] === \"/\" ? \"Slash\" : undefined}>{s.keys[0]}</Kbd>\n              )}\n            </dt>\n            <dd className={hit === s.id ? \"m-0 font-semibold\" : \"m-0 text-kl-ink-2\"}>{s.does}</dd>\n          </div>\n        ))}\n      </dl>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {done ? `${done.does}. In the real order screen that would happen now.` : \"Click here, then press a shortcut.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/kbd-shortcuts.tsx"
+    }
+  ],
+  "categories": [
+    "kbd"
+  ],
+  "type": "registry:block"
+}

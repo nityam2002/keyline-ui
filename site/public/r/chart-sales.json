@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-sales",
+  "title": "Chart: sales by rep",
+  "description": "An example of Chart: sales by rep.",
+  "dependencies": [
+    "recharts@3.10.1"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/chart",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/chart-sales.tsx",
+      "content": "\"use client\";\n\nimport { Bar, BarChart, CartesianGrid, XAxis, YAxis } from \"recharts\";\nimport {\n  ChartContainer,\n  ChartFigure,\n  ChartLegend,\n  ChartLegendContent,\n  ChartTooltip,\n  ChartTooltipContent,\n  type ChartConfig,\n} from \"../ui/chart\";\n\nconst SALES = [\n  { rep: \"Dwight\", q4: 5_120, q3: 4_760 },\n  { rep: \"Jim\", q4: 4_380, q3: 4_510 },\n  { rep: \"Phyllis\", q4: 3_640, q3: 3_200 },\n  { rep: \"Stanley\", q4: 3_410, q3: 3_390 },\n];\n\n// the first series takes the focal colour, the second the comparison colour\nconst config = {\n  q4: { label: \"Q4\", unit: \"reams\" },\n  q3: { label: \"Q3\", unit: \"reams\" },\n} satisfies ChartConfig;\n\nexport function SalesByRep() {\n  return (\n    <ChartFigure\n      title=\"Paper sold by rep\"\n      description=\"Scranton, Q4 against Q3\"\n      data={SALES}\n      config={config}\n      labelKey=\"rep\"\n      labelHeader=\"Rep\"\n    >\n      <ChartContainer config={config} className=\"aspect-auto h-[260px]\">\n        <BarChart data={SALES} margin={{ top: 8, right: 0, bottom: 0, left: 0 }} barGap={2} barCategoryGap=\"24%\">\n          <CartesianGrid vertical={false} />\n          <XAxis dataKey=\"rep\" tickLine={false} tickMargin={8} />\n          <YAxis tickLine={false} axisLine={false} width={36} />\n          <ChartTooltip content={<ChartTooltipContent />} />\n          <ChartLegend content={<ChartLegendContent />} />\n          <Bar dataKey=\"q4\" fill=\"var(--color-q4)\" />\n          <Bar dataKey=\"q3\" fill=\"var(--color-q3)\" />\n        </BarChart>\n      </ChartContainer>\n    </ChartFigure>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/chart-sales.tsx"
+    }
+  ],
+  "categories": [
+    "chart"
+  ],
+  "type": "registry:block"
+}

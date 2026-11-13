@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar-scroll",
+  "title": "Toolbar: order commands",
+  "description": "An example of Toolbar: order commands.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/toolbar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toolbar-scroll.tsx",
+      "content": "\"use client\";\n\nimport { Toolbar, ToolbarButton, ToolbarSeparator } from \"../ui/toolbar\";\n\nexport function OrderCommands() {\n  return (\n    <Toolbar aria-label=\"Order commands\">\n      <ToolbarButton>Assign sales rep</ToolbarButton>\n      <ToolbarButton>Reschedule delivery window</ToolbarButton>\n      <ToolbarButton affix={<kbd>⌘P</kbd>}>Print invoices</ToolbarButton>\n      <ToolbarSeparator />\n      <ToolbarButton>Cancel order</ToolbarButton>\n    </Toolbar>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toolbar-scroll.tsx"
+    }
+  ],
+  "categories": [
+    "toolbar"
+  ],
+  "type": "registry:block"
+}

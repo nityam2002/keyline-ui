@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table-loading",
+  "title": "Table: invoice table",
+  "description": "An example of Table: invoice table.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/table"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/table-loading.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Table,\n  TableBody,\n  TableCell,\n  TableFrame,\n  TableHeader,\n  TableHead,\n  TableLoadingRows,\n  TablePagination,\n  TableRow,\n  TableScroll,\n  TableState,\n} from \"../ui/table\";\n\nconst INVOICES = [\n  [\"INV-2207\", \"Scranton Business Park\", \"$1,284.00\"],\n  [\"INV-2208\", \"Lackawanna County\", \"$9,610.00\"],\n  [\"INV-2164\", \"Harper Collins\", \"$2,450.00\"],\n  [\"INV-2211\", \"Blue Cross of Pennsylvania\", \"$4,980.00\"],\n];\n\ntype State = \"loading\" | \"error\" | \"ready\";\n\nexport function InvoiceTable() {\n  const [state, setState] = useState<State>(\"loading\");\n  const failed = useRef(false);\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n\n  const load = () => {\n    setState(\"loading\");\n    // the first load fails, as Angela's accounting server does after lunch; the retry works\n    timer.current = setTimeout(() => {\n      setState(failed.current ? \"ready\" : \"error\");\n      failed.current = true;\n    }, 1200);\n  };\n  useEffect(() => {\n    load();\n    return () => clearTimeout(timer.current);\n  }, []);\n\n  return (\n    <TableFrame>\n      <TableScroll>\n        <Table aria-label=\"Unpaid invoices\" aria-busy={state === \"loading\" || undefined}>\n          <TableHeader>\n            <tr>\n              <TableHead>Invoice</TableHead>\n              <TableHead>Client</TableHead>\n              <TableHead align=\"end\">Amount</TableHead>\n            </tr>\n          </TableHeader>\n          <TableBody>\n            {state === \"loading\" ? (\n              <TableLoadingRows rows={4} cols={3} />\n            ) : state === \"error\" ? (\n              <TableState\n                kind=\"error\"\n                colSpan={3}\n                count=\"!\"\n                title=\"Invoices didn't load\"\n                body=\"Accounting's server didn't answer. Nothing changed; try again.\"\n                action={<Button onClick={load}>Retry</Button>}\n              />\n            ) : (\n              INVOICES.map(([id, client, amount]) => (\n                <TableRow key={id}>\n                  <TableCell className=\"font-kl-mono text-[13px]\">{id}</TableCell>\n                  <TableCell>{client}</TableCell>\n                  <TableCell align=\"end\" className=\"tabular-nums\">\n                    {amount}\n                  </TableCell>\n                </TableRow>\n              ))\n            )}\n          </TableBody>\n        </Table>\n      </TableScroll>\n      <TablePagination\n        page={0}\n        pageSize={10}\n        total={state === \"ready\" ? INVOICES.length : null}\n        onPageChange={() => {}}\n        noun=\"invoices\"\n      />\n    </TableFrame>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/table-loading.tsx"
+    }
+  ],
+  "categories": [
+    "table"
+  ],
+  "type": "registry:block"
+}

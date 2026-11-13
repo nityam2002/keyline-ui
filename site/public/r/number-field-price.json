@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-field-price",
+  "title": "Number field: unit price",
+  "description": "An example of Number field: unit price.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/number-field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/number-field-price.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { NumberField } from \"../ui/number-field\";\n\nexport function UnitPrice() {\n  const [price, setPrice] = useState<number | null>(42);\n\n  return (\n    <div className=\"grid max-w-[320px] gap-3\">\n      <NumberField\n        label=\"Price per case\"\n        locale=\"en-US\"\n        format={{ style: \"currency\", currency: \"USD\" }}\n        min={0}\n        step={0.5}\n        steppers={false}\n        value={price}\n        onValueChange={setPrice}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {price == null\n          ? \"No price yet.\"\n          : price < 38\n            ? \"Below the floor corporate set. Jan will call.\"\n            : \"Within the price list.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/number-field-price.tsx"
+    }
+  ],
+  "categories": [
+    "number-field"
+  ],
+  "type": "registry:block"
+}

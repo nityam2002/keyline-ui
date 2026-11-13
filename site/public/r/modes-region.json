@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "modes-region",
+  "title": "Modes: modes region",
+  "description": "An example of Modes: modes region.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/direction",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline",
+    "@keyline-ui/segmented",
+    "@keyline-ui/select"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/modes-region.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { DirectionProvider } from \"../ui/direction\";\nimport { Field, FieldFrame, FieldControl, FieldLabel } from \"../ui/field\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\nimport { Select, type SelectOption } from \"../ui/select\";\n\nconst REPS: SelectOption[] = [\n  { value: \"dwight\", label: \"Dwight Schrute\" },\n  { value: \"jim\", label: \"Jim Halpert\" },\n  { value: \"phyllis\", label: \"Phyllis Vance\" },\n];\n\ntype Theme = \"page\" | \"light\" | \"dark\";\ntype Density = \"compact\" | \"default\" | \"comfortable\";\ntype Cut = \"off\" | \"quiet\" | \"on\";\n\n// Every mode is an attribute or a class on the region, so it applies to this subtree only. The Select's list\n// opens in a portal under <body> and still takes the region's theme, density, cut and direction.\nexport function ModesRegion() {\n  const [theme, setTheme] = useState<Theme>(\"dark\");\n  const [density, setDensity] = useState<Density>(\"compact\");\n  const [cut, setCut] = useState<Cut>(\"off\");\n  const [reduce, setReduce] = useState(false);\n  const [dir, setDir] = useState<\"ltr\" | \"rtl\">(\"ltr\");\n  const [rep, setRep] = useState<string | null>(\"jim\");\n\n  return (\n    <div className=\"grid w-full gap-4\">\n      <div className=\"flex flex-wrap gap-x-4 gap-y-2\">\n        <Segmented size=\"compact\" aria-label=\"Theme\" value={theme} onValueChange={(v: string) => setTheme(v as Theme)}>\n          <SegmentedItem value=\"page\">Page</SegmentedItem>\n          <SegmentedItem value=\"light\">Light</SegmentedItem>\n          <SegmentedItem value=\"dark\">Dark</SegmentedItem>\n        </Segmented>\n        <Segmented\n          size=\"compact\"\n          aria-label=\"Density\"\n          value={density}\n          onValueChange={(v: string) => setDensity(v as Density)}\n        >\n          <SegmentedItem value=\"compact\">Compact</SegmentedItem>\n          <SegmentedItem value=\"default\">Default</SegmentedItem>\n          <SegmentedItem value=\"comfortable\">Comfortable</SegmentedItem>\n        </Segmented>\n        <Segmented size=\"compact\" aria-label=\"Cut\" value={cut} onValueChange={(v: string) => setCut(v as Cut)}>\n          <SegmentedItem value=\"off\">Cut off</SegmentedItem>\n          <SegmentedItem value=\"quiet\">Quiet</SegmentedItem>\n          <SegmentedItem value=\"on\">On</SegmentedItem>\n        </Segmented>\n        <Segmented\n          size=\"compact\"\n          aria-label=\"Motion\"\n          value={reduce ? \"reduce\" : \"full\"}\n          onValueChange={(v: string) => setReduce(v === \"reduce\")}\n        >\n          <SegmentedItem value=\"full\">Full motion</SegmentedItem>\n          <SegmentedItem value=\"reduce\">Reduced</SegmentedItem>\n        </Segmented>\n        <Segmented\n          size=\"compact\"\n          aria-label=\"Direction\"\n          value={dir}\n          onValueChange={(v: string) => setDir(v as \"ltr\" | \"rtl\")}\n        >\n          <SegmentedItem value=\"ltr\">LTR</SegmentedItem>\n          <SegmentedItem value=\"rtl\">RTL</SegmentedItem>\n        </Segmented>\n      </div>\n\n      <DirectionProvider direction={dir}>\n        <div\n          data-testid=\"mode-region\"\n          className={`${theme === \"page\" ? \"\" : theme} grid gap-kl-gutter border-3 border-kl-line bg-kl-paper p-kl-gutter text-kl-ink`}\n          data-kl-density={density}\n          data-kl-cut={cut}\n          data-kl-motion={reduce ? \"reduce\" : undefined}\n        >\n          <div className=\"grid gap-kl-gutter sm:grid-cols-2\">\n            <Select label=\"Assign the reorder to\" options={REPS} value={rep} onValueChange={setRep} />\n            <Field name=\"cases\">\n              <FieldLabel>Cases</FieldLabel>\n              <FieldFrame>\n                <FieldControl type=\"number\" inputMode=\"numeric\" defaultValue=\"40\" align=\"end\" />\n              </FieldFrame>\n            </Field>\n          </div>\n          <div className=\"flex gap-2\">\n            <Button variant=\"primary\">Place reorder</Button>\n            <Button>Save draft</Button>\n          </div>\n        </div>\n      </DirectionProvider>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/modes-region.tsx"
+    }
+  ],
+  "categories": [
+    "guide"
+  ],
+  "type": "registry:block"
+}

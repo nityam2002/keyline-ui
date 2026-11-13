@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group-panel",
+  "title": "Radio group: paper weight",
+  "description": "An example of Radio group: paper weight.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/radio-group"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/radio-group-panel.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Panel, PanelBody, PanelHeader } from \"../ui/panel\";\nimport { RadioGroup, RadioGroupItem } from \"../ui/radio-group\";\n\nconst PAPER = [\n  { value: \"20\", label: \"20 lb copy\", description: \"The everyday sheet\", price: 42 },\n  { value: \"24\", label: \"24 lb premium\", description: \"Brighter, for letters\", price: 58 },\n  { value: \"110\", label: \"110 lb cardstock\", description: \"Menus and invitations\", price: 96 },\n];\n\nexport function PaperWeight() {\n  const [weight, setWeight] = useState(\"24\");\n  const chosen = PAPER.find((p) => p.value === weight)!;\n\n  return (\n    <Panel className=\"max-w-[440px]\">\n      <PanelHeader title=\"Paper for the Wilkes-Barre Library quote\" />\n      <RadioGroup layout=\"cell\" aria-label=\"Paper weight\" value={weight} onValueChange={setWeight}>\n        {PAPER.map((p) => (\n          <RadioGroupItem\n            key={p.value}\n            value={p.value}\n            label={p.label}\n            description={p.description}\n            meta={`$${p.price}`}\n          />\n        ))}\n      </RadioGroup>\n      <PanelBody>\n        <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n          12 cases at ${chosen.price} a case:{\" \"}\n          <span className=\"tabular-nums\">${(12 * chosen.price).toLocaleString(\"en-US\")}</span>.\n        </p>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/radio-group-panel.tsx"
+    }
+  ],
+  "categories": [
+    "radio-group"
+  ],
+  "type": "registry:block"
+}

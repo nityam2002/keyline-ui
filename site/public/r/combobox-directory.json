@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-directory",
+  "title": "Combobox: corporate directory",
+  "description": "An example of Combobox: corporate directory.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/combobox",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/combobox-directory.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Combobox, type ComboboxOption } from \"../ui/combobox\";\n\nconst STAFF: [name: string, role: string, branch: string][] = [\n  [\"Jan Levinson\", \"VP, Northeast Sales\", \"New York\"],\n  [\"David Wallace\", \"CFO\", \"New York\"],\n  [\"Karen Filippelli\", \"Regional Manager\", \"Utica\"],\n  [\"Josh Porter\", \"Regional Manager\", \"Stamford\"],\n  [\"Craig\", \"Regional Manager\", \"Albany\"],\n  [\"Holly Flax\", \"HR\", \"Nashua\"],\n];\n\n// stands in for the corporate directory API: slow, and it times out on \"stamford\"\nfunction searchDirectory(query: string, signal: AbortSignal): Promise<ComboboxOption[]> {\n  return new Promise((resolve, reject) => {\n    const t = setTimeout(() => {\n      if (query.toLowerCase().includes(\"stamford\")) return reject(new Error(\"The corporate directory timed out.\"));\n      const q = query.toLowerCase();\n      resolve(\n        STAFF.filter((s) => s.join(\" \").toLowerCase().includes(q)).map(([name, role, branch]) => ({\n          value: name,\n          label: name,\n          description: `${role}, ${branch}`,\n        })),\n      );\n    }, 500);\n    signal.addEventListener(\"abort\", () => clearTimeout(t));\n  });\n}\n\nexport function CorporateDirectory() {\n  const [who, setWho] = useState<string | null>(null);\n\n  return (\n    <div className=\"grid max-w-[400px] gap-3\">\n      <Combobox\n        label=\"Escalate to\"\n        placeholder=\"Search corporate\"\n        noun={[\"person\", \"people\"]}\n        loadOptions={searchDirectory}\n        value={who}\n        onValueChange={setWho}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {who\n          ? `${who} gets the complaint. Michael will not be cc'd.`\n          : \"Try “utica”, or “stamford” to see a failed search.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/combobox-directory.tsx"
+    }
+  ],
+  "categories": [
+    "combobox"
+  ],
+  "type": "registry:block"
+}

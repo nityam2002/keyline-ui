@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-field-reorder",
+  "title": "Number field: reorder",
+  "description": "An example of Number field: reorder.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/number-field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/number-field-reorder.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { NumberField } from \"../ui/number-field\";\n\nconst IN_STOCK = 480;\n\nexport function Reorder() {\n  const [cases, setCases] = useState<number | null>(24);\n  const over = cases != null && cases > IN_STOCK;\n\n  return (\n    <div className=\"grid max-w-[320px] gap-3\">\n      <NumberField\n        label=\"Reorder for Blue Cross\"\n        unit=\"cases\"\n        min={1}\n        largeStep={10}\n        value={cases}\n        onValueChange={setCases}\n        invalid={over}\n        error={`The warehouse has ${IN_STOCK}. Split it into two deliveries.`}\n        description=\"Shift + arrow keys step by 10.\"\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {cases == null ? \"Enter a quantity.\" : over ? \"Not sent.\" : `${cases * 10} reams, on Thursday's truck.`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/number-field-reorder.tsx"
+    }
+  ],
+  "categories": [
+    "number-field"
+  ],
+  "type": "registry:block"
+}

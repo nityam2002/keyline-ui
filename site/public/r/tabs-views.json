@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs-views",
+  "title": "Tabs: call views",
+  "description": "An example of Tabs: call views.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/tabs"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/tabs-views.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Tabs, TabsList, TabsTab } from \"../ui/tabs\";\n\nconst CALLS = [\n  { who: \"Lackawanna County\", rep: \"Dwight\", done: true },\n  { who: \"Blue Cross of Pennsylvania\", rep: \"Jim\", done: false },\n  { who: \"Harper Collins\", rep: \"Phyllis\", done: true },\n  { who: \"Mount Airy Casino\", rep: \"Jim\", done: false },\n  { who: \"Penn Paper Supply\", rep: \"Stanley\", done: false },\n];\n\nconst VIEWS = [\n  { value: \"all\", label: \"All\", test: () => true },\n  { value: \"todo\", label: \"To call\", test: (c: (typeof CALLS)[number]) => !c.done },\n  { value: \"done\", label: \"Called\", test: (c: (typeof CALLS)[number]) => c.done },\n];\n\nexport function CallViews() {\n  const [view, setView] = useState(\"todo\");\n  const shown = CALLS.filter(VIEWS.find((v) => v.value === view)!.test);\n\n  return (\n    <div className=\"grid gap-4\">\n      {/* no panels: the tabs switch a view of one list */}\n      <Tabs value={view} onValueChange={(v) => setView(v as string)}>\n        <TabsList aria-label=\"Calls this week\">\n          {VIEWS.map((v) => (\n            <TabsTab key={v.value} value={v.value} count={CALLS.filter(v.test).length}>\n              {v.label}\n            </TabsTab>\n          ))}\n        </TabsList>\n      </Tabs>\n      <ul aria-label=\"Calls\" className=\"m-0 grid list-none gap-2 p-0 text-[14px]\">\n        {shown.map((c) => (\n          <li key={c.who}>\n            {c.who} <span className=\"text-kl-ink-3\">· {c.rep}</span>\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/tabs-views.tsx"
+    }
+  ],
+  "categories": [
+    "tabs"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shipments-block",
+  "title": "Blocks: shipments block",
+  "description": "An example of Blocks: shipments block.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/shipments-demo"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/shipments-block.tsx",
+      "content": "\"use client\";\n\nimport { Shipments } from \"../blocks/shipments/shipments\";\n\n// The installed block is one component: an AppShell with its own sidebar, header, table, inspector and command\n// menu. Render it as a page; here it fills the preview frame, and its narrow layout follows the frame's width.\nexport function ShipmentsBlock() {\n  return (\n    <div className=\"w-full min-w-0\" data-testid=\"shipments\">\n      <Shipments />\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/shipments-block.tsx"
+    }
+  ],
+  "categories": [
+    "guide"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sheet-order",
+  "title": "Sheet: order sheet",
+  "description": "An example of Sheet: order sheet.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/sheet",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/sheet-order.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Sheet,\n  SheetBody,\n  SheetClose,\n  SheetPopup,\n  SheetDescription,\n  SheetFooter,\n  SheetHeader,\n  SheetTitle,\n  SheetTrigger,\n} from \"../ui/sheet\";\nimport { Status } from \"../ui/status\";\n\nexport function OrderSheet() {\n  const [delivered, setDelivered] = useState(false);\n\n  return (\n    <div className=\"flex flex-wrap items-center gap-3 text-[14px]\">\n      <span className=\"font-kl-mono text-[13px]\">DM-4107</span>\n      <span>Lackawanna County</span>\n      <Status kind={delivered ? \"done\" : \"normal\"}>{delivered ? \"Delivered\" : \"Out for delivery\"}</Status>\n      <Sheet>\n        <SheetTrigger render={<Button size=\"compact\" />}>Details</SheetTrigger>\n        <SheetPopup side=\"end\" size={420}>\n          <SheetHeader>\n            <SheetTitle>DM-4107</SheetTitle>\n            <SheetDescription>Lackawanna County · Dwight Schrute</SheetDescription>\n          </SheetHeader>\n          <SheetBody>\n            <dl className=\"m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[14px]\">\n              <dt className=\"text-kl-ink-3\">Paper</dt>\n              <dd className=\"m-0\">Copy paper, letter, 20 lb</dd>\n              <dt className=\"text-kl-ink-3\">Quantity</dt>\n              <dd className=\"m-0\">120 cases</dd>\n              <dt className=\"text-kl-ink-3\">Deliver to</dt>\n              <dd className=\"m-0\">200 North Washington Avenue, loading dock</dd>\n              <dt className=\"text-kl-ink-3\">Status</dt>\n              <dd className=\"m-0\">\n                <Status kind={delivered ? \"done\" : \"normal\"}>{delivered ? \"Delivered\" : \"Out for delivery\"}</Status>\n              </dd>\n            </dl>\n          </SheetBody>\n          <SheetFooter>\n            <SheetClose render={<Button layout=\"cell\" />}>Close</SheetClose>\n            <Button layout=\"cell\" variant=\"primary\" disabled={delivered} onClick={() => setDelivered(true)}>\n              {delivered ? \"Delivered\" : \"Mark delivered\"}\n            </Button>\n          </SheetFooter>\n        </SheetPopup>\n      </Sheet>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/sheet-order.tsx"
+    }
+  ],
+  "categories": [
+    "sheet"
+  ],
+  "type": "registry:block"
+}

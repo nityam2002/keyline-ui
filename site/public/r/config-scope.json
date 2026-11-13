@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "config-scope",
+  "title": "Configuration: branch theme",
+  "description": "An example of Configuration: branch theme.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/checkbox",
+    "@keyline-ui/keyline",
+    "@keyline-ui/keyline-config",
+    "@keyline-ui/segmented",
+    "@keyline-ui/select",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/config-scope.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { CheckboxField } from \"../ui/checkbox\";\nimport { Badge } from \"../ui/status\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\nimport { Select, type SelectOption } from \"../ui/select\";\nimport {\n  DEFAULT_CONFIG,\n  KeylineConfigScope,\n  PALETTES,\n  configToCss,\n  type KeylineConfig,\n  type PaletteId,\n} from \"../lib/keyline-config\";\n\nconst BRANCHES: SelectOption[] = [\n  { value: \"scranton\", label: \"Scranton\" },\n  { value: \"stamford\", label: \"Stamford\" },\n  { value: \"nashua\", label: \"Nashua\" },\n];\n\n// One branch's portal in its own palette. theme \"system\" follows the page, so only the palette changes here.\n// configToCss prints the same configuration as CSS: what you would paste or install to make it permanent.\nexport function BranchTheme() {\n  const [palette, setPalette] = useState<PaletteId>(\"harbor\");\n  const [branch, setBranch] = useState<string | null>(\"stamford\");\n  const config: KeylineConfig = { ...DEFAULT_CONFIG, theme: \"system\", palette: { ...PALETTES[palette] } };\n\n  return (\n    <div className=\"grid w-full gap-4\">\n      <Segmented\n        size=\"compact\"\n        aria-label=\"Palette\"\n        value={palette}\n        onValueChange={(v: string) => setPalette(v as PaletteId)}\n        className=\"justify-self-start\"\n      >\n        {(Object.keys(PALETTES) as PaletteId[]).map((id) => (\n          <SegmentedItem key={id} value={id}>\n            {PALETTES[id].label}\n          </SegmentedItem>\n        ))}\n      </Segmented>\n\n      <KeylineConfigScope\n        config={config}\n        name=\"branch\"\n        data-testid=\"config-scope\"\n        className=\"grid gap-kl-gutter border-3 border-kl-line bg-kl-paper p-kl-gutter text-kl-ink\"\n      >\n        <div className=\"flex flex-wrap items-center gap-3\">\n          <Badge tone=\"signal\">NEW</Badge>\n          <Badge tone=\"attention\">OVERDUE</Badge>\n          <span className=\"text-[14px] text-kl-ink-2\">Branch portal</span>\n        </div>\n        <Select label=\"Branch\" options={BRANCHES} value={branch} onValueChange={setBranch} />\n        <CheckboxField label=\"Send the weekly report to corporate\" defaultChecked />\n        <div className=\"flex gap-2\">\n          <Button variant=\"primary\">Approve orders</Button>\n          <Button>Later</Button>\n        </div>\n      </KeylineConfigScope>\n\n      <pre\n        data-testid=\"config-css\"\n        className=\"m-0 overflow-x-auto border-2 border-kl-line-soft bg-kl-cell p-3 font-kl-mono text-[12px]/[1.6] text-kl-ink-2\"\n      >\n        {configToCss(config, { scope: \"branch\" })}\n      </pre>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/config-scope.tsx"
+    }
+  ],
+  "categories": [
+    "guide"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area-log",
+  "title": "Scroll Area: activity log",
+  "description": "An example of Scroll Area: activity log.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/item",
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/scroll-area"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/scroll-area-log.tsx",
+      "content": "\"use client\";\n\nimport { Item, ItemContent, ItemList, ItemMeta } from \"../ui/item\";\nimport { Panel, PanelBody, PanelHeader } from \"../ui/panel\";\nimport { ScrollArea } from \"../ui/scroll-area\";\n\nconst WHO = [\"Dwight\", \"Jim\", \"Phyllis\", \"Stanley\", \"Andy\", \"Darryl\"];\nconst WHAT = [\"closed a sale with\", \"called\", \"emailed a quote to\", \"delivered to\", \"followed up with\", \"visited\"];\nconst CLIENTS = [\n  \"Lackawanna County\",\n  \"Blue Cross of Pennsylvania\",\n  \"Vance Refrigeration\",\n  \"Scranton Business Park\",\n  \"Penn Paper Supply\",\n  \"Mount Airy Casino\",\n];\n\n// a day's activity, a line every quarter of an hour from 9:00\nconst LOG = Array.from({ length: 32 }, (_, i) => {\n  const m = 9 * 60 + i * 15;\n  return {\n    at: `${Math.floor(m / 60)}:${String(m % 60).padStart(2, \"0\")}`,\n    line: `${WHO[i % 6]} ${WHAT[(i * 5) % 6]} ${CLIENTS[(i * 7) % 6]}`,\n  };\n});\n\nexport function ActivityLog() {\n  return (\n    <Panel>\n      <PanelHeader title=\"Today's activity\" description=\"32 entries since 9:00\" />\n      <PanelBody flush>\n        <ScrollArea label=\"Today's activity\" className=\"h-[260px]\">\n          <ItemList layout=\"cell\" aria-label=\"Activity\">\n            {LOG.map((l) => (\n              <Item key={l.at}>\n                <ItemContent title={l.line} />\n                <ItemMeta>{l.at}</ItemMeta>\n              </Item>\n            ))}\n          </ItemList>\n        </ScrollArea>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/scroll-area-log.tsx"
+    }
+  ],
+  "categories": [
+    "scroll-area"
+  ],
+  "type": "registry:block"
+}

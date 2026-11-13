@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group-delivery",
+  "title": "Radio group: delivery choice",
+  "description": "An example of Radio group: delivery choice.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/radio-group"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/radio-group-delivery.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { RadioGroup, RadioGroupItem } from \"../ui/radio-group\";\n\nconst OPTIONS = [\n  {\n    value: \"truck\",\n    label: \"Darryl's Thursday route\",\n    description: \"Arrives Thu 12 Nov, before noon\",\n    meta: \"Free\",\n    note: \"On Thursday's truck.\",\n  },\n  {\n    value: \"morning\",\n    label: \"Next morning\",\n    description: \"A courier from the Wilkes-Barre depot\",\n    meta: \"$25\",\n    note: \"Courier booked for 8 AM tomorrow.\",\n  },\n  {\n    value: \"pickup\",\n    label: \"Customer pickup\",\n    description: \"Ready at reception from 3 PM today\",\n    meta: \"Free\",\n    note: \"Pam will have it at reception.\",\n  },\n];\n\nexport function DeliveryChoice() {\n  const [how, setHow] = useState(\"truck\");\n\n  return (\n    <div className=\"grid max-w-[480px] gap-3\">\n      <p id=\"delivery-label\" className=\"m-0 text-[14px] font-semibold\">\n        Delivery for <span className=\"font-kl-mono\">DM-4142</span>\n      </p>\n      <RadioGroup aria-labelledby=\"delivery-label\" value={how} onValueChange={setHow}>\n        {OPTIONS.map((o) => (\n          <RadioGroupItem key={o.value} value={o.value} label={o.label} description={o.description} meta={o.meta} />\n        ))}\n      </RadioGroup>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {OPTIONS.find((o) => o.value === how)?.note}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/radio-group-delivery.tsx"
+    }
+  ],
+  "categories": [
+    "radio-group"
+  ],
+  "type": "registry:block"
+}

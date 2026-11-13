@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-closing",
+  "title": "Checkbox: closing checklist",
+  "description": "An example of Checkbox: closing checklist.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/checkbox",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/checkbox-closing.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { CheckboxField } from \"../ui/checkbox\";\n\nconst TASKS = [\n  { id: \"copier\", label: \"Turn off the copier\", description: \"It overheats if it runs all night.\" },\n  { id: \"dock\", label: \"Lock the warehouse door\", description: \"Darryl leaves by the loading dock at 5.\" },\n  { id: \"fridge\", label: \"Clear the kitchen fridge\", description: \"Anything unlabelled goes. Ask Angela first.\" },\n  { id: \"alarm\", label: \"Set the alarm\", description: \"The code is on the card in Dwight's desk.\" },\n];\n\nexport function ClosingChecklist() {\n  const [done, setDone] = useState<string[]>([\"copier\"]);\n  const toggle = (id: string, on: boolean) => setDone(on ? [...done, id] : done.filter((d) => d !== id));\n\n  return (\n    <div className=\"grid max-w-[480px] gap-3\">\n      <div className=\"grid gap-1\">\n        {TASKS.map((t) => (\n          <CheckboxField\n            key={t.id}\n            label={t.label}\n            description={t.description}\n            checked={done.includes(t.id)}\n            onCheckedChange={(on) => toggle(t.id, on)}\n          />\n        ))}\n      </div>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {done.length === TASKS.length\n          ? \"Office closed for the night. See you at 9.\"\n          : `${done.length} of ${TASKS.length} done before you leave.`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/checkbox-closing.tsx"
+    }
+  ],
+  "categories": [
+    "checkbox"
+  ],
+  "type": "registry:block"
+}

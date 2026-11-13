@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table-orders",
+  "title": "Data Table: orders data table",
+  "description": "An example of Data Table: orders data table.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/data-table",
+    "@keyline-ui/keyline",
+    "@keyline-ui/status",
+    "@keyline-ui/table"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/data-table-orders.tsx",
+      "content": "\"use client\";\n\nimport { Button } from \"../ui/button\";\nimport {\n  DataTable,\n  DataTableBulkBar,\n  DataTablePagination,\n  DataTableSearch,\n  useDataTable,\n  type DataTableColumnDef,\n} from \"../ui/data-table\";\nimport { Status, TableFrame, TableScroll, TableToolbar } from \"../ui/table\";\nimport type { StatusKind } from \"../ui/status\";\n\ntype State = \"out\" | \"loading\" | \"held\" | \"delivered\";\ntype Order = { id: string; client: string; rep: string; cases: number; due: string; state: State };\n\nconst ORDERS: Order[] = [\n  { id: \"DM-4102\", client: \"Scranton Business Park\", rep: \"Dwight\", cases: 40, due: \"2026-11-12\", state: \"out\" },\n  { id: \"DM-4107\", client: \"Lackawanna County\", rep: \"Dwight\", cases: 120, due: \"2026-11-12\", state: \"out\" },\n  { id: \"DM-4111\", client: \"Vance Refrigeration\", rep: \"Phyllis\", cases: 6, due: \"2026-11-11\", state: \"held\" },\n  { id: \"DM-4115\", client: \"Blue Cross of Pennsylvania\", rep: \"Jim\", cases: 60, due: \"2026-11-13\", state: \"loading\" },\n  { id: \"DM-4118\", client: \"Harper Collins\", rep: \"Stanley\", cases: 24, due: \"2026-11-16\", state: \"loading\" },\n  { id: \"DM-4120\", client: \"Scranton White Pages\", rep: \"Andy\", cases: 10, due: \"2026-11-09\", state: \"delivered\" },\n  { id: \"DM-4123\", client: \"Mount Airy Casino\", rep: \"Jim\", cases: 35, due: \"2026-11-17\", state: \"loading\" },\n  { id: \"DM-4126\", client: \"Lackawanna County\", rep: \"Dwight\", cases: 80, due: \"2026-11-10\", state: \"delivered\" },\n  { id: \"DM-4129\", client: \"Penn Paper Supply\", rep: \"Phyllis\", cases: 15, due: \"2026-11-11\", state: \"held\" },\n  { id: \"DM-4131\", client: \"Wilkes-Barre Library\", rep: \"Stanley\", cases: 18, due: \"2026-11-18\", state: \"out\" },\n  { id: \"DM-4134\", client: \"Sabre\", rep: \"Andy\", cases: 300, due: \"2026-11-19\", state: \"loading\" },\n];\n\nconst SAY: Record<State, [StatusKind, string]> = {\n  loading: [\"waiting\", \"Loading\"],\n  out: [\"normal\", \"Out for delivery\"],\n  held: [\"attention\", \"Held\"],\n  delivered: [\"done\", \"Delivered\"],\n};\n\nconst day = new Intl.DateTimeFormat(\"en-US\", { weekday: \"short\", month: \"short\", day: \"numeric\", timeZone: \"UTC\" });\n\n// module scope: the columns stay the same object from render to render\nconst COLUMNS: DataTableColumnDef<Order>[] = [\n  {\n    accessorKey: \"id\",\n    header: \"Order\",\n    cell: ({ getValue }) => <span className=\"font-kl-mono text-[13px]\">{getValue() as string}</span>,\n  },\n  { accessorKey: \"client\", header: \"Client\" },\n  { accessorKey: \"rep\", header: \"Rep\", enableSorting: false },\n  { accessorKey: \"cases\", header: \"Cases\", sortDescFirst: true, meta: { align: \"end\" } },\n  {\n    accessorKey: \"due\",\n    header: \"Due\",\n    cell: ({ getValue }) => day.format(new Date(getValue() as string)),\n  },\n  {\n    accessorKey: \"state\",\n    header: \"Status\",\n    enableSorting: false,\n    enableGlobalFilter: false,\n    cell: ({ getValue }) => {\n      const [kind, say] = SAY[getValue() as State];\n      return <Status kind={kind}>{say}</Status>;\n    },\n  },\n];\n\nexport function OrdersDataTable() {\n  const table = useDataTable({\n    data: ORDERS,\n    columns: COLUMNS,\n    defaultState: { sorting: [{ id: \"due\", desc: false }], pagination: { pageIndex: 0, pageSize: 5 } },\n  });\n  return (\n    <TableFrame>\n      <TableToolbar>\n        <DataTableSearch table={table} label=\"Search orders\" placeholder=\"Search orders\" />\n      </TableToolbar>\n      <DataTableBulkBar\n        table={table}\n        scope={(n) => (n ? `${n} of ${ORDERS.length} orders` : \"Select orders to act on them\")}\n      >\n        {(n) => (\n          <Button layout=\"cell\" disabled={n === 0} onClick={() => table.resetRowSelection()}>\n            Clear\n          </Button>\n        )}\n      </DataTableBulkBar>\n      <TableScroll>\n        <DataTable\n          table={table}\n          aria-label=\"Open orders\"\n          rowLabel={(row) => `Select ${row.original.id}`}\n          empty={{ title: \"No orders match\", body: \"Try another client, order or rep.\" }}\n        />\n      </TableScroll>\n      <DataTablePagination table={table} noun=\"orders\" />\n    </TableFrame>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/data-table-orders.tsx"
+    }
+  ],
+  "categories": [
+    "data-table"
+  ],
+  "type": "registry:block"
+}

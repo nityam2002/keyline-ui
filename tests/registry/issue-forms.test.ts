@@ -1,15 +1,18 @@
 // The issue forms' "Affected items" list is every item a consumer adds by name (components, blocks, themes) plus
-// "not sure", so a new, renamed or removed item cannot leave the forms behind.
+// "not sure", so a new, renamed or removed item cannot leave the forms behind. The docs examples are installable
+// blocks too, but a report about one is a report about the component it shows, so they are not listed.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const ROOT = new URL("../../", import.meta.url);
 const index = JSON.parse(readFileSync(new URL("registry.json", ROOT), "utf8")) as {
-  items: { name: string; type: string }[];
+  items: { name: string; type: string; files?: { path: string }[] }[];
 };
+const isExample = (it: { files?: { path: string }[] }) =>
+  (it.files ?? []).some((f) => f.path.startsWith("src/registry/keyline/examples/"));
 const expected = [
-  ...index.items.filter((it) => /^registry:(ui|block|theme)$/.test(it.type)).map((it) => it.name),
+  ...index.items.filter((it) => /^registry:(ui|block|theme)$/.test(it.type) && !isExample(it)).map((it) => it.name),
   "not sure",
 ];
 

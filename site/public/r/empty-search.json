@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-search",
+  "title": "Empty: client search",
+  "description": "An example of Empty: client search.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/empty",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/empty-search.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Empty } from \"../ui/empty\";\nimport { Field, FieldFrame, FieldControl, FieldLabel } from \"../ui/field\";\n\nconst CLIENTS = [\n  \"Blue Cross of Pennsylvania\",\n  \"Harper Collins\",\n  \"Lackawanna County\",\n  \"Scranton Business Park\",\n  \"Scranton White Pages\",\n  \"Vance Refrigeration\",\n];\n\nexport function ClientSearch() {\n  const [q, setQ] = useState(\"Stamford\");\n  const hits = CLIENTS.filter((c) => c.toLowerCase().includes(q.trim().toLowerCase()));\n\n  return (\n    <div className=\"grid max-w-[560px] gap-4\">\n      <Field>\n        <FieldLabel>Search clients</FieldLabel>\n        <FieldFrame>\n          <FieldControl type=\"search\" value={q} onChange={(e) => setQ(e.target.value)} spellCheck={false} />\n        </FieldFrame>\n      </Field>\n      {hits.length ? (\n        <ul className=\"m-0 grid list-none gap-2 p-0 text-[14px]\" aria-label=\"Clients\">\n          {hits.map((c) => (\n            <li key={c}>{c}</li>\n          ))}\n        </ul>\n      ) : (\n        <Empty\n          live\n          title={`No clients match “${q.trim()}”`}\n          description=\"Stamford's clients moved to Scranton under their own names. Try the company, not the branch.\"\n          actions={<Button onClick={() => setQ(\"\")}>Clear search</Button>}\n        />\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/empty-search.tsx"
+    }
+  ],
+  "categories": [
+    "empty"
+  ],
+  "type": "registry:block"
+}

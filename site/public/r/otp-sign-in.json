@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-sign-in",
+  "title": "OTP field: sign in code",
+  "description": "An example of OTP field: sign in code.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/otp-field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/otp-sign-in.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { OtpField, type OtpSignal } from \"../ui/otp-field\";\n\nconst CODE = \"271828\"; // what your server would check\n\nexport function SignInCode() {\n  const [code, setCode] = useState(\"\");\n  const [signal, setSignal] = useState<OtpSignal>(\"idle\");\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n  useEffect(() => () => clearTimeout(timer.current), []);\n\n  return (\n    <div className=\"grid max-w-[360px] gap-3\">\n      <OtpField\n        label=\"Code from your phone\"\n        length={6}\n        groups={[3, 3]}\n        value={code}\n        signal={signal}\n        error=\"That code doesn't match. Codes last 10 minutes.\"\n        description={`Sent to the number ending 4417. For this demo, it is ${CODE}.`}\n        onValueChange={(v) => {\n          // after a wrong code, the first new character starts a fresh code, so completing it checks again\n          if (signal === \"failed\") {\n            setSignal(\"idle\");\n            setCode(v.slice(0, 1));\n          } else setCode(v);\n        }}\n        onValueComplete={(v) => {\n          setSignal(\"pending\");\n          timer.current = setTimeout(() => setSignal(v === CODE ? \"done\" : \"failed\"), 900);\n        }}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {signal === \"done\" ? \"Signed in to Dunder Mifflin Infinity.\" : \"Type or paste the six digits.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/otp-sign-in.tsx"
+    }
+  ],
+  "categories": [
+    "otp-field"
+  ],
+  "type": "registry:block"
+}

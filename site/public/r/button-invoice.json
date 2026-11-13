@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-invoice",
+  "title": "Button: invoice actions",
+  "description": "An example of Button: invoice actions.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/button-invoice.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\n\ntype Signal = \"idle\" | \"pending\" | \"done\";\n\nexport function InvoiceActions() {\n  const [signal, setSignal] = useState<Signal>(\"idle\");\n  const [sentAt, setSentAt] = useState<string | null>(null);\n  const [paid, setPaid] = useState(false);\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n  useEffect(() => () => clearTimeout(timer.current), []);\n\n  const email = () => {\n    setSignal(\"pending\");\n    // stands in for the request to your mail service\n    timer.current = setTimeout(() => {\n      setSentAt(new Date().toLocaleTimeString(\"en-US\", { hour: \"numeric\", minute: \"2-digit\" }));\n      setSignal(\"done\");\n      timer.current = setTimeout(() => setSignal(\"idle\"), 1600);\n    }, 1200);\n  };\n\n  return (\n    <div className=\"grid gap-4\">\n      <dl className=\"m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-[14px]\">\n        <dt className=\"text-kl-ink-3\">Invoice</dt>\n        <dd className=\"m-0\">\n          <span className=\"font-kl-mono whitespace-nowrap\">INV-2207</span> for order{\" \"}\n          <span className=\"font-kl-mono whitespace-nowrap\">DM-4102</span>\n        </dd>\n        <dt className=\"text-kl-ink-3\">Client</dt>\n        <dd className=\"m-0\">Scranton Business Park</dd>\n        <dt className=\"text-kl-ink-3\">Amount</dt>\n        <dd className=\"m-0 tabular-nums\">$1,284.00 · {paid ? \"paid\" : \"due 12 Nov\"}</dd>\n      </dl>\n      <div className=\"flex flex-wrap gap-3\">\n        <Button variant=\"primary\" signal={signal} onClick={email}>\n          {sentAt ? \"Email again\" : \"Email invoice\"}\n        </Button>\n        <Button disabled={paid} onClick={() => setPaid(true)}>\n          {paid ? \"Marked as paid\" : \"Mark as paid\"}\n        </Button>\n      </div>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {signal === \"pending\"\n          ? \"Sending to accounts@scrantonbusinesspark.com…\"\n          : sentAt\n            ? `Emailed at ${sentAt} to accounts@scrantonbusinesspark.com, copy to Angela Martin.`\n            : \"Not sent yet.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/button-invoice.tsx"
+    }
+  ],
+  "categories": [
+    "button"
+  ],
+  "type": "registry:block"
+}

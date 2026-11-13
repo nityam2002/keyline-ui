@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu-notifications",
+  "title": "Menu: notification menu",
+  "description": "An example of Menu: notification menu.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/menu"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/menu-notifications.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Menu,\n  MenuCheckboxItem,\n  MenuPopup,\n  MenuGroup,\n  MenuGroupLabel,\n  MenuRadioGroup,\n  MenuRadioItem,\n  MenuSeparator,\n  MenuTrigger,\n} from \"../ui/menu\";\n\nconst EVENTS = { shipped: \"An order ships\", complaint: \"A client complains\", mention: \"Someone mentions me\" };\ntype Event = keyof typeof EVENTS;\n\nexport function NotificationMenu() {\n  const [on, setOn] = useState<Record<Event, boolean>>({ shipped: true, complaint: true, mention: false });\n  const [when, setWhen] = useState(\"now\");\n  const chosen = (Object.keys(EVENTS) as Event[]).filter((e) => on[e]);\n\n  return (\n    <div className=\"grid gap-4\">\n      <Menu>\n        <MenuTrigger render={<Button className=\"justify-self-start\" />}>Notify me</MenuTrigger>\n        <MenuPopup>\n          <MenuGroup>\n            <MenuGroupLabel>When</MenuGroupLabel>\n            {(Object.keys(EVENTS) as Event[]).map((e) => (\n              <MenuCheckboxItem key={e} checked={on[e]} onCheckedChange={(c) => setOn({ ...on, [e]: c })}>\n                {EVENTS[e]}\n              </MenuCheckboxItem>\n            ))}\n          </MenuGroup>\n          <MenuSeparator />\n          <MenuRadioGroup value={when} onValueChange={setWhen}>\n            <MenuGroupLabel>How often</MenuGroupLabel>\n            <MenuRadioItem value=\"now\">Right away</MenuRadioItem>\n            <MenuRadioItem value=\"daily\" description=\"One email at 5 PM\">\n              Daily digest\n            </MenuRadioItem>\n          </MenuRadioGroup>\n        </MenuPopup>\n      </Menu>\n      <p role=\"status\" className=\"m-0 min-h-10 max-w-[52ch] text-[14px] text-kl-ink-2\">\n        {chosen.length\n          ? `${when === \"now\" ? \"Right away\" : \"Once a day\"}: ${chosen.map((e) => EVENTS[e].toLowerCase()).join(\", \")}.`\n          : \"No notifications. You’ll hear about it at the next conference room meeting.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/menu-notifications.tsx"
+    }
+  ],
+  "categories": [
+    "menu"
+  ],
+  "type": "registry:block"
+}

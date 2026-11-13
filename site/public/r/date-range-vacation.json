@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-range-vacation",
+  "title": "Date range picker: vacation request",
+  "description": "An example of Date range picker: vacation request.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/date-range",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/date-range-vacation.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DateRangePicker, countAvailable, type DateRange } from \"../ui/date-range\";\n\nconst day = (offset: number) => {\n  const d = new Date();\n  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + offset);\n};\nconst monday = () => day((8 - new Date().getDay()) % 7 || 7);\nconst weekend = (d: Date) => (d.getDay() === 0 || d.getDay() === 6 ? \"weekend\" : false);\n\nexport function VacationRequest() {\n  const [range, setRange] = useState<DateRange | null>(null);\n  const days = countAvailable(range, weekend);\n\n  return (\n    <div className=\"grid max-w-[360px] gap-3\">\n      <DateRangePicker\n        label=\"Vacation\"\n        locale=\"en-US\"\n        min={day(1)}\n        value={range}\n        onValueChange={setRange}\n        isDateUnavailable={weekend}\n        presets={[\n          {\n            label: \"Next week\",\n            range: () => {\n              const from = monday();\n              return { from, to: new Date(from.getFullYear(), from.getMonth(), from.getDate() + 4) };\n            },\n          },\n        ]}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {range\n          ? `${days} working ${days === 1 ? \"day\" : \"days\"} off. Toby has the request; you have 11 days left.`\n          : \"Choose the first and last day. Weekends don't count.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/date-range-vacation.tsx"
+    }
+  ],
+  "categories": [
+    "date-range"
+  ],
+  "type": "registry:block"
+}

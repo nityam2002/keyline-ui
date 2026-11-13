@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-calls",
+  "title": "Empty: call log",
+  "description": "An example of Empty: call log.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/empty",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/empty-calls.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Empty } from \"../ui/empty\";\n\ntype State = \"loading\" | \"error\" | \"retrying\" | \"ready\";\n\nexport function CallLog() {\n  const [state, setState] = useState<State>(\"loading\");\n  const [calls, setCalls] = useState<string[]>([]);\n  const failed = useRef(false);\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n\n  const load = () => {\n    setState(failed.current ? \"retrying\" : \"loading\");\n    // the first load fails, as the call log server does every Monday morning; the retry works\n    timer.current = setTimeout(() => {\n      setState(failed.current ? \"ready\" : \"error\");\n      failed.current = true;\n    }, 900);\n  };\n  useEffect(() => {\n    load();\n    return () => clearTimeout(timer.current);\n  }, []);\n\n  if (state === \"loading\")\n    return (\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        Loading Phyllis&apos;s calls from this week…\n      </p>\n    );\n\n  if (state !== \"ready\")\n    return (\n      <Empty\n        live\n        kind=\"error\"\n        title=\"The call log didn't load\"\n        description=\"The server in the annex didn't answer. Nothing was lost; try again.\"\n        actions={\n          <Button signal={state === \"retrying\" ? \"pending\" : \"idle\"} onClick={load}>\n            Retry\n          </Button>\n        }\n      />\n    );\n\n  if (!calls.length)\n    return (\n      <Empty\n        live\n        kind=\"start\"\n        title=\"No calls logged this week\"\n        description=\"Phyllis logs each sales call here, with who she spoke to and what they ordered.\"\n        actions={\n          <Button\n            variant=\"primary\"\n            onClick={() => setCalls([\"Called Lackawanna County. 120 cases of copy paper, delivered Thursday.\"])}\n          >\n            Log a call\n          </Button>\n        }\n      />\n    );\n\n  return (\n    <div className=\"grid gap-3\">\n      <ul className=\"m-0 grid list-none gap-2 p-0 text-[14px]\">\n        {calls.map((c, i) => (\n          <li key={i}>{c}</li>\n        ))}\n      </ul>\n      <Button className=\"justify-self-start\" onClick={() => setCalls([])}>\n        Clear the log\n      </Button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/empty-calls.tsx"
+    }
+  ],
+  "categories": [
+    "empty"
+  ],
+  "type": "registry:block"
+}

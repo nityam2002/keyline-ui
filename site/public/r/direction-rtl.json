@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "direction-rtl",
+  "title": "Direction: mirrored invoices",
+  "description": "An example of Direction: mirrored invoices.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/breadcrumb",
+    "@keyline-ui/button",
+    "@keyline-ui/direction",
+    "@keyline-ui/keyline",
+    "@keyline-ui/pagination",
+    "@keyline-ui/segmented",
+    "@keyline-ui/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/direction-rtl.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Breadcrumb } from \"../ui/breadcrumb\";\nimport { Button } from \"../ui/button\";\nimport { DirectionProvider } from \"../ui/direction\";\nimport { Pagination } from \"../ui/pagination\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\nimport { Tooltip } from \"../ui/tooltip\";\n\n// the same screen in English and in Arabic: the language and the direction change together\nconst COPY = {\n  ltr: {\n    lang: \"en\",\n    clients: \"Clients\",\n    client: \"Lackawanna County\",\n    invoices: \"Invoices\",\n    pages: \"Invoice pages\",\n    print: \"Print\",\n    tip: \"Print this page\",\n  },\n  rtl: {\n    lang: \"ar\",\n    clients: \"العملاء\",\n    client: \"مقاطعة لاكاوانا\",\n    invoices: \"الفواتير\",\n    pages: \"صفحات الفواتير\",\n    print: \"طباعة\",\n    tip: \"اطبع هذه الصفحة\",\n  },\n};\n\nconst stay = (e: React.MouseEvent) => e.preventDefault();\n\nexport function MirroredInvoices() {\n  const [dir, setDir] = useState<\"ltr\" | \"rtl\">(\"rtl\");\n  const [page, setPage] = useState(3);\n  const t = COPY[dir];\n\n  return (\n    <div className=\"grid gap-4\">\n      <Segmented\n        aria-label=\"Direction\"\n        value={dir}\n        onValueChange={(v: string) => setDir(v as \"ltr\" | \"rtl\")}\n        className=\"justify-self-start\"\n      >\n        <SegmentedItem value=\"ltr\">English · LTR</SegmentedItem>\n        <SegmentedItem value=\"rtl\">Arabic · RTL</SegmentedItem>\n      </Segmented>\n      <DirectionProvider direction={dir} lang={t.lang}>\n        <div className=\"grid gap-4\">\n          <Breadcrumb\n            items={[\n              { label: t.clients, render: <a href=\"?clients\" onClick={stay} /> },\n              { label: t.client, render: <a href=\"?client=lackawanna\" onClick={stay} /> },\n              { label: t.invoices },\n            ]}\n          />\n          <Pagination page={page} pageCount={9} onPageChange={setPage} label={t.pages} />\n          <Tooltip content={t.tip} side=\"inline-end\">\n            <Button size=\"compact\" className=\"justify-self-start\">\n              {t.print}\n            </Button>\n          </Tooltip>\n        </div>\n      </DirectionProvider>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/direction-rtl.tsx"
+    }
+  ],
+  "categories": [
+    "direction"
+  ],
+  "type": "registry:block"
+}

@@ -1,4 +1,13 @@
 {
+  "accordion-policies": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchPolicies"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "accordion": {
     "version": "1.0.0",
     "exports": [
@@ -51,9 +60,27 @@
       "--kl-weight-strong"
     ]
   },
+  "alert-dialog-remove": {
+    "version": "1.0.0",
+    "exports": [
+      "RemoveClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "alert-dialog": {
     "version": "1.0.0",
     "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "app-shell-office": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeShell"
+    ],
     "slots": [],
     "dataAttributes": [],
     "cssProperties": []
@@ -118,6 +145,15 @@
       "--kl-shell-top"
     ]
   },
+  "attachment-upload": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceUploads"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "attachment": {
     "version": "1.0.0",
     "exports": [
@@ -171,6 +207,24 @@
       "--kl-weight-strong"
     ]
   },
+  "avatar-status": {
+    "version": "1.0.0",
+    "exports": [
+      "WhosIn"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "avatar-team": {
+    "version": "1.0.0",
+    "exports": [
+      "AccountTeam"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "avatar": {
     "version": "1.0.0",
     "exports": [
@@ -214,6 +268,15 @@
       "--kl-weight-strong"
     ]
   },
+  "breadcrumb-drive": {
+    "version": "1.0.0",
+    "exports": [
+      "DriveFolder"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "breadcrumb": {
     "version": "1.0.0",
     "exports": [
@@ -244,6 +307,15 @@
       "--kl-text-body",
       "--kl-weight-strong"
     ]
+  },
+  "bubble-reactions": {
+    "version": "1.0.0",
+    "exports": [
+      "PartyAnnouncement"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "bubble": {
     "version": "1.0.0",
@@ -284,6 +356,42 @@
       "--kl-weight-display"
     ]
   },
+  "button-affix": {
+    "version": "1.0.0",
+    "exports": [
+      "WarehouseQueue"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-menu": {
+    "version": "1.0.0",
+    "exports": [
+      "TrackingLink"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-review": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderReview"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-zoom": {
+    "version": "1.0.0",
+    "exports": [
+      "ReportZoom"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "button-group": {
     "version": "1.0.0",
     "exports": [
@@ -308,6 +416,33 @@
       "--kl-text-body",
       "--kl-weight-strong"
     ]
+  },
+  "button-invoice": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceActions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-retry": {
+    "version": "1.0.0",
+    "exports": [
+      "CorporateSync"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-variants": {
+    "version": "1.0.0",
+    "exports": [
+      "ExpenseReview"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "button": {
     "version": "1.0.0",
@@ -371,6 +506,15 @@
     "dataAttributes": [],
     "cssProperties": []
   },
+  "carousel-posters": {
+    "version": "1.0.0",
+    "exports": [
+      "EmployeeOfTheMonth"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "carousel": {
     "version": "1.0.0",
     "exports": [
@@ -410,6 +554,44 @@
       "--kl-k1",
       "--kl-ring",
       "--kl-ring-in"
+    ]
+  },
+  "chart-returns": {
+    "version": "1.0.0",
+    "exports": [
+      "ReturnsByClient"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-stack"
+    ],
+    "cssProperties": [
+      "--color-kept",
+      "--color-returned",
+      "--kl-data-alert"
+    ]
+  },
+  "chart-sales": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesByRep"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--color-q3",
+      "--color-q4"
+    ]
+  },
+  "chart-target": {
+    "version": "1.0.0",
+    "exports": [
+      "WeeklyTarget"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--color-reams"
     ]
   },
   "chart": {
@@ -460,6 +642,33 @@
       "--kl-weight-strong"
     ]
   },
+  "checkbox-closing": {
+    "version": "1.0.0",
+    "exports": [
+      "ClosingChecklist"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox-group-party": {
+    "version": "1.0.0",
+    "exports": [
+      "PartySupplies"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox-group-price-list": {
+    "version": "1.0.0",
+    "exports": [
+      "PriceListRecipients"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "checkbox-group": {
     "version": "1.0.0",
     "exports": [
@@ -504,6 +713,15 @@
       "--kl-weight-strong"
     ]
   },
+  "checkbox-invoices": {
+    "version": "1.0.0",
+    "exports": [
+      "PrintInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "checkbox": {
     "version": "1.0.0",
     "exports": [
@@ -546,6 +764,15 @@
       "--kl-weight-strong",
       "--kl-yellow"
     ]
+  },
+  "collapsible-options": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryOptions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "collapsible": {
     "version": "1.0.0",
@@ -601,6 +828,24 @@
       "pageWindow",
       "sortLevel",
       "sortOf"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "combobox-client": {
+    "version": "1.0.0",
+    "exports": [
+      "FindClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "combobox-directory": {
+    "version": "1.0.0",
+    "exports": [
+      "CorporateDirectory"
     ],
     "slots": [],
     "dataAttributes": [],
@@ -681,6 +926,15 @@
       "--kl-weight-strong"
     ]
   },
+  "command-office": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeCommands"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "command": {
     "version": "1.0.0",
     "exports": [
@@ -724,6 +978,37 @@
       "--kl-text-meta",
       "--kl-weight-strong"
     ]
+  },
+  "composition-cells": {
+    "version": "1.0.0",
+    "exports": [
+      "DeclaredCells"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "config-scope": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchTheme"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "context-menu-clients": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientList"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "context-menu": {
     "version": "1.0.0",
@@ -779,6 +1064,17 @@
     "dataAttributes": [],
     "cssProperties": []
   },
+  "data-table-orders": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersDataTable"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "table"
+    ],
+    "cssProperties": []
+  },
   "data-table": {
     "version": "1.0.0",
     "exports": [
@@ -801,6 +1097,24 @@
     "dataAttributes": [
       "table"
     ],
+    "cssProperties": []
+  },
+  "date-picker-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryDay"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "date-picker-meeting": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientMeeting"
+    ],
+    "slots": [],
+    "dataAttributes": [],
     "cssProperties": []
   },
   "date-picker": {
@@ -854,6 +1168,15 @@
       "--kl-row",
       "--kl-weight-strong"
     ]
+  },
+  "date-range-vacation": {
+    "version": "1.0.0",
+    "exports": [
+      "VacationRequest"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "date-range": {
     "version": "1.0.0",
@@ -931,6 +1254,15 @@
       "--kl-yellow"
     ]
   },
+  "dialog-new-client": {
+    "version": "1.0.0",
+    "exports": [
+      "NewClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "dialog": {
     "version": "1.0.0",
     "exports": [
@@ -991,6 +1323,15 @@
       "--kl-z-overlay"
     ]
   },
+  "direction-rtl": {
+    "version": "1.0.0",
+    "exports": [
+      "MirroredInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "direction": {
     "version": "1.0.0",
     "exports": [
@@ -1001,6 +1342,15 @@
     "slots": [
       "direction"
     ],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "drawer-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "TruckRoute"
+    ],
+    "slots": [],
     "dataAttributes": [],
     "cssProperties": []
   },
@@ -1061,6 +1411,24 @@
       "--kl-z-overlay"
     ]
   },
+  "empty-calls": {
+    "version": "1.0.0",
+    "exports": [
+      "CallLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "empty-search": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientSearch"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "empty": {
     "version": "1.0.0",
     "exports": [
@@ -1090,6 +1458,35 @@
       "--kl-text-title",
       "--kl-weight-strong"
     ]
+  },
+  "field-carton": {
+    "version": "1.0.0",
+    "exports": [
+      "CartonSize"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "field-order": {
+    "version": "1.0.0",
+    "exports": [
+      "NewOrder"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-span"
+    ],
+    "cssProperties": []
+  },
+  "field-tracking": {
+    "version": "1.0.0",
+    "exports": [
+      "TrackShipment"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "field": {
     "version": "1.0.0",
@@ -1172,6 +1569,15 @@
       "--kl-weight-strong"
     ]
   },
+  "hover-card-client": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientCards"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "hover-card": {
     "version": "1.0.0",
     "exports": [
@@ -1225,6 +1631,15 @@
       "--kl-weight-strong"
     ]
   },
+  "inspector-order": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderInspector"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "inspector": {
     "version": "1.0.0",
     "exports": [
@@ -1262,6 +1677,15 @@
       "--kl-k3",
       "--kl-weight-strong"
     ]
+  },
+  "item-settings": {
+    "version": "1.0.0",
+    "exports": [
+      "AlertSettings"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "item": {
     "version": "1.0.0",
@@ -1306,6 +1730,15 @@
       "--kl-text-label",
       "--kl-weight-strong"
     ]
+  },
+  "kbd-shortcuts": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderShortcuts"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "kbd": {
     "version": "1.0.0",
@@ -1762,6 +2195,15 @@
       "--text-kl-title"
     ]
   },
+  "marker-activity": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderActivity"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "marker": {
     "version": "1.0.0",
     "exports": [
@@ -1784,6 +2226,24 @@
       "--kl-k1",
       "--kl-text-meta"
     ]
+  },
+  "menu-notifications": {
+    "version": "1.0.0",
+    "exports": [
+      "NotificationMenu"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "menu-order-actions": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderActions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "menu": {
     "version": "1.0.0",
@@ -1843,6 +2303,15 @@
       "--kl-weight-strong"
     ]
   },
+  "menubar-report": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesReportMenus"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "menubar": {
     "version": "1.0.0",
     "exports": [
@@ -1882,6 +2351,15 @@
       "--kl-text-body",
       "--kl-weight-strong"
     ]
+  },
+  "message-scroller-chat": {
+    "version": "1.0.0",
+    "exports": [
+      "DriverChat"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "message-scroller": {
     "version": "1.0.0",
@@ -1930,6 +2408,15 @@
       "--kl-weight-strong"
     ]
   },
+  "message-thread": {
+    "version": "1.0.0",
+    "exports": [
+      "ThreadWithJim"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "message": {
     "version": "1.0.0",
     "exports": [
@@ -1963,6 +2450,29 @@
       "--kl-ring",
       "--kl-weight-strong"
     ]
+  },
+  "modes-region": {
+    "version": "1.0.0",
+    "exports": [
+      "ModesRegion"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-cut",
+      "kl-density",
+      "kl-motion",
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "multiselect-memo": {
+    "version": "1.0.0",
+    "exports": [
+      "MemoRecipients"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "multiselect": {
     "version": "1.0.0",
@@ -1998,6 +2508,15 @@
       "--kl-weight-strong"
     ]
   },
+  "native-select-transfer": {
+    "version": "1.0.0",
+    "exports": [
+      "TransferRequest"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "native-select": {
     "version": "1.0.0",
     "exports": [
@@ -2023,6 +2542,15 @@
       "--kl-inset",
       "--kl-text-lead"
     ]
+  },
+  "nav-sidebar": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeSidebar"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "nav": {
     "version": "1.0.0",
@@ -2099,6 +2627,15 @@
       "--kl-weight-strong"
     ]
   },
+  "navigation-menu-site": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperSiteNav"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "navigation-menu": {
     "version": "1.0.0",
     "exports": [
@@ -2158,6 +2695,15 @@
       "--popup-width"
     ]
   },
+  "notice-stock": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperStock"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "notice": {
     "version": "1.0.0",
     "exports": [
@@ -2189,6 +2735,24 @@
       "--kl-weight-display",
       "--kl-weight-strong"
     ]
+  },
+  "number-field-price": {
+    "version": "1.0.0",
+    "exports": [
+      "UnitPrice"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "number-field-reorder": {
+    "version": "1.0.0",
+    "exports": [
+      "Reorder"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "number-field": {
     "version": "1.0.0",
@@ -2285,6 +2849,24 @@
       "--kl-weight-strong"
     ]
   },
+  "otp-sign-in": {
+    "version": "1.0.0",
+    "exports": [
+      "SignInCode"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "pagination-invoices": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceArchive"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "pagination": {
     "version": "1.0.0",
     "exports": [
@@ -2317,6 +2899,24 @@
       "--kl-text-label",
       "--kl-weight-strong"
     ]
+  },
+  "panel-grid": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchBoard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "panel-targets": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesTargets"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "panel": {
     "version": "1.0.0",
@@ -2358,6 +2958,15 @@
       "--kl-seam",
       "--kl-weight-strong"
     ]
+  },
+  "popover-note": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryNote"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "popover": {
     "version": "1.0.0",
@@ -2408,6 +3017,24 @@
       "--kl-weight-strong"
     ]
   },
+  "progress-print": {
+    "version": "1.0.0",
+    "exports": [
+      "PrintInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "progress-upload": {
+    "version": "1.0.0",
+    "exports": [
+      "UploadReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "progress": {
     "version": "1.0.0",
     "exports": [
@@ -2444,6 +3071,15 @@
       "--kl-text-label",
       "--kl-weight-strong"
     ]
+  },
+  "questionnaire-party": {
+    "version": "1.0.0",
+    "exports": [
+      "BirthdaySurvey"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "questionnaire": {
     "version": "1.0.0",
@@ -2511,6 +3147,24 @@
       "--kl-weight-strong"
     ]
   },
+  "radio-group-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryChoice"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "radio-group-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperWeight"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "radio-group": {
     "version": "1.0.0",
     "exports": [
@@ -2553,6 +3207,15 @@
       "--kl-weight-strong"
     ]
   },
+  "resizable-calls": {
+    "version": "1.0.0",
+    "exports": [
+      "CallLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "resizable": {
     "version": "1.0.0",
     "exports": [
@@ -2581,6 +3244,15 @@
       "--kl-k3",
       "--kl-ring"
     ]
+  },
+  "scroll-area-log": {
+    "version": "1.0.0",
+    "exports": [
+      "ActivityLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "scroll-area": {
     "version": "1.0.0",
@@ -2638,6 +3310,24 @@
       "--kl-more-max"
     ]
   },
+  "segmented-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "Leaderboard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "segmented-period": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesByPeriod"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "segmented": {
     "version": "1.0.0",
     "exports": [
@@ -2668,6 +3358,24 @@
       "--kl-text-label",
       "--kl-weight-strong"
     ]
+  },
+  "select-assign": {
+    "version": "1.0.0",
+    "exports": [
+      "AssignLead"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "select-form": {
+    "version": "1.0.0",
+    "exports": [
+      "QuoteForm"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "select": {
     "version": "1.0.0",
@@ -2749,6 +3457,15 @@
     "dataAttributes": [],
     "cssProperties": []
   },
+  "sheet-order": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderSheet"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "sheet": {
     "version": "1.0.0",
     "exports": [
@@ -2783,6 +3500,17 @@
       "--kl-t-unfold",
       "--kl-z-overlay"
     ]
+  },
+  "shipments-block": {
+    "version": "1.0.0",
+    "exports": [
+      "ShipmentsBlock"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
   },
   "shipments-demo": {
     "version": "1.0.0",
@@ -2828,9 +3556,27 @@
       "--kl-weight-strong"
     ]
   },
+  "sidebar-rail": {
+    "version": "1.0.0",
+    "exports": [
+      "RailSidebar"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "sidebar": {
     "version": "1.0.0",
     "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "skeleton-client": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientCard"
+    ],
     "slots": [],
     "dataAttributes": [],
     "cssProperties": []
@@ -2859,6 +3605,24 @@
       "--kl-k2",
       "--kl-run-dir"
     ]
+  },
+  "slider-discount": {
+    "version": "1.0.0",
+    "exports": [
+      "CountyDiscount"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "slider-range": {
+    "version": "1.0.0",
+    "exports": [
+      "PriceRange"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "slider": {
     "version": "1.0.0",
@@ -2917,6 +3681,24 @@
       "--kl-weight-strong"
     ]
   },
+  "split-button-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "BookDelivery"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "split-button-export": {
+    "version": "1.0.0",
+    "exports": [
+      "ExportReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "split-button": {
     "version": "1.0.0",
     "exports": [
@@ -2947,6 +3729,24 @@
       "--kl-text-body",
       "--kl-weight-strong"
     ]
+  },
+  "stat-sales": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchStats"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "stat-warehouse": {
+    "version": "1.0.0",
+    "exports": [
+      "WarehouseSpace"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "stat": {
     "version": "1.0.0",
@@ -2987,6 +3787,24 @@
       "--kl-weight-strong"
     ]
   },
+  "status-badges": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceBadges"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "status-deliveries": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryBoard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "status": {
     "version": "1.0.0",
     "exports": [
@@ -3011,6 +3829,15 @@
       "--kl-weight-display",
       "--kl-weight-strong"
     ]
+  },
+  "switch-alerts": {
+    "version": "1.0.0",
+    "exports": [
+      "AlertSettings"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "switch": {
     "version": "1.0.0",
@@ -3048,6 +3875,33 @@
       "--kl-sw",
       "--kl-sw-gap"
     ]
+  },
+  "table-lines": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderLines"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "table-loading": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceTable"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "table-orders": {
+    "version": "1.0.0",
+    "exports": [
+      "OpenOrders"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "table": {
     "version": "1.0.0",
@@ -3151,6 +4005,24 @@
       "--kl-yellow-row"
     ]
   },
+  "tabs-account": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientAccount"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "tabs-views": {
+    "version": "1.0.0",
+    "exports": [
+      "CallViews"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "tabs": {
     "version": "1.0.0",
     "exports": [
@@ -3193,6 +4065,26 @@
       "--kl-weight-strong"
     ]
   },
+  "theming-roles": {
+    "version": "1.0.0",
+    "exports": [
+      "RoleCards"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "time-field-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DockTime"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "time-field": {
     "version": "1.0.0",
     "exports": [
@@ -3220,6 +4112,24 @@
       "--kl-k1",
       "--kl-weight-strong"
     ]
+  },
+  "toast-promise": {
+    "version": "1.0.0",
+    "exports": [
+      "SendReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toast-undo": {
+    "version": "1.0.0",
+    "exports": [
+      "ArchiveUndo"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "toast": {
     "version": "1.0.0",
@@ -3300,6 +4210,24 @@
       "--toast-swipe-movement-y"
     ]
   },
+  "toggle-group-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "SupplyRoom"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle-group-reps": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersByRep"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "toggle-group": {
     "version": "1.0.0",
     "exports": [
@@ -3318,6 +4246,24 @@
     "cssProperties": [
       "--kl-ctl"
     ]
+  },
+  "toggle-icon": {
+    "version": "1.0.0",
+    "exports": [
+      "PinClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle-receipts": {
+    "version": "1.0.0",
+    "exports": [
+      "ExpenseFilter"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "toggle": {
     "version": "1.0.0",
@@ -3355,6 +4301,15 @@
       "--kl-weight-strong"
     ]
   },
+  "toolbar-editor": {
+    "version": "1.0.0",
+    "exports": [
+      "MemoEditor"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
   "toolbar-overflow": {
     "version": "1.0.0",
     "exports": [
@@ -3381,6 +4336,33 @@
       "kl-keep-together",
       "kl-primary"
     ],
+    "cssProperties": []
+  },
+  "toolbar-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersPanel"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar-scroll": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderCommands"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar-vertical": {
+    "version": "1.0.0",
+    "exports": [
+      "FloorPlanTools"
+    ],
+    "slots": [],
+    "dataAttributes": [],
     "cssProperties": []
   },
   "toolbar": {
@@ -3477,6 +4459,15 @@
       "--kl-weight-display",
       "--kl-weight-strong"
     ]
+  },
+  "tooltip-icons": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceTools"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
   },
   "tooltip": {
     "version": "1.0.0",

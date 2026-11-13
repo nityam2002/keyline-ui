@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message-thread",
+  "title": "Message: thread with jim",
+  "description": "An example of Message: thread with jim.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/avatar",
+    "@keyline-ui/bubble",
+    "@keyline-ui/keyline",
+    "@keyline-ui/message"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/message-thread.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Avatar } from \"../ui/avatar\";\nimport { Bubble, BubbleContent } from \"../ui/bubble\";\nimport { Message, MessageAvatar, MessageContent, MessageFooter, MessageHeader } from \"../ui/message\";\n\nexport function ThreadWithJim() {\n  const [state, setState] = useState<\"failed\" | \"sending\" | \"sent\">(\"failed\");\n\n  const retry = () => {\n    setState(\"sending\");\n    setTimeout(() => setState(\"sent\"), 1200);\n  };\n\n  return (\n    <div className=\"grid max-w-[520px] gap-5\">\n      <Message align=\"start\">\n        <MessageAvatar>\n          <Avatar name=\"Jim Halpert\" decorative />\n        </MessageAvatar>\n        <MessageContent>\n          <MessageHeader>\n            <span>Jim Halpert</span>\n            <time dateTime=\"2026-11-10T10:42\">10:42</time>\n          </MessageHeader>\n          <Bubble>\n            <BubbleContent>Blue Cross wants the recycled stock samples by Friday.</BubbleContent>\n          </Bubble>\n          <Bubble>\n            <BubbleContent>Can you check we have 20 lb in the warehouse?</BubbleContent>\n          </Bubble>\n        </MessageContent>\n      </Message>\n      <Message align=\"end\">\n        <MessageContent>\n          <MessageHeader>\n            <span>You</span>\n            <time dateTime=\"2026-11-10T10:45\">10:45</time>\n          </MessageHeader>\n          <Bubble tone=\"tint\">\n            <BubbleContent>Darryl says 30 cases, enough for samples.</BubbleContent>\n          </Bubble>\n          <Bubble tone={state === \"failed\" ? \"attention\" : \"tint\"} pending={state === \"sending\"}>\n            <BubbleContent>I&apos;ll put two cases on Thursday&apos;s truck.</BubbleContent>\n          </Bubble>\n          {state === \"failed\" ? (\n            <MessageFooter tone=\"attention\">\n              <span>Not sent: you&apos;re offline.</span>\n              <button type=\"button\" onClick={retry}>\n                Retry\n              </button>\n            </MessageFooter>\n          ) : (\n            <MessageFooter role=\"status\">{state === \"sending\" ? \"Sending…\" : \"Sent\"}</MessageFooter>\n          )}\n        </MessageContent>\n      </Message>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/message-thread.tsx"
+    }
+  ],
+  "categories": [
+    "message"
+  ],
+  "type": "registry:block"
+}

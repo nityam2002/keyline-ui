@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card-client",
+  "title": "Hover card: client cards",
+  "description": "An example of Hover card: client cards.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/avatar",
+    "@keyline-ui/hover-card",
+    "@keyline-ui/keyline",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/hover-card-client.tsx",
+      "content": "\"use client\";\n\nimport { Avatar } from \"../ui/avatar\";\nimport {\n  HoverCard,\n  HoverCardBody,\n  HoverCardPopup,\n  HoverCardFacts,\n  HoverCardHeader,\n  HoverCardTrigger,\n} from \"../ui/hover-card\";\nimport { Status } from \"../ui/status\";\n\nconst CLIENTS = {\n  county: {\n    name: \"Lackawanna County\",\n    contact: \"Procurement office\",\n    code: \"C-0112\",\n    facts: [\n      [\"Rep\", \"Dwight Schrute\"],\n      [\"Since\", \"2003\"],\n      [\"Orders this year\", \"48\"],\n      [\"Spend\", \"$61,240\"],\n    ],\n    status: <Status kind=\"done\">Paid up</Status>,\n  },\n  vance: {\n    name: \"Vance Refrigeration\",\n    contact: \"Bob Vance\",\n    code: \"C-0187\",\n    facts: [\n      [\"Rep\", \"Phyllis Vance\"],\n      [\"Since\", \"2007\"],\n      [\"Orders this year\", \"12\"],\n    ],\n    status: <Status kind=\"attention\">Invoice 31 days overdue</Status>,\n  },\n} as const;\n\nfunction Client({ id }: { id: keyof typeof CLIENTS }) {\n  const c = CLIENTS[id];\n  return (\n    <HoverCard>\n      <HoverCardTrigger href={`?client=${c.code}`} onClick={(e) => e.preventDefault()}>\n        {c.name}\n      </HoverCardTrigger>\n      <HoverCardPopup className=\"w-[min(320px,calc(100vw-24px))]\">\n        <HoverCardHeader\n          media={<Avatar layout=\"cell\" decorative name={c.contact} />}\n          title={c.name}\n          description={c.contact}\n          code={c.code}\n        />\n        <HoverCardFacts facts={c.facts} />\n        <HoverCardBody>{c.status}</HoverCardBody>\n      </HoverCardPopup>\n    </HoverCard>\n  );\n}\n\nexport function ClientCards() {\n  return (\n    <p className=\"m-0 max-w-[60ch] text-[15px] leading-7\">\n      This week Dwight closed a renewal with <Client id=\"county\" />, and Phyllis is still chasing <Client id=\"vance\" />{\" \"}\n      for last month&apos;s invoice. Hover or focus a client for their account.\n    </p>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/hover-card-client.tsx"
+    }
+  ],
+  "categories": [
+    "hover-card"
+  ],
+  "type": "registry:block"
+}

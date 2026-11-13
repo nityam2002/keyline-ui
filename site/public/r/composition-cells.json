@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "composition-cells",
+  "title": "Composition: declared cells",
+  "description": "An example of Composition: declared cells.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/segmented"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/composition-cells.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Field, FieldFrame, FieldControl, FieldLabel } from \"../ui/field\";\nimport { Panel, PanelBody, PanelFooter, PanelHeader } from \"../ui/panel\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\n\n// The same footer twice. Putting a Button inside the Panel's footer changes nothing by itself: as a control it\n// keeps its own 2px frame and doubles the footer's edges. Declared as a cell, it fills its cell and the footer\n// draws the one seam between the parts.\nexport function DeclaredCells() {\n  const [layout, setLayout] = useState<\"cell\" | \"control\">(\"cell\");\n  const [sent, setSent] = useState(false);\n\n  return (\n    <div className=\"grid w-full max-w-[520px] gap-4\">\n      <Segmented\n        size=\"compact\"\n        aria-label=\"Footer buttons\"\n        value={layout}\n        onValueChange={(v: string) => setLayout(v as \"cell\" | \"control\")}\n        className=\"justify-self-start\"\n      >\n        <SegmentedItem value=\"cell\">layout=&quot;cell&quot;</SegmentedItem>\n        <SegmentedItem value=\"control\">layout=&quot;control&quot;</SegmentedItem>\n      </Segmented>\n      <Panel>\n        <PanelHeader\n          code=\"PO-118\"\n          title=\"Reorder copy paper\"\n          description=\"Stamford asked for the order to arrive before the audit.\"\n        />\n        <PanelBody>\n          <Field name=\"cases\">\n            <FieldLabel>Cases</FieldLabel>\n            <FieldFrame>\n              <FieldControl type=\"number\" inputMode=\"numeric\" defaultValue=\"40\" align=\"end\" />\n              <Button layout=\"cell\">Add 10</Button>\n            </FieldFrame>\n          </Field>\n        </PanelBody>\n        <PanelFooter data-testid=\"footer\">\n          <span className=\"flex flex-1 items-center px-3 text-[13px] text-kl-ink-2\" role=\"status\">\n            {sent ? \"Sent to Jan.\" : \"Draft\"}\n          </span>\n          <Button layout={layout}>Save draft</Button>\n          <Button layout={layout} variant=\"primary\" disabled={sent} onClick={() => setSent(true)}>\n            Send order\n          </Button>\n        </PanelFooter>\n      </Panel>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/composition-cells.tsx"
+    }
+  ],
+  "categories": [
+    "guide"
+  ],
+  "type": "registry:block"
+}
