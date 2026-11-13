@@ -5,11 +5,11 @@ import { test, idle } from "./fixtures.mjs";
 import { until } from "./lib/probe.mjs";
 
 test("block: sort, columns, rows per page, clear sort, detail span", async ({ open, ok }) => {
-  const a = await open({ route: "app", ready: ".kl-sx" });
-  const table = a.locator(".kl-sx table");
+  const a = await open({ route: "app", ready: "[data-testid=shipments-table]" });
+  const table = a.locator("[data-testid=shipments-table] table");
   const heads = () => table.locator("thead th").allTextContents();
   const dest = table.locator("thead th", { hasText: "Destination" });
-  const destCells = () => table.locator("tbody td.kl-sx-dest").allTextContents();
+  const destCells = () => table.locator("tbody tr[data-slot=table-row] > td:nth-child(4)").allTextContents();
   await dest.getByRole("button").click();
   await until(async () => (await dest.getAttribute("aria-sort")) === "ascending");
   await idle(a);
@@ -67,7 +67,7 @@ test("block: sort, columns, rows per page, clear sort, detail span", async ({ op
     null,
   );
   const nCols = (await heads()).length;
-  const viewBtn = a.locator(".kl-sx").getByRole("button", { name: /^View/ });
+  const viewBtn = a.locator("[data-testid=shipments-table]").getByRole("button", { name: /^View/ });
   ok(
     "block: the View trigger counts visible columns (7/7)",
     (await viewBtn.textContent()).includes("7/7"),

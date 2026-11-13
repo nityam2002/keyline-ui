@@ -319,7 +319,9 @@ export default function CompositionPage() {
         Records are selected by id, so a selection survives filtering, sorting and paging. The scope tells you how many
         selected records the current filters hide, because a bulk action still acts on them; say so in the bulk bar.
         Undo restores each record&apos;s own previous value and puts removed records back where they were. The{" "}
-        <Link href="/docs/blocks/shipments">Shipments block</Link> uses all of it.
+        <Link href="/docs/blocks/shipments">Shipments block</Link> keeps its selection in a{" "}
+        <Link href="/docs/components/data-table">Data Table</Link>, which works the same way, and uses these undo
+        helpers.
       </p>
       <CodeBlock code={installCommand("selection")} lang="bash" copyLabel="install command" />
       <CodeBlock code={SELECTION} lang="tsx" copyLabel="selection usage" />

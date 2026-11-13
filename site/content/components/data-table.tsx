@@ -95,12 +95,14 @@ table.getColumn("eta")?.setFilterValue({ kind: "range", from: monday, to: friday
 const PROPS: Prop[] = [
   {
     name: "useDataTable",
-    type: "{ data, columns, state?, onStateChange?, defaultState?, getRowId?, enableRowSelection? }",
+    type: "{ data, columns, state?, onStateChange?, defaultState?, getRowId?, enableRowSelection?, getRowCanExpand?, autoResetPageIndex?, autoResetExpanded? }",
     default: "—",
     description: (
       <>
         Returns the TanStack table. A slice in <code>state</code> is yours; any other is the table&apos;s, seeded from{" "}
-        <code>defaultState</code>. <code>getRowId</code> defaults to the row&apos;s <code>id</code>.
+        <code>defaultState</code>. <code>getRowId</code> defaults to the row&apos;s <code>id</code>. Set{" "}
+        <code>autoResetPageIndex</code> and <code>autoResetExpanded</code> to <code>false</code> to keep the page and
+        the open details when the data changes.
       </>
     ),
   },
@@ -112,12 +114,14 @@ const PROPS: Prop[] = [
   },
   {
     name: "DataTable",
-    type: "{ table, rowLabel?, selectAllLabel?, rowCode?, rowProps?, caption?, empty? }",
+    type: "{ table, rowLabel?, selectAllLabel?, rowCode?, rowProps?, renderDetail?, expandLabel?, bodyProps?, caption?, loading?, error?, empty? }",
     default: "—",
     description: (
       <>
-        The grid: sort headers, the index column, the rows, and <code>empty</code> when nothing matches. Other props go
-        to the <code>table</code> element.
+        The grid: sort headers, the index column, the rows, and <code>empty</code> when nothing matches.{" "}
+        <code>renderDetail</code> adds an expand column and a detail under each expanded row; <code>loading</code> and{" "}
+        <code>error</code> stand in for the rows; <code>bodyProps</code> go to the body (a <code>ref</code> for{" "}
+        <code>useRowMotion</code>). Other props go to the <code>table</code> element.
       </>
     ),
   },
@@ -146,11 +150,12 @@ const PROPS: Prop[] = [
   },
   {
     name: "column meta",
-    type: '{ align?: "end" }',
+    type: '{ align?: "end", cellClassName?: string }',
     default: "—",
     description: (
       <>
-        End-aligns a column of figures. <code>sortDescFirst</code> starts its sort high to low.
+        End-aligns a column of figures; <code>cellClassName</code> goes to its body cells. <code>sortDescFirst</code>{" "}
+        starts its sort high to low.
       </>
     ),
   },
@@ -224,10 +229,10 @@ export const content: ComponentContent = {
     <>
       <h2 id="controlled-state">Controlled state</h2>
       <p>
-        The table keeps six slices: <code>sorting</code>, <code>columnFilters</code>, <code>globalFilter</code>,{" "}
-        <code>pagination</code>, <code>rowSelection</code> and <code>columnVisibility</code>. Pass a slice in{" "}
-        <code>state</code> to own it, and write back what <code>onStateChange</code> gives you. The rest stay the
-        table&apos;s. <code>onStateChange</code> reports those too, so you can follow them without owning them.
+        The table keeps seven slices: <code>sorting</code>, <code>columnFilters</code>, <code>globalFilter</code>,{" "}
+        <code>pagination</code>, <code>rowSelection</code>, <code>columnVisibility</code> and <code>expanded</code>.
+        Pass a slice in <code>state</code> to own it, and write back what <code>onStateChange</code> gives you. The rest
+        stay the table&apos;s. <code>onStateChange</code> reports those too, so you can follow them without owning them.
       </p>
       <CodeBlock code={CONTROLLED} lang="tsx" copyLabel="controlled state" />
 

@@ -62,10 +62,12 @@ for (const dir of ["ltr", "rtl"]) {
       q: dir === "rtl" ? "dir=rtl" : "",
       width: 1400,
       height: 1000,
-      ready: ".kl-sx-eta",
+      ready: "[data-slot=table-toolbar] [data-slot=date-range]",
     });
     await idle(p);
-    const eta = p.locator(".kl-sx-eta :is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])").first();
+    const eta = p
+      .locator("[data-slot=table-toolbar] :is([data-slot=date-picker-trigger],[data-slot=date-range-trigger])")
+      .first();
     await eta.click();
     await p.locator(":is([data-slot=date-picker-popup],[data-slot=date-range-popup])").last().waitFor();
     await idle(p);
@@ -81,8 +83,8 @@ for (const dir of ["ltr", "rtl"]) {
       .waitFor({ state: "detached" })
       .catch(() => {});
     await idle(p);
-    const msT = p.locator(".kl-sx-carriers [data-slot=combobox-input-group]").first();
-    await p.locator(".kl-sx-carriers [data-slot=combobox-trigger]").first().click();
+    const msT = p.locator("[data-slot=table-toolbar] [data-slot=multiselect] [data-slot=combobox-input-group]").first();
+    await p.locator("[data-slot=table-toolbar] [data-slot=multiselect] [data-slot=combobox-trigger]").first().click();
     await p.locator("[data-slot=combobox-popup]").last().waitFor();
     await idle(p);
     g = await geo(p, msT, "[data-slot=combobox-popup]");

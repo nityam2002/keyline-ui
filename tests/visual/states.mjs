@@ -148,7 +148,41 @@ export const STATES = {
     { name: "hover-sort-header", do: [["hover", "th >> role=button >> nth=2"]] },
     { name: "focus-sort-header", do: [["focus", "th >> role=button >> nth=0"]] },
     { name: "hover-row", do: [["hover", "tbody tr >> nth=3"]] },
-    { name: "expanded", do: [["click", "role=button[name=/^Show legs for/] >> nth=0"]] },
+    // the shot waits for the detail to be open: its unfold starts two frames after it mounts, and under load the
+    // chevron's turn can end before then, a gap in which the page looks at rest mid-unfold
+    {
+      name: "expanded",
+      do: [
+        ["click", "role=button[name=/^Show legs for/] >> nth=0"],
+        ["wait", "[data-slot=table-detail] [data-open]"],
+      ],
+    },
+    // a status filter applied (the rows narrow, Clear appears); a view with no matches (the empty state)
+    { name: "filtered", do: [["click", `${role("toolbar", "Status filters")} >> role=button[name=/^Delayed/]`]] },
+    {
+      name: "empty",
+      do: [
+        ["click", "role=tab[name=/^Delivered/]"],
+        ["click", `${role("toolbar", "Status filters")} >> role=button[name=/^Delayed/]`],
+      ],
+    },
+    // a row's actions from the keyboard: the ID that opens the inspector, the expand toggle
+    { name: "focus-row-open", do: [["focus", "tbody >> role=button[name=/^SH-/] >> nth=1"]] },
+    { name: "focus-expand", do: [["focus", "role=button[name=/^Show legs for/] >> nth=1"]] },
+    // a row inspected: its ID pressed, the Inspector as the shell's aside
+    { name: "inspect", do: [["click", "tbody >> role=button[name=/^SH-/] >> nth=2"]] },
+    // two rows selected, then Cancel from Actions: the alert's list of shipments
+    {
+      name: "confirm-cancel",
+      do: [
+        ["click", "role=checkbox[name=/^Select SH-/] >> nth=0"],
+        ["click", "role=checkbox[name=/^Select SH-/] >> nth=1"],
+        ["click", `${role("toolbar", "Bulk actions")} >> role=button[name=/^Actions/]`],
+        ["click", "role=menuitem[name=/^Cancel 2 shipments/]"],
+        ["wait", "role=alertdialog"],
+      ],
+      show: "role=alertdialog",
+    },
   ],
   shell: [
     { name: "hover-nav", do: [["hover", `#shell >> ${MAIN} >> role=button[name=/^Carriers/]`]] },

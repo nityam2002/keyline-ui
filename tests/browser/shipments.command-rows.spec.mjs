@@ -3,11 +3,11 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, rowItems, menuRows, focusName14 as focusedName, tabStops as stops, lastMenu } from "./lib/probes-c.mjs";
 
-const READY = ".kl-sx-table tbody tr[data-slot=table-row]";
+const READY = "[data-testid=shipments-table] tbody tr[data-slot=table-row]";
 
 async function setup(open, width = 1440, height = 1000) {
   const p = await open({ route: "app", width, height, ready: READY });
-  const t = p.locator(".kl-sx-table");
+  const t = p.locator("[data-testid=shipments-table]");
   return {
     p,
     t,

@@ -677,7 +677,11 @@ function TableExpandCell(
     | { header?: false; expanded?: undefined },
 ): React.ReactElement {
   if (props.header)
-    return <th data-slot="table-expand-cell" className={expandCell} aria-label={props.label ?? "Expand"} />;
+    return (
+      <th data-slot="table-expand-cell" className={expandCell}>
+        <span className="kl-sr">{props.label ?? "Expand"}</span>
+      </th>
+    );
   if (props.expanded === undefined) return <td data-slot="table-expand-cell" className={expandCell} />;
   const { expanded, onToggle, label } = props;
   return (

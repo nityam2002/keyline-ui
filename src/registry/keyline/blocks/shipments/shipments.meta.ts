@@ -5,14 +5,14 @@ export default {
   type: "registry:block",
   title: "Shipments (demo block)",
   description:
-    "A working application composition: filterable, selectable table with expanded detail, inspector, bulk actions with undo.",
+    "A working application composition: a Data Table with filters, selection and expanded detail, an inspector, bulk actions with undo.",
   files: [
     { path: "src/registry/keyline/blocks/shipments/shipments.tsx", type: "registry:component" },
     { path: "src/registry/keyline/blocks/shipments/shipments-data.ts", type: "registry:lib" },
   ],
-  cssFile: "src/registry/keyline/blocks/shipments/shipments.css",
   registryDependencies: [
     "@keyline-ui/keyline",
+    "utils",
     "@keyline-ui/button",
     "@keyline-ui/menu",
     "@keyline-ui/toolbar",
@@ -20,6 +20,9 @@ export default {
     "@keyline-ui/multiselect",
     "@keyline-ui/date-range",
     "@keyline-ui/table",
+    "@keyline-ui/data-table",
+    "@keyline-ui/data-table-model",
+    "@keyline-ui/collection",
     "@keyline-ui/status",
     "@keyline-ui/kbd",
     "@keyline-ui/nav",

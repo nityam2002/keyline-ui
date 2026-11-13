@@ -3,6 +3,5 @@
 
 /* The real Keyline theme and the CSS of the items this site renders, exactly as the registry ships them (the registry is the source). */
 @import "../../src/registry/keyline/theme/keyline.css";
-@import "../../src/registry/keyline/blocks/shipments/shipments.css";
 
 @import "./site.css";
