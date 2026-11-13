@@ -560,7 +560,15 @@
       "values": []
     }
   ],
-  "cssVariables": [],
+  "cssVariables": [
+    {
+      "name": "--kl-tv-shrink",
+      "values": [
+        "0",
+        "1"
+      ]
+    }
+  ],
   "examples": [
     {
       "name": "table-lines",

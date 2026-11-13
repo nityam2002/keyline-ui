@@ -217,6 +217,13 @@
       "values": [
         "`${attachWeight"
       ]
+    },
+    {
+      "name": "--kl-menu-code-e",
+      "values": [
+        "0px",
+        "initial"
+      ]
     }
   ],
   "examples": [

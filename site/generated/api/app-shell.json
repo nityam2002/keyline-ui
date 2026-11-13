@@ -378,6 +378,20 @@
       ]
     },
     {
+      "name": "--kl-shell-crumbs-flex",
+      "values": [
+        "1 1 0",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-shell-crumbs-min",
+      "values": [
+        "initial",
+        "min(14rem,45%)"
+      ]
+    },
+    {
       "name": "--kl-shell-head-h",
       "values": [
         "`${h.getBoundingClientRect("

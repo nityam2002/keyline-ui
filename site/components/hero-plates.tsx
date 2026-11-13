@@ -285,7 +285,7 @@ export function HeroPlates({ onTurn }: { onTurn?: () => void }) {
           ))}
         </span>
         <button type="button" className="s-pager-next" onClick={() => go(i + 1)} data-testid="plate-next">
-          Next
+          <span>Next</span>
           <ArrowRight size={12} aria-hidden="true" />
         </button>
         <span className="s-pager-cap" aria-live="polite">

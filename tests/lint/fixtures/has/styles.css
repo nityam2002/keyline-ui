@@ -1,0 +1,14 @@
+/* two selectors flagged (the first two rules), two passed */
+.s-page:has(.s-shell) > [data-slot="scroll-area-scrollbar"] {
+  margin: 0;
+}
+:is(.a:has(b) > *),
+.ok {
+  color: red;
+}
+.s-page:has(.s-shell) {
+  --s-sb-top: 0px;
+}
+.a > .b:has(> c) {
+  color: red;
+}

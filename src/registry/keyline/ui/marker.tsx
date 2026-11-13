@@ -13,6 +13,7 @@ type MarkerVariant = "default" | "separator" | "border";
 const markerVariants = cva(
   [
     "group/marker relative flex min-h-6 min-w-0 items-center gap-2.5",
+    "[--kl-marker-run:initial] not-has-data-[slot=marker-icon]:[--kl-marker-run:0px]",
     "font-(family-name:--kl-font-mono) text-(length:--kl-text-meta)/[1.35] text-kl-ink-2",
   ],
   {
@@ -36,7 +37,9 @@ const markerVariants = cva(
 );
 
 /* the running segment starts under the words: past the glyph cell and its gap when there is one */
-const run = cn("kl-pending start-[34px] [--kl-bw:2px]", "group-not-has-data-[slot=marker-icon]/marker:start-0");
+// (the marker reads its own glyph and hands the start over: a group-has-* rule restyles the whole document on any DOM
+// change)
+const run = "kl-pending start-[var(--kl-marker-run,34px)] [--kl-bw:2px]";
 
 type MarkerState = { variant: MarkerVariant; pending: boolean };
 

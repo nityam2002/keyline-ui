@@ -186,6 +186,27 @@
   ],
   "cssVariables": [
     {
+      "name": "--kl-cbg-empty",
+      "values": [
+        "initial",
+        "none"
+      ]
+    },
+    {
+      "name": "--kl-cbg-pbs",
+      "values": [
+        "0px",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-cbg-pmin",
+      "values": [
+        "0px",
+        "initial"
+      ]
+    },
+    {
       "name": "--kl-cut-line",
       "values": [
         "var(--kl-dis-line)",

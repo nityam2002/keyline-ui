@@ -101,6 +101,90 @@
         "0px",
         "calc(var(--kl-c,0px)*0.35)"
       ]
+    },
+    {
+      "name": "--kl-item-c-col",
+      "values": [
+        "-4/-3",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-c-pb",
+      "values": [
+        "calc(var(--spacing)*0.5)",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-c-row",
+      "values": [
+        "1",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-lead",
+      "values": [
+        "calc(var(--kl-inset)+var(--kl-c-room,0px))",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-m-col",
+      "values": [
+        "-4/-3",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-m-pb",
+      "values": [
+        "calc(var(--spacing)*2)",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-m-ps",
+      "values": [
+        "initial",
+        "var(--kl-item-lead,var(--kl-inset))"
+      ]
+    },
+    {
+      "name": "--kl-item-m-pt",
+      "values": [
+        "0px",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-m-row",
+      "values": [
+        "2",
+        "initial"
+      ]
+    },
+    {
+      "name": "--kl-item-m-self",
+      "values": [
+        "initial",
+        "start"
+      ]
+    },
+    {
+      "name": "--kl-item-m-text",
+      "values": [
+        "initial",
+        "start"
+      ]
+    },
+    {
+      "name": "--kl-item-span",
+      "values": [
+        "1/span 2",
+        "initial"
+      ]
     }
   ],
   "examples": [

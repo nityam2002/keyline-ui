@@ -25,7 +25,7 @@ export function CopyButton({ text, label, after }: { text: string; label: string
     <>
       {/* Copy floats over the code's top end; the hint is its sibling, not its child, so it is placed
           against the whole code block (below it, from its start edge), not against this small box */}
-      <div className="absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[single]/code:inset-bs-1/2 group-data-[single]/code:-translate-y-1/2 group-data-[tall]/code:end-3 rtl:bg-linear-to-l [.s-cb[data-single]:has([data-has-overflow-x])_&]:inset-bs-[calc(50%-6px)]">
+      <div className="absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[single]/code:inset-bs-[var(--s-cb-top,50%)] group-data-[single]/code:-translate-y-1/2 group-data-[tall]/code:end-3 rtl:bg-linear-to-l">
         <Button size="compact" signal={state} onClick={copy} aria-label={`Copy ${label}`}>
           {state === "done" ? "Copied" : "Copy"}
         </Button>

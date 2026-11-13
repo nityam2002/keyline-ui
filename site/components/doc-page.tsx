@@ -6,8 +6,10 @@ import manifest from "../public/r/registry.json";
 import { sourceCodeJsonLd, stringifyJsonLd } from "@site/lib/seo";
 
 /** A neighbour in the title block; on a phone the two share the row and wrap their label under "Previous"/"Next". */
+// a pager link is a Key, as a Button is: its fills change at once and its words travel 1px while held (the
+// footer frame stays put), so each part of its label is an element
 const LINK =
-  "flex items-center px-5 text-[14px] font-bold text-kl-ink no-underline transition-[background-color] duration-150 ease-out hover:bg-kl-paper motion-reduce:transition-none focus-visible:outline-offset-[-4px] max-[521px]:flex-1 max-[521px]:basis-0 max-[521px]:flex-wrap max-[521px]:content-center max-[521px]:gap-y-0.5 max-[521px]:px-3.5 max-[521px]:py-2";
+  "kl-key flex items-center px-5 text-[14px] font-bold text-kl-ink no-underline hover:bg-kl-tint active:bg-kl-press focus-visible:outline-offset-[-4px] max-[521px]:flex-1 max-[521px]:basis-0 max-[521px]:flex-wrap max-[521px]:content-center max-[521px]:gap-y-0.5 max-[521px]:px-3.5 max-[521px]:py-2";
 
 /**
  * One component page's content, inside the docs layout's sheet and AppShell: the page, its index (sent to
@@ -43,11 +45,11 @@ export function DocPage({ name, toc, children }: { name: string; toc: TocGroup[]
             <span className="me-2 font-kl-mono text-[12px] font-normal text-kl-ink-3 max-[521px]:basis-full">
               Previous
             </span>
-            {s.prev.name}
+            <span>{s.prev.name}</span>
           </Link>
         ) : (
           <Link href="/" className={LINK}>
-            Keyline UI home
+            <span>Keyline UI home</span>
           </Link>
         )}
         {s.next ? (
@@ -55,7 +57,7 @@ export function DocPage({ name, toc, children }: { name: string; toc: TocGroup[]
             <span className="me-2 font-kl-mono text-[12px] font-normal text-kl-ink-3 max-[521px]:basis-full max-[521px]:text-end">
               Next
             </span>
-            {s.next.name}
+            <span>{s.next.name}</span>
           </Link>
         ) : null}
       </footer>

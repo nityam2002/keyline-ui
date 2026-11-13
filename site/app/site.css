@@ -58,12 +58,14 @@
   /* its rail runs between the sheet's crop lines (the frame's top and bottom edges), not viewport edge to edge.
      Base UI pins the bar top: 0 inline; block margins inset it, and the thumb is sized from the shorter track */
   .s-page > [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
-    margin-block: var(--s-pad);
+    margin-block: var(--s-sb-top, var(--s-pad)) var(--s-pad);
   }
   /* on a docs sheet it runs level with the shell's columns (index, page, aside): they start below the sticky
-     header (the sheet's inset, the header's 46px, one gutter: AppShell's --kl-shell-cols-top) and end one inset up */
-  .s-page:has(.s-shell) > [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
-    margin-block-start: calc(var(--s-pad) + 46px + var(--kl-gutter, 12px));
+     header (the sheet's inset, the header's 46px, one gutter: AppShell's --kl-shell-cols-top) and end one inset up.
+     The page reads its own content and hands the bar a property: a :has() in the bar's selector restyles the whole
+     document on every DOM change (a page navigation paid it on each mount) */
+  .s-page:has(.s-shell) {
+    --s-sb-top: calc(var(--s-pad) + 46px + var(--kl-gutter, 12px));
   }
 
   /* ---------- the sheet: a printed drawing ---------- */
@@ -577,10 +579,15 @@
     height: 8px;
     border: var(--kl-k1) solid var(--kl-ink-3);
     transition:
-      background-color 120ms ease-out,
-      border-color 120ms ease-out;
+      background-color var(--kl-t-flood) var(--kl-ease-out),
+      border-color var(--kl-t-flood) var(--kl-ease-out);
   }
   .s-tick:hover > i {
+    border-color: var(--kl-ink);
+  }
+  /* a held tick answers at once (the Key's 1px travel), before the plate it chooses arrives */
+  .s-tick:active > i {
+    translate: 0 1px;
     border-color: var(--kl-ink);
   }
   .s-tick[aria-current="true"] > i {
@@ -611,11 +618,30 @@
     color: var(--kl-ink);
     cursor: pointer;
   }
-  .s-pager-next > svg {
-    transition: translate 160ms var(--kl-ease-out);
+  /* Next is a Key: its words and arrow travel 1px while held. On a pointer that hovers, the arrow leans the way it
+     reads (a tap on a touch screen would leave it leaning) */
+  .s-pager-next {
+    --s-lean: 0px;
   }
-  .s-pager-next:hover > svg {
-    translate: 3px 0;
+  .s-pager-next > * {
+    transition: translate var(--kl-t-flood) var(--kl-ease-out);
+  }
+  .s-pager-next:active > * {
+    translate: 0 1px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .s-pager-next:hover {
+      --s-lean: 3px;
+    }
+    .s-pager-next:dir(rtl):hover {
+      --s-lean: -3px;
+    }
+  }
+  .s-pager-next > svg {
+    translate: var(--s-lean) 0;
+  }
+  .s-pager-next:active > svg {
+    translate: var(--s-lean) 1px;
   }
   .s-pager :is(.s-tick, a, .s-pager-next):focus-visible {
     outline: var(--kl-ring) solid var(--kl-focus);
@@ -627,7 +653,7 @@
       animation: none;
     }
     .s-tick > i,
-    .s-pager-next > svg {
+    .s-pager-next > * {
       transition: none;
     }
   }
@@ -897,13 +923,9 @@
     background: none;
     color: var(--kl-ink-2);
   }
-  /* Turning a sheet: a new page's ink comes up sharp from a soft first impression (sheet 1's plate turn, without
-     its cobalt plate: reading is quiet). The page and its own index print; the frame, the component index and the
-     header never move. On a client navigation the page's nodes are new, so this runs once per sheet. */
-  .s-docs .s-read > *,
-  .s-docs .s-toc {
-    animation: s-plate-ink 200ms var(--kl-ease-out) both;
-  }
+  /* A docs page arrives at once, with its own index: no entrance. Moving between pages is the most repeated thing a
+     reader does here, and a page that fades up reads as a page that is late (the reference docs sites swap). The
+     motion that says where you went is the component index's band, which moves on the press. */
   /* Landed: a jump (the page index, a shared #link) draws a cobalt keyline along the section's seam from its start
      edge, holds it while the eye arrives, and lifts it. Orientation, not decoration: it says where the page put you. */
   .s-read > :is(h2, h3) {
@@ -961,10 +983,6 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .s-docs .s-read > *,
-    .s-docs .s-toc {
-      animation: none;
-    }
     .s-read > :is(h2, h3):target::after {
       animation-name: s-landed-still;
     }

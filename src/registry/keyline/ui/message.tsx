@@ -32,6 +32,12 @@ const group = "kl-type flex min-w-0 flex-col gap-[calc(var(--kl-gutter)+8px)]";
 const root = cn(
   "kl-type group/message flex w-full min-w-0 gap-(--kl-gutter) data-[align=end]:flex-row-reverse",
   "[--kl-msg-av:32px] [--kl-msg-gap:6px] [--kl-msg-head:18px] [--kl-msg-x:var(--kl-inset)]",
+  // the row reads its own parts (a :has() on the row itself) and hands the avatar's drop and the column's measure to
+  // them: a :has() outside a rule's subject restyles the whole document on any DOM change
+  "[--kl-msg-av-mt:initial] [--kl-msg-measure:initial]",
+  "has-[>[data-slot=message-content]>[data-slot=message-header]:first-child]:[--kl-msg-av-mt:calc(var(--kl-msg-head)+var(--kl-msg-gap))]",
+  "not-has-[>[data-slot=message-avatar]]:[--kl-msg-measure:min(82%,36rem)]",
+  "[@container_kl-log_(max-width:420px)]:not-has-[>[data-slot=message-avatar]]:[--kl-msg-measure:88%]",
   "[@container_kl-log_(max-width:420px)]:[--kl-msg-av:24px]",
   "[@container_kl-log_(max-width:420px)]:[--kl-msg-x:max(8px,var(--kl-inset)_-_2px)]",
 );
@@ -40,7 +46,7 @@ const root = cn(
  *  its avatar (one attribute more specific than the avatar's own size classes). */
 const avatar = cn(
   "flex w-(--kl-msg-av) flex-none self-start empty:h-0",
-  "[[data-slot=message]:has(>[data-slot=message-content]>[data-slot=message-header]:first-child)>&]:mt-[calc(var(--kl-msg-head)+var(--kl-msg-gap))]",
+  "mt-[var(--kl-msg-av-mt,0px)]",
   "*:data-[slot=avatar]:[--kl-av:var(--kl-msg-av)]",
   "[@container_kl-log_(max-width:420px)]:*:data-[slot=avatar]:[--kl-av-fs:10px]",
 );
@@ -48,9 +54,7 @@ const avatar = cn(
 /** the column: as wide as its widest bubble, never wider than most of the row, so each side keeps its side */
 const content = cn(
   "flex min-w-0 flex-[0_1_auto] flex-col items-start *:max-w-full group-data-[align=end]/message:items-end",
-  "max-w-[min(100%_-_var(--kl-msg-av)_-_var(--kl-gutter),36rem)]",
-  "[[data-slot=message]:not(:has(>[data-slot=message-avatar]))>&]:max-w-[min(82%,36rem)]",
-  "[@container_kl-log_(max-width:420px)]:[[data-slot=message]:not(:has(>[data-slot=message-avatar]))>&]:max-w-[88%]",
+  "max-w-[var(--kl-msg-measure,min(100%_-_var(--kl-msg-av)_-_var(--kl-gutter),36rem))]",
 );
 
 const edge = cn(
