@@ -98,6 +98,7 @@
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils",
+        "@keyline-ui/keyline-motion",
         "@keyline-ui/keyline-render",
         "@keyline-ui/keyline-scope",
         "@keyline-ui/nav",
@@ -957,7 +958,9 @@
         "utils",
         "@keyline-ui/kbd",
         "@keyline-ui/dialog",
-        "@keyline-ui/keyline-render"
+        "@keyline-ui/keyline-render",
+        "@keyline-ui/keyline-motion",
+        "@keyline-ui/keyline-scope"
       ]
     },
     {

@@ -42,16 +42,23 @@ import { radioStyles } from "./radio-group";
 const root = "kl-frame kl-rows min-w-0";
 
 /* the padding is physical, as the stylesheet had it: the cut's room is on the left in both directions */
-const progress = "grid gap-1.5 pt-3 pr-(--kl-inset) pb-3.5 pl-[calc(var(--kl-inset)+var(--kl-c-room,0px))]";
+const progress = cn(
+  "grid gap-1.5 pt-3 pr-(--kl-inset) pb-3.5 pl-[calc(var(--kl-inset)+var(--kl-c-room,0px))]",
+  // the seam under it, while a step shows below (see `item`)
+  "has-[~[data-slot=questionnaire-item]:not([hidden])]:border-b-(length:--kl-k1) has-[~[data-slot=questionnaire-item]:not([hidden])]:border-b-kl-line",
+);
 const count = "text-[13px] font-(--kl-weight-strong) tabular-nums";
 
-/* the step: inactive steps keep their answers but are hidden (and inert) by the library. No border here: the frame's
-   rows draw the seam above each step (one edge, one owner). */
+/* the step: inactive steps keep their answers but are hidden (and inert) by the library. A step draws no seam of its
+   own: WebKit treats its floated legend as the fieldset's rendered legend, so a top border (the frame's row seam) is
+   cut either side of the question. The progress row above owns that edge instead (one edge, one owner). */
 const item = cn(
-  "group/questionnaire-item min-w-0 outline-none",
-  "[&:not([hidden])]:grid [&:not([hidden])]:gap-3 [&:not([hidden])]:px-(--kl-inset) [&:not([hidden])]:pt-[18px] [&:not([hidden])]:pb-5",
+  "group/questionnaire-item min-w-0 border-t-0 outline-none",
+  // spacing by the legend's own padding and by margins, not the fieldset's padding or a grid gap: WebKit places the
+  // rendered legend above the padding and outside the grid, Blink inside both; this reads the same in each
+  "[&:not([hidden])]:grid [&:not([hidden])]:px-(--kl-inset) [&:not([hidden])]:pb-5 [&>*+*]:mt-3",
 );
-const legend = "float-start w-full [&+*]:clear-both";
+const legend = "float-start w-full pt-[18px] [&+*]:clear-both";
 const title = cn(
   "flex scroll-my-(--kl-gutter) flex-wrap items-baseline gap-x-3 gap-y-1",
   "text-[17px]/[1.3] font-(--kl-weight-display) text-pretty",

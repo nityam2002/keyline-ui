@@ -6,7 +6,7 @@
   "parts": [
     {
       "name": "Skeleton",
-      "description": "A placeholder for content that is on its way. It is the Table's loading cell outside the table: a keyline box on the tint, with a running segment while it waits. ┌──────────────────────────────┐ │░░░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░│ line (k1 soft keyline, tint fill, running segment) └──────────────────────────────┘ - Always aria-hidden. Wrap the loading region in SkeletonGroup, which marks it busy and says what is loading once; a page of skeletons never reads as a list of blanks. - Size it to the real content (lines of the same count, a control of the same frame) so nothing moves when the content lands. - Motion: the segment runs 1100ms linear, the same rhythm as the table. Reduced motion: no segment, the static box alone.",
+      "description": "A placeholder for content that is on its way. It is the Table's loading cell outside the table: a keyline box on the tint, with a running segment while it waits. - Always aria-hidden. Wrap the loading region in SkeletonGroup, which marks it busy and says what is loading once; a page of skeletons never reads as a list of blanks. - Size it to the real content (lines of the same count, a control of the same frame) so nothing moves when the content lands. - Motion: the segment runs 1100ms linear, the same rhythm as the table. Reduced motion: no segment, the static box alone.",
       "props": [
         {
           "name": "height",

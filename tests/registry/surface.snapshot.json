@@ -86,7 +86,7 @@
     "cssProperties": []
   },
   "app-shell": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "exports": [
       "AppShell",
       "AppShellActions",
@@ -115,6 +115,7 @@
     "dataAttributes": [
       "kl-aside",
       "kl-at",
+      "kl-holds",
       "kl-icons",
       "kl-item",
       "kl-nav",
@@ -144,7 +145,8 @@
       "--kl-shell-nav",
       "--kl-shell-nav-h",
       "--kl-shell-rail",
-      "--kl-shell-top"
+      "--kl-shell-top",
+      "--kl-stretch-trail"
     ]
   },
   "attachment-upload": {
@@ -941,7 +943,7 @@
     "cssProperties": []
   },
   "command": {
-    "version": "1.0.0",
+    "version": "1.0.2",
     "exports": [
       "Command",
       "CommandDialog",
@@ -3114,7 +3116,7 @@
     "cssProperties": []
   },
   "questionnaire": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exports": [
       "Questionnaire",
       "QuestionnaireActions",
@@ -3933,7 +3935,7 @@
     "cssProperties": []
   },
   "table": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exports": [
       "FilterToken",
       "Sort",

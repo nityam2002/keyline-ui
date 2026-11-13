@@ -104,6 +104,7 @@ import { OtpSpecimen } from "./specimens/otp-field";
 import { InputGroupSpecimen } from "./specimens/input-group";
 import { NativeSelectSpecimen } from "./specimens/native-select";
 import { KbdSpecimen } from "./specimens/kbd";
+import { CommandSpecimen } from "./specimens/command";
 import { ToggleSpecimen } from "./specimens/toggle";
 import { ResizableSpecimen } from "./specimens/resizable";
 import { NavigationMenuSpecimen } from "./specimens/navigation-menu";
@@ -1686,6 +1687,13 @@ function Specimen() {
       short: "Kbd",
       states: ["Keys in prose", "Chords on seams, symbols named", "A sequence", "RTL"],
       children: <KbdSpecimen />,
+    },
+    {
+      id: "command",
+      title: "Command",
+      short: "Command",
+      states: ["Grouped index", "Flat ranked results while searching"],
+      children: <CommandSpecimen />,
     },
     {
       id: "toggle",

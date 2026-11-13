@@ -712,21 +712,40 @@
   /* its top edge holds where the columns hold (one gutter below the header), so the page scrolls inside a
      closed frame like the index and the aside, never cut open by the header's band. Pulled out over the
      frame's own top border and side borders; the bottom margin gives back the room it takes. Above the
-     code blocks' Copy keys (z 2), which would otherwise paint over it. */
+     code blocks' Copy keys (z 2), which would otherwise paint over it.
+     It is also the gutter between the header and that edge: an opaque strip of the sheet's paper. The header's
+     own box-shadow was meant to hide the page there, but iOS Safari does not paint a sticky element's shadow
+     inside a scroller, so headings showed through the gap; this strip is a box, and a box always paints. */
   .s-docs .s-read::before {
     content: "";
     flex: none;
     position: sticky;
     z-index: 3;
-    top: var(--kl-shell-cols-top);
-    height: 0;
-    border-block-start: var(--kl-k3) solid var(--kl-line);
-    margin: calc(-1 * var(--s-read-pt) - var(--kl-k3)) calc(-1 * var(--s-read-px) - var(--kl-k3)) var(--s-read-pt);
+    top: calc(var(--kl-shell-cols-top) - var(--kl-gutter));
+    /* border-box: the gutter plus the keyline it ends in, so the keyline lands on the frame's own top border */
+    height: calc(var(--kl-gutter) + var(--kl-k3));
+    background: var(--kl-shell-bg, var(--kl-paper));
+    border-block-end: var(--kl-k3) solid var(--kl-line);
+    margin: calc(-1 * var(--s-read-pt) - var(--kl-k3) - var(--kl-gutter)) calc(-1 * var(--s-read-px) - var(--kl-k3))
+      var(--s-read-pt);
   }
   /* the sheet's crop marks sit on the viewport's corners: the frame never moves, so neither do they. The
      bottom-right one is left off: nothing on the docs sheet meets that corner, so it would hang loose */
   .s-docsheet > .s-crops {
     position: fixed;
+  }
+  /* the sheet's inset above the sticky header, held as paper over the scrolling page. The header's box-shadow
+     was meant to cover it, but iOS Safari does not paint that shadow in a scroller, and the page's frame and
+     text showed above the header. Under the crop marks (z 4); the header starts where it ends. */
+  .s-docsheet::before {
+    content: "";
+    position: fixed;
+    z-index: 3;
+    inset-inline: 0;
+    top: 0;
+    height: var(--s-pad);
+    background: var(--kl-paper);
+    pointer-events: none;
   }
   .s-docsheet > .s-crops > [data-c="br"] {
     display: none;
@@ -902,6 +921,37 @@
     max-width: 68ch;
     margin: 14px 0 0;
   }
+  /* a list reads at the paragraphs' size and measure; its marker is a small square, as the language has no round */
+  .s-read > ul {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    max-width: 68ch;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .s-read > ul > li {
+    position: relative;
+    padding-inline-start: 22px;
+    break-inside: avoid;
+  }
+  .s-read > ul > li + li {
+    margin-top: 10px;
+  }
+  .s-read > ul > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 4px;
+    top: calc(0.825em - 2.5px);
+    width: 5px;
+    height: 5px;
+    background: var(--kl-ink-3);
+  }
+  /* a lead-in names the item; the sentence after it is the plain voice */
+  .s-read > ul > li > :is(b, strong):first-child {
+    font-weight: 700;
+    color: var(--kl-ink);
+  }
   .s-read :not(pre) > code:where(:not(.s-demo-stage *)) {
     font-family: var(--kl-font-mono);
     font-size: 0.86em;
@@ -923,9 +973,9 @@
     background: none;
     color: var(--kl-ink-2);
   }
-  /* A docs page arrives at once, with its own index: no entrance. Moving between pages is the most repeated thing a
-     reader does here, and a page that fades up reads as a page that is late (the reference docs sites swap). The
-     motion that says where you went is the component index's band, which moves on the press. */
+  /* Moving between pages: the frame, index and title block stay put; only the new page's words come into focus (a
+     180ms blur-to-sharp in DocsShell that starts legible, because it is the most repeated thing a reader does and
+     must never read as late). The component index's band still says where you went. */
   /* Landed: a jump (the page index, a shared #link) draws a cobalt keyline along the section's seam from its start
      edge, holds it while the eye arrives, and lifts it. Orientation, not decoration: it says where the page put you. */
   .s-read > :is(h2, h3) {

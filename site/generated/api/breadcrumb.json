@@ -6,7 +6,7 @@
   "parts": [
     {
       "name": "Breadcrumb",
-      "description": "Where this page sits, as cells in one frame: ┌─────────┬──────────┬───┬───────────┬━━━━━━━━━━━━━━━━━━━━┓ │ Network ›│ Europe › │ … │ Rotterdam ›│ ECT Delta (here) ┃ ancestors are link cells; here is cobalt └─────────┴──────────┴───┴───────────┴━━━━━━━━━━━━━━━━━━━━┛ - The current page is the cobalt cell (location, as in Nav and Tabs), aria-current=\"page\", not a link. - Each ancestor ends in a chevron that mirrors in RTL. Long labels truncate inside their cell; the current page keeps the most room. - Folding: more than `maxItems`, or less than 480px of its own width, folds every ancestor before the parent into a \"…\" cell whose menu lists them in order. The parent and the page itself always show.",
+      "description": "Where this page sits, as cells in one frame: - The current page is the cobalt cell (location, as in Nav and Tabs), aria-current=\"page\", not a link. - Each ancestor ends in a chevron that mirrors in RTL. Long labels truncate inside their cell; the current page keeps the most room. - Folding: more than `maxItems`, or less than 480px of its own width, folds every ancestor before the parent into a \"…\" cell whose menu lists them in order. The parent and the page itself always show.",
       "props": [
         {
           "name": "items",

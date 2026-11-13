@@ -141,7 +141,11 @@ const bulkScope = cn(
   "[@container_kl-tf_(max-width:560px)]:py-1.5 [@container_kl-tf_(max-width:560px)]:whitespace-normal",
 );
 
-const scroll = "min-h-0 flex-[1_1_auto] *:data-[slot=scroll-area-viewport]:overscroll-contain";
+/* The grid sits in the flow of a page, so only its inline axis is contained (a sideways swipe at the edge never
+   becomes the browser's back gesture), as the Toolbar does. The block axis chains: a wheel or trackpad scroll over
+   a table that cannot scroll that way, or has reached its edge, moves the page, and the table never rubber-bands on
+   its own. Containing both axes is for overlays (Dialog, Drawer, Select), not for regions in the flow. */
+const scroll = "min-h-0 flex-[1_1_auto] *:data-[slot=scroll-area-viewport]:[overscroll-behavior-inline:contain]";
 
 const table = "kl-type w-full border-separate border-spacing-0 text-[14px]";
 

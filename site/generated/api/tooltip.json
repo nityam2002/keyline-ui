@@ -10,14 +10,14 @@
       "props": [
         {
           "name": "children",
-          "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+          "type": "ReactElement",
           "default": "",
           "required": true,
           "description": "The trigger. Must be a focusable element that accepts a ref (a Button, a link, an icon button)."
         },
         {
           "name": "content",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -31,7 +31,7 @@
         },
         {
           "name": "shortcut",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Shortcut shown in its own cell, e.g. \"⌘K\"."
@@ -65,7 +65,7 @@
         },
         {
           "name": "shortcut",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Shortcut shown in its own cell, e.g. \"⌘K\"."

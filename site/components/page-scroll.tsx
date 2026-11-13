@@ -11,7 +11,7 @@ export function PageScroll({ children }: { children: React.ReactNode }) {
   // The document used to take Space, Page Up/Down, Home/End and arrows when nothing had focus. A nested
   // scroller only gets them while focus is in it, so with focus on <body> the page scroller takes focus
   // (without moving) before the key's default runs. It is the outermost box, so the next Tab still goes
-  // to the first control (the skip link) and nothing visible changes.
+  // to the first control (the skip link). A key press is keyboard use, so its focus ring is the right signal there.
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !SCROLL_KEYS.has(e.key)) return;
@@ -23,24 +23,10 @@ export function PageScroll({ children }: { children: React.ReactNode }) {
       (document.querySelector(".s-page-vp") as HTMLElement | null)?.focus({ preventScroll: true });
     };
     window.addEventListener("keydown", onKey, { capture: true });
-    // On load the page holds focus, as the document did: the first Tab goes to the first control (the skip
-    // link), not to the scroller itself (Base UI makes an overflowing viewport a stop, and it is the outermost
-    // box). Only on load and only from <body>, so a later starting point (a skip link's target) is left alone.
-    // Base UI sets the stop once it has measured the overflow, so wait for it.
-    let frame = 0,
-      tries = 0;
-    const settle = () => {
-      const vp = document.querySelector<HTMLElement>(".s-page-vp");
-      const idle = document.activeElement === document.body || !document.activeElement;
-      if (!vp || !idle) return;
-      if (vp.tabIndex >= 0) vp.focus({ preventScroll: true });
-      else if (++tries < 30) frame = requestAnimationFrame(settle);
-    };
-    frame = requestAnimationFrame(settle);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("keydown", onKey, { capture: true });
-    };
+    // Nothing takes focus on load. Focusing the scroller from script before any input counts as keyboard focus,
+    // so it drew its focus ring around the whole page until the first click. The handler above already moves
+    // focus to it at the first scrolling key, which is the only thing the load-time focus was for.
+    return () => window.removeEventListener("keydown", onKey, { capture: true });
   }, []);
   return (
     <ScrollArea

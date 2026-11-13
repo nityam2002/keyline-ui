@@ -15,8 +15,22 @@ export default {
     "@keyline-ui/kbd",
     "@keyline-ui/dialog",
     "@keyline-ui/keyline-render",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/keyline-scope",
   ],
-  version: "1.0.0",
-  updated: "2026-11-13",
-  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+  version: "1.0.2",
+  updated: "2026-11-14",
+  changelog: [
+    {
+      version: "1.0.2",
+      date: "2026-11-14",
+      note: "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list.",
+    },
+    {
+      version: "1.0.1",
+      date: "2026-11-13",
+      note: "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
+    },
+    { version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." },
+  ],
 } satisfies KeylineItem;

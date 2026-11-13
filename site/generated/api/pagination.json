@@ -6,7 +6,7 @@
   "parts": [
     {
       "name": "Pagination",
-      "description": "Page numbers as cells in one frame: ┌───┬───┬───┬───┬━━━┳───┬───┬────┬───┐ │ ‹ │ 1 │ … │ 4 │ 5 ┃ 6 │ … │ 20 │ › │ the current page is the cobalt cell └───┴───┴───┴───┴━━━┻───┴───┴────┴───┘ - The window keeps a constant number of cells (first, last, the current page and its siblings, and gaps), and number cells are as wide as the largest page number: the frame never changes width while you page, so Previous and Next stay under the pointer. - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing. - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next. - Previous and Next mirror in RTL; they are out of service (hatched) at the ends. - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).",
+      "description": "Page numbers as cells in one frame: - The window keeps a constant number of cells (first, last, the current page and its siblings, and gaps), and number cells are as wide as the largest page number: the frame never changes width while you page, so Previous and Next stay under the pointer. - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing. - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next. - Previous and Next mirror in RTL; they are out of service (hatched) at the ends. - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).",
       "props": [
         {
           "name": "getHref",

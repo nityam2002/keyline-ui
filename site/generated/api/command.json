@@ -15,7 +15,7 @@
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -77,7 +77,7 @@
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -116,18 +116,18 @@
     },
     {
       "name": "CommandItem",
-      "description": "One result: its digit cell (the counter; · after the ninth), the label, and its meta and shortcut. The cursor is the inverse row; running it floods the row yellow (the flood owns the fill while it is on).",
+      "description": "One result: its digit cell (the counter; · after the ninth), the label, and its meta and shortcut. The cursor is the inverse row; running it floods the row yellow (the flood owns the fill while it is on). The flood is the moment of running, not a state: a result that keeps the menu open (a theme switch) lets it go again.",
       "props": [
         {
           "name": "meta",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
         },
         {
           "name": "shortcut",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""

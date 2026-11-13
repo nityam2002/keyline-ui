@@ -48,10 +48,15 @@
     ]
   },
   "app-shell": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "updated": "2026-11-13",
-    "hash": "sha256-f58e0b1e6d9de3f7308023663bc629cc620d2084114db0c3817f7e9afe3d02f1",
+    "hash": "sha256-acda162948b451a3412408a05acb04bed7d08936287e439864fe8a32ceea9620",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-11-13",
+        "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",
@@ -516,10 +521,20 @@
     ]
   },
   "command": {
-    "version": "1.0.0",
-    "updated": "2026-11-13",
-    "hash": "sha256-0ef101049cbedd07474118b0d9d9f4ec4b6cea0ea0088ccce3e2005501fb290d",
+    "version": "1.0.2",
+    "updated": "2026-11-14",
+    "hash": "sha256-c7f90caa76d03aafa51f3aa8ea7e70fbe1901bf93db562f23080355085064f81",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-11-14",
+        "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list."
+      },
+      {
+        "version": "1.0.1",
+        "date": "2026-11-13",
+        "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",
@@ -1476,10 +1491,15 @@
     ]
   },
   "questionnaire": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "updated": "2026-11-13",
-    "hash": "sha256-8eb369ebb9ed71cf0a0437d3af551e11682d133cdf9f422cd25715eece577715",
+    "hash": "sha256-0c44703d0ab362d896e21a4de9e03d0eb8193183a5d9d02142ce468292b7f1bd",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-13",
+        "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",
@@ -1944,10 +1964,15 @@
     ]
   },
   "table": {
-    "version": "1.0.0",
-    "updated": "2026-11-13",
-    "hash": "sha256-af34ecfd10f8dacaa43cb06ea553e372ab8182b123a9dc6a905038fa4e94ee46",
+    "version": "1.0.1",
+    "updated": "2026-11-14",
+    "hash": "sha256-bac8c3bc614e65cee3fbb5bf966dc215e7af2cc5b0d875675160e155302b375f",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-14",
+        "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",

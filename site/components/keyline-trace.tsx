@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { ACTION_BUTTONS } from "@site/lib/action-buttons";
 import { Progress } from "@/components/keyline/ui/progress";
 import { createTracer, f64, isIndex, nth, splineFlat, TENTHS, type Bump } from "@site/lib/contours";
-import { Mark } from "@site/components/land";
 import { PrimaryLink } from "@site/components/primary-link";
 import { useSiteCommand } from "@site/components/site-command";
 
@@ -200,7 +199,6 @@ function readRecord(): Record {
 const secs = (ms: number) => (ms / 1000).toFixed(1);
 
 export function KeylineTrace() {
-  const path = usePathname();
   const openSearch = useSiteCommand();
   const boardRef = React.useRef<HTMLDivElement>(null);
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -237,7 +235,7 @@ export function KeylineTrace() {
       const sig = `${Math.round(rc.width)}x${Math.round(rc.height)}`;
       if (sig === last) return;
       last = sig;
-      const title = el.parentElement?.querySelector(".s-title")?.getBoundingClientRect();
+      const title = el.parentElement?.querySelector(".s-kt-head")?.getBoundingClientRect();
       const next = boxFor(rc.width, rc.height);
       topSafe.current = title ? Math.max(0, title.bottom - rc.top + 28) * next.upp : 0;
       setBox(next);
@@ -461,7 +459,8 @@ export function KeylineTrace() {
               {goal && (
                 <g className="s-kt-goal" transform={`translate(${goal.x} ${goal.y}) scale(${u})`}>
                   <rect x={-9} y={-9} width={18} height={18} />
-                  <text x={16} y={4}>
+                  {/* the label reads to the right, unless the board's edge would cut it: then to the left */}
+                  <text {...(box && goal.x + 84 * u > box.x + box.w ? { x: -16, textAnchor: "end" } : { x: 16 })} y={4}>
                     Sheet 1
                   </text>
                 </g>
@@ -475,7 +474,7 @@ export function KeylineTrace() {
                     <rect className="s-mark-plate" x="0" y="0" width="14" height="14" />
                     <path className="s-mark-frame" d="M3 3h19v19H3zM6 6v13h13V6z" fillRule="evenodd" />
                   </g>
-                  <text x={-18} y={4} textAnchor="end">
+                  <text {...(box && start.x - 52 * u < box.x ? { x: 18 } : { x: -18, textAnchor: "end" })} y={4}>
                     404
                   </text>
                 </g>
@@ -521,16 +520,6 @@ export function KeylineTrace() {
       </div>
 
       <footer className="s-block s-kt-block">
-        <div className="s-tb-id">
-          <Link href="/" className="s-mark text-kl-ink">
-            <Mark />
-            Keyline UI
-          </Link>
-          <p className="m-0 min-w-0 text-[14px]/[1.45] text-kl-ink-2">
-            Nothing lives at <code className="font-kl-mono text-[13px] break-all text-kl-ink">{path}</code>. Search the
-            docs, or go back to the homepage.
-          </p>
-        </div>
         <div className="s-kt-status">
           <Progress
             className="**:data-[slot=progress-label]:font-bold"
@@ -547,7 +536,7 @@ export function KeylineTrace() {
           />
         </div>
         <div className={cn("s-tb-act s-kt-act **:data-[slot=button]:justify-center", ACTION_BUTTONS)}>
-          <PrimaryLink href="/">Back to the homepage</PrimaryLink>
+          <PrimaryLink href="/">Homepage</PrimaryLink>
           <Button onClick={openSearch} className="items-center gap-2">
             <Search size={16} aria-hidden="true" />
             Search
@@ -555,5 +544,15 @@ export function KeylineTrace() {
         </div>
       </footer>
     </>
+  );
+}
+
+/** The 404's line under its heading: the address that led nowhere, in the sheet's mono (it is data, not voice). */
+export function LostPath() {
+  const path = usePathname();
+  return (
+    <p className="s-kt-path">
+      Nothing lives at <code>{path}</code>
+    </p>
   );
 }

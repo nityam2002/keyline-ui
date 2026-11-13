@@ -23,9 +23,10 @@ export function CopyButton({ text, label, after }: { text: string; label: string
   };
   return (
     <>
-      {/* Copy floats over the code's top end; the hint is its sibling, not its child, so it is placed
+      {/* Copy floats over the code's top end (in an example's Code panel, every block's Copy keeps the inset the tall
+          source block needs for its scrollbar, so the panel's Copy buttons share one edge); the hint is its sibling, not its child, so it is placed
           against the whole code block (below it, from its start edge), not against this small box */}
-      <div className="absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[single]/code:inset-bs-[var(--s-cb-top,50%)] group-data-[single]/code:-translate-y-1/2 group-data-[tall]/code:end-3 rtl:bg-linear-to-l">
+      <div className="absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[single]/code:inset-bs-[var(--s-cb-top,50%)] group-data-[single]/code:-translate-y-1/2 group-data-[tall]/code:end-3 in-[.s-demo-code]:end-3 rtl:bg-linear-to-l">
         <Button size="compact" signal={state} onClick={copy} aria-label={`Copy ${label}`}>
           {state === "done" ? "Copied" : "Copy"}
         </Button>

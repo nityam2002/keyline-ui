@@ -114,7 +114,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -149,7 +149,7 @@
         },
         {
           "name": "placeholder",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "\"Choose a date\"",
           "required": false,
           "description": ""
@@ -250,7 +250,7 @@
       "props": [
         {
           "name": "placeholder",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Shown, in the placeholder's ink, while there are no children."
@@ -259,7 +259,7 @@
     },
     {
       "name": "DateTimePicker",
-      "description": "A day and a time of day in one field: the DatePicker's trigger and docked calendar, with a time row (TimeField as a cell, and Done) under the calendar. Pickup ┌────┬───────────────────────────────┐ │ ▦ │ Thu 12 Nov 2026, 14:30 CET │ trigger: affix · date and time ├────┴───────────────────────────────┤ │ calendar … │ ├──────┬─────────────────────┬───────┤ │ Time │ 14 : 30 CET │ Done │ time row └──────┴─────────────────────┴───────┘ - Choosing a day keeps the popup open (the time is still to set) and keeps the time already chosen (or `defaultTime`). Changes apply as they are made; Done, Escape or a press outside closes, and focus returns to the trigger. - Keyboard: the calendar's grid keys; Tab moves grid → presets → hours → minutes (→ period) → Done. Delete or Backspace on the closed trigger clears the value (unless `required`). - A time typed before any day is held and given to the day chosen next. A part cleared while editing leaves the last complete time in place. - Field: Base UI Field.Root; `name` submits local \"YYYY-MM-DDTHH:MM\"; `required` (\"Choose a date and time.\"), `validate`, `invalid`, `error` and the Form's server errors show under the frame, with the ! cell in the trigger.",
+      "description": "A day and a time of day in one field: the DatePicker's trigger and docked calendar, with a time row (TimeField as a cell, and Done) under the calendar. Pickup - Choosing a day keeps the popup open (the time is still to set) and keeps the time already chosen (or `defaultTime`). Changes apply as they are made; Done, Escape or a press outside closes, and focus returns to the trigger. - Keyboard: the calendar's grid keys; Tab moves grid → presets → hours → minutes (→ period) → Done. Delete or Backspace on the closed trigger clears the value (unless `required`). - A time typed before any day is held and given to the day chosen next. A part cleared while editing leaves the last complete time in place. - Field: Base UI Field.Root; `name` submits local \"YYYY-MM-DDTHH:MM\"; `required` (\"Choose a date and time.\"), `validate`, `invalid`, `error` and the Form's server errors show under the frame, with the ! cell in the trigger.",
       "props": [
         {
           "name": "className",
@@ -333,7 +333,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -389,7 +389,7 @@
         },
         {
           "name": "placeholder",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "\"Choose a date and time\"",
           "required": false,
           "description": ""
@@ -459,7 +459,7 @@
         },
         {
           "name": "zone",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Zone affix printed in the time cell and the trigger (\"CET\"). Values are local times; this is a label."

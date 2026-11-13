@@ -279,16 +279,17 @@ export default function CompositionPage() {
       <h2 id="sizing">Sizing</h2>
       <p>Sizing is yours; the narrow layout is the component&apos;s.</p>
       <ul>
-        <li>Give parts widths with your own classes. They describe the wide layout.</li>
         <li>
-          Components that rearrange when narrow measure themselves, not the viewport. A table frame narrower than 560px
-          stacks its toolbar and bulk bar; a <code>Form</code> with <code>orientation=&quot;responsive&quot;</code> goes
-          horizontal from 560px of its own width.
+          <b>Width.</b> Set it with your own classes, for the wide layout.
         </li>
         <li>
-          Size a scroll region&apos;s root yourself (a height or max-height on{" "}
-          <Link href="/docs/components/scroll-area">Scroll Area</Link>). Don&apos;t wrap Select, Multiselect, Menu or
-          Command lists in one: they keep their own native scroller.
+          <b>Narrow layout.</b> Components measure their own width, not the viewport. Below 560px a table stacks its
+          toolbar and bulk bar; a <code>Form</code> with <code>orientation=&quot;responsive&quot;</code> turns
+          horizontal above it.
+        </li>
+        <li>
+          <b>Scrolling.</b> Give a <Link href="/docs/components/scroll-area">Scroll Area</Link> a height or max-height.
+          Select, Multiselect, Menu and Command lists scroll on their own; don&apos;t wrap them in one.
         </li>
       </ul>
 

@@ -6,32 +6,32 @@
   "parts": [
     {
       "name": "Empty",
-      "description": "A place with nothing in it, said plainly: ┌────────┬──────────────────────────────────────┬──────────────┐ │ 0 │ No shipments match these filters │ [Clear all] │ │RESULTS │ Status is Delayed · Carrier is DHL │ │ └────────┴──────────────────────────────────────┴──────────────┘ One frame of three cells: the count (the Count voice: how many there are, which is the fact), the message, and the way out. Below 520px of its own width the actions drop to a row of cells under the message, and the count cell shrinks to a band. No illustration: the number is the picture.",
+      "description": "A place with nothing in it, said plainly: One frame of three cells: the count (the Count voice: how many there are, which is the fact), the message, and the way out. Below 520px of its own width the actions drop to a row of cells under the message, and the count cell shrinks to a band. No illustration: the number is the picture.",
       "props": [
         {
           "name": "actions",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Recovery or first actions: Buttons. The first is the way out (clear filters, retry, create)."
         },
         {
           "name": "code",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The Code word under the figure. Defaults to RESULTS, ERROR or NEW."
         },
         {
           "name": "count",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The figure in the count cell. Defaults to 0 for empty, \"!\" for error; start shows a glyph."
         },
         {
           "name": "description",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -66,7 +66,7 @@
         },
         {
           "name": "title",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""

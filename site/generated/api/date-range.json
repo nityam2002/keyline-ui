@@ -70,7 +70,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -201,7 +201,7 @@
       "props": [
         {
           "name": "placeholder",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Shown, in the placeholder's ink, while there are no children."

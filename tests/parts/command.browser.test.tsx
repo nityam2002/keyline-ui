@@ -162,6 +162,25 @@ describe("command: keyboard", () => {
     await expect.poll(popup).toBe(null);
   });
 
+  it("running a result that keeps the menu open floods its row, then lets the flood go", async () => {
+    await render(
+      <Command label="Theme">
+        <CommandList>
+          <CommandItem value="light">Light theme</CommandItem>
+          <CommandItem value="dark">Dark theme</CommandItem>
+        </CommandList>
+      </Command>,
+    );
+    const [light, dark] = [...document.querySelectorAll<HTMLElement>('[data-slot="command-item"]')];
+    await userEvent.click(light!);
+    await expect.poll(() => light!.hasAttribute("data-kl-on")).toBe(true);
+    await expect.poll(() => light!.hasAttribute("data-kl-on"), { timeout: 2000 }).toBe(false);
+    await userEvent.click(dark!);
+    await expect.poll(() => dark!.hasAttribute("data-kl-on")).toBe(true);
+    expect(light!.hasAttribute("data-kl-on")).toBe(false);
+    await expect.poll(() => dark!.hasAttribute("data-kl-on"), { timeout: 2000 }).toBe(false);
+  });
+
   it("Alt with a digit runs the visible result with that number", async () => {
     const runs: string[] = [];
     await render(<Example onRun={(w) => runs.push(w)} />);

@@ -6,7 +6,7 @@
   "parts": [
     {
       "name": "Toolbar",
-      "description": "A row of commands that is ONE Tab stop (Base UI Toolbar): arrow keys move between items and wrap at the ends (`loopFocus`, default true). Home and End are left to the focused item, as Base UI 1.9 does (the APG lists them as optional for toolbars), so a text input cell keeps them. Every item is a cell of one frame. ┌──────┬──────┲━━━━┳━━━━┳━━━━┱─────────────────┬──────────┬────┐ │ Undo │ Redo ┃ B │ I │ U ┃ │ Insert ▾ │ ⋯ │ └──────┴──────┺━━━━┻━━━━┻━━━━┹─────────────────┴──────────┴────┘ items share 1px seams · a group meets its neighbours on a 2px keyline · a spacer is an empty cell - Give it `aria-label` (or `aria-labelledby`): a toolbar is a named landmark of controls. - Groups (ToolbarGroup, ToolbarToggleGroup) are units: their outer edges are control weight (2px), so a group reads as one control inside the row without a gap (C1). ToolbarSeparator draws the same 2px keyline between ungrouped items and is announced as a separator. - Disabled items stay focusable (Base UI's default), so a keyboard user still finds them and hears why. - Narrow: a horizontal toolbar scrolls inside its frame and fades the edge where items are hidden (scroll edges); focus scrolls the focused item into view. With overflow=\"menu\" the items that don't fit move into a \"More\" menu instead (the primary item and text inputs never move), in either orientation. Items are found by their data-slot, so an item wrapped in a Tooltip, or rendered by a component of yours, moves like any other; a folded item stays mounted (hidden), so its state stays. - Arrow keys follow the DOM `dir` (an RTL subtree reverses Left/Right), not only a DirectionProvider.",
+      "description": "A row of commands that is ONE Tab stop (Base UI Toolbar): arrow keys move between items and wrap at the ends (`loopFocus`, default true). Home and End are left to the focused item, as Base UI 1.9 does (the APG lists them as optional for toolbars), so a text input cell keeps them. Every item is a cell of one frame. items share 1px seams · a group meets its neighbours on a 2px keyline · a spacer is an empty cell - Give it `aria-label` (or `aria-labelledby`): a toolbar is a named landmark of controls. - Groups (ToolbarGroup, ToolbarToggleGroup) are units: their outer edges are control weight (2px), so a group reads as one control inside the row without a gap (C1). ToolbarSeparator draws the same 2px keyline between ungrouped items and is announced as a separator. - Disabled items stay focusable (Base UI's default), so a keyboard user still finds them and hears why. - Narrow: a horizontal toolbar scrolls inside its frame and fades the edge where items are hidden (scroll edges); focus scrolls the focused item into view. With overflow=\"menu\" the items that don't fit move into a \"More\" menu instead (the primary item and text inputs never move), in either orientation. Items are found by their data-slot, so an item wrapped in a Tooltip, or rendered by a component of yours, moves like any other; a folded item stays mounted (hidden), so its state stays. - Arrow keys follow the DOM `dir` (an RTL subtree reverses Left/Right), not only a DirectionProvider.",
       "props": [
         {
           "name": "layout",
@@ -44,7 +44,7 @@
       "props": [
         {
           "name": "affix",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "A trailing cell inside the item: a count or a shortcut (mono when it is a <kbd> or a code)."
@@ -58,7 +58,7 @@
         },
         {
           "name": "overflowLabel",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The item's name as a row of the overflow menu, when its text is not enough (a glyph item uses aria-label)."
@@ -105,7 +105,7 @@
         },
         {
           "name": "glyph",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "A glyph leading the cell."
@@ -125,7 +125,7 @@
       "props": [
         {
           "name": "overflowLabel",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -158,7 +158,7 @@
       "props": [
         {
           "name": "affix",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "A trailing cell before the caret: a count (\"7/7\") or a shortcut."
@@ -172,7 +172,7 @@
         },
         {
           "name": "overflowLabel",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -209,7 +209,7 @@
       "props": [
         {
           "name": "affix",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -230,7 +230,7 @@
         },
         {
           "name": "overflowLabel",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The toggle's name as a checkbox row of the overflow menu, when its text is not enough."

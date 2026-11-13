@@ -10,14 +10,14 @@
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The parts, composed: ProgressLabel, ProgressValue, ProgressTrack with ProgressIndicator, ProgressDetail."
         },
         {
           "name": "detail",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "A line under the rail: amounts, time left, the failure's reason and what to do."
@@ -45,7 +45,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "What is in progress (\"Uploading manifest.pdf\"). Visible unless `hideLabel`."

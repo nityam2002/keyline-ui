@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "date": "2026-11-14",
+      "entries": [
+        {
+          "item": "command",
+          "version": "1.0.2",
+          "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list.",
+          "breaking": false
+        },
+        {
+          "item": "table",
+          "version": "1.0.1",
+          "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table.",
+          "breaking": false
+        }
+      ]
+    },
+    {
       "date": "2026-11-13",
       "entries": [
         {
@@ -25,6 +42,12 @@
           "item": "alert-dialog-remove",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "app-shell",
+          "version": "1.1.0",
+          "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press.",
           "breaking": false
         },
         {
@@ -259,6 +282,12 @@
           "item": "combobox-directory",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "command",
+          "version": "1.0.1",
+          "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
           "breaking": false
         },
         {
@@ -743,6 +772,12 @@
         },
         {
           "item": "questionnaire",
+          "version": "1.0.1",
+          "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question.",
+          "breaking": false
+        },
+        {
+          "item": "questionnaire",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
           "breaking": false
@@ -1180,6 +1215,13 @@
     "app-shell": [
       {
         "item": "app-shell",
+        "version": "1.1.0",
+        "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
+      {
+        "item": "app-shell",
         "version": "1.0.0",
         "note": "First release: the 1.0.0 baseline.",
         "breaking": false,
@@ -1529,6 +1571,20 @@
       }
     ],
     "command": [
+      {
+        "item": "command",
+        "version": "1.0.2",
+        "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list.",
+        "breaking": false,
+        "date": "2026-11-14"
+      },
+      {
+        "item": "command",
+        "version": "1.0.1",
+        "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
       {
         "item": "command",
         "version": "1.0.0",
@@ -2251,6 +2307,13 @@
     "questionnaire": [
       {
         "item": "questionnaire",
+        "version": "1.0.1",
+        "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
+      {
+        "item": "questionnaire",
         "version": "1.0.0",
         "note": "First release: the 1.0.0 baseline.",
         "breaking": false,
@@ -2600,6 +2663,13 @@
       }
     ],
     "table": [
+      {
+        "item": "table",
+        "version": "1.0.1",
+        "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table.",
+        "breaking": false,
+        "date": "2026-11-14"
+      },
       {
         "item": "table",
         "version": "1.0.0",

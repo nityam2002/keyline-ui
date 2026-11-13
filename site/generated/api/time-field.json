@@ -6,7 +6,7 @@
   "parts": [
     {
       "name": "TimeField",
-      "description": "A time of day in one field frame: two spin-button cells (three for a 12-hour clock) and a zone affix. Pickup ┌──────┬───┬──────┬─────┐ ┌──────┬───┬──────┬────┬─────┐ │ 14 │ : │ 30 │ CET │ 24-hour │ 02 │ : │ 30 │ PM │ CET │ 12-hour └──────┴───┴──────┴─────┘ └──────┴───┴──────┴────┴─────┘ - Each part is an input with role=\"spinbutton\" (aria-valuenow/min/max/text), so it is announced as a spin button with its value, not as a text box. Tab moves through the parts in reading order. - Arrow Up/Down step and WRAP (23 → 00, 12 → 01, 59 → 00): a clock has no end. Page Up/Down move hours by 6 (3 on a 12-hour clock) and minutes by 10. Home/End go to the first and last value. - Typing: digits only. Hours advance after two digits, or one digit that cannot start a two-digit hour (\"7\" is 07; on a 12-hour clock \"2\" is 02). On a 12-hour clock minutes advance to the period the same way. The period takes \"a\" or \"p\" (or a letter only one of the locale's names has), and the arrows switch it. Backspace in an empty part returns to the one before. Blur pads (\"7\" → \"07\"). - The value is always 24-hour \"HH:MM\", so changing `hourCycle` never changes what is stored or submitted. On a 12-hour clock the value is complete only once the period is chosen. - Field: the frame, focus edge, ! cell, hatch and messages are Field's. The value reaches Base UI Form (and FormData) through a hidden Field control named `name`; `required` is checked there (\"Enter a time\"). - RTL: the ! cell and zone follow the page; the time itself stays in clock order (dir=\"ltr\"), with the period where the locale puts it.",
+      "description": "A time of day in one field frame: two spin-button cells (three for a 12-hour clock) and a zone affix. Pickup - Each part is an input with role=\"spinbutton\" (aria-valuenow/min/max/text), so it is announced as a spin button with its value, not as a text box. Tab moves through the parts in reading order. - Arrow Up/Down step and WRAP (23 → 00, 12 → 01, 59 → 00): a clock has no end. Page Up/Down move hours by 6 (3 on a 12-hour clock) and minutes by 10. Home/End go to the first and last value. - Typing: digits only. Hours advance after two digits, or one digit that cannot start a two-digit hour (\"7\" is 07; on a 12-hour clock \"2\" is 02). On a 12-hour clock minutes advance to the period the same way. The period takes \"a\" or \"p\" (or a letter only one of the locale's names has), and the arrows switch it. Backspace in an empty part returns to the one before. Blur pads (\"7\" → \"07\"). - The value is always 24-hour \"HH:MM\", so changing `hourCycle` never changes what is stored or submitted. On a 12-hour clock the value is complete only once the period is chosen. - Field: the frame, focus edge, ! cell, hatch and messages are Field's. The value reaches Base UI Form (and FormData) through a hidden Field control named `name`; `required` is checked there (\"Enter a time\"). - RTL: the ! cell and zone follow the page; the time itself stays in clock order (dir=\"ltr\"), with the period where the locale puts it.",
       "props": [
         {
           "name": "className",
@@ -52,7 +52,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": "Visible label (visually hidden with layout=\"cell\"). Names the group; each part is named too."
@@ -150,7 +150,7 @@
         },
         {
           "name": "zone",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Trailing affix cell in the Code voice: a time zone (\"CET\"), \"local\"."

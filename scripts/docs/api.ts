@@ -36,6 +36,18 @@ export type ApiPage = {
 
 const uniqSorted = (xs: Iterable<string>) => [...new Set(xs)].toSorted();
 const oneLine = (s: string) => s.replace(/\s+/g, " ").trim();
+// A doc comment's prose without its drawings: lines drawn in box characters are a diagram for the source reader,
+// and flattened into a paragraph they are one unbreakable run that widens the page.
+const prose = (s: string) =>
+  oneLine(
+    s
+      .split("\n")
+      .filter((l) => !/[\u2500-\u257f]/.test(l))
+      .join("\n"),
+  );
+// ReactNode loses its alias once null and undefined are stripped; print it by its name again
+const REACT_NODE =
+  "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>";
 
 function program(files: string[]) {
   const cfg = ts.readConfigFile(ROOT + "tsconfig.app.json", (p) => ts.sys.readFile(p));
@@ -80,7 +92,7 @@ function partsOf(checker: ts.TypeChecker, sf: ts.SourceFile): ApiPart[] {
     if (!sig || !param) {
       parts.push({
         name: exp.name,
-        description: oneLine(ts.displayPartsToString(sym.getDocumentationComment(checker))),
+        description: prose(ts.displayPartsToString(sym.getDocumentationComment(checker))),
         props: [],
       });
       continue;
@@ -104,15 +116,20 @@ function partsOf(checker: ts.TypeChecker, sf: ts.SourceFile): ApiPart[] {
       );
       props.push({
         name: p.name,
-        type: type.replace(/'/g, '"'),
+        type: type
+          .replace(/'/g, '"')
+          .replaceAll(REACT_NODE, "ReactNode")
+          // React's default element type parameter is noise in a table
+          .replaceAll(", string | JSXElementConstructor<any>>", ">")
+          .replaceAll("ReactElement<unknown>", "ReactElement"),
         default: defaults.get(p.name) ?? "",
         required: !(p.flags & ts.SymbolFlags.Optional),
-        description: oneLine(ts.displayPartsToString(p.getDocumentationComment(checker))),
+        description: prose(ts.displayPartsToString(p.getDocumentationComment(checker))),
       });
     }
     parts.push({
       name: exp.name,
-      description: oneLine(ts.displayPartsToString(sym.getDocumentationComment(checker))),
+      description: prose(ts.displayPartsToString(sym.getDocumentationComment(checker))),
       props: props.toSorted((a, b) => (a.name < b.name ? -1 : 1)),
     });
   }

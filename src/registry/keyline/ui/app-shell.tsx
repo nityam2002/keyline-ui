@@ -7,6 +7,7 @@ import { useRender } from "@base-ui/react/use-render";
 
 import { cn } from "@/lib/utils";
 import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
+import { tokenMs } from "../lib/keyline-motion";
 import { useMergedRef } from "../lib/keyline-scope";
 import { NavExpandContext, NavRailContext } from "./nav";
 import { Sheet, SheetPopup } from "./sheet";
@@ -519,20 +520,82 @@ function AppShellNav({
   };
   const column = useRender({ defaultTagName: "div", render, ref: setRef, state, props: mergeProps<"div">(props, own) });
   if (!narrow) return column;
-  // choosing a place in the narrow sheet closes it: the place is what the user wanted to see
-  const closeOnChoose = (e: React.MouseEvent) => {
-    // a nested item's disclosure (aria-expanded) opens its list in place: it is not a place
-    if ((e.target as Element).closest("[data-kl-item]:not([aria-expanded])")) setNavSheet(false);
+  return (
+    <NavSheet open={navSheet} setOpen={setNavSheet} label={navLabel} container={container}>
+      {children}
+    </NavSheet>
+  );
+}
+
+/** The scrollable box between `el` and `stop` that holds `el`, if any. */
+function scrollerOf(el: HTMLElement, stop: HTMLElement) {
+  for (let n = el.parentElement; n && n !== stop; n = n.parentElement) {
+    if (n.scrollHeight > n.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(n).overflowY)) return n;
+  }
+  return null;
+}
+
+/**
+ * The narrow sidebar: a start sheet.
+ * - It opens on your place: the current item (or the closed parent holding it) is centred in the list and takes
+ *   focus, so a long index never opens at its top while you are deep in it.
+ * - Choosing a place closes it once the choice has landed: the band arrives on the item (--kl-stretch-trail, 0 under
+ *   reduced motion), then the sheet folds. Closing on the press itself folded the sheet over a band still in flight.
+ */
+function NavSheet({
+  open,
+  setOpen,
+  label,
+  container,
+  children,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  label: string;
+  container: ShellContextValue["container"];
+  children: React.ReactNode;
+}) {
+  const popRef = React.useRef<HTMLDivElement>(null);
+  const closing = React.useRef(0);
+  React.useEffect(() => () => window.clearTimeout(closing.current), []);
+  const onOpenChange = (o: boolean) => {
+    window.clearTimeout(closing.current);
+    setOpen(o);
+  };
+  const initialFocus = React.useCallback(() => {
+    const pop = popRef.current;
+    const here = pop?.querySelector<HTMLElement>(
+      "[data-kl-item][aria-current='page'], [data-kl-item][aria-current='true'], [data-kl-item][data-kl-holds]",
+    );
+    if (!pop || !here) return true;
+    const box = scrollerOf(here, pop);
+    if (box) {
+      const b = box.getBoundingClientRect();
+      const r = here.getBoundingClientRect();
+      box.scrollTop += r.top - b.top - (b.height - r.height) / 2;
+    }
+    return here;
+  }, []);
+  // a nested item's disclosure (aria-expanded) opens its list in place, and a disabled item goes nowhere: neither is a place
+  const closeOnChoose = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!(e.target as Element).closest("[data-kl-item]:not([aria-expanded], [aria-disabled='true'], :disabled)"))
+      return;
+    const hold = tokenMs(e.currentTarget, "--kl-stretch-trail", 220);
+    window.clearTimeout(closing.current);
+    if (hold <= 0) setOpen(false);
+    else closing.current = window.setTimeout(() => setOpen(false), hold);
   };
   return (
-    <Sheet open={navSheet} onOpenChange={setNavSheet}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetPopup
+        ref={popRef}
         side="start"
         size={300}
         container={container}
-        aria-label={navLabel}
+        aria-label={label}
         data-kl-shell-sheet="nav"
         className={cn(sheet, navFill)}
+        initialFocus={initialFocus}
         onClick={closeOnChoose}
       >
         {children}

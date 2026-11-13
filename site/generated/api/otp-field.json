@@ -59,7 +59,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": "Visible label (visually hidden with layout=\"cell\"); it names the first slot, and the rest say \"Character n of N\"."
