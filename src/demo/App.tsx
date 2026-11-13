@@ -34,14 +34,15 @@ import {
   TableBulkBar,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
   TableIndexCell,
   TableExpandCell,
   TableDetail,
+  useDetailPresence,
   TableState,
   TablePager,
   Status,
@@ -666,6 +667,17 @@ function Group({
  * Full / Quiet / Off setting in the bar.
  * ------------------------------------------------------------------ */
 /** State owned by one demo, not the page: a click in one entry re-renders that entry, not all ~70. */
+/** A detail row holding its own presence: TableDetail takes the presence from its caller, so the row's fold
+ *  finishes before it unmounts. */
+function DemoDetail({ open, colSpan, children }: { open: boolean; colSpan: number; children: React.ReactNode }) {
+  const presence = useDetailPresence(open);
+  return (
+    <TableDetail presence={presence} colSpan={colSpan}>
+      {children}
+    </TableDetail>
+  );
+}
+
 function Local<T>({
   init,
   children,
@@ -1216,7 +1228,7 @@ function Specimen() {
                   </TableBulkBar>
                   <TableScroll>
                     <Table>
-                      <TableHead>
+                      <TableHeader>
                         <tr>
                           <TableIndexCell
                             header
@@ -1226,14 +1238,14 @@ function Specimen() {
                             label="Select all"
                           />
                           <TableExpandCell header />
-                          <TableHeaderCell>ID</TableHeaderCell>
-                          <TableHeaderCell>Destination</TableHeaderCell>
-                          <TableHeaderCell>Status</TableHeaderCell>
-                          <TableHeaderCell align="end">
+                          <TableHead>ID</TableHead>
+                          <TableHead>Destination</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead align="end">
                             Weight <span className="kl-code">kg</span>
-                          </TableHeaderCell>
+                          </TableHead>
                         </tr>
-                      </TableHead>
+                      </TableHeader>
                       <TableBody>
                         {[
                           ["SH-20481", "Hamburg, DE", "normal", "In transit", "1,240.5"],
@@ -1261,16 +1273,16 @@ function Specimen() {
                                 onToggle={() => setOpen(open === i ? null : i)}
                                 label={`Legs for ${id}`}
                               />
-                              <TableCell className="kl-id">{id}</TableCell>
+                              <TableCell className="font-(family-name:--kl-font-mono) text-[13px]">{id}</TableCell>
                               <TableCell>{d}</TableCell>
                               <TableCell>
                                 <Status kind={k as "normal"}>{l}</Status>
                               </TableCell>
                               <TableCell align="end">{w}</TableCell>
                             </TableRow>
-                            <TableDetail open={open === i} colSpan={5}>
+                            <DemoDetail open={open === i} colSpan={5}>
                               <p className={ui.detail}>Venlo cross-dock → Metz → {d}. On time.</p>
-                            </TableDetail>
+                            </DemoDetail>
                           </React.Fragment>
                         ))}
                         <TableState
@@ -2002,18 +2014,18 @@ function MotionLab() {
                     label="Select"
                   />
                   <TableExpandCell expanded={open} onToggle={() => setOpen(!open)} label="Show legs" />
-                  <TableCell className="kl-id">SH-20483</TableCell>
+                  <TableCell className="font-(family-name:--kl-font-mono) text-[13px]">SH-20483</TableCell>
                   <TableCell>Lyon, FR</TableCell>
                 </TableRow>
-                <TableDetail open={open} colSpan={3}>
+                <DemoDetail open={open} colSpan={3}>
                   <p className={ui.detail}>
                     Picked up Rotterdam 09 Nov · Venlo 10 Nov · Metz 12 Nov · Lyon ETA 16 Nov.
                   </p>
-                </TableDetail>
+                </DemoDetail>
                 <TableRow>
                   <TableIndexCell checked={false} onCheckedChange={() => {}} code="02" label="Select" />
-                  <td className="kl-xp" />
-                  <TableCell className="kl-id">SH-20484</TableCell>
+                  <TableExpandCell />
+                  <TableCell className="font-(family-name:--kl-font-mono) text-[13px]">SH-20484</TableCell>
                   <TableCell>Kraków, PL</TableCell>
                 </TableRow>
               </TableBody>

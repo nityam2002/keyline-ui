@@ -49,7 +49,7 @@ test("key: specimen families answer the press before release", async ({ open, ok
       "[data-slot=checkbox]",
     ],
     [
-      "[data-slot=table] td.kl-ix .kl-ix-in:has([data-slot=checkbox][data-unchecked])",
+      "[data-slot=table] [data-slot=table-index-cell] label:has([data-slot=checkbox][data-unchecked])",
       "table index cell",
       "[data-slot=checkbox]",
     ],

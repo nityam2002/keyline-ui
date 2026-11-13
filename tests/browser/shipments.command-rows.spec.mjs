@@ -3,7 +3,7 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, rowItems, menuRows, focusName14 as focusedName, tabStops as stops, lastMenu } from "./lib/probes-c.mjs";
 
-const READY = ".kl-sx-table tbody tr.kl-tr";
+const READY = ".kl-sx-table tbody tr[data-slot=table-row]";
 
 async function setup(open, width = 1440, height = 1000) {
   const p = await open({ route: "app", width, height, ready: READY });
@@ -50,11 +50,11 @@ test("block command rows: named toolbars, status toggles, filter tokens", async 
   );
 
   // status toggles filter, and the token row
-  const before = await t.locator("tbody tr.kl-tr").count();
+  const before = await t.locator("tbody tr[data-slot=table-row]").count();
   await status.getByRole("button", { name: /Delayed/ }).click();
   const read = async () => ({
     pressed: await status.getByRole("button", { name: /Delayed/ }).getAttribute("aria-pressed"),
-    rows: await t.locator("tbody tr.kl-tr").evaluateAll((rs) => rs.map((r) => r.textContent)),
+    rows: await t.locator("tbody tr[data-slot=table-row]").evaluateAll((rs) => rs.map((r) => r.textContent)),
   });
   const { pressed, rows: rowsAfter } = await poll(
     read,
@@ -112,8 +112,8 @@ test("block command rows: bulk actions — primary menu, signal, Cancel confirma
   const { p, t, bulk } = await setup(open);
   const assign = bulk.getByRole("button", { name: /Assign carrier/ });
   // bulk actions: select, assign through the primary menu, signal
-  await t.locator("tbody tr.kl-tr").nth(0).getByRole("checkbox").click();
-  await t.locator("tbody tr.kl-tr").nth(1).getByRole("checkbox").click();
+  await t.locator("tbody tr[data-slot=table-row]").nth(0).getByRole("checkbox").click();
+  await t.locator("tbody tr[data-slot=table-row]").nth(1).getByRole("checkbox").click();
   const sel = async () => ({
     dis: await assign.getAttribute("aria-disabled"),
     affix: await assign
@@ -204,7 +204,7 @@ test("block command rows: sort levels in the View menu, Shift + click on a heade
   const sortOf = async () => ({
     st: await (await hs("Status")).getAttribute("aria-sort"),
     eta: await (await hs("ETA")).getAttribute("aria-sort"),
-    nums: await t.locator("thead .kl-sort-n").allTextContents(),
+    nums: await t.locator("thead [data-slot=table-sort-level]").allTextContents(),
   });
   const { st, eta, nums } = await poll(
     sortOf,
@@ -217,7 +217,7 @@ test("block command rows: sort levels in the View menu, Shift + click on a heade
     { st, eta, nums },
   );
   const ranks = await t
-    .locator("tbody tr.kl-tr")
+    .locator("tbody tr[data-slot=table-row]")
     .evaluateAll((rs) => rs.map((r) => r.querySelector("td:nth-child(6)")?.textContent.trim()));
   ok("block: rows follow the status urgency, ties by ETA", ranks.length > 3, ranks.slice(0, 6));
   await view.click();
@@ -244,7 +244,7 @@ test("block command rows: sort levels in the View menu, Shift + click on a heade
     .click();
   const clearOf = async () => ({
     sorted: await t.locator('thead th[aria-sort="ascending"], thead th[aria-sort="descending"]').count(),
-    nums: await t.locator("thead .kl-sort-n").count(),
+    nums: await t.locator("thead [data-slot=table-sort-level]").count(),
   });
   const c = await poll(clearOf, (x) => x.sorted === 0 && x.nums === 0, 2000);
   ok("block: Clear sort returns every header to none", c.sorted === 0 && c.nums === 0, null);
@@ -258,7 +258,7 @@ test("block command rows: sort levels in the View menu, Shift + click on a heade
     .locator("button")
     .click({ modifiers: ["Shift"] });
   const lv = await poll(
-    () => t.locator("thead .kl-sort-n").allTextContents(),
+    () => t.locator("thead [data-slot=table-sort-level]").allTextContents(),
     (x) => x.join(",") === "1,2",
     2000,
   );
@@ -308,14 +308,14 @@ test("block 420: command rows overflow into More", async ({ open, ok }) => {
     cnt.counts === 4 && cnt.keys === 0,
     cnt,
   );
-  const before = await t.locator("tbody tr.kl-tr").count();
+  const before = await t.locator("tbody tr[data-slot=table-row]").count();
   await p
     .locator("[role=menu]")
     .last()
     .getByRole("menuitemcheckbox", { name: /Delayed/ })
     .click();
   const after = await poll(
-    () => t.locator("tbody tr.kl-tr").evaluateAll((rs) => rs.map((r) => r.textContent)),
+    () => t.locator("tbody tr[data-slot=table-row]").evaluateAll((rs) => rs.map((r) => r.textContent)),
     (a) => a.length < before && a.every((x) => /Delayed/.test(x)),
     3000,
   );

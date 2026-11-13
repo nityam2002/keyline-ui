@@ -3,7 +3,7 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, near, box, stableBox } from "./lib/probes-c.mjs";
 
-const READY = ".kl-sx-table tbody tr.kl-tr";
+const READY = ".kl-sx-table tbody tr[data-slot=table-row]";
 
 test("block wide (1440): Inspector as the shell's aside, Notice when filtered out", async ({ open, ok }) => {
   const a = await open({ route: "app", width: 1440, height: 900, ready: READY });

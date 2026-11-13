@@ -8,16 +8,16 @@ const Q = "theme=light&cut=on&density=default&motion=normal&dir=ltr";
 
 async function app(open) {
   const p = await open({ route: "app", q: Q, width: 1440, height: 900, ready: ".kl-frame" });
-  const http = await trackHttp(p, ".kl-sx-table tbody tr.kl-tr");
-  const rows = p.locator(".kl-sx-table tbody tr.kl-tr");
+  const http = await trackHttp(p, ".kl-sx-table tbody tr[data-slot=table-row]");
+  const rows = p.locator(".kl-sx-table tbody tr[data-slot=table-row]");
   const carrier = (i) => rows.nth(i).locator("td").nth(4).textContent();
   const a = {
     p,
     rows,
     carriers: (n) => Promise.all(Array.from({ length: n }, (_, i) => carrier(i))),
-    count: () => p.locator(".kl-tf-bulk-n .kl-count").textContent(),
+    count: () => p.locator("[data-slot=table-bulk-count] .kl-count").textContent(),
     undo: () => p.locator("[data-slot=toast-action]", { hasText: "Undo" }).last(),
-    search: p.locator(".kl-tf-search input"),
+    search: p.locator("[data-slot=table-search] input"),
     selectedTab: () =>
       p
         .locator('.kl-sx-table [role=tab][aria-selected="true"], [role=tablist] [role=tab][aria-selected="true"]')
@@ -66,7 +66,7 @@ test("app: assign + Undo restores each row's own value", async ({ open, ok }) =>
   const c = await a.count();
   ok("three selected", same(c, "3"), { actual: c, expected: "3" });
   const before = await a.carriers(3);
-  await p.locator(".kl-tf-bulk button", { hasText: "Assign carrier" }).click();
+  await p.locator("[data-slot=table-bulk-bar] button", { hasText: "Assign carrier" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "DSV Road" }).click();
   await a.undo().waitFor();
   const assigned = await a.carriers(3);
@@ -87,7 +87,7 @@ test("app: async failure changes nothing", async ({ open, ok }) => {
   await p.locator(".kl-sx-table thead [data-slot=checkbox]").click();
   const n = Number(await a.count());
   const before = await a.carriers(6);
-  await p.locator(".kl-tf-bulk button", { hasText: "Assign carrier" }).click();
+  await p.locator("[data-slot=table-bulk-bar] button", { hasText: "Assign carrier" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Rhenus Road" }).click();
   await p.locator("[data-slot=toast-root]", { hasText: "Nothing was changed" }).waitFor();
   ok("more than the capacity was selected", n > 5, { n });
@@ -104,10 +104,10 @@ test("app: selection outside the results", async ({ open, ok }) => {
   for (const i of [0, 1, 2]) await rows.nth(i).locator("[data-slot=checkbox]").click();
   const id = (await rows.nth(0).locator("td").nth(2).textContent()).trim();
   await a.search.fill(id);
-  await until(async () => /not in these results/.test(await p.locator(".kl-tf-bulk").textContent()));
-  const scope = await p.locator(".kl-tf-bulk").textContent();
+  await until(async () => /not in these results/.test(await p.locator("[data-slot=table-bulk-bar]").textContent()));
+  const scope = await p.locator("[data-slot=table-bulk-bar]").textContent();
   ok("scope says how many are not in the results", /2 not in these results/.test(scope), scope);
-  await p.locator(".kl-tf-bulk button", { hasText: /Keep only/ }).click();
+  await p.locator("[data-slot=table-bulk-bar] button", { hasText: /Keep only/ }).click();
   const c = await a.count();
   ok("keep visible only leaves one", same(c, "1"), { actual: c, expected: "1" });
   noErrors(ok, a);
@@ -119,7 +119,7 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   const firstTab = () => p.locator("[role=tab]").first().textContent();
   const total = await firstTab();
   for (const i of [0, 1]) await rows.nth(i).locator("[data-slot=checkbox]").click();
-  await p.locator(".kl-tf-bulk [role=toolbar] button", { hasText: "Actions" }).click();
+  await p.locator("[data-slot=table-bulk-bar] [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
   await p.waitForSelector("[data-slot=alert-dialog-popup]");
   // the alert moves focus into itself once it has opened
@@ -130,7 +130,7 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   await p.keyboard.press("Escape");
   const c = await a.count();
   ok("Escape keeps the selection", same(c, "2"), { actual: c, expected: "2" });
-  await p.locator(".kl-tf-bulk [role=toolbar] button", { hasText: "Actions" }).click();
+  await p.locator("[data-slot=table-bulk-bar] [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
   await p.locator("[data-slot=alert-dialog-confirm]").click();
   const removed = await firstTab();
@@ -158,12 +158,12 @@ test("app: row expansion", async ({ open, ok }) => {
   const a = await app(open);
   const { p, rows } = a;
   const y0 = await rows.nth(0).boundingBox();
-  await rows.nth(0).locator(".kl-xp button").click();
-  await until(async () => (await rows.nth(0).locator(".kl-ix").getAttribute("rowspan")) === "2");
+  await rows.nth(0).locator("[data-slot=table-expand-cell] button").click();
+  await until(async () => (await rows.nth(0).locator("[data-slot=table-index-cell]").getAttribute("rowspan")) === "2");
   await idle(p).catch(() => {});
   const y1 = await rows.nth(0).boundingBox();
   ok("expanded row stays in place", Math.abs((y0?.y ?? 0) - (y1?.y ?? 0)) < 0.5, { y0: y0?.y, y1: y1?.y });
-  const span = await rows.nth(0).locator(".kl-ix").getAttribute("rowspan");
+  const span = await rows.nth(0).locator("[data-slot=table-index-cell]").getAttribute("rowspan");
   ok("index cell spans the detail row", same(span, "2"), { actual: span, expected: "2" });
   noErrors(ok, a);
 });
@@ -171,9 +171,15 @@ test("app: row expansion", async ({ open, ok }) => {
 test("app: the expand button keeps its 44px target when the table scrolls sideways", async ({ open, ok }) => {
   // at 1440 the table fits; narrower, it scrolls inside its frame and auto layout used to squeeze the cell to 16px
   for (const width of [1440, 1024, 760]) {
-    const p = await open({ route: "app", q: Q, width, height: 900, ready: ".kl-sx-table tbody tr.kl-tr" });
+    const p = await open({
+      route: "app",
+      q: Q,
+      width,
+      height: 900,
+      ready: ".kl-sx-table tbody tr[data-slot=table-row]",
+    });
     const sizes = await p
-      .locator(".kl-sx-table tbody tr.kl-tr .kl-xp button")
+      .locator(".kl-sx-table tbody tr[data-slot=table-row] [data-slot=table-expand-cell] button")
       .evaluateAll((bs) => bs.map((b) => Math.round(b.getBoundingClientRect().width)));
     ok(
       `expand buttons at ${width}px are 44px wide (WCAG 2.5.8 needs 24)`,

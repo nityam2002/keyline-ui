@@ -47,14 +47,14 @@ test("sort: aria-sort, band, press cycle, end-aligned mark, empty result", async
       (await s.locator("tbody tr").first().locator("td").nth(3).innerText()) === "22,650",
     null,
   );
-  const mark = await box(th("Gross weight").locator(".kl-sort"));
-  const lbl = await box(th("Gross weight").locator(".kl-th-label"));
+  const mark = await box(th("Gross weight").locator("[data-slot=table-sort-mark]"));
+  const lbl = await box(th("Gross weight").locator("[data-slot=table-sort-label]"));
   ok("sort: in an end-aligned column the mark sits before the label", mark.x + mark.width <= lbl.x + 1, { mark, lbl });
   await s.getByRole("button", { name: "Filter to nothing" }).click();
   ok(
     "sort: an empty result is an Empty cell inside the table",
-    (await s.locator(".kl-tr-state [data-slot=empty]").count()) === 1 &&
-      (await s.locator(".kl-tr-state [data-slot=empty]").getByText("No shipments match").isVisible()),
+    (await s.locator("[data-slot=table-state] [data-slot=empty]").count()) === 1 &&
+      (await s.locator("[data-slot=table-state] [data-slot=empty]").getByText("No shipments match").isVisible()),
     null,
   );
   await s.getByRole("button", { name: "Clear filter" }).click();

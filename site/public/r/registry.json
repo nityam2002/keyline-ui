@@ -409,6 +409,45 @@
       ]
     },
     {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "TanStack Table driving the Keyline table parts: useDataTable (sorting, multi-sort, filters, a search, paging, row selection, column visibility; each slice controlled or not) and DataTable, DataTableBulkBar, DataTablePagination and DataTableSearch. Selecting a row re-renders that row alone.",
+      "files": [
+        {
+          "path": "src/registry/keyline/ui/data-table.tsx",
+          "type": "registry:ui",
+          "target": "components/keyline/ui/data-table.tsx"
+        }
+      ],
+      "dependencies": [
+        "@tanstack/react-table@9.3.1"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/table",
+        "@keyline-ui/data-table-model",
+        "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "data-table-model",
+      "type": "registry:lib",
+      "title": "Data table model",
+      "description": "Pure helpers behind the Data Table: the sort cycle and multi-sort ordinal of a column, aria-sort, a column's alignment, the pager's range, and the filter model (text, set and range filters, a search, and the filter's words for a token).",
+      "files": [
+        {
+          "path": "src/registry/keyline/lib/data-table.ts",
+          "type": "registry:lib",
+          "target": "components/keyline/lib/data-table.ts"
+        }
+      ],
+      "registryDependencies": [
+        "@keyline-ui/collection"
+      ],
+      "dependencies": []
+    },
+    {
       "name": "date-picker",
       "type": "registry:ui",
       "title": "Date picker",
@@ -966,7 +1005,7 @@
               "transform": "scaleX(0)"
             }
           },
-          ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], .kl-skel ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+          ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], [data-slot=\"table-loading-bar\"] ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
             "--kl-run-dir": "reverse"
           },
           ":where( .kl-attached, [data-slot=\"popover-popup\"], [data-slot=\"tabs-list\"], [data-slot=\"segmented\"], [data-slot=\"toggle-group\"] )": {
@@ -1217,6 +1256,9 @@
           },
           ".kl-rows > :not(:first-child)": {
             "border-block-start": "var(--kl-k1) solid var(--kl-line)"
+          },
+          ".kl-frame > :first-child": {
+            "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
           },
           ".kl-cell": {
             "display": "flex",
@@ -2491,11 +2533,6 @@
             "height": "14px",
             "background-color": "currentColor"
           },
-          ".kl-sx-table": {
-            "max-height": "calc(100dvh - 3 * var(--kl-gutter) - var(--kl-ctl) - 2 * var(--kl-k3))",
-            "min-height": "360px",
-            "background-color": "var(--kl-cell)"
-          },
           ".kl-sx-carriers": {
             "flex": "0 1 260px"
           },
@@ -2507,9 +2544,6 @@
           },
           ".kl-sx-muted": {
             "color": "var(--kl-ink-2)"
-          },
-          ".kl-sx-id": {
-            "padding": "0"
           },
           ".kl-sx-open": {
             "display": "flex",
@@ -2546,7 +2580,7 @@
             "overflow": "hidden",
             "text-overflow": "ellipsis"
           },
-          ".kl-td[data-late]": {
+          "[data-slot=\"table-cell\"][data-late]": {
             "color": "var(--kl-red-text)",
             "font-weight": "var(--kl-weight-strong)"
           },
@@ -2619,6 +2653,16 @@
             ".kl-sx-legs > li:nth-child(n + 3)": {
               "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
             }
+          }
+        },
+        "@layer utilities": {
+          ".kl-sx-table[data-slot=\"table-frame\"]": {
+            "max-height": "calc(100dvh - 3 * var(--kl-gutter) - var(--kl-ctl) - 2 * var(--kl-k3))",
+            "min-height": "360px",
+            "background-color": "var(--kl-cell)"
+          },
+          ".kl-sx-id[data-slot=\"table-cell\"]": {
+            "padding": "0"
           }
         }
       }
@@ -2776,7 +2820,7 @@
       "name": "table",
       "type": "registry:ui",
       "title": "Table",
-      "description": "Table frame parts: tabs, toolbar, bulk bar, index column, sortable headers, expanded detail, empty/error rows, pager.",
+      "description": "Presentational table parts on utilities: Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption, TableSortHeader, TableBulkBar and TablePager, each with render and a className that may be a function of its state, plus the frame's views, toolbar, index column, expanded detail, empty/error rows and pagination. No part holds state.",
       "files": [
         {
           "path": "src/registry/keyline/ui/table.tsx",
@@ -2784,9 +2828,13 @@
           "target": "components/keyline/ui/table.tsx"
         }
       ],
+      "dependencies": [
+        "@base-ui/react@1.9.0"
+      ],
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils",
+        "@keyline-ui/keyline-render",
         "@keyline-ui/scroll-area",
         "@keyline-ui/keyline-motion",
         "@keyline-ui/checkbox",
@@ -2795,525 +2843,7 @@
         "@keyline-ui/empty",
         "@keyline-ui/toolbar",
         "@keyline-ui/collection"
-      ],
-      "dependencies": [],
-      "css": {
-        "@layer components": {
-          ".kl-tf": {
-            "display": "flex",
-            "flex-direction": "column",
-            "min-height": "0",
-            "min-width": "0",
-            "container": "kl-tf / inline-size"
-          },
-          "@container kl-tf (max-width: 560px)": {
-            ".kl-tf .kl-tf-tools": {
-              "flex-wrap": "wrap"
-            },
-            ".kl-tf .kl-tf-tools > *": {
-              "flex": "1 1 100%",
-              "max-width": "none",
-              "border-inline-start": "0"
-            },
-            ".kl-tf .kl-tf-tools > * + *": {
-              "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-            },
-            ".kl-tf .kl-tf-bulk": {
-              "flex-wrap": "wrap"
-            },
-            ".kl-tf .kl-tf-bulk > .kl-tf-scope": {
-              "flex": "1 1 calc(100% - 120px)",
-              "white-space": "normal",
-              "padding-block": "6px"
-            },
-            ".kl-tf .kl-tf-bulk > .kl-tf-scope ~ :not([hidden])": {
-              "flex": "1 1 auto",
-              "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-            },
-            ".kl-tf .kl-tf-bulk > .kl-tf-scope + :not([hidden]), .kl-tf .kl-tf-bulk > .kl-tf-scope + [hidden] + *": {
-              "border-inline-start": "0"
-            }
-          },
-          ".kl-tf > *": {
-            "flex": "none"
-          },
-          ".kl-tf-views": {
-            "min-height": "58px"
-          },
-          ".kl-tf-tabs": {
-            "background": "transparent"
-          },
-          ".kl-frame > .kl-tf-views:first-child, .kl-frame > :first-child": {
-            "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
-          },
-          ".kl-tf-views-end": {
-            "margin-inline-start": "auto",
-            "display": "flex",
-            "align-items": "center",
-            "gap": "10px",
-            "padding-inline": "var(--kl-inset)"
-          },
-          ".kl-tf-views-end:has(> [data-slot=\"toolbar\"])": {
-            "align-self": "stretch",
-            "flex": "0 1 auto",
-            "min-width": "calc(var(--kl-row) + var(--kl-k1))",
-            "padding-inline": "0",
-            "gap": "0",
-            "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-          },
-          ".kl-tf-tools": {
-            "min-height": "var(--kl-row)"
-          },
-          ".kl-tf-search": {
-            "flex": "1 1 200px",
-            "cursor": "text"
-          },
-          ".kl-tf-search input": {
-            "flex": "1",
-            "min-width": "0",
-            "height": "100%",
-            "border": "0",
-            "background": "none",
-            "outline": "0",
-            "font": "inherit",
-            "font-family": "var(--kl-font)",
-            "font-size": "15px",
-            "color": "inherit"
-          },
-          ".kl-tf-search input::placeholder": {
-            "color": "var(--kl-ink-3)",
-            "opacity": "1"
-          },
-          ".kl-tf-search input::-webkit-search-cancel-button": {
-            "display": "none"
-          },
-          ".kl-tf-token > .kl-cell:first-child": {
-            "gap": "6px",
-            "white-space": "nowrap"
-          },
-          ".kl-tf-token i": {
-            "color": "var(--kl-ink-2)"
-          },
-          ".kl-tf-token b": {
-            "font-weight": "var(--kl-weight-display)"
-          },
-          ".kl-tf-token-x": {
-            "padding-inline": "10px"
-          },
-          ".kl-tf-tools > .kl-tf-token": {
-            "flex": "none"
-          },
-          ".kl-tf-bulk": {
-            "min-height": "48px"
-          },
-          ".kl-tf-bulk-n": {
-            "gap": "10px",
-            "min-width": "104px",
-            "padding-inline": "calc(var(--kl-inset) + 2px)"
-          },
-          ".kl-tf-bulk-n .kl-count": {
-            "font-size": "26px"
-          },
-          ".kl-tf-bulk[data-empty] .kl-tf-bulk-n": {
-            "color": "var(--kl-ink-3)"
-          },
-          ".kl-tf-scope": {
-            "flex": "1",
-            "gap": "6px",
-            "font-size": "13px",
-            "flex-wrap": "wrap",
-            "row-gap": "0"
-          },
-          ".kl-tf-scope button": {
-            "font": "inherit",
-            "font-family": "var(--kl-font)",
-            "font-weight": "var(--kl-weight-strong)",
-            "color": "var(--kl-cobalt-text)",
-            "text-decoration": "underline 1.5px",
-            "text-underline-offset": "3px",
-            "background": "none",
-            "border": "0",
-            "padding": "0",
-            "cursor": "pointer"
-          },
-          ".kl-tf-bulk > .kl-cell, .kl-tf-bulk > button.kl-cell": {
-            "font-weight": "var(--kl-weight-strong)",
-            "white-space": "nowrap"
-          },
-          ".kl-tf-bulk > button.kl-cell:disabled, .kl-tf-bulk > [data-disabled]": {
-            "color": "var(--kl-dis)",
-            "cursor": "not-allowed"
-          },
-          ".kl-tf-scroll": {
-            "flex": "1 1 auto",
-            "min-height": "0"
-          },
-          ".kl-tf-scroll > [data-slot=\"scroll-area-viewport\"]": {
-            "overscroll-behavior": "contain"
-          },
-          ".kl-table": {
-            "width": "100%",
-            "border-collapse": "separate",
-            "border-spacing": "0",
-            "font-size": "14px"
-          },
-          ".kl-th": {
-            "position": "sticky",
-            "top": "0",
-            "z-index": "2",
-            "height": "34px",
-            "padding": "0 var(--kl-inset)",
-            "background-color": "var(--kl-cell)",
-            "text-align": "start",
-            "font-weight": "var(--kl-weight-strong)",
-            "font-size": "12px",
-            "color": "var(--kl-ink-2)",
-            "border-block-end": "var(--kl-k1) solid var(--kl-line)",
-            "white-space": "nowrap"
-          },
-          ".kl-th .kl-code": {
-            "margin-inline-start": "4px"
-          },
-          ".kl-th + .kl-th, .kl-td + .kl-td, .kl-td + .kl-xp, .kl-ix + .kl-td": {
-            "border-inline-start": "var(--kl-k1) solid var(--kl-line-soft)"
-          },
-          ".kl-ix + .kl-td, .kl-ix + .kl-th": {
-            "border-inline-start": "0"
-          },
-          ".kl-td": {
-            "height": "var(--kl-row)",
-            "padding": "0 var(--kl-inset)",
-            "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)",
-            "white-space": "nowrap"
-          },
-          ":is(.kl-td, .kl-th)[data-align=\"end\"]": {
-            "text-align": "end",
-            "font-variant-numeric": "tabular-nums"
-          },
-          ".kl-td.kl-id": {
-            "font-family": "var(--kl-font-mono)",
-            "font-size": "13px"
-          },
-          ".kl-tr": {
-            "cursor": "default"
-          },
-          ".kl-tr:hover > :is(.kl-td, .kl-xp)": {
-            "background-color": "var(--kl-tint)"
-          },
-          ".kl-tr[data-selected] > .kl-td": {
-            "background-color": "var(--kl-yellow-row)"
-          },
-          ".kl-tr[data-selected]:hover > :is(.kl-td, .kl-xp)": {
-            "background-color": "color-mix(in oklab, var(--kl-yellow-row), var(--kl-ink) 6%)"
-          },
-          ".kl-tr:focus-visible": {
-            "outline": "var(--kl-ring) solid var(--kl-focus)",
-            "outline-offset": "var(--kl-ring-in)"
-          },
-          ".kl-tr[data-expanded] > :is(.kl-td, .kl-xp)": {
-            "border-block-end-color": "var(--kl-line)"
-          },
-          ".kl-ix": {
-            "width": "72px",
-            "padding": "0",
-            "border-inline-end": "var(--kl-k1) solid var(--kl-line)",
-            "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)",
-            "background-color": "var(--kl-cell)",
-            "vertical-align": "top"
-          },
-          "th.kl-ix": {
-            "position": "sticky",
-            "top": "0",
-            "z-index": "3",
-            "border-block-end-color": "var(--kl-line)",
-            "vertical-align": "middle"
-          },
-          ".kl-ix-in": {
-            "display": "flex",
-            "align-items": "center",
-            "gap": "10px",
-            "height": "var(--kl-row)",
-            "min-height": "34px",
-            "padding-inline": "12px",
-            "cursor": "pointer"
-          },
-          "th.kl-ix .kl-ix-in": {
-            "height": "34px"
-          },
-          ".kl-ix[data-kl-on] .kl-code": {
-            "color": "inherit",
-            "font-weight": "var(--kl-weight-strong)"
-          },
-          ".kl-xp": {
-            "width": "44px",
-            "padding": "0",
-            "border-block-end": "var(--kl-k1) solid var(--kl-line-soft)"
-          },
-          ".kl-xp button": {
-            "display": "grid",
-            "place-items": "center",
-            "width": "100%",
-            "min-inline-size": "44px",
-            "height": "var(--kl-row)",
-            "background": "none",
-            "border": "0",
-            "color": "var(--kl-ink-2)",
-            "cursor": "pointer"
-          },
-          ".kl-xp button:hover": {
-            "background-color": "var(--kl-tint)",
-            "color": "var(--kl-ink)"
-          },
-          ".kl-xp button:active": {
-            "background-color": "var(--kl-press)",
-            "color": "var(--kl-ink)"
-          },
-          ".kl-xp button:active svg": {
-            "translate": "0 1px"
-          },
-          ":is(.kl-xp button, .kl-td [data-slot=\"button\"]):focus-visible": {
-            "outline-offset": "var(--kl-ring-in)"
-          },
-          ".kl-xp svg": {
-            "transition": "rotate var(--kl-t-unfold) var(--kl-ease-out)"
-          },
-          ".kl-xp [aria-expanded=\"true\"]": {
-            "color": "var(--kl-ink)"
-          },
-          ".kl-xp [aria-expanded=\"true\"] svg": {
-            "rotate": "90deg"
-          },
-          ":is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) .kl-xp svg": {
-            "scale": "-1 1"
-          },
-          ":is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) .kl-xp [aria-expanded=\"true\"] svg": {
-            "rotate": "-90deg"
-          },
-          ".kl-tr[data-selected] > .kl-xp": {
-            "background-color": "var(--kl-yellow-row)"
-          },
-          ".kl-tr[data-kl-opening] > *": {
-            "box-shadow": "inset 0 var(--kl-k1) var(--kl-line-soft)"
-          },
-          ".kl-tr-detail > td": {
-            "padding": "0",
-            "border-block-end": "var(--kl-k1) solid var(--kl-seam)",
-            "background-color": "var(--kl-paper)",
-            "white-space": "normal"
-          },
-          ".kl-tr-state > td": {
-            "padding": "0"
-          },
-          ".kl-skel": {
-            "display": "block",
-            "height": "10px",
-            "border": "var(--kl-k1) solid var(--kl-line-soft)",
-            "background-color": "var(--kl-tint)"
-          },
-          ".kl-tr-skel .kl-ix": {
-            "padding-inline": "12px",
-            "vertical-align": "middle"
-          },
-          ".kl-tr-skel:first-child .kl-skel": {
-            "position": "relative",
-            "overflow": "hidden"
-          },
-          ".kl-tr-skel .kl-skel": {
-            "position": "relative",
-            "overflow": "hidden"
-          },
-          ".kl-tr-skel .kl-skel::after": {
-            "content": "\"\"",
-            "position": "absolute",
-            "inset-block": "0",
-            "left": "0",
-            "width": "30%",
-            "background-color": "var(--kl-line-soft)",
-            "animation": "kl-run-30 1100ms linear infinite var(--kl-run-dir, normal)"
-          },
-          "[data-kl-motion=\"reduce\"] .kl-tr-skel .kl-skel::after": {
-            "animation": "none",
-            "display": "none"
-          },
-          "@media (prefers-reduced-motion: reduce)": {
-            ".kl-tr-skel .kl-skel::after": {
-              "animation": "none",
-              "display": "none"
-            }
-          },
-          ".kl-tf-pager": {
-            "min-height": "48px"
-          },
-          ".kl-tf-pager .kl-count": {
-            "font-size": "20px"
-          },
-          ".kl-tf-range": {
-            "flex": "none",
-            "font-variant-numeric": "tabular-nums"
-          },
-          ".kl-tf-pg": {
-            "flex": "none",
-            "width": "44px",
-            "justify-content": "center",
-            "font-size": "20px"
-          },
-          ".kl-tf-pg > span": {
-            "display": "inline-block"
-          },
-          ".kl-tf-pg:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)) > span": {
-            "scale": "-1 1"
-          },
-          ".kl-tf-pgn": {
-            "flex": "none"
-          },
-          ".kl-tf-gap, .kl-tf-dock": {
-            "flex": "1",
-            "min-width": "0",
-            "padding": "0"
-          },
-          ".kl-tf-dock": {
-            "display": "flex",
-            "align-items": "stretch"
-          },
-          ".kl-tf-dock > *": {
-            "flex": "1"
-          },
-          "@media (forced-colors: active)": {
-            ".kl-tr[data-selected] > .kl-td:nth-child(2)": {
-              "text-decoration": "underline 2px"
-            },
-            ".kl-th-sort[data-sort]": {
-              "box-shadow": "none",
-              "border-block-end-color": "CanvasText",
-              "text-decoration": "underline 2px"
-            },
-            ".kl-sort path": {
-              "forced-color-adjust": "none",
-              "stroke": "CanvasText"
-            },
-            ".kl-sort[data-dir=\"ascending\"] .kl-sort-up, .kl-sort[data-dir=\"descending\"] .kl-sort-down": {
-              "fill": "CanvasText"
-            }
-          },
-          ".kl-th.kl-th-sort": {
-            "padding": "0"
-          },
-          ".kl-th-btn": {
-            "display": "flex",
-            "align-items": "center",
-            "gap": "6px",
-            "width": "100%",
-            "height": "100%",
-            "min-height": "34px",
-            "box-sizing": "border-box",
-            "padding": "0 var(--kl-inset)",
-            "border": "0",
-            "margin": "0",
-            "background": "none",
-            "color": "inherit",
-            "font": "inherit",
-            "text-align": "inherit",
-            "cursor": "pointer"
-          },
-          ".kl-th-btn:hover": {
-            "background-color": "var(--kl-tint)",
-            "color": "var(--kl-ink)"
-          },
-          ".kl-th-btn:active > *": {
-            "translate": "0 1px"
-          },
-          ".kl-th-btn:focus-visible": {
-            "outline": "var(--kl-ring) solid var(--kl-focus)",
-            "outline-offset": "var(--kl-ring-in)"
-          },
-          ".kl-th-sort[data-align=\"end\"] .kl-th-btn": {
-            "flex-direction": "row-reverse",
-            "justify-content": "flex-start"
-          },
-          ".kl-th-label": {
-            "min-width": "0",
-            "overflow": "hidden",
-            "text-overflow": "ellipsis"
-          },
-          ".kl-th-sort[data-sort]": {
-            "color": "var(--kl-ink)",
-            "border-block-end-color": "var(--kl-inverse)",
-            "box-shadow": "inset 0 calc(var(--kl-k1) - var(--kl-k2)) 0 var(--kl-inverse)"
-          },
-          ".kl-sort": {
-            "flex": "none",
-            "display": "grid",
-            "place-items": "center"
-          },
-          ".kl-sort path": {
-            "fill": "none",
-            "stroke": "currentColor",
-            "stroke-width": "1.25",
-            "stroke-linejoin": "miter"
-          },
-          ".kl-sort[data-dir=\"none\"]": {
-            "color": "var(--kl-ink-3)"
-          },
-          ".kl-sort[data-dir=\"ascending\"] .kl-sort-up, .kl-sort[data-dir=\"descending\"] .kl-sort-down": {
-            "fill": "currentColor"
-          },
-          ".kl-sort[data-dir=\"ascending\"] .kl-sort-down, .kl-sort[data-dir=\"descending\"] .kl-sort-up": {
-            "stroke": "var(--kl-ink-3)"
-          },
-          ".kl-sort-n": {
-            "margin-inline-start": "-2px"
-          },
-          ".kl-th-sort[data-kl-level]:not([data-kl-level=\"1\"])": {
-            "box-shadow": "none"
-          }
-        },
-        "@layer utilities": {
-          ".kl-tr-state [data-slot=\"empty\"].kl-tf-state": {
-            "min-height": "240px",
-            "white-space": "normal"
-          },
-          ".kl-ix-in:active [data-slot=\"checkbox\"]:not([data-disabled], [data-checked], [data-indeterminate])": {
-            "background-color": "var(--kl-press)"
-          },
-          ".kl-ix-in:active [data-slot=\"checkbox\"]:not([data-disabled]) > [data-slot=\"checkbox-indicator\"]": {
-            "translate": "0 1px"
-          },
-          ".kl-tf-tabs-root[data-slot=\"tabs\"]": {
-            "display": "flex",
-            "gap": "0",
-            "flex": "none"
-          },
-          ".kl-tf-views:has(> .kl-tf-views-end > [data-slot=\"toolbar\"]) > .kl-tf-tabs-root[data-slot=\"tabs\"]": {
-            "flex": "0 1 auto",
-            "min-width": "0"
-          },
-          ".kl-tf-tabs.kl-tf-tabs > [data-orientation]": {
-            "min-width": "112px"
-          },
-          ".kl-tf > [data-slot=\"toolbar\"]": {
-            "flex": "none"
-          },
-          ".kl-tf-views-end > [data-slot=\"toolbar\"], .kl-tf-bulk > [data-slot=\"toolbar\"]": {
-            "align-self": "stretch",
-            "min-height": "0"
-          },
-          ".kl-tf-bulk > [data-slot=\"toolbar\"]": {
-            "flex-grow": "0"
-          },
-          ".kl-tf-bulk > [data-slot=\"toolbar\"]:last-child": {
-            "justify-content": "flex-end"
-          },
-          ".kl-tf-bulk > [data-slot=\"toolbar\"][data-slot=\"toolbar\"][data-slot=\"toolbar\"]:last-child::after": {
-            "content": "none"
-          },
-          ".kl-tf-token-tb [data-slot=\"toolbar-label\"]": {
-            "gap": "6px"
-          },
-          ".kl-tf-token-tb [data-kl-tb-item]:not(.kl-tf-token-x)": {
-            "font-weight": "400"
-          }
-        }
-      }
+      ]
     },
     {
       "name": "tabs",

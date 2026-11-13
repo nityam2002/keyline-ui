@@ -17,21 +17,21 @@ export const metadata = componentMetadata(
 );
 
 const IMPORT = `import {
-  Table, TableBody, TableCell, TableFrame, TableHead, TableHeaderCell,
+  Table, TableBody, TableCell, TableFrame, TableHeader, TableHead,
   TablePagination, TableRow, TableScroll, TableSortHeader, nextSort, sortOf,
 } from "@/components/keyline/ui/table"`;
 
 const USAGE = `<TableFrame>
   <TableScroll>
     <Table aria-label="Orders">
-      <TableHead>
+      <TableHeader>
         <tr>
           <TableSortHeader sort={sortOf(sort, "client")} onSort={() => setSort((s) => nextSort(s, "client"))}>
             Client
           </TableSortHeader>
-          <TableHeaderCell align="end">Cases</TableHeaderCell>
+          <TableHead align="end">Cases</TableHead>
         </tr>
-      </TableHead>
+      </TableHeader>
       <TableBody>
         {rows.map((o) => (
           <TableRow key={o.id}>
@@ -46,6 +46,16 @@ const USAGE = `<TableFrame>
 </TableFrame>`;
 
 const PROPS: Prop[] = [
+  {
+    name: "Table \u00b7 TableHeader \u00b7 TableBody \u00b7 TableCaption",
+    type: "table \u00b7 thead \u00b7 tbody \u00b7 caption",
+    default: "\u2014",
+    description: (
+      <>
+        The grid&apos;s elements. <code>TableCaption</code> names the table, read before its rows.
+      </>
+    ),
+  },
   {
     name: "TableFrame",
     type: "section",
@@ -72,7 +82,12 @@ const PROPS: Prop[] = [
     name: "TableBulkBar",
     type: "{ count, scope?, children? }",
     default: "\u2014",
-    description: "How many are selected, what that covers, and the actions as cell buttons.",
+    description: (
+      <>
+        How many are selected, what that covers, and the actions as cell buttons. Announced politely;{" "}
+        <code>data-empty</code> at 0.
+      </>
+    ),
   },
   {
     name: "TableIndexCell",
@@ -95,18 +110,53 @@ const PROPS: Prop[] = [
       </>
     ),
   },
-  { name: "TableRow", type: "{ selected?, expanded? }", default: "\u2014", description: "A row of the grid." },
   {
-    name: "TableCell \u00b7 TableHeaderCell",
+    name: "TableRow",
+    type: "{ selected?, expanded? }",
+    default: "\u2014",
+    description: (
+      <>
+        A row of the grid. It carries <code>data-selected</code> and <code>data-expanded</code>; add{" "}
+        <code>aria-selected</code> when rows are selectable.
+      </>
+    ),
+  },
+  {
+    name: "TableCell \u00b7 TableHead",
     type: '{ align?: "end" }',
     default: "\u2014",
-    description: "Figures end-aligned.",
+    description: (
+      <>
+        Figures end-aligned. To make a body cell its row&apos;s header: <code>{'render={<th scope="row" />}'}</code>.
+      </>
+    ),
+  },
+  {
+    name: "TableDetail",
+    type: "{ presence, colSpan, id? }",
+    default: "\u2014",
+    description: (
+      <>
+        The expanded row&apos;s detail. <code>presence</code> comes from <code>useDetailPresence(open)</code> in the row
+        that owns it.
+      </>
+    ),
   },
   {
     name: "TableState",
     type: '{ kind: "empty" | "error", count, title, body?, action?, colSpan }',
     default: "\u2014",
     description: "An Empty spanning the grid. Errors are announced.",
+  },
+  {
+    name: "TablePager",
+    type: "div",
+    default: "\u2014",
+    description: (
+      <>
+        The pager&apos;s row of cells, for your own controls. <code>TablePagination</code> fills it.
+      </>
+    ),
   },
   {
     name: "TablePagination",
@@ -146,8 +196,9 @@ export default function TablePage() {
       <h1>Table</h1>
       <p className="s-doc-lede">
         A table is one frame, and every part of it is a cell stacked inside: view tabs, the filter row, the bulk bar,
-        the grid and the pager. You compose the parts you need and keep the data. Wide tables scroll sideways inside
-        their frame, never the page.
+        the grid and the pager. You compose the parts you need and keep the data and its state. Wide tables scroll
+        sideways inside their frame, never the page. For sorting, filtering, paging and selection worked out for you,
+        use the <a href="/docs/components/data-table">data table</a>.
       </p>
 
       <ComponentDemo label="Table example" preview={<TableOrders />} code={code("table-orders.tsx", "example code")} />
@@ -164,8 +215,9 @@ export default function TablePage() {
       <h3 id="expandable-rows">Expandable rows</h3>
       <p>
         <code>TableExpandCell</code> toggles a <code>TableDetail</code> that unfolds from the row&apos;s bottom keyline;
-        the row itself never moves. With an index cell, give it <code>rowSpan={2}</code> while open, using{" "}
-        <code>useDetailPresence</code> so it stays merged while the detail folds back.
+        the row itself never moves. The row that owns the detail calls <code>useDetailPresence(open)</code> and passes
+        it as the detail&apos;s <code>presence</code>; with an index cell, give that <code>rowSpan={2}</code> while the
+        presence is mounted, so it stays merged while the detail folds back.
       </p>
       <ComponentDemo
         label="Expandable rows example"
@@ -189,8 +241,11 @@ export default function TablePage() {
       <PropsReference label="Table props" props={PROPS} />
       <p className="s-small">
         For rows that leave and come back (a cancel and its Undo), <code>useRowMotion</code> slides the rest into place.
-        Sorting, filtering and paging are always instant. The parts render native table elements, so put your own{" "}
-        <code>aria-label</code> on <code>Table</code>.
+        Sorting, filtering and paging are always instant. The parts render native table elements, so name the table with{" "}
+        <code>aria-label</code> or a <code>TableCaption</code>. Every grid part takes <code>render</code> to swap its
+        element, and a <code>className</code> or <code>style</code> that may be a function of its state (a sort
+        header&apos;s <code>sort</code> and <code>priority</code>, a row&apos;s <code>selected</code> and{" "}
+        <code>expanded</code>).
       </p>
     </DocPage>
   );

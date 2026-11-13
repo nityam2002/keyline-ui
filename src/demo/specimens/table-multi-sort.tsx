@@ -4,7 +4,7 @@ import {
   TableFrame,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
   TableSortHeader,
@@ -47,7 +47,7 @@ export function MultiSortSpecimen() {
       <TableFrame aria-label="Dock slots" style={{ maxWidth: 620 }}>
         <TableScroll>
           <Table>
-            <TableHead>
+            <TableHeader>
               <tr>
                 {DOCK_COLS.map((c) => {
                   const lv = sortLevel(sort, c.key);
@@ -65,11 +65,11 @@ export function MultiSortSpecimen() {
                   );
                 })}
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {rows.map((r, i) => (
                 <TableRow key={i}>
-                  <TableCell className="kl-id">{r.dock}</TableCell>
+                  <TableCell className="font-(family-name:--kl-font-mono) text-[13px]">{r.dock}</TableCell>
                   <TableCell>{r.carrier}</TableCell>
                   <TableCell align="end">{r.slot}</TableCell>
                   <TableCell align="end">{r.pallets}</TableCell>

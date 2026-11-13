@@ -140,6 +140,15 @@ export const STATES = {
     // the shell around it: a nav link hovered, the sidebar collapsed to its rail
     { name: "hover-nav", do: [["hover", `${MAIN} >> role=link >> nth=2`]] },
     { name: "rail", do: [["click", role("button", "Collapse navigation")]] },
+    // the table: a row selected (the bulk bar's count and scope), a page selected, sort headers sorted, hovered and
+    // focused, a row hovered and one expanded
+    { name: "select-row", do: [["click", "role=checkbox[name=/^Select SH-/] >> nth=0"]] },
+    { name: "select-page", do: [["click", role("checkbox", "Select this page")]] },
+    { name: "sorted", do: [["click", "th >> role=button >> nth=1"]] },
+    { name: "hover-sort-header", do: [["hover", "th >> role=button >> nth=2"]] },
+    { name: "focus-sort-header", do: [["focus", "th >> role=button >> nth=0"]] },
+    { name: "hover-row", do: [["hover", "tbody tr >> nth=3"]] },
+    { name: "expanded", do: [["click", "role=button[name=/^Show legs for/] >> nth=0"]] },
   ],
   shell: [
     { name: "hover-nav", do: [["hover", `#shell >> ${MAIN} >> role=button[name=/^Carriers/]`]] },
@@ -256,6 +265,10 @@ export const STATES = {
   playground: [
     { name: "hover-nav", do: [["hover", `${role("navigation", "Demo pages")} >> ${role("link", "Specimen")}`]] },
     { name: "focus-nav", do: [["focus", `${role("navigation", "Demo pages")} >> ${role("link", "Specimen")}`]] },
+    // a button in a body cell takes the inset ring: an outside one crosses the row keylines, and in the last row the
+    // scroller clips it
+    { name: "focus-row-action", do: [["focus", role("button", "Actions for PO-4102")]] },
+    { name: "focus-row-action-last", do: [["focus", role("button", "Actions for PO-4105")]] },
   ],
   carousel: [
     { name: "focus-next", do: [["focus", `data-testid=cr-one >> ${role("button", "Next slide")}`]] },
@@ -428,9 +441,31 @@ export const STATES = {
   table: [
     { name: "hover-row", do: [["hover", "#table >> tbody tr >> nth=2"]] },
     { name: "focus-checkbox", do: [["focus", "#table >> tbody >> role=checkbox >> nth=0"]] },
+    // the selected row hovered; the bulk bar emptied, then every row selected
+    { name: "hover-selected-row", do: [["hover", "#table >> tbody tr >> nth=1"]] },
+    { name: "bulk-empty", do: [["click", `#table >> ${role("checkbox", "Select SH-20482")}`]] },
+    { name: "select-all", do: [["click", `#table >> ${role("checkbox", "Select all")}`]] },
+    { name: "hover-expand", do: [["hover", `#table >> ${role("button", "Legs for SH-20481")}`]] },
+    { name: "focus-expand", do: [["focus", `#table >> ${role("button", "Legs for SH-20481")}`]] },
   ],
   sort: [
     { name: "focus-header", do: [["focus", "#sort >> th >> role=button >> nth=0"]] },
     { name: "hover-header", do: [["hover", "#sort >> th >> role=button >> nth=1"]] },
+    // the sorted header hovered and focused; descending on a numeric (end-aligned) column
+    { name: "hover-sorted", do: [["hover", "#sort >> th >> role=button >> nth=2"]] },
+    { name: "focus-sorted", do: [["focus", "#sort >> th >> role=button >> nth=2"]] },
+    {
+      name: "sorted-numeric",
+      do: [
+        ["focus", "#sort >> th >> role=button >> nth=3"],
+        ["press", "Enter"],
+      ],
+    },
+    { name: "empty", do: [["click", `#sort >> ${role("button", "Filter to nothing")}`]] },
+  ],
+  "multi-sort": [
+    { name: "focus-first-level", do: [["focus", "#multi-sort >> th >> role=button >> nth=0"]] },
+    { name: "hover-second-level", do: [["hover", "#multi-sort >> th >> role=button >> nth=2"]] },
+    { name: "hover-unsorted", do: [["hover", "#multi-sort >> th >> role=button >> nth=1"]] },
   ],
 };

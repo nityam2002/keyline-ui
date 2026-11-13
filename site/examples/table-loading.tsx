@@ -7,8 +7,8 @@ import {
   TableBody,
   TableCell,
   TableFrame,
+  TableHeader,
   TableHead,
-  TableHeaderCell,
   TableLoadingRows,
   TablePagination,
   TableRow,
@@ -47,13 +47,13 @@ export function InvoiceTable() {
     <TableFrame>
       <TableScroll>
         <Table aria-label="Unpaid invoices" aria-busy={state === "loading" || undefined}>
-          <TableHead>
+          <TableHeader>
             <tr>
-              <TableHeaderCell>Invoice</TableHeaderCell>
-              <TableHeaderCell>Client</TableHeaderCell>
-              <TableHeaderCell align="end">Amount</TableHeaderCell>
+              <TableHead>Invoice</TableHead>
+              <TableHead>Client</TableHead>
+              <TableHead align="end">Amount</TableHead>
             </tr>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {state === "loading" ? (
               <TableLoadingRows rows={4} cols={3} />

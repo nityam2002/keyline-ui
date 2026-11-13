@@ -29,10 +29,14 @@ test("block: sort, columns, rows per page, clear sort, detail span", async ({ op
   const marks = await dest.evaluate((e) => {
     const n = e.nextElementSibling;
     const c = (x) => {
-      const r = x.querySelector(".kl-sort svg").getBoundingClientRect();
+      const r = x.querySelector("[data-slot=table-sort-mark] svg").getBoundingClientRect();
       return r.y + r.height / 2;
     };
-    return { other: getComputedStyle(e.querySelector(".kl-sort-down")).stroke, own: c(e), next: c(n) };
+    return {
+      other: getComputedStyle(e.querySelector("[data-slot=table-sort-mark] path:last-child")).stroke,
+      own: c(e),
+      next: c(n),
+    };
   });
   ok(
     "block: the sorted mark keeps both triangles and the neighbours' centre line",
@@ -89,7 +93,7 @@ test("block: sort, columns, rows per page, clear sort, detail span", async ({ op
       .evaluate((e) => e.hasAttribute("data-disabled") || e.getAttribute("aria-disabled") === "true"),
     null,
   );
-  const bodyRows = () => table.locator("tbody > tr.kl-tr:not(.kl-tr-detail)").count();
+  const bodyRows = () => table.locator("tbody > tr[data-slot=table-row]").count();
   await a.getByRole("menuitemradio", { name: "24 rows" }).click();
   await until(async () => (await bodyRows()) === 24);
   await a.getByRole("menuitem", { name: /Clear sort/ }).click();
@@ -101,7 +105,7 @@ test("block: sort, columns, rows per page, clear sort, detail span", async ({ op
   ok(
     "block: the expanded detail spans the visible columns",
     await (async () => {
-      await table.locator("tbody .kl-xp button").first().click();
+      await table.locator("tbody [data-slot=table-expand-cell] button").first().click();
       await until(async () => (await table.locator("tbody td[colspan]").count()) > 0);
       const span = await table.locator("tbody td[colspan]").first().getAttribute("colspan");
       return Number(span) === nCols - 1 - 1;

@@ -50,6 +50,7 @@ export const CATALOG: Group[] = [
     group: "Data",
     items: [
       { name: "Table", item: "table", href: page("table") },
+      { name: "Data table", item: "data-table", href: page("data-table") },
       { name: "Chart", item: "chart", href: page("chart") },
       { name: "Stat and meter", item: "stat", href: page("stat") },
       { name: "Status and badge", item: "status", href: page("status") },

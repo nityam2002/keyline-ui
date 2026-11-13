@@ -76,10 +76,10 @@ import {
   TableBulkBar,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
   TableIndexCell,
 } from "@/registry/keyline/ui/table";
@@ -420,7 +420,7 @@ function Records() {
       </TableBulkBar>
       <TableScroll>
         <Table>
-          <TableHead>
+          <TableHeader>
             <tr>
               <TableIndexCell
                 header
@@ -429,15 +429,15 @@ function Records() {
                 indeterminate={!all && selected.size > 0}
                 onCheckedChange={(v) => setSelected(v ? new Set(ROWS.map((r) => r.id)) : new Set())}
               />
-              <TableHeaderCell>Shipment</TableHeaderCell>
-              <TableHeaderCell>Customer</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
-              <TableHeaderCell>ETA</TableHeaderCell>
-              <TableHeaderCell>
+              <TableHead>Shipment</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>ETA</TableHead>
+              <TableHead>
                 <span className="sr-only">Actions</span>
-              </TableHeaderCell>
+              </TableHead>
             </tr>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {ROWS.map((r, i) => (
               <TableRow key={r.id} selected={selected.has(r.id)}>

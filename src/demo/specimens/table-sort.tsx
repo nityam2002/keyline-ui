@@ -5,12 +5,12 @@ import {
   TableFrame,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
   TableCell,
   TableSortHeader,
-  TableHeaderCell,
+  TableHead,
   TableState,
   TablePagination,
   nextSort,
@@ -60,15 +60,15 @@ export function SortTableSpecimen() {
       <TableFrame className="max-h-none">
         <TableScroll>
           <Table aria-label="Shipments, sortable">
-            <TableHead>
+            <TableHeader>
               <tr>
                 {head("ref", "Reference")}
                 {head("dest", "Destination")}
                 {head("eta", "ETA")}
                 {head("kg", "Gross weight (kg)", "end", "descending")}
-                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHead>Status</TableHead>
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {shown.length ? (
                 shown.map((r) => (

@@ -53,7 +53,7 @@ async function go(open, route, theme) {
     route,
     width: 1280,
     height: 900,
-    ready: route === "app" ? ".kl-tf-search input" : ".kl-field-input",
+    ready: route === "app" ? "[data-slot=table-search] input" : ".kl-field-input",
   });
   await p.evaluate((t) => {
     document.documentElement.classList.remove("light", "dark");
@@ -192,11 +192,11 @@ for (const theme of ["light", "dark"]) {
   test(`focus edge (${theme}): table search cell`, async ({ open, ok }) => {
     const p = await go(open, "app", theme);
     // 5. table search (a cell): click → flush band inside the cell, no outline
-    const search = p.locator(".kl-tf-search input").first();
+    const search = p.locator("[data-slot=table-search] input").first();
     await search.click();
     let s = await state(p);
     const flush = await p.evaluate(() => {
-      const c = document.querySelector(".kl-tf-search");
+      const c = document.querySelector("[data-slot=table-search]");
       const b = getComputedStyle(c, "::before");
       return b.top === "0px" && b.left === "0px";
     });

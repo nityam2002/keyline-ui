@@ -210,7 +210,7 @@
       [data-slot="progress-indicator"],
       [data-slot="skeleton"],
       [data-slot="skeleton-line"],
-      .kl-skel
+      [data-slot="table-loading-bar"]
     ):is([dir="rtl"], [dir="rtl"] *):where(:not([dir="rtl"] [dir="ltr"], [dir="rtl"] [dir="ltr"] *)) {
     --kl-run-dir: reverse;
   }
@@ -614,6 +614,11 @@
   }
   .kl-rows > :not(:first-child) {
     border-block-start: var(--kl-k1) solid var(--kl-line);
+  }
+  /* the first row of a cut region frame reserves the cut's room (--kl-c-room, read by the row's first cell); it is 0
+     when the cut is off */
+  .kl-frame > :first-child {
+    --kl-c-room: calc(var(--kl-c, 0px) * 0.35);
   }
   .kl-cell {
     display: flex;

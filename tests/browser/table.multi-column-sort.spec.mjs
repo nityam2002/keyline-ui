@@ -24,7 +24,7 @@ test("multi-sort: levels, Shift + click / Enter, plain press resets", async ({ o
     s.dock === "ascending" && s.slot === null && s.carrier === "none" && s.pallets === "none",
     s,
   );
-  const n = await sp.locator(".kl-sort-n").allTextContents();
+  const n = await sp.locator("[data-slot=table-sort-level]").allTextContents();
   ok("multi-sort: each sorted header prints its place (1, 2)", n.join(",") === "1,2", n);
   const sr = await th("Slot").locator(".kl-sr").textContent();
   ok("multi-sort: the second level says its place in text", /sort 2 of 2, ascending/.test(sr), sr);
@@ -42,7 +42,7 @@ test("multi-sort: levels, Shift + click / Enter, plain press resets", async ({ o
     .click({ modifiers: ["Shift"] });
   const third = async () => ({
     n: await th("Pallets")
-      .locator(".kl-sort-n")
+      .locator("[data-slot=table-sort-level]")
       .textContent()
       .catch(() => null),
     sort: await th("Pallets").getAttribute("data-sort"),
@@ -75,7 +75,7 @@ test("multi-sort: levels, Shift + click / Enter, plain press resets", async ({ o
   const pn = await poll(
     () =>
       th("Pallets")
-        .locator(".kl-sort-n")
+        .locator("[data-slot=table-sort-level]")
         .textContent()
         .catch(() => null),
     (v) => v === "2",
@@ -89,7 +89,7 @@ test("multi-sort: levels, Shift + click / Enter, plain press resets", async ({ o
   ok("multi-sort: Shift + Enter on a header adds a level from the keyboard", /then carrier ascending/.test(kb), kb);
   // plain press: one column again
   await th("Carrier").locator("button").click();
-  const single = async () => ({ s: await state(), nums: await sp.locator(".kl-sort-n").count() });
+  const single = async () => ({ s: await state(), nums: await sp.locator("[data-slot=table-sort-level]").count() });
   const s1 = await poll(single, (x) => x.s.carrier === "ascending" && x.s.dock === "none" && x.nums === 0, 2000);
   s = s1.s;
   ok(

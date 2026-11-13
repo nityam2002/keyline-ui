@@ -17,7 +17,7 @@ export default {
     "@keyline-ui/keyline-render",
   ],
   requires: {
-    // ChartFigure's table view draws with the table's cells (.kl-td), which shipments-demo also styles
+    // ChartFigure's table view is built from the table's parts (Table, TableHead, TableCell)
     registryDependencies: ["@keyline-ui/table"],
   },
 } satisfies KeylineItem;

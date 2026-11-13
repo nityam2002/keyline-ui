@@ -90,3 +90,8 @@ export const ChartReturns = dynamic(() => import("@site/examples/chart-returns")
   ssr: false,
   loading,
 });
+
+export const DataTableOrders = dynamic(
+  () => import("@site/examples/data-table-orders").then((m) => m.OrdersDataTable),
+  { ssr: false, loading },
+);

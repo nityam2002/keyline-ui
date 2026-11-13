@@ -9,8 +9,8 @@ import {
   TableBulkBar,
   TableCell,
   TableFrame,
+  TableHeader,
   TableHead,
-  TableHeaderCell,
   TableIndexCell,
   TablePagination,
   TableRow,
@@ -131,7 +131,7 @@ export function OpenOrders() {
       </TableBulkBar>
       <TableScroll>
         <Table aria-label="Orders">
-          <TableHead>
+          <TableHeader>
             <tr>
               <TableIndexCell
                 header
@@ -144,9 +144,9 @@ export function OpenOrders() {
               {head("client", "Client")}
               {head("cases", "Cases", "end", "descending")}
               {head("due", "Due")}
-              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHead>Status</TableHead>
             </tr>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {shown.length ? (
               shown.map((o, i) => {

@@ -13,10 +13,10 @@ import {
   TableFrame,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
   Status,
 } from "@/components/keyline/ui/table";
@@ -146,14 +146,14 @@ function PressRuns() {
       </Toolbar>
       <TableScroll>
         <Table>
-          <TableHead>
+          <TableHeader>
             <tr>
-              <TableHeaderCell>Job</TableHeaderCell>
-              <TableHeaderCell>Title</TableHeaderCell>
-              <TableHeaderCell>Copies</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHead>Job</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Copies</TableHead>
+              <TableHead>Status</TableHead>
             </tr>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {rows.map((r) => (
               <TableRow key={r.id}>

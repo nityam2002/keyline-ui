@@ -5,10 +5,10 @@ import {
   TableFrame,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
 } from "@/components/keyline/ui/table";
 
@@ -43,14 +43,14 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
       <TableFrame aria-label={label}>
         <TableScroll>
           <Table className="max-[721px]:w-full">
-            <TableHead className="max-[721px]:hidden">
+            <TableHeader className="max-[721px]:hidden">
               <tr>
-                <TableHeaderCell>Prop</TableHeaderCell>
-                <TableHeaderCell>Type</TableHeaderCell>
-                <TableHeaderCell>Default</TableHeaderCell>
-                <TableHeaderCell>Description</TableHeaderCell>
+                <TableHead>Prop</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Default</TableHead>
+                <TableHead>Description</TableHead>
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {props.map((p) => (
                 <TableRow

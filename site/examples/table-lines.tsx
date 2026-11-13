@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,10 +8,11 @@ import {
   TableDetail,
   TableExpandCell,
   TableFrame,
+  TableHeader,
   TableHead,
-  TableHeaderCell,
   TableRow,
   TableScroll,
+  useDetailPresence,
 } from "@/components/keyline/ui/table";
 
 const ORDERS = [
@@ -55,41 +56,57 @@ export function OrderLines() {
     <TableFrame>
       <TableScroll>
         <Table aria-label="Orders with their lines">
-          <TableHead>
+          <TableHeader>
             <tr>
               <TableExpandCell header label="Show lines" />
-              <TableHeaderCell>Order</TableHeaderCell>
-              <TableHeaderCell>Client</TableHeaderCell>
-              <TableHeaderCell align="end">Total</TableHeaderCell>
+              <TableHead>Order</TableHead>
+              <TableHead>Client</TableHead>
+              <TableHead align="end">Total</TableHead>
             </tr>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {ORDERS.map((o) => (
-              <Fragment key={o.id}>
-                <TableRow expanded={open.has(o.id)}>
-                  <TableExpandCell expanded={open.has(o.id)} onToggle={() => toggle(o.id)} label={`Lines in ${o.id}`} />
-                  <TableCell className="font-kl-mono text-[13px]">{o.id}</TableCell>
-                  <TableCell>{o.client}</TableCell>
-                  <TableCell align="end" className="tabular-nums">
-                    {o.total}
-                  </TableCell>
-                </TableRow>
-                <TableDetail open={open.has(o.id)} colSpan={4}>
-                  <dl className="m-0 grid grid-cols-[1fr_auto_auto] gap-x-6 gap-y-1 px-3 py-3 text-[14px]">
-                    {o.lines.map(([item, qty, amount]) => (
-                      <div key={item} className="contents">
-                        <dt>{item}</dt>
-                        <dd className="m-0 text-kl-ink-2 tabular-nums">{qty}</dd>
-                        <dd className="m-0 text-end tabular-nums">{amount}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </TableDetail>
-              </Fragment>
+              <OrderRow key={o.id} order={o} open={open.has(o.id)} onToggle={() => toggle(o.id)} />
             ))}
           </TableBody>
         </Table>
       </TableScroll>
     </TableFrame>
+  );
+}
+
+/** One order and its lines. The row holds its detail's presence, so the lines fold away before they unmount. */
+function OrderRow({
+  order: o,
+  open,
+  onToggle,
+}: {
+  order: (typeof ORDERS)[number];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const presence = useDetailPresence(open);
+  return (
+    <>
+      <TableRow expanded={open}>
+        <TableExpandCell expanded={open} onToggle={onToggle} label={`Lines in ${o.id}`} />
+        <TableCell className="font-kl-mono text-[13px]">{o.id}</TableCell>
+        <TableCell>{o.client}</TableCell>
+        <TableCell align="end" className="tabular-nums">
+          {o.total}
+        </TableCell>
+      </TableRow>
+      <TableDetail presence={presence} colSpan={4}>
+        <dl className="m-0 grid grid-cols-[1fr_auto_auto] gap-x-6 gap-y-1 px-3 py-3 text-[14px]">
+          {o.lines.map(([item, qty, amount]) => (
+            <div key={item} className="contents">
+              <dt>{item}</dt>
+              <dd className="m-0 text-kl-ink-2 tabular-nums">{qty}</dd>
+              <dd className="m-0 text-end tabular-nums">{amount}</dd>
+            </div>
+          ))}
+        </dl>
+      </TableDetail>
+    </>
   );
 }

@@ -5,12 +5,13 @@ export default {
   type: "registry:ui",
   title: "Table",
   description:
-    "Table frame parts: tabs, toolbar, bulk bar, index column, sortable headers, expanded detail, empty/error rows, pager.",
+    "Presentational table parts on utilities: Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption, TableSortHeader, TableBulkBar and TablePager, each with render and a className that may be a function of its state, plus the frame's views, toolbar, index column, expanded detail, empty/error rows and pagination. No part holds state.",
   files: [{ path: "src/registry/keyline/ui/table.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/table.css",
+  dependencies: ["@base-ui/react"],
   registryDependencies: [
     "@keyline-ui/keyline",
     "utils",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/scroll-area",
     "@keyline-ui/keyline-motion",
     "@keyline-ui/checkbox",

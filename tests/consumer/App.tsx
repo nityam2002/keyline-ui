@@ -47,10 +47,10 @@ import {
   TableBulkBar,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
   TableIndexCell,
   TablePagination,
@@ -431,7 +431,7 @@ function Records() {
         </TableBulkBar>
         <TableScroll>
           <Table>
-            <TableHead>
+            <TableHeader>
               <tr>
                 <TableIndexCell
                   header
@@ -440,13 +440,13 @@ function Records() {
                   indeterminate={sel.scope.page === "some"}
                   onCheckedChange={sel.setPage}
                 />
-                <TableHeaderCell>Order</TableHeaderCell>
-                <TableHeaderCell>Customer</TableHeaderCell>
-                <TableHeaderCell>Lane</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell>Owner</TableHeaderCell>
+                <TableHead>Order</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Lane</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Owner</TableHead>
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {pageRows.map((r, i) => (
                 <TableRow
@@ -1027,14 +1027,14 @@ function Dispatch() {
             </TableToolbar>
             <TableScroll>
               <Table aria-label="Bookings">
-                <TableHead>
+                <TableHeader>
                   <tr>
                     {head("ref", "Reference")}
                     {cols.carrier ? head("carrier", "Carrier") : null}
                     {head("pallets", "Pallets", "end", "descending")}
                     {cols.kg ? head("kg", "Gross (kg)", "end", "descending") : null}
                   </tr>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {shown.length ? (
                     shown.map((r) => (
@@ -1194,7 +1194,7 @@ function Lanes() {
       <TableFrame>
         <TableScroll>
           <Table aria-label="Lanes">
-            <TableHead>
+            <TableHeader>
               {table.getHeaderGroups().map((g) => (
                 <tr key={g.id}>
                   {g.headers.map((h) => {
@@ -1215,7 +1215,7 @@ function Lanes() {
                   })}
                 </tr>
               ))}
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((r) => (
                 <TableRow key={r.id}>
@@ -1478,14 +1478,14 @@ function Manifests() {
           </TableBulkBar>
           <TableScroll>
             <Table aria-label="Manifest rows">
-              <TableHead>
+              <TableHeader>
                 <tr>
-                  <TableHeaderCell>ID</TableHeaderCell>
+                  <TableHead>ID</TableHead>
                   {head("dock", "Dock")}
                   {showCarrier ? head("carrier", "Carrier") : null}
                   {head("pallets", "Pallets", "descending", "end")}
                 </tr>
-              </TableHead>
+              </TableHeader>
               <TableBody>
                 {rows.map((r) => (
                   <TableRow key={r.id} selected={sel.has(r.id)}>

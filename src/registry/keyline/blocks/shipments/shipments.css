@@ -8,13 +8,6 @@
     background-color: currentColor;
   }
 
-  /* the table frame fills the viewport height under the shell header; the grid scrolls inside */
-  .kl-sx-table {
-    max-height: calc(100dvh - 3 * var(--kl-gutter) - var(--kl-ctl) - 2 * var(--kl-k3));
-    min-height: 360px;
-    background-color: var(--kl-cell);
-  }
-
   /* filter controls are toolbar cells (layout="cell"); the block only decides their widths */
   .kl-sx-carriers {
     flex: 0 1 260px;
@@ -31,9 +24,6 @@
   }
 
   /* rows */
-  .kl-sx-id {
-    padding: 0;
-  }
   .kl-sx-open {
     display: flex;
     align-items: center;
@@ -70,7 +60,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .kl-td[data-late] {
+  [data-slot="table-cell"][data-late] {
     color: var(--kl-red-text);
     font-weight: var(--kl-weight-strong);
   }
@@ -148,5 +138,20 @@
     .kl-sx-legs > li:nth-child(n + 3) {
       border-block-start: var(--kl-k1) solid var(--kl-line-soft);
     }
+  }
+}
+
+/* Table is written in utilities, and utilities beat @layer components: the block's overrides of its parts (the
+   frame's height, the ID cell's padding) sit in @layer utilities, keyed on the parts' data-slot, until the block is
+   rebuilt on Data Table. */
+@layer utilities {
+  /* the table frame fills the viewport height under the shell header; the grid scrolls inside */
+  .kl-sx-table[data-slot="table-frame"] {
+    max-height: calc(100dvh - 3 * var(--kl-gutter) - var(--kl-ctl) - 2 * var(--kl-k3));
+    min-height: 360px;
+    background-color: var(--kl-cell);
+  }
+  .kl-sx-id[data-slot="table-cell"] {
+    padding: 0;
   }
 }

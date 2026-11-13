@@ -116,8 +116,8 @@ written. A new component is done when it has all of these:
   consumer has nothing else to work with. When a composition seems to need an internal class, that is an API gap:
   fix the component, or record the gap.
 - **Wrap the library shadcn uses** for the same job (react-resizable-panels, react-day-picker, recharts,
-  embla-carousel), pinned to an exact version, and build everything else on Base UI primitives. Hand-written
-  behaviour misses the edge cases those libraries already handle.
+  embla-carousel, @tanstack/react-table), pinned to an exact version, and build everything else on Base UI
+  primitives. Hand-written behaviour misses the edge cases those libraries already handle.
 - **The documentation site is built from Keyline**: its shell, navigation, scroll areas and tables are Keyline
   components. That way the site keeps testing the library.
 - **Fix the cause.** A failure that depends on sub-pixel position or timing gets its bias removed, the fix is

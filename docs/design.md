@@ -220,6 +220,7 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
   | Carousel | `embla-carousel-react` | Dragging, snapping, scrolling |
   | Message scroller, Questionnaire | `@shadcn/react` | Log behaviour, stick-to-newest; multi-step form flow |
   | Command | `cmdk` | Filtering, active-item scrolling |
+  | Data table | `@tanstack/react-table` | Row models (sorting, filtering, paging), selection and ranges, state slices |
 
   Keyline adds construction, tokens, RTL, reduced motion and the accessibility the library leaves to the
   author. Hand-written behaviour drifts from platform conventions, misses edge cases the library has fixed,

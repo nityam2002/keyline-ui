@@ -2025,7 +2025,7 @@ for (const [width, reduce] of run("data")
   // Table: views, search, empty row, sort, select a page, a bulk action, the pager
   demo = await docs(p, "table");
   d = demo(0);
-  const bodyRows = () => box(d).locator("tbody tr.kl-tr").count();
+  const bodyRows = () => box(d).locator("tbody tr[data-slot=table-row]").count();
   await box(d).getByRole("tab", { name: /Held/ }).click();
   ok((await bodyRows()) === 2, `${tag} table: the Held view has two orders`);
   await box(d).getByRole("tab", { name: /All/ }).click();
@@ -2050,7 +2050,7 @@ for (const [width, reduce] of run("data")
   );
   await box(d).getByRole("checkbox", { name: "Select every order on this page" }).click();
   ok(
-    (await box(d).locator("[data-slot=table-bulk]").innerText()).includes("5 of 11 orders"),
+    (await box(d).locator("[data-slot=table-bulk-bar]").innerText()).includes("5 of 11 orders"),
     `${tag} table: the page is selected and counted`,
   );
   await box(d).getByRole("button", { name: "Mark delivered" }).click();

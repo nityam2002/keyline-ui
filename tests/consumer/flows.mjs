@@ -520,9 +520,9 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "tanstack: Shift + press adds a second level (numbered 1, 2; aria-sort on the first only)",
-    (await ln.locator("thead .kl-sort-n").allTextContents()).sort().join(",") === "1,2" &&
+    (await ln.locator("thead [data-slot=table-sort-level]").allTextContents()).sort().join(",") === "1,2" &&
       (await ln.locator("th[aria-sort=ascending], th[aria-sort=descending]").count()) === 1,
-    await ln.locator("thead .kl-sort-n").allTextContents(),
+    await ln.locator("thead [data-slot=table-sort-level]").allTextContents(),
   );
   // Manifests: command rows on Toolbar with overflow, multi-sort, signal
   const mf = p.getByRole("region", { name: "Manifests" });
@@ -618,7 +618,7 @@ for (const [eng, type, opts] of [
     eng,
     "multi-sort: a plain press sorts by Carrier alone",
     /carrier ascending$/.test(await p.getByTestId("mf-log").innerText()) &&
-      (await mt.locator(".kl-sort-n").count()) === 0,
+      (await mt.locator("[data-slot=table-sort-level]").count()) === 0,
     await p.getByTestId("mf-log").innerText(),
   );
   // Dock booking: DateTimePicker and 12-hour TimeField in a Keyline Form inside a shadcn Card

@@ -49,7 +49,7 @@ import {
   TableBulkBar,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
   useRowMotion,
@@ -278,7 +278,7 @@ function ShipmentRow({
         {cols.has("kg") ? <TableCell align="end">{fmtKg(s.kg)}</TableCell> : null}
         {cols.has("eur") ? <TableCell align="end">{s.eur ? fmtEur(s.eur) : "—"}</TableCell> : null}
       </TableRow>
-      <TableDetail open={expanded} presence={presence} colSpan={cols.size + 2} id={`legs-${s.id}`}>
+      <TableDetail presence={presence} colSpan={cols.size + 2} id={`legs-${s.id}`}>
         <ol className="kl-sx-legs" aria-label={`Legs for ${s.id}`}>
           {LEGS.map((l) => (
             <li key={l.at} data-status={l.state}>
@@ -1154,7 +1154,7 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
 
         <TableScroll>
           <Table aria-rowcount={filtered.length + 1}>
-            <TableHead>
+            <TableHeader>
               <tr>
                 <TableIndexCell
                   header
@@ -1179,7 +1179,7 @@ function ShipmentsApp({ initialLoad = "ready", portalContainer, className }: Shi
                   ),
                 )}
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody ref={rowMotion.ref}>
               {load === "loading" ? (
                 <TableLoadingRows cols={COLS} rows={pageSize} />

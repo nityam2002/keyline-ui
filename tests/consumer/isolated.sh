@@ -59,6 +59,9 @@ check checkbox-group checkbox-group CheckboxGroup "file:src/components/keyline/u
 # toolbar.tsx); its overflow logic is lib/toolbar-overflow.ts, reached only through toolbar: both must arrive
 check table table TableSortHeader "file:src/components/keyline/ui/toolbar.tsx"
 check table table TableSortHeader "file:src/components/keyline/lib/toolbar-overflow.ts"
+# The data table drives the table parts with TanStack Table (from npm, pinned): its pure model is lib/data-table.ts, which
+# no item added before it installs
+check data-table data-table DataTable "file:src/components/keyline/lib/data-table.ts"
 # The date picker has no CSS of its own: its trigger and ! cell are the field's (theme). The calendar's look is utilities
 # in date-range.tsx and its dates come from lib/calendar.ts; no item added before it installs either, so both must
 # arrive with it (the build below checks the utilities are generated)
@@ -106,5 +109,8 @@ built "the tab's count width" 'data-has-count\:min-w-\[104px\]'
 built "the resizable grip's states" '/resizable-handle'
 # the nav's responsive row keys on its named container (@container/kl-nav), which is in no installed file but nav.tsx
 built "the nav's responsive row" '@container kl-nav (min-width:300px)'
+# the table frame is its own size container (@container/kl-tf): its narrow bulk bar wraps by it, a rule in no installed file
+# but table.tsx
+built "the table frame's narrow rules" '@container kl-tf (max-width:560px)'
 echo "isolated: ${fails} missing"
 exit $fails

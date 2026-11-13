@@ -7,6 +7,7 @@ import * as Recharts from "recharts";
 
 import { cn } from "@/lib/utils";
 import { Segmented, SegmentedItem } from "./segmented";
+import { Table, TableBody, TableCell, TableHead, TableHeader } from "./table";
 import { domDir } from "../lib/keyline-scope";
 import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
 
@@ -150,7 +151,6 @@ const table = cn(
   "kl-type overflow-x-auto border-(length:--kl-k1) border-kl-line",
   "[&_tbody_tr:last-child>*]:border-b-0",
 );
-const num = "text-end tabular-nums";
 
 type ChartContainerState = Record<string, never>;
 const PART_STATE: ChartContainerState = {};
@@ -401,15 +401,13 @@ function ChartTable({
   const fmt = format ?? ((v: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v));
   const keys = Object.keys(config);
   const body = (
-    <table className="kl-table text-[13px]">
+    <Table className="text-[13px]">
       {caption ? <caption className="kl-sr">{caption}</caption> : null}
-      <thead>
+      <TableHeader>
         <tr>
-          <th className="kl-th" scope="col">
-            {labelHeader ?? labelKey}
-          </th>
+          <TableHead scope="col">{labelHeader ?? labelKey}</TableHead>
           {Object.entries(config).map(([k, c]) => (
-            <th className={cn("kl-th", num)} scope="col" key={k}>
+            <TableHead align="end" scope="col" key={k}>
               <span
                 data-slot="chart-key"
                 className={cn(key_, "me-1.5 align-[-1px]")}
@@ -418,25 +416,25 @@ function ChartTable({
               />
               {c.label ?? k}
               {c.unit ? <span className="kl-code"> {c.unit}</span> : null}
-            </th>
+            </TableHead>
           ))}
         </tr>
-      </thead>
-      <tbody>
+      </TableHeader>
+      <TableBody>
         {data.map((row, i) => (
           <tr key={i}>
-            <th className="kl-td text-start font-normal" scope="row">
+            <TableCell render={<th scope="row" />} className="text-start font-normal">
               {shown(row[labelKey], "")}
-            </th>
+            </TableCell>
             {keys.map((k) => (
-              <td className={cn("kl-td", num)} key={k}>
+              <TableCell align="end" key={k}>
                 {typeof row[k] === "number" ? fmt(row[k] as number) : shown(row[k], "–")}
-              </td>
+              </TableCell>
             ))}
           </tr>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
   const own = {
     "data-slot": "chart-table",

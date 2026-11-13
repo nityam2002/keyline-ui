@@ -5,10 +5,10 @@ import {
   TableFrame,
   TableScroll,
   Table,
-  TableHead,
+  TableHeader,
   TableBody,
   TableRow,
-  TableHeaderCell,
+  TableHead,
   TableCell,
 } from "@/components/keyline/ui/table";
 
@@ -34,13 +34,13 @@ export function ReferenceTable({
       <TableFrame aria-label={label}>
         <TableScroll>
           <Table className="max-[721px]:w-full">
-            <TableHead className="max-[721px]:hidden">
+            <TableHeader className="max-[721px]:hidden">
               <tr>
                 {head.map((h) => (
-                  <TableHeaderCell key={h}>{h}</TableHeaderCell>
+                  <TableHead key={h}>{h}</TableHead>
                 ))}
               </tr>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {rows.map((r, i) => (
                 <TableRow
