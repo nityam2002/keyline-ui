@@ -16,6 +16,7 @@
     "registry.json",
     "tests/registry/surface.snapshot.json",
     "site/public/**",
+    "site/generated/**",
     "site/.next/**",
     ".artifacts/**",
     "pnpm-lock.yaml",

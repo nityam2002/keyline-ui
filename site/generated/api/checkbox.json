@@ -1,0 +1,99 @@
+{
+  "name": "checkbox",
+  "title": "Checkbox",
+  "description": "Square check box and a labelled checkbox row with description; indeterminate supported.",
+  "whenToUse": "Use it for one yes-or-no choice in a form that is saved later. For a setting that applies at once use Switch; for several related choices use Checkbox group.",
+  "parts": [
+    {
+      "name": "Checkbox",
+      "description": "The box: 18px, square, never cut. Checked fills ink with a paper tick; indeterminate draws a bar. Inside a yellow (working-set) cell the tick turns yellow, so the box keeps contrast on both fills. All Base UI Checkbox props pass through (name, value, form participation, parent/child groups); `onCheckedChange` gets Base UI's event details last. Without children it draws its CheckboxIndicator.",
+      "props": []
+    },
+    {
+      "name": "CheckboxField",
+      "description": "A labelled checkbox row: box cell + label + optional description. The whole row is the hit target, the label is the accessible name, and the description is attached via aria-describedby (Base UI Field). `className` goes to the row's Field.Root; every other prop goes to the Checkbox.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): aligns to a form column. cell: a row inside an enclosing frame (40px box cell, inset text)."
+        }
+      ]
+    },
+    {
+      "name": "CheckboxIndicator",
+      "description": "The tick (checked) or bar (indeterminate). Kept mounted by default, so the box's contents never jump.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "checkbox",
+        "checkbox-field",
+        "checkbox-field-box",
+        "checkbox-field-description",
+        "checkbox-field-label",
+        "checkbox-field-row",
+        "checkbox-field-text",
+        "checkbox-indicator"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-tick",
+      "values": [
+        "Canvas",
+        "var(--kl-on-inverse)",
+        "var(--kl-yellow)"
+      ]
+    },
+    {
+      "name": "--kl-tick-path",
+      "values": [
+        "url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2012%2012%27%3E%3Cpath%20d=%27M1.6%206.18%204.6%209.18%2010.4%202.78%27%20fill=%27none%27%20stroke=%27%23000%27%20stroke-width=%272.4%27%20stroke-linecap=%27square%27/%3E%3C/svg%3E)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "checkbox-closing",
+      "title": "Checkbox: closing checklist",
+      "file": "checkbox-closing.tsx"
+    },
+    {
+      "name": "checkbox-invoices",
+      "title": "Checkbox: print invoices",
+      "file": "checkbox-invoices.tsx"
+    }
+  ]
+}

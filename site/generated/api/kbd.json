@@ -1,0 +1,51 @@
+{
+  "name": "kbd",
+  "title": "Kbd",
+  "description": "A key in the Code voice: a key cell with a 2px floor; KbdGroup joins a chord's keys on seams (nested kbd), with the separator read, not drawn. Used by Command.",
+  "whenToUse": "Use it to show a key or a key combination in text, in a tooltip or beside a command. It is not a button.",
+  "parts": [
+    {
+      "name": "Kbd",
+      "description": "A key, in the Code voice. A small key cell: a 1px keyline with a 2px floor, the key's lip. Used in prose and help text, and by Command, Menu and Tooltip for their shortcuts.",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Words for a symbol key (\"Command\" for ⌘, \"Shift\" for ⇧): the glyph shows, the words are read."
+        }
+      ]
+    },
+    {
+      "name": "KbdGroup",
+      "description": "Keys pressed together (or in order) as cells of one key frame on shared seams (C1), nested <kbd> as HTML specifies for a combination. The separator is read, not drawn: the seam is the join.",
+      "props": [
+        {
+          "name": "separator",
+          "type": "string",
+          "default": "\"+\"",
+          "required": false,
+          "description": "Read between keys (the seam shows it): \"+\" for a chord, \"then\" for a sequence."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "kbd",
+        "kbd-group"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "kbd-shortcuts",
+      "title": "Kbd: order shortcuts",
+      "file": "kbd-shortcuts.tsx"
+    }
+  ]
+}

@@ -23,6 +23,7 @@
       "@/components/keyline/ui/*": ["../src/registry/keyline/ui/*"],
       "@/components/keyline/lib/*": ["../src/registry/keyline/lib/*"],
       "@/components/keyline/blocks/*": ["../src/registry/keyline/blocks/*"],
+      "@/components/keyline/examples/*": ["../src/registry/keyline/examples/*"],
       "@/components/keyline/theme/*": ["../src/registry/keyline/theme/*"],
       "@/lib/*": ["../src/lib/*"],
       "@site/*": ["./*"]

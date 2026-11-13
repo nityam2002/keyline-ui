@@ -1,0 +1,146 @@
+{
+  "name": "carousel",
+  "title": "Carousel",
+  "description": "Slides on Embla, as the reference: a frame of slides on travelling 1px seams with a control row of cells (previous, n / N with position ticks, next). APG carousel without rotation: named region, slides labelled n of N, out-of-view slides inert, arrow keys mirrored in RTL, moves announced politely, instant steps under reduced motion.",
+  "whenToUse": "Use it for a few slides a reader moves through in turn, such as product photos. For content that must all be compared at once use Item or Table.",
+  "parts": [
+    {
+      "name": "Carousel",
+      "description": "The frame. Slides sit side by side on 1px seams inside it; the control row (CarouselBar) is its foot. Direction follows the page: in RTL the first slide is at the inline start and the arrows mirror.",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element. Names the region (\"Dock photos\"). Required: a carousel is a landmark-like region."
+        },
+        {
+          "name": "opts",
+          "type": "Partial<OptionsType>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "default": "\"horizontal\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "plugins",
+          "type": "CreatePluginType<LoosePluginType, {}>[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "setApi",
+          "type": "(api: EmblaCarouselType | undefined) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CarouselBar",
+      "description": "The control row: previous, position, next. Compose your own from the same parts if needed.",
+      "props": []
+    },
+    {
+      "name": "CarouselContent",
+      "description": "The viewport, which clips the slides; the track inside it moves. `className`, `style` and `render` are the viewport's; `trackClassName` styles the track.",
+      "props": [
+        {
+          "name": "trackClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CarouselItem",
+      "description": "One slide: a group named \"n of N\". `basis` is the share of the viewport it takes (\"50%\" shows two). Slides out of view are inert.",
+      "props": [
+        {
+          "name": "basis",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CarouselNext",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "CarouselPosition",
+      "description": "Where you are: \"2 / 5\" in the Code voice and a row of position ticks you can press. The current position is one ink band that STRETCHES between ticks: its leading edge reaches the new tick first and the trailing edge follows, so a step or a jump shows its direction and distance, the way the slides travel. Zero bounce; reduced motion places it at once. With many slides (12 or more) the ticks give way to the count alone.",
+      "props": []
+    },
+    {
+      "name": "CarouselPrevious",
+      "description": "Previous / next: cells of the control row, rendered by Button. At an end they stay focusable and say why they do nothing.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-in-view",
+      "values": []
+    },
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "carousel",
+        "carousel-bar",
+        "carousel-chevron",
+        "carousel-content",
+        "carousel-count",
+        "carousel-item",
+        "carousel-position",
+        "carousel-tick",
+        "carousel-ticks",
+        "carousel-track"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "carousel-posters",
+      "title": "Carousel: employee of the month",
+      "file": "carousel-posters.tsx"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "name": "popover",
+  "title": "Popover",
+  "description": "Arbitrary content docked to its trigger (or detached by one gutter), with optional header, body and footer cells.",
+  "whenToUse": "Use it for a quick edit or a few settings beside the control that opened it, while the page stays live. For a task the page waits for use Dialog; for a label use Tooltip.",
+  "parts": [
+    {
+      "name": "PopoverBody",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "PopoverClose",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "PopoverDescription",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "PopoverFooter",
+      "description": "A row of cells on the bottom keyline (Button layout=\"cell\"); the cells share its width equally.",
+      "props": []
+    },
+    {
+      "name": "PopoverHeader",
+      "description": "Optional header row: title, description and a close cell, on the popover's own keyline.",
+      "props": [
+        {
+          "name": "close",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": "Show the close cell (default true)."
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "default": "\"Close\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "PopoverPopup",
+      "description": "Arbitrary content docked to its trigger: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. The shared edge sits on the trigger's keyline, it unfolds from that edge, it has no cut (an attached surface continues its owner). It carries the configuration of the place it is written. For lists of commands use Menu; for a single choice use Select.",
+      "props": [
+        {
+          "name": "attachWeight",
+          "type": "2 | 3 | 1",
+          "default": "2",
+          "required": false,
+          "description": "Keyline weight of the owner's shared edge: 2 for a standalone control, 1 for a cell (layout=\"cell\")."
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "detached",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Detached: sits one gutter from the trigger as a control-weight frame, for content not about the trigger itself."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<PopoverPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Popover.Portal."
+        }
+      ]
+    },
+    {
+      "name": "PopoverTitle",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "PopoverTrigger",
+      "description": "The element that opens the popover. Rendered as another part (`render={<Button />}`), the element is that part's and carries its data-slot.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-detached",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "popover-body",
+        "popover-close",
+        "popover-description",
+        "popover-footer",
+        "popover-header",
+        "popover-popup",
+        "popover-title",
+        "popover-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-attach",
+      "values": [
+        "`${attachWeight"
+      ]
+    },
+    {
+      "name": "--kl-dock-w",
+      "values": [
+        "280px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "popover-note",
+      "title": "Popover: delivery note",
+      "file": "popover-note.tsx"
+    }
+  ]
+}

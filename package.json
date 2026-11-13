@@ -40,7 +40,8 @@
     "site:dev": "next dev site --port 5293",
     "site:build": "next build site",
     "site:start": "next start site --port 5293",
-    "site:typecheck": "next typegen site && tsc -p site --noEmit"
+    "site:typecheck": "next typegen site && tsc -p site --noEmit",
+    "docs:api": "node scripts/docs/api.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",

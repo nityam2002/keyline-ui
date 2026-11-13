@@ -6,6 +6,8 @@ export default {
   title: "Date range picker",
   description:
     "Range calendar on react-day-picker (pinned) styled as a Keyline grid: a flooded range with ink ends, row-break notches, hover and keyboard preview, hatched unavailable days, month and year dropdowns, min/max, presets and a day count.",
+  whenToUse:
+    "Use it to choose a first and a last day, such as a booking or a report period. For a single day use Date picker.",
   files: [{ path: "src/registry/keyline/ui/date-range.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "react-day-picker"],
   registryDependencies: [

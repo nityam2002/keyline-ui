@@ -1,0 +1,76 @@
+{
+  "name": "breadcrumb",
+  "title": "Breadcrumb",
+  "description": "Where a page sits: ancestor link cells and a cobalt cell for here; earlier levels fold into a menu by count or width.",
+  "whenToUse": "Use it to show where a page sits in a hierarchy and link to its ancestors. For an app's own sections use Nav; for switching views of one place use Tabs.",
+  "parts": [
+    {
+      "name": "Breadcrumb",
+      "description": "Where this page sits, as cells in one frame: ┌─────────┬──────────┬───┬───────────┬━━━━━━━━━━━━━━━━━━━━┓ │ Network ›│ Europe › │ … │ Rotterdam ›│ ECT Delta (here) ┃ ancestors are link cells; here is cobalt └─────────┴──────────┴───┴───────────┴━━━━━━━━━━━━━━━━━━━━┛ - The current page is the cobalt cell (location, as in Nav and Tabs), aria-current=\"page\", not a link. - Each ancestor ends in a chevron that mirrors in RTL. Long labels truncate inside their cell; the current page keeps the most room. - Folding: more than `maxItems`, or less than 480px of its own width, folds every ancestor before the parent into a \"…\" cell whose menu lists them in order. The parent and the page itself always show.",
+      "props": [
+        {
+          "name": "items",
+          "type": "Crumb[]",
+          "default": "",
+          "required": true,
+          "description": "Ancestors first; the last item is the current page (not a link)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a row of an enclosing frame (a panel's or page header's top cell)."
+        },
+        {
+          "name": "maxItems",
+          "type": "number",
+          "default": "4",
+          "required": false,
+          "description": "Above this many items the ones before the parent fold into a \"…\" cell with a menu. Default 4."
+        },
+        {
+          "name": "moreLabel",
+          "type": "string",
+          "default": "\"Earlier levels\"",
+          "required": false,
+          "description": "Name of the \"…\" menu trigger."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-early",
+      "values": []
+    },
+    {
+      "name": "data-kl-folded",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "breadcrumb",
+        "breadcrumb-item",
+        "breadcrumb-link",
+        "breadcrumb-list",
+        "breadcrumb-more",
+        "breadcrumb-page",
+        "breadcrumb-separator"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "breadcrumb-drive",
+      "title": "Breadcrumb: drive folder",
+      "file": "breadcrumb-drive.tsx"
+    }
+  ]
+}

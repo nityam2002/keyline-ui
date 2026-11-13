@@ -6,6 +6,8 @@ export default {
   title: "Inspector",
   description:
     "Non-modal contextual panel: header with the inspected object's code, key/value cells and a sticky action strip.",
+  whenToUse:
+    "Use it to show the chosen record of a list in a panel beside it, without blocking the page. For a modal task use Dialog; for detail docked to the page edge use Sheet.",
   files: [{ path: "src/registry/keyline/ui/inspector.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render", "@keyline-ui/scroll-area"],

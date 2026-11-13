@@ -1,0 +1,119 @@
+{
+  "name": "accordion",
+  "title": "Accordion",
+  "description": "Stacked sections in one frame: header rows on shared keylines, panels unfold from the header's keyline; one or many open.",
+  "whenToUse": "Use it for several related sections a reader opens one or a few at a time, such as policies or FAQs. For a single disclosure use Collapsible; for views of one place use Tabs.",
+  "parts": [
+    {
+      "name": "AccordionHeader",
+      "description": "The heading that holds a trigger (Base UI Accordion.Header). AccordionTrigger renders one when it has none.",
+      "props": [
+        {
+          "name": "level",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "default": "3",
+          "required": false,
+          "description": "Heading level (default 3)."
+        }
+      ]
+    },
+    {
+      "name": "AccordionItem",
+      "description": "A section: its header row and its panel (Base UI Accordion.Item).",
+      "props": []
+    },
+    {
+      "name": "AccordionPanel",
+      "description": "The section's content (Base UI Accordion.Panel). It unfolds; its content sits inside the clip.",
+      "props": [
+        {
+          "name": "contentClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Classes for the content inside the panel's clip (its layout: `grid gap-4`)."
+        },
+        {
+          "name": "flush",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Drop the content's inset, for content that brings its own cells (an item list, a key/value grid)."
+        }
+      ]
+    },
+    {
+      "name": "AccordionRoot",
+      "description": "Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge, one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the header row never moves). Opening does not also flood: the caret turns, the panel arrives. ┌─────────────────────────────────────────┬────┐ │ Customs documents 3 files │ ⌃ │ title (+ description) and meta · caret cell ├─────────────────────────────────────────┴────┤ │ panel content │ ├─────────────────────────────────────────┬────┤ │ Billing │ ⌄ │ └─────────────────────────────────────────┴────┘ The caret cell is the only divided column, so it runs straight down the frame whether or not a row has meta (a column, once started, runs the full height). One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: the rows sit directly in an enclosing frame (a panel body, an inspector)."
+        }
+      ]
+    },
+    {
+      "name": "AccordionTrigger",
+      "description": "The header row (Base UI Accordion.Trigger): title, description and meta, and the caret cell.",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "level",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "default": "3",
+          "required": false,
+          "description": "Heading level of the header it renders when it is not inside an AccordionHeader (default 3)."
+        },
+        {
+          "name": "meta",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-flush",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "accordion",
+        "accordion-caret",
+        "accordion-content",
+        "accordion-description",
+        "accordion-header",
+        "accordion-item",
+        "accordion-meta",
+        "accordion-panel",
+        "accordion-title",
+        "accordion-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "accordion-policies",
+      "title": "Accordion: branch policies",
+      "file": "accordion-policies.tsx"
+    }
+  ]
+}

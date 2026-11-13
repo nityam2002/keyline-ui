@@ -6,6 +6,8 @@ export default {
   title: "Toast",
   description:
     "Actionable feedback on Base UI Toast that docks into a host cell or floats at the inline-end corner: done, failed, info, warning and loading kinds, a description line, one action (Undo, Retry), the countdown draining the keyline. useToaster() and createToaster() add promise tracking, update and dismiss, and calls from outside React.",
+  whenToUse:
+    "Use it for a short record of something that just happened, with at most one action such as Undo. For something that stays true where it sits use Notice.",
   files: [{ path: "src/registry/keyline/ui/toast.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-scope", "@keyline-ui/keyline-render"],

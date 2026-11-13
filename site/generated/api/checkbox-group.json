@@ -1,0 +1,208 @@
+{
+  "name": "checkbox-group",
+  "title": "Checkbox group",
+  "description": "Several independent choices to one question in one frame (Base UI CheckboxGroup): an optional parent row that checks or clears all with a count, rows with description and meta, Form participant.",
+  "whenToUse": "Use it for several choices that answer one question, with an All row that counts them. For one yes-or-no choice use Checkbox; for one choice of a few use Radio group.",
+  "parts": [
+    {
+      "name": "CheckboxGroup",
+      "description": "Several independent choices that belong to one question, in one frame, built from the parts above. - Behaviour is Base UI CheckboxGroup in a Fieldset in a Field: Tab visits each box, Space toggles, the parent row checks or clears every enabled option; disabled options keep their state. - Field participant: `name` puts the checked values in Form values and FormData, `validate` and Form `errors` reach it, and `invalid` + `error` show the attention state (red frame, the message below). - The parent row is the group's summary, so it is divided from its options by a 2px rule (the same weight a toolbar group's edge has): one unit, then its parts. - Each row's whole width is the hit target (the label wraps the box); long labels wrap inside the row.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Extra rows (CheckboxGroupItem) after the options, for rows the options shape can't describe."
+        },
+        {
+          "name": "className",
+          "type": "string | ((state: CheckboxGroupState) => string | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): its own 2px frame, legend above. cell: rows of an enclosing frame (a panel body, a popover)."
+        },
+        {
+          "name": "legend",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "Names the group (a fieldset legend). With layout=\"cell\" it is announced but not shown: the enclosing frame's header names it."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Form name: Base UI Form values and FormData get the checked values under it."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string[], eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with the checked values and Base UI's event details (the reason, the event)."
+        },
+        {
+          "name": "options",
+          "type": "CheckboxGroupOption[]",
+          "default": "[]",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "selectAll",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A parent row that checks or clears every option (Base UI's parent checkbox: mixed while some are checked). true labels it \"All\"; pass a node to name it (\"All carriers\"). Its meta cell counts \"3/5\"."
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CheckboxGroupFrame",
+      "description": "The frame of rows: they meet on 1px keylines, and the parent row meets its options on a 2px rule.",
+      "props": []
+    },
+    {
+      "name": "CheckboxGroupItem",
+      "description": "One row: box cell · label (+ description) · optional meta cell. The row is Base UI's Field.Item, its label is the whole row (the hit target), and every Checkbox prop (`value`, `parent`, `disabled`) goes to the box.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string | ((state: FieldItemState) => string | undefined)",
+          "default": "",
+          "required": false,
+          "description": "Goes to the row (Base UI's Field.Item); a function receives its state."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CheckboxGroupLegend",
+      "description": "Names the group: Base UI's Fieldset.Legend, in the field label's voice. Visually hidden in the `cell` layout.",
+      "props": []
+    },
+    {
+      "name": "CheckboxGroupRoot",
+      "description": "Base UI's CheckboxGroup, rendered as a fieldset inside its own Base UI Field.Root (the two in one part): `name`, `invalid`, `validate` and `validationMode` go to the field, so Form values, FormData and Form `errors` reach the group; the rest (`value`, `defaultValue`, `onValueChange` with Base UI's event details last, `allValues`, `disabled`) to the group. Lay it out with CheckboxGroupLegend, CheckboxGroupFrame and CheckboxGroupItem rows.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): its own 2px frame, legend above. cell: rows of an enclosing frame; the legend is announced but not shown."
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-empty",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-invalid",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-kl-parent",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "checkbox-group",
+        "checkbox-group-frame",
+        "checkbox-group-item",
+        "checkbox-group-item-box",
+        "checkbox-group-item-description",
+        "checkbox-group-item-label",
+        "checkbox-group-item-meta",
+        "checkbox-group-item-row",
+        "checkbox-group-item-text",
+        "checkbox-group-legend"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-dis-line)",
+        "var(--kl-red)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "checkbox-group-party",
+      "title": "Checkbox group: party supplies",
+      "file": "checkbox-group-party.tsx"
+    },
+    {
+      "name": "checkbox-group-price-list",
+      "title": "Checkbox group: price list recipients",
+      "file": "checkbox-group-price-list.tsx"
+    }
+  ]
+}

@@ -66,8 +66,7 @@ utilities in its source and adds no CSS of its own; the theme's CSS (the `--kl-*
 construction rules) is merged into the stylesheet named in your `components.json`. Those rules only style
 Keyline's names, so your existing components, tokens and `body` look the same.
 
-The [installation guide](https://keyline-ui.dev/docs/installation) (also in [docs/usage.md](docs/usage.md#install))
-covers new and existing projects, requirements, updating and removing.
+The [installation guide](https://keyline-ui.dev/docs/installation) covers new and existing projects, requirements, updating and removing.
 
 ## Components
 
@@ -120,7 +119,9 @@ docs/           usage, design rules and the release procedure
 ## Documentation
 
 - [keyline-ui.dev](https://keyline-ui.dev): installation and one page per component.
-- [docs/usage.md](docs/usage.md): installing, configuring, modes, colour roles, composition rules, known limits.
+- The site's guides: [installation](https://keyline-ui.dev/docs/installation), [theming](https://keyline-ui.dev/docs/theming),
+  [modes](https://keyline-ui.dev/docs/modes), [configuration](https://keyline-ui.dev/docs/configuration) and
+  [composition](https://keyline-ui.dev/docs/composition) (colour roles, composition rules, known limits).
 - [docs/design.md](docs/design.md): the design model, and the rules a new component follows.
 
 ## Contributing

@@ -1,0 +1,334 @@
+{
+  "name": "combobox",
+  "title": "Combobox",
+  "description": "Single-value combobox: a Select you can type into. Local filtering or an async source (abort, status, retry), optional groups; the list docks to the frame.",
+  "whenToUse": "Use it to choose one option from a long list by typing to filter. For a short list use Select; for several values use Multiselect.",
+  "parts": [
+    {
+      "name": "Combobox",
+      "description": "Single-value combobox: a Select you can type into, built from the parts above. Two sources: - `options`: local, filtered by Base UI as you type; - `loadOptions`: async. A status line says what the list is (searching, n matches, the error with Retry); a superseded request is aborted; a pending search runs the pending segment on the panel's keyline. The chosen option stays known, so its label survives a new search. Keyboard, typeahead, focus return, form value and ARIA are Base UI Combobox's. Escape closes the list and the input shows the chosen label again. Escape on a closed field keeps the choice (Base UI would clear it) and passes on, so an enclosing dialog closes; the clear cell is the way to clear. The wrapper is a Base UI Field.Root: a Form collects the value under `name`, and the Form's `errors`, `validate` and `required` produce the message under the frame.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": "Offer a clear cell while a value is chosen. Default true."
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "default": "null",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (e.g. a toolbar); the label is visually hidden."
+        },
+        {
+          "name": "loadOptions",
+          "type": "(query: string, signal: AbortSignal) => Promise<ComboboxOption[]>",
+          "default": "",
+          "required": false,
+          "description": "Async source. Called on open and on every edit; a superseded request is aborted. Errors offer Retry."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Form field name; the submitted value (FormData and Base UI Form values) is the option's `value`."
+        },
+        {
+          "name": "noun",
+          "type": "[singular: string, plural: string]",
+          "default": "[\"option\", \"options\"]",
+          "required": false,
+          "description": "Names the things listed, for the status line and the empty state."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null, option: ComboboxOption | null, eventDetails: ChangeEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with the chosen value, its option, and Base UI's event details (the reason, the event)."
+        },
+        {
+          "name": "options",
+          "type": "ComboboxOption[]",
+          "default": "[]",
+          "required": false,
+          "description": "Local options, filtered by Base UI as the user types (label match, locale-aware). With `loadOptions`, these are the options known before any search (recents, the current value): they are listed for an empty query and give a controlled value its label."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "\"Search…\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "The chosen option's `value`. `null` is no choice."
+        }
+      ]
+    },
+    {
+      "name": "ComboboxChip",
+      "description": "One chosen value: a yellow tag. Reached with the arrow keys it is the cursor (ink); the frame shows the focus edge, so the chip draws no ring of its own.",
+      "props": []
+    },
+    {
+      "name": "ComboboxChipRemove",
+      "description": "Removes its chip. Its accessible name is required (`aria-label`, e.g. \"Remove Rotterdam\"): it shows only a cross.",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element."
+        }
+      ]
+    },
+    {
+      "name": "ComboboxChips",
+      "description": "The chosen values of a `multiple` combobox, before the input, in the frame.",
+      "props": []
+    },
+    {
+      "name": "ComboboxClear",
+      "description": "The clear cell. Give it an accessible name (`aria-label`): it shows only a cross.",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element."
+        }
+      ]
+    },
+    {
+      "name": "ComboboxEmpty",
+      "description": "Shown in place of the list while no option matches; render nothing in it while a search is pending.",
+      "props": []
+    },
+    {
+      "name": "ComboboxGroup",
+      "description": "Options under one heading. A group after a group is divided by a seam.",
+      "props": []
+    },
+    {
+      "name": "ComboboxGroupLabel",
+      "description": "A group's heading, in the Code voice; the group's first option sits on its seam.",
+      "props": []
+    },
+    {
+      "name": "ComboboxInput",
+      "description": "The text input cell.",
+      "props": []
+    },
+    {
+      "name": "ComboboxInputGroup",
+      "description": "The field frame: a row of cells (the input, then the clear and caret cells). Its edge is the focus indicator. `layout=\"cell\"`: it fills a cell of an enclosing frame (a toolbar) instead of drawing its own.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ComboboxItem",
+      "description": "One option: the choice mark (the exclusive-choice square, shown while chosen), the label with an optional description, and an optional trailing code. The cursor is the inverse row.",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing code cell (an ID, a unit, a short key)."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ComboboxList",
+      "description": "The options. Rows are separated by soft rules; it is not drawn while it has none.",
+      "props": []
+    },
+    {
+      "name": "ComboboxPopup",
+      "description": "The list's surface: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. It docks to the frame (its shared edge on the frame's keyline, no cut) and carries the configuration (cut, density, motion, theme, dir) of the place it is written. `aria-busy` dims the list.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "The frame the list docks to: `cell` when the input group has `layout=\"cell\"`."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<ComboboxPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Combobox.Portal."
+        }
+      ]
+    },
+    {
+      "name": "ComboboxStatus",
+      "description": "The live region that says what the list is (searching, n matches, an error), in the Code voice.",
+      "props": []
+    },
+    {
+      "name": "ComboboxTrigger",
+      "description": "The caret cell: opens the list; inverse while it is open, as Select's.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-error",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "combobox",
+        "combobox-chip",
+        "combobox-chip-remove",
+        "combobox-chips",
+        "combobox-clear",
+        "combobox-empty",
+        "combobox-group",
+        "combobox-group-label",
+        "combobox-input",
+        "combobox-input-group",
+        "combobox-item",
+        "combobox-item-code",
+        "combobox-item-indicator",
+        "combobox-item-label",
+        "combobox-list",
+        "combobox-popup",
+        "combobox-status",
+        "combobox-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-dis-line)",
+        "var(--kl-red)"
+      ]
+    },
+    {
+      "name": "--kl-dock-w",
+      "values": [
+        "15rem"
+      ]
+    },
+    {
+      "name": "--kl-edge-w",
+      "values": [
+        "var(--kl-ring)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "combobox-client",
+      "title": "Combobox: find client",
+      "file": "combobox-client.tsx"
+    },
+    {
+      "name": "combobox-directory",
+      "title": "Combobox: corporate directory",
+      "file": "combobox-directory.tsx"
+    }
+  ]
+}

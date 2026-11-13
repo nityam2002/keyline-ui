@@ -1,0 +1,113 @@
+{
+  "name": "item",
+  "title": "Item",
+  "description": "List rows on shared keylines: media cell, content, meta and action cells; render-prop rows for links and buttons.",
+  "whenToUse": "Use it for lists of rows with media, content, a value and controls, where a row may be a link or a button. For tabular data with columns use Table.",
+  "parts": [
+    {
+      "name": "Item",
+      "description": "One row: media/code cell · content · meta · actions. Pass `render={<a href=\"…\" />}` or `render={<button />}` to make the whole row the interactive element; props, refs and handlers merge through Base UI's useRender, as in every Base UI part.",
+      "props": [
+        {
+          "name": "current",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Marks the row as the current location (master–detail): its leading cell floods with the commit signal."
+        }
+      ]
+    },
+    {
+      "name": "ItemActions",
+      "description": "Trailing controls. Cells (Button layout=\"cell\") share the row's keylines; a Switch or Badge sits centred.",
+      "props": []
+    },
+    {
+      "name": "ItemContent",
+      "description": "The row's words: its title, an optional description, and any children under them.",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ItemList",
+      "description": "A list of rows on shared keylines: settings, members, files, integrations. As a standalone region it is a 3px frame; with layout=\"cell\" it is the body of an enclosing frame (a Panel body with `flush`).",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ItemMedia",
+      "description": "Leading cell: a 16px icon, an initial, or a code of up to four mono characters (ERP, DHL). Square and fixed, so the content seam lines up down the list; floods when the row is current. Longer values (times, IDs) belong in ItemMeta or the description, never here.",
+      "props": []
+    },
+    {
+      "name": "ItemMeta",
+      "description": "Trailing value in the Code voice (a size, a date, a count). Tabular, right-aligned.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-current",
+      "values": []
+    },
+    {
+      "name": "data-interactive",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "item",
+        "item-actions",
+        "item-content",
+        "item-description",
+        "item-list",
+        "item-media",
+        "item-meta",
+        "item-row",
+        "item-title"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-c-room",
+      "values": [
+        "0px",
+        "calc(var(--kl-c,0px)*0.35)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "item-settings",
+      "title": "Item: alert settings",
+      "file": "item-settings.tsx"
+    }
+  ]
+}

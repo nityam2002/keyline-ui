@@ -6,6 +6,8 @@ export default {
   title: "Button group",
   description:
     "Buttons attached in one control frame: Button cells on shared seams, each its own Tab stop; text cells and a heavier separator; horizontal or vertical. Toolbar is the one-Tab-stop row; SplitButton the action with its menu.",
+  whenToUse:
+    "Use it for a few related buttons that each stay their own Tab stop, such as zoom in and out. For a long row of commands that should be one stop use Toolbar.",
   files: [{ path: "src/registry/keyline/ui/button-group.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: ["@keyline-ui/keyline", "@keyline-ui/button", "@keyline-ui/keyline-render", "utils"],

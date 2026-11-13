@@ -1,0 +1,163 @@
+{
+  "name": "drawer",
+  "title": "Drawer",
+  "description": "A sheet you swipe away, on Base UI Drawer as the reference: swipe with velocity, snap points, nested drawers, focus trap, Escape and the keyboard inset are the library's. Keyline: the page-facing edge at region weight, a grip on it, logical sides (end and start mirror in RTL), the system's motion timings.",
+  "whenToUse": "Use it for a panel that slides in from an edge on touch screens and can be dragged away. For a desktop detail panel use Sheet; for a blocking task use Dialog.",
+  "parts": [
+    {
+      "name": "Drawer",
+      "description": "The drawer's root: Base UI's Drawer.Root with a logical `side` in place of the physical `swipeDirection`.",
+      "props": [
+        {
+          "name": "side",
+          "type": "\"bottom\" | \"end\" | \"start\"",
+          "default": "\"bottom\"",
+          "required": false,
+          "description": "bottom (default) · end (the inline end; right in LTR, left in RTL) · start. The drawer swipes away toward its side."
+        }
+      ]
+    },
+    {
+      "name": "DrawerBody",
+      "description": "The scrolling body (Base UI's Drawer.Content). A swipe that starts here scrolls first and dismisses only from the scroll edge.",
+      "props": []
+    },
+    {
+      "name": "DrawerClose",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DrawerDescription",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DrawerPopup",
+      "description": "The drawer: Base UI's Portal, Backdrop, Viewport and Popup in one part. It carries the configuration of the place the Drawer is written (read by Drawer, which needs the direction to pick the swipe side).",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "hideGrip",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Hide the grip cell (it is decorative: the swipe works anywhere on the drawer, Escape and Close always do)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<DrawerPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Drawer.Portal."
+        },
+        {
+          "name": "size",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": "Height (bottom) or width (end/start), px or any CSS length."
+        }
+      ]
+    },
+    {
+      "name": "DrawerTitle",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DrawerTrigger",
+      "description": "The element that opens the drawer. Rendered as another part (`render={<Button />}`), the element is that part's and carries its data-slot.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-snap",
+      "values": []
+    },
+    {
+      "name": "data-side",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "drawer-backdrop",
+        "drawer-body",
+        "drawer-close",
+        "drawer-description",
+        "drawer-grip",
+        "drawer-popup",
+        "drawer-title",
+        "drawer-trigger",
+        "drawer-viewport"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--drawer-swipe-movement-y",
+      "values": [
+        "\"--drawer-swipe-movement-x\")) || 0"
+      ]
+    },
+    {
+      "name": "--kl-cell",
+      "values": [
+        "var(--kl-raised)"
+      ]
+    },
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "0px"
+      ]
+    },
+    {
+      "name": "--kl-drawer-size",
+      "values": [
+        "len"
+      ]
+    },
+    {
+      "name": "--kl-move",
+      "values": [
+        "calc(var(--kl-t-fold)*1.25)",
+        "calc(var(--kl-t-unfold)*1.25)"
+      ]
+    },
+    {
+      "name": "--kl-release-back",
+      "values": [
+        "releaseEasing(-out, moved, ms(\"--kl-t-unfold\", 1.25"
+      ]
+    },
+    {
+      "name": "--kl-release-out",
+      "values": [
+        "releaseEasing(out, size - moved, ms(\"--kl-t-fold\", 1.25"
+      ]
+    },
+    {
+      "name": "--kl-scrim-min",
+      "values": [
+        "0",
+        "0.5"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "drawer-delivery",
+      "title": "Drawer: truck route",
+      "file": "drawer-delivery.tsx"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ export default {
   type: "registry:ui",
   title: "Tabs",
   description: "Tabs with a cobalt location band that stretches; optional count voice; panels.",
+  whenToUse:
+    "Use it to switch between views of one place. For an app's sections use Nav; for a compact choice of a value use Segmented.",
   files: [{ path: "src/registry/keyline/ui/tabs.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: [

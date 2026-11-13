@@ -288,7 +288,7 @@ export async function buildRegistry(): Promise<Built> {
 
   const indexItems = metas.map(
     // the release fields are published in r/versions.json, not in the item
-    ({ metaFile, cssFile, theme, requires: _r, version: _v, updated: _u, changelog: _c, deprecated, ...item }) => {
+    ({ metaFile, cssFile, theme, requires: _r, whenToUse: _w, version: _v, updated: _u, changelog: _c, deprecated, ...item }) => {
       sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
       sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
       if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);

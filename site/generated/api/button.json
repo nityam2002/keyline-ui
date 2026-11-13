@@ -1,0 +1,131 @@
+{
+  "name": "button",
+  "title": "Button",
+  "description": "Framed button with affix cells, key travel and pending/done/failed signals.",
+  "whenToUse": "Use it for a command, especially one that takes time and must show pending, done or failed in place. For a setting that stays on use Toggle or Switch; for a main action with alternatives use Split button.",
+  "parts": [
+    {
+      "name": "Button",
+      "description": "",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: fills a cell of an enclosing frame (no frame, no cut). A cell sets no border at all: its edges are the seams the enclosing row draws (one edge, one owner), and a border utility here would beat them."
+        },
+        {
+          "name": "signal",
+          "type": "\"idle\" | \"done\" | \"pending\" | \"failed\"",
+          "default": "\"idle\"",
+          "required": false,
+          "description": "pending: a segment runs along the bottom keyline and the button is busy. done: a ✓ cell is inserted for a moment. failed: a ! cell is inserted at the start."
+        },
+        {
+          "name": "size",
+          "type": "\"default\" | \"compact\" | \"icon\"",
+          "default": "\"default\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "type": "\"secondary\" | \"primary\" | \"destructive\" | \"quiet\"",
+          "default": "\"secondary\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ButtonAffix",
+      "description": "A cell inside the button frame, divided by a keyline: counts, shortcuts, units. Its keyline runs through the label's block padding, so it meets the frame in T-junctions.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-signal",
+      "values": []
+    },
+    {
+      "name": "data-size",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "button",
+        "button-affix",
+        "button-done",
+        "button-fail",
+        "button-label"
+      ]
+    },
+    {
+      "name": "data-variant",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-button-px",
+      "values": [
+        "10px"
+      ]
+    },
+    {
+      "name": "--kl-bw",
+      "values": [
+        "0px",
+        "3px"
+      ]
+    },
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "transparent",
+        "var(--kl-cobalt)",
+        "var(--kl-dis-line)",
+        "var(--kl-red)"
+      ]
+    },
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "var(--kl-cut-nested)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "button-affix",
+      "title": "Button: warehouse queue",
+      "file": "button-affix.tsx"
+    },
+    {
+      "name": "button-invoice",
+      "title": "Button: invoice actions",
+      "file": "button-invoice.tsx"
+    },
+    {
+      "name": "button-retry",
+      "title": "Button: corporate sync",
+      "file": "button-retry.tsx"
+    },
+    {
+      "name": "button-variants",
+      "title": "Button: expense review",
+      "file": "button-variants.tsx"
+    }
+  ]
+}

@@ -6,6 +6,8 @@ export default {
   title: "Select",
   description:
     "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts named as Base UI names them (SelectRoot, SelectTrigger, SelectValue, SelectPopup, SelectItem, SelectGroup, SelectSeparator …).",
+  whenToUse:
+    "Use it to choose one option from a list that docks under its field. For long lists to filter by typing use Combobox; on phones and for autofill use Native select.",
   files: [{ path: "src/registry/keyline/ui/select.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: [

@@ -1,0 +1,81 @@
+{
+  "name": "sheet",
+  "title": "Sheet",
+  "description": "A region docked to a viewport edge (end, start, bottom): Base UI Dialog behaviour, unfolds from its edge, cut on the inner corner.",
+  "whenToUse": "Use it for the detail of one thing opened from a list, docked to an edge at full height. For a short blocking task use Dialog; for a non-blocking side panel use Inspector.",
+  "parts": [
+    {
+      "name": "SheetPopup",
+      "description": "The sheet: Base UI's Portal, Backdrop and Popup in one part, docked to a viewport edge. It carries the configuration (cut, density, motion, theme, dir) of the place it is written, not of <body>.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<DialogPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Dialog.Portal."
+        },
+        {
+          "name": "side",
+          "type": "\"bottom\" | \"end\" | \"start\"",
+          "default": "\"end\"",
+          "required": false,
+          "description": "end: the inline-end edge (mirrors in RTL) · start · bottom."
+        },
+        {
+          "name": "size",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": "Width (end/start) or height (bottom) in px or any CSS length."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-side",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "sheet-popup"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cell",
+      "values": [
+        "var(--kl-raised)"
+      ]
+    },
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "0px"
+      ]
+    },
+    {
+      "name": "--kl-sheet-size",
+      "values": [
+        "len"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "sheet-order",
+      "title": "Sheet: order sheet",
+      "file": "sheet-order.tsx"
+    }
+  ]
+}

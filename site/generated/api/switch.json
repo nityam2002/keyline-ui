@@ -1,0 +1,93 @@
+{
+  "name": "switch",
+  "title": "Switch",
+  "description": "Binary setting: a two-cell frame whose block stretches to the on side.",
+  "whenToUse": "Use it for a setting that takes effect the moment it changes. In a form that waits for Save use Checkbox.",
+  "parts": [
+    {
+      "name": "Switch",
+      "description": "The binary setting. The thumb STRETCHES between the two halves of the frame (the edge on the travel side leads, the other follows: CSS transitions on the stretch springs' timings). Semantics, keyboard, form value and controlled/uncontrolled state are Base UI Switch's; `onCheckedChange` gets Base UI's event details last. Without children it draws its SwitchThumb.",
+      "props": []
+    },
+    {
+      "name": "SwitchField",
+      "description": "Label + description + switch on one row; the row is the hit target. `className` goes to the row's Field.Root; every other prop goes to the Switch.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): aligns to a form column. cell: a row inside an enclosing frame (inset text and switch)."
+        }
+      ]
+    },
+    {
+      "name": "SwitchThumb",
+      "description": "The thumb: hollow while off, solid while on.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "switch",
+        "switch-field",
+        "switch-field-cell",
+        "switch-field-description",
+        "switch-field-label",
+        "switch-field-row",
+        "switch-field-text",
+        "switch-thumb"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-sw",
+      "values": [
+        "16px",
+        "22px"
+      ]
+    },
+    {
+      "name": "--kl-sw-gap",
+      "values": [
+        "2px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "switch-alerts",
+      "title": "Switch: alert settings",
+      "file": "switch-alerts.tsx"
+    }
+  ]
+}

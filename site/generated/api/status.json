@@ -1,0 +1,64 @@
+{
+  "name": "status",
+  "title": "Status and badge",
+  "description": "Status glyph + text (shape survives forced colours); square code badge.",
+  "whenToUse": "Use Status for a state in words with a glyph, and Badge for a short code label. For a message that needs explanation use Notice.",
+  "parts": [
+    {
+      "name": "Badge",
+      "description": "A square code badge: mono text in a 1px frame. Never cut, never a pill. `tone=\"signal\"` is the only filled form.",
+      "props": [
+        {
+          "name": "tone",
+          "type": "\"attention\" | \"plain\" | \"signal\"",
+          "default": "\"plain\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "description": "Status = glyph shape + text. The shape carries meaning in grayscale and forced colours; only attention is red.",
+      "props": [
+        {
+          "name": "kind",
+          "type": "\"none\" | \"done\" | \"normal\" | \"waiting\" | \"attention\"",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "badge",
+        "status"
+      ]
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "status-badges",
+      "title": "Status and badge: invoice badges",
+      "file": "status-badges.tsx"
+    },
+    {
+      "name": "status-deliveries",
+      "title": "Status and badge: delivery board",
+      "file": "status-deliveries.tsx"
+    }
+  ]
+}

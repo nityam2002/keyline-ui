@@ -49,7 +49,7 @@ document those items.
   (`tests/browser/`; its [README](../tests/browser/README.md) covers both), compile-only type tests
   (`tests/types/`) and consumer checks (`tests/consumer/`), which install items into fresh
   projects.
-- **`docs/`** holds [usage.md](../docs/usage.md) for people installing Keyline, [design.md](../docs/design.md) for
+- **`docs/`** holds [design.md](../docs/design.md) for
   the design model every component follows, and [releasing.md](../docs/releasing.md) for publishing a version.
 
 ## Making a change
