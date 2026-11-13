@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "allowJs": true,
+    "tsBuildInfoFile": ".artifacts/tsconfig.tests.tsbuildinfo",
+    "types": ["node"],
+    "paths": {
+      "@/components/keyline/*": ["./src/registry/keyline/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "site/lib/**/*.ts",
+    "scripts/registry/**/*.ts",
+    "scripts/docs/**/*.ts"
+  ],
+  "exclude": ["tests/consumer/App.tsx", "tests/consumer/PreviewPage.tsx", "tests/lint/fixtures/**", "tests/types/**"]
+}

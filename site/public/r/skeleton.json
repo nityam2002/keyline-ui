@@ -3,90 +3,22 @@
   "name": "skeleton",
   "title": "Skeleton",
   "description": "A placeholder for content on its way: the table's loading cell outside the table, in line, block, value and control shapes; a busy group that names what is loading.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/skeleton.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype SkeletonProps = Omit<React.ComponentProps<\"span\">, \"children\"> & {\n  /**\n   * line: a run of text; `lines` stacks several, the last one shorter. block: an area (a chart, media, a\n   * paragraph you won't line out). value: a number in the count voice. control: the footprint of a\n   * control frame (the real control replaces it without moving anything).\n   */\n  shape?: \"line\" | \"block\" | \"value\" | \"control\"\n  lines?: number\n  /** Any CSS length. Defaults: line 100%, value 4ch, control 100%, block 100%. */\n  width?: React.CSSProperties[\"width\"]\n  /** block only. Default 96px. */\n  height?: React.CSSProperties[\"height\"]\n}\n\n/* a fixed pattern, so the same skeleton renders the same way on every load (no random widths) */\nconst LINE_WIDTHS = [\"100%\", \"94%\", \"86%\", \"97%\", \"90%\"]\n\n/**\n * A placeholder for content that is on its way. It is the Table's loading cell outside the table: a\n * keyline box on the tint, with a running segment while it waits.\n *\n *   ┌──────────────────────────────┐\n *   │░░░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░│   line (k1 soft keyline, tint fill, running segment)\n *   └──────────────────────────────┘\n *\n * - Always aria-hidden. Wrap the loading region in SkeletonGroup, which marks it busy and says what is\n *   loading once; a page of skeletons never reads as a list of blanks.\n * - Size it to the real content (lines of the same count, a control of the same frame) so nothing moves\n *   when the content lands.\n * - Motion: the segment runs 1100ms linear, the same rhythm as the table. Reduced motion: no segment,\n *   the static box alone.\n */\nfunction Skeleton({ shape = \"line\", lines = 1, width, height, className, style, ...props }: SkeletonProps) {\n  if (shape === \"line\" && lines > 1) {\n    return (\n      <span data-slot=\"skeleton\" data-shape=\"lines\" aria-hidden className={cn(\"kl-skeleton-lines\", className)} style={{ width, ...style }} {...props}>\n        {Array.from({ length: lines }, (_, i) => (\n          <span key={i} className=\"kl-skeleton\" data-shape=\"line\" style={{ width: i === lines - 1 ? \"58%\" : LINE_WIDTHS[i % LINE_WIDTHS.length] }} />\n        ))}\n      </span>\n    )\n  }\n  return <span data-slot=\"skeleton\" data-shape={shape} aria-hidden className={cn(\"kl-skeleton\", className)} style={{ width, height: shape === \"block\" ? height : undefined, ...style }} {...props} />\n}\n\n/**\n * The region that is loading. `aria-busy` while `busy`, and one polite status naming what is on its\n * way (\"Loading carrier details\"); when it lands, the status clears and the content replaces the\n * skeletons in place.\n */\nfunction SkeletonGroup({ label, busy = true, className, children, ...props }: React.ComponentProps<\"div\"> & { label: string; busy?: boolean }) {\n  return (\n    <div data-slot=\"skeleton-group\" aria-busy={busy || undefined} className={cn(\"kl-skeleton-group\", className)} {...props}>\n      <span role=\"status\" className=\"kl-sr\">\n        {busy ? label : \"\"}\n      </span>\n      {children}\n    </div>\n  )\n}\n\nexport { Skeleton, SkeletonGroup, type SkeletonProps }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype SkeletonShape = \"line\" | \"block\" | \"value\" | \"control\";\n\n/*\n * The table's loading cell outside the table: a k1 soft keyline box on the tint, and a running segment (line-soft)\n * while it waits: kl-run-30 (theme), 1100ms linear, the same rhythm as the table, reversed in RTL through\n * --kl-run-dir. Reduced motion (the system's, or data-kl-motion=\"reduce\") and forced colours show the static box\n * alone. Heights follow the content they stand in for.\n */\nconst skeletonVariants = cva(\n  [\n    \"relative box-border block h-2.5 max-w-full overflow-hidden\",\n    \"border-(length:--kl-k1) border-kl-line-soft bg-kl-tint\",\n    \"after:absolute after:inset-y-0 after:left-0 after:w-[30%] after:bg-kl-line-soft after:content-['']\",\n    \"after:animate-[kl-run-30_1100ms_linear_infinite_var(--kl-run-dir,normal)]\",\n    \"in-data-[kl-motion=reduce]:after:hidden motion-reduce:after:hidden\",\n    \"forced-colors:border-[GrayText] forced-colors:bg-[Canvas] forced-colors:after:hidden\",\n  ],\n  {\n    variants: {\n      shape: {\n        line: \"my-1 w-full\",\n        // sized by the type it stands in for: put it where the number goes (inside kl-count, a stat value)\n        value: \"inline-block h-[0.8em] w-[4ch] align-baseline\",\n        control: \"h-(--kl-ctl) w-full border-(length:--kl-k2)\",\n        block: \"h-24 w-full\",\n      },\n    },\n    defaultVariants: { shape: \"line\" },\n  },\n);\n\nconst linesClass = \"grid min-w-0 gap-1.5\";\n\ntype SkeletonState = { shape: SkeletonShape | \"lines\" };\n\ntype SkeletonProps = Omit<PartProps<\"span\", SkeletonState>, \"children\"> & {\n  /**\n   * line: a run of text; `lines` stacks several, the last one shorter. block: an area (a chart, media, a\n   * paragraph you won't line out). value: a number in the count voice. control: the footprint of a\n   * control frame (the real control replaces it without moving anything).\n   */\n  shape?: SkeletonShape;\n  lines?: number;\n  /** Any CSS length. Defaults: line 100%, value 4ch, control 100%, block 100%. */\n  width?: React.CSSProperties[\"width\"];\n  /** block only. Default 96px. */\n  height?: React.CSSProperties[\"height\"];\n};\n\n/* a fixed pattern, so the same skeleton renders the same way on every load (no random widths) */\nconst LINE_WIDTHS = [\"100%\", \"94%\", \"86%\", \"97%\", \"90%\"];\n\n/**\n * A placeholder for content that is on its way. It is the Table's loading cell outside the table: a\n * keyline box on the tint, with a running segment while it waits.\n *\n *   ┌──────────────────────────────┐\n *   │░░░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░│   line (k1 soft keyline, tint fill, running segment)\n *   └──────────────────────────────┘\n *\n * - Always aria-hidden. Wrap the loading region in SkeletonGroup, which marks it busy and says what is\n *   loading once; a page of skeletons never reads as a list of blanks.\n * - Size it to the real content (lines of the same count, a control of the same frame) so nothing moves\n *   when the content lands.\n * - Motion: the segment runs 1100ms linear, the same rhythm as the table. Reduced motion: no segment,\n *   the static box alone.\n */\nfunction Skeleton({\n  shape = \"line\",\n  lines = 1,\n  width,\n  height,\n  render,\n  className,\n  style,\n  ...props\n}: SkeletonProps): React.ReactElement {\n  const stacked = shape === \"line\" && lines > 1;\n  const state: SkeletonState = { shape: stacked ? \"lines\" : shape };\n  const own = stacked\n    ? {\n        ...dataAttrs({ shape: \"lines\" }),\n        \"data-slot\": \"skeleton\",\n        className: resolveClassName(linesClass, className)(state),\n        style: resolveStyle({ width }, style)(state),\n        children: Array.from({ length: lines }, (_, i) => (\n          <span\n            key={i}\n            data-slot=\"skeleton-line\"\n            data-shape=\"line\"\n            className={cn(skeletonVariants({ shape: \"line\" }), \"my-0\")}\n            style={{ width: i === lines - 1 ? \"58%\" : LINE_WIDTHS[i % LINE_WIDTHS.length] }}\n          />\n        )),\n      }\n    : {\n        ...dataAttrs({ shape }),\n        \"data-slot\": \"skeleton\",\n        className: resolveClassName(cn(skeletonVariants({ shape })), className)(state),\n        style: resolveStyle({ width, height: shape === \"block\" ? height : undefined }, style)(state),\n      };\n  return useRender({\n    defaultTagName: \"span\",\n    render,\n    state,\n    props: mergeProps<\"span\">({ \"aria-hidden\": true }, props, own),\n  });\n}\n\ntype SkeletonGroupState = { busy: boolean };\n\ntype SkeletonGroupProps = PartProps<\"div\", SkeletonGroupState> & {\n  /** What is loading, said once while busy (\"Loading carrier details\"). */\n  label: string;\n  busy?: boolean;\n};\n\n/**\n * The region that is loading. `aria-busy` while `busy`, and one polite status naming what is on its\n * way (\"Loading carrier details\"); when it lands, the status clears and the content replaces the\n * skeletons in place.\n */\nfunction SkeletonGroup({\n  label,\n  busy = true,\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: SkeletonGroupProps): React.ReactElement {\n  const state: SkeletonGroupState = { busy };\n  const own = {\n    \"data-slot\": \"skeleton-group\",\n    \"aria-busy\": busy || undefined,\n    className: resolveClassName(\"min-w-0\", className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        <span role=\"status\" className=\"kl-sr\">\n          {busy ? label : \"\"}\n        </span>\n        {children}\n      </>\n    ),\n  };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(props, own) });\n}\n\nexport { Skeleton, SkeletonGroup, type SkeletonProps, type SkeletonGroupProps, type SkeletonShape };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/skeleton.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-skeleton": {
-        "position": "relative",
-        "overflow": "hidden",
-        "display": "block",
-        "box-sizing": "border-box",
-        "max-width": "100%",
-        "height": "10px",
-        "border": "var(--kl-k1) solid var(--kl-line-soft)",
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-skeleton[data-shape=\"line\"]": {
-        "width": "100%",
-        "margin-block": "4px"
-      },
-      ".kl-skeleton[data-shape=\"value\"]": {
-        "display": "inline-block",
-        "vertical-align": "baseline",
-        "width": "4ch",
-        "height": "0.8em"
-      },
-      ".kl-skeleton[data-shape=\"control\"]": {
-        "width": "100%",
-        "height": "var(--kl-ctl)",
-        "border-width": "var(--kl-k2)"
-      },
-      ".kl-skeleton[data-shape=\"block\"]": {
-        "width": "100%",
-        "height": "96px"
-      },
-      ".kl-skeleton-lines": {
-        "display": "grid",
-        "gap": "6px",
-        "min-width": "0"
-      },
-      ".kl-skeleton-lines > .kl-skeleton": {
-        "margin-block": "0"
-      },
-      ".kl-skeleton::after": {
-        "content": "\"\"",
-        "position": "absolute",
-        "inset-block": "0",
-        "left": "0",
-        "width": "30%",
-        "background-color": "var(--kl-line-soft)",
-        "animation": "kl-run-30 1100ms linear infinite var(--kl-run-dir, normal)"
-      },
-      "[data-kl-motion=\"reduce\"] .kl-skeleton::after": {
-        "animation": "none",
-        "display": "none"
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        ".kl-skeleton::after": {
-          "animation": "none",
-          "display": "none"
-        }
-      },
-      ".kl-skeleton-group": {
-        "min-width": "0"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-skeleton": {
-          "border-color": "GrayText",
-          "background": "Canvas"
-        },
-        ".kl-skeleton::after": {
-          "display": "none"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

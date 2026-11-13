@@ -1,0 +1,2846 @@
+{
+  "releases": [
+    {
+      "date": "2026-11-13",
+      "entries": [
+        {
+          "item": "accordion",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "accordion-policies",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "alert-dialog",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "alert-dialog-remove",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "app-shell",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "app-shell-office",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "attachment",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "attachment-upload",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "avatar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "avatar-status",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "avatar-team",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "breadcrumb",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "breadcrumb-drive",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "bubble",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "bubble-reactions",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-affix",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-group-menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-group-review",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-group-zoom",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-invoice",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-retry",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "button-variants",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "calendar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "carousel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "carousel-posters",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "chart",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "chart-returns",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "chart-sales",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "chart-target",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-closing",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-group-party",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-group-price-list",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "checkbox-invoices",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "collapsible",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "collapsible-options",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "collection",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "combobox",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "combobox-client",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "combobox-directory",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "command",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "command-office",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "composition-cells",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "config-scope",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "context-menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "context-menu-clients",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "data-table",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "data-table-model",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "data-table-orders",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-picker",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-picker-delivery",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-picker-meeting",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-range",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "date-range-vacation",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "dialog",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "dialog-new-client",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "direction",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "direction-rtl",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "drawer",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "drawer-delivery",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "empty",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "empty-calls",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "empty-search",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "field-carton",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "field-order",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "field-tracking",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "hover-card",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "hover-card-client",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "inspector",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "inspector-order",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "item",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "item-settings",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "kbd",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "kbd-shortcuts",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-config",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-motion",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-render",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-scope",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-shadcn",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "keyline-skill",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "marker",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "marker-activity",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menu-notifications",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menu-order-actions",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menubar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "menubar-report",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message-scroller",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message-scroller-chat",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "message-thread",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "modes-region",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "multiselect",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "multiselect-memo",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "native-select",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "native-select-transfer",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "nav",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "nav-sidebar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "navigation-menu",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "navigation-menu-site",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "notice",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "notice-stock",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "number-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "number-field-price",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "number-field-reorder",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "options",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "otp-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "otp-sign-in",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "pagination",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "pagination-invoices",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "panel-grid",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "panel-targets",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "popover",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "popover-note",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "progress",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "progress-print",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "progress-upload",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "questionnaire",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "questionnaire-party",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "radio-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "radio-group-delivery",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "radio-group-panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "resizable",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "resizable-calls",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "scroll-area",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "scroll-area-log",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "scroll-edges",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "segmented",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "segmented-panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "segmented-period",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "select",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "select-assign",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "select-form",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "selection",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sheet",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sheet-order",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "shipments-block",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "shipments-demo",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sidebar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "sidebar-rail",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "skeleton",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "skeleton-client",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "slider",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "slider-discount",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "slider-range",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "split-button",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "split-button-delivery",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "split-button-export",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "stat",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "stat-sales",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "stat-warehouse",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "status",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "status-badges",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "status-deliveries",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "switch",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "switch-alerts",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "table",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "table-lines",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "table-loading",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "table-orders",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tabs",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tabs-account",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tabs-views",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "theming-roles",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "time-field",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "time-field-delivery",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toast",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toast-promise",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toast-undo",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-group",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-group-panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-group-reps",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-icon",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toggle-receipts",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-editor",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-overflow",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-panel",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-scroll",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "toolbar-vertical",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tooltip",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
+          "item": "tooltip-icons",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        }
+      ]
+    }
+  ],
+  "items": {
+    "accordion": [
+      {
+        "item": "accordion",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "accordion-policies": [
+      {
+        "item": "accordion-policies",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "alert-dialog": [
+      {
+        "item": "alert-dialog",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "alert-dialog-remove": [
+      {
+        "item": "alert-dialog-remove",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "app-shell": [
+      {
+        "item": "app-shell",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "app-shell-office": [
+      {
+        "item": "app-shell-office",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "attachment": [
+      {
+        "item": "attachment",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "attachment-upload": [
+      {
+        "item": "attachment-upload",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "avatar": [
+      {
+        "item": "avatar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "avatar-status": [
+      {
+        "item": "avatar-status",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "avatar-team": [
+      {
+        "item": "avatar-team",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "breadcrumb": [
+      {
+        "item": "breadcrumb",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "breadcrumb-drive": [
+      {
+        "item": "breadcrumb-drive",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "bubble": [
+      {
+        "item": "bubble",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "bubble-reactions": [
+      {
+        "item": "bubble-reactions",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button": [
+      {
+        "item": "button",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-affix": [
+      {
+        "item": "button-affix",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-group": [
+      {
+        "item": "button-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-group-menu": [
+      {
+        "item": "button-group-menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-group-review": [
+      {
+        "item": "button-group-review",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-group-zoom": [
+      {
+        "item": "button-group-zoom",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-invoice": [
+      {
+        "item": "button-invoice",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-retry": [
+      {
+        "item": "button-retry",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "button-variants": [
+      {
+        "item": "button-variants",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "calendar": [
+      {
+        "item": "calendar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "carousel": [
+      {
+        "item": "carousel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "carousel-posters": [
+      {
+        "item": "carousel-posters",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "chart": [
+      {
+        "item": "chart",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "chart-returns": [
+      {
+        "item": "chart-returns",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "chart-sales": [
+      {
+        "item": "chart-sales",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "chart-target": [
+      {
+        "item": "chart-target",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox": [
+      {
+        "item": "checkbox",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-closing": [
+      {
+        "item": "checkbox-closing",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-group": [
+      {
+        "item": "checkbox-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-group-party": [
+      {
+        "item": "checkbox-group-party",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-group-price-list": [
+      {
+        "item": "checkbox-group-price-list",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "checkbox-invoices": [
+      {
+        "item": "checkbox-invoices",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "collapsible": [
+      {
+        "item": "collapsible",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "collapsible-options": [
+      {
+        "item": "collapsible-options",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "collection": [
+      {
+        "item": "collection",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "combobox": [
+      {
+        "item": "combobox",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "combobox-client": [
+      {
+        "item": "combobox-client",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "combobox-directory": [
+      {
+        "item": "combobox-directory",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "command": [
+      {
+        "item": "command",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "command-office": [
+      {
+        "item": "command-office",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "composition-cells": [
+      {
+        "item": "composition-cells",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "config-scope": [
+      {
+        "item": "config-scope",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "context-menu": [
+      {
+        "item": "context-menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "context-menu-clients": [
+      {
+        "item": "context-menu-clients",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "data-table": [
+      {
+        "item": "data-table",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "data-table-model": [
+      {
+        "item": "data-table-model",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "data-table-orders": [
+      {
+        "item": "data-table-orders",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-picker": [
+      {
+        "item": "date-picker",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-picker-delivery": [
+      {
+        "item": "date-picker-delivery",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-picker-meeting": [
+      {
+        "item": "date-picker-meeting",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-range": [
+      {
+        "item": "date-range",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "date-range-vacation": [
+      {
+        "item": "date-range-vacation",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "dialog": [
+      {
+        "item": "dialog",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "dialog-new-client": [
+      {
+        "item": "dialog-new-client",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "direction": [
+      {
+        "item": "direction",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "direction-rtl": [
+      {
+        "item": "direction-rtl",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "drawer": [
+      {
+        "item": "drawer",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "drawer-delivery": [
+      {
+        "item": "drawer-delivery",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "empty": [
+      {
+        "item": "empty",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "empty-calls": [
+      {
+        "item": "empty-calls",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "empty-search": [
+      {
+        "item": "empty-search",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "field": [
+      {
+        "item": "field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "field-carton": [
+      {
+        "item": "field-carton",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "field-order": [
+      {
+        "item": "field-order",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "field-tracking": [
+      {
+        "item": "field-tracking",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "hover-card": [
+      {
+        "item": "hover-card",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "hover-card-client": [
+      {
+        "item": "hover-card-client",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "inspector": [
+      {
+        "item": "inspector",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "inspector-order": [
+      {
+        "item": "inspector-order",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "item": [
+      {
+        "item": "item",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "item-settings": [
+      {
+        "item": "item-settings",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "kbd": [
+      {
+        "item": "kbd",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "kbd-shortcuts": [
+      {
+        "item": "kbd-shortcuts",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline": [
+      {
+        "item": "keyline",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-config": [
+      {
+        "item": "keyline-config",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-motion": [
+      {
+        "item": "keyline-motion",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-render": [
+      {
+        "item": "keyline-render",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-scope": [
+      {
+        "item": "keyline-scope",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-shadcn": [
+      {
+        "item": "keyline-shadcn",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-skill": [
+      {
+        "item": "keyline-skill",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "marker": [
+      {
+        "item": "marker",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "marker-activity": [
+      {
+        "item": "marker-activity",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menu": [
+      {
+        "item": "menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menu-notifications": [
+      {
+        "item": "menu-notifications",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menu-order-actions": [
+      {
+        "item": "menu-order-actions",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menubar": [
+      {
+        "item": "menubar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "menubar-report": [
+      {
+        "item": "menubar-report",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message": [
+      {
+        "item": "message",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message-scroller": [
+      {
+        "item": "message-scroller",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message-scroller-chat": [
+      {
+        "item": "message-scroller-chat",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "message-thread": [
+      {
+        "item": "message-thread",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "modes-region": [
+      {
+        "item": "modes-region",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "multiselect": [
+      {
+        "item": "multiselect",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "multiselect-memo": [
+      {
+        "item": "multiselect-memo",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "native-select": [
+      {
+        "item": "native-select",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "native-select-transfer": [
+      {
+        "item": "native-select-transfer",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "nav": [
+      {
+        "item": "nav",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "nav-sidebar": [
+      {
+        "item": "nav-sidebar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "navigation-menu": [
+      {
+        "item": "navigation-menu",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "navigation-menu-site": [
+      {
+        "item": "navigation-menu-site",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "notice": [
+      {
+        "item": "notice",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "notice-stock": [
+      {
+        "item": "notice-stock",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "number-field": [
+      {
+        "item": "number-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "number-field-price": [
+      {
+        "item": "number-field-price",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "number-field-reorder": [
+      {
+        "item": "number-field-reorder",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "options": [
+      {
+        "item": "options",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "otp-field": [
+      {
+        "item": "otp-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "otp-sign-in": [
+      {
+        "item": "otp-sign-in",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "pagination": [
+      {
+        "item": "pagination",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "pagination-invoices": [
+      {
+        "item": "pagination-invoices",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "panel": [
+      {
+        "item": "panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "panel-grid": [
+      {
+        "item": "panel-grid",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "panel-targets": [
+      {
+        "item": "panel-targets",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "popover": [
+      {
+        "item": "popover",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "popover-note": [
+      {
+        "item": "popover-note",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "progress": [
+      {
+        "item": "progress",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "progress-print": [
+      {
+        "item": "progress-print",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "progress-upload": [
+      {
+        "item": "progress-upload",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "questionnaire": [
+      {
+        "item": "questionnaire",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "questionnaire-party": [
+      {
+        "item": "questionnaire-party",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "radio-group": [
+      {
+        "item": "radio-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "radio-group-delivery": [
+      {
+        "item": "radio-group-delivery",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "radio-group-panel": [
+      {
+        "item": "radio-group-panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "resizable": [
+      {
+        "item": "resizable",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "resizable-calls": [
+      {
+        "item": "resizable-calls",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "scroll-area": [
+      {
+        "item": "scroll-area",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "scroll-area-log": [
+      {
+        "item": "scroll-area-log",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "scroll-edges": [
+      {
+        "item": "scroll-edges",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "segmented": [
+      {
+        "item": "segmented",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "segmented-panel": [
+      {
+        "item": "segmented-panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "segmented-period": [
+      {
+        "item": "segmented-period",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "select": [
+      {
+        "item": "select",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "select-assign": [
+      {
+        "item": "select-assign",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "select-form": [
+      {
+        "item": "select-form",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "selection": [
+      {
+        "item": "selection",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sheet": [
+      {
+        "item": "sheet",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sheet-order": [
+      {
+        "item": "sheet-order",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "shipments-block": [
+      {
+        "item": "shipments-block",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "shipments-demo": [
+      {
+        "item": "shipments-demo",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sidebar": [
+      {
+        "item": "sidebar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "sidebar-rail": [
+      {
+        "item": "sidebar-rail",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "skeleton": [
+      {
+        "item": "skeleton",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "skeleton-client": [
+      {
+        "item": "skeleton-client",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "slider": [
+      {
+        "item": "slider",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "slider-discount": [
+      {
+        "item": "slider-discount",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "slider-range": [
+      {
+        "item": "slider-range",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "split-button": [
+      {
+        "item": "split-button",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "split-button-delivery": [
+      {
+        "item": "split-button-delivery",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "split-button-export": [
+      {
+        "item": "split-button-export",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "stat": [
+      {
+        "item": "stat",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "stat-sales": [
+      {
+        "item": "stat-sales",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "stat-warehouse": [
+      {
+        "item": "stat-warehouse",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "status": [
+      {
+        "item": "status",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "status-badges": [
+      {
+        "item": "status-badges",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "status-deliveries": [
+      {
+        "item": "status-deliveries",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "switch": [
+      {
+        "item": "switch",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "switch-alerts": [
+      {
+        "item": "switch-alerts",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "table": [
+      {
+        "item": "table",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "table-lines": [
+      {
+        "item": "table-lines",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "table-loading": [
+      {
+        "item": "table-loading",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "table-orders": [
+      {
+        "item": "table-orders",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tabs": [
+      {
+        "item": "tabs",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tabs-account": [
+      {
+        "item": "tabs-account",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tabs-views": [
+      {
+        "item": "tabs-views",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "theming-roles": [
+      {
+        "item": "theming-roles",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "time-field": [
+      {
+        "item": "time-field",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "time-field-delivery": [
+      {
+        "item": "time-field-delivery",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toast": [
+      {
+        "item": "toast",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toast-promise": [
+      {
+        "item": "toast-promise",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toast-undo": [
+      {
+        "item": "toast-undo",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle": [
+      {
+        "item": "toggle",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-group": [
+      {
+        "item": "toggle-group",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-group-panel": [
+      {
+        "item": "toggle-group-panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-group-reps": [
+      {
+        "item": "toggle-group-reps",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-icon": [
+      {
+        "item": "toggle-icon",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toggle-receipts": [
+      {
+        "item": "toggle-receipts",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar": [
+      {
+        "item": "toolbar",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-editor": [
+      {
+        "item": "toolbar-editor",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-overflow": [
+      {
+        "item": "toolbar-overflow",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-panel": [
+      {
+        "item": "toolbar-panel",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-scroll": [
+      {
+        "item": "toolbar-scroll",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "toolbar-vertical": [
+      {
+        "item": "toolbar-vertical",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tooltip": [
+      {
+        "item": "tooltip",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "tooltip-icons": [
+      {
+        "item": "tooltip-icons",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ]
+  }
+}

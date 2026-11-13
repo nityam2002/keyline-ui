@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-policies",
+  "title": "Accordion: branch policies",
+  "description": "An example of Accordion: branch policies.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/accordion",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/accordion-policies.tsx",
+      "content": "\"use client\";\n\nimport { Accordion, AccordionItem, AccordionPanel, AccordionTrigger } from \"../ui/accordion\";\n\nconst POLICIES = [\n  {\n    value: \"returns\",\n    title: \"Returns\",\n    meta: \"30 days\",\n    body: \"Unopened cases come back within 30 days for a full refund. Darryl collects them on the next delivery run, so nobody needs to drive to the warehouse.\",\n  },\n  {\n    value: \"delivery\",\n    title: \"Delivery\",\n    meta: \"Free over 20 cases\",\n    body: \"Orders of 20 cases or more are delivered free anywhere in Lackawanna County. Smaller orders pay a flat $25, or the client can pick them up at the loading dock.\",\n  },\n  {\n    value: \"discounts\",\n    title: \"Volume discounts\",\n    meta: \"Up to 12%\",\n    body: \"Reps can take up to 8% off an order of 100 cases without asking. Anything past that, up to 12%, needs Michael's signature, which he'll give if you ask nicely.\",\n  },\n];\n\nexport function BranchPolicies() {\n  return (\n    <Accordion multiple defaultValue={[\"returns\"]}>\n      {POLICIES.map((p) => (\n        <AccordionItem key={p.value} value={p.value}>\n          <AccordionTrigger meta={p.meta}>{p.title}</AccordionTrigger>\n          <AccordionPanel>\n            <p className=\"m-0 max-w-[60ch] text-[14px] leading-6\">{p.body}</p>\n          </AccordionPanel>\n        </AccordionItem>\n      ))}\n    </Accordion>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/accordion-policies.tsx"
+    }
+  ],
+  "categories": [
+    "accordion"
+  ],
+  "type": "registry:block"
+}

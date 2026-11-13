@@ -4,121 +4,24 @@
   "title": "Tabs",
   "description": "Tabs with a cobalt location band that stretches; optional count voice; panels.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
     "@keyline-ui/keyline-motion",
-    "@keyline-ui/scroll-edges"
+    "@keyline-ui/scroll-edges",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/tabs.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Tabs as TabsPrimitive } from \"@base-ui/react/tabs\"\n\nimport { cn } from \"@/lib/utils\"\nimport { useStretch } from \"../lib/keyline-motion\"\nimport { useScrollEdges } from \"../lib/scroll-edges\"\n\n/**\n * Tabs: location. The current tab sits under a cobalt band that STRETCHES between tabs (leading edge\n * first, zero bounce). Keyboard, roving focus, aria and panels come from Base UI Tabs; activation follows\n * focus by default, as in a view switcher. Works with or without panels (e.g. table views).\n */\nfunction Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {\n  return <TabsPrimitive.Root data-slot=\"tabs\" className={cn(\"kl-tabs\", className)} {...props} />\n}\n\n/** The tab row. `layout=\"cell\"` puts it inside an enclosing frame (no own border, no cut). */\nfunction TabsList({ className, children, layout = \"control\", activateOnFocus = true, ...props }: React.ComponentProps<typeof TabsPrimitive.List> & { layout?: \"control\" | \"cell\" }) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  const [active, setActive] = React.useState(-1)\n  // Base UI owns the value (controlled or not). Uncontrolled Tabs change selection without re-rendering\n  // this wrapper, so the active tab is read from the DOM on mount and whenever a tab's selection flips.\n  React.useLayoutEffect(() => {\n    const el = ref.current\n    if (!el) return\n    const read = () => {\n      const tabs = Array.from(el.querySelectorAll<HTMLElement>(\"[data-kl-item]\"))\n      const i = tabs.findIndex((t) => t.getAttribute(\"aria-selected\") === \"true\")\n      setActive((p) => (p === i ? p : i))\n    }\n    read()\n    const mo = new MutationObserver(read)\n    mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: [\"aria-selected\"] })\n    return () => mo.disconnect()\n  }, [])\n  useStretch(ref, active)\n  useScrollEdges(ref)\n  return (\n    <TabsPrimitive.List\n      ref={ref}\n      data-slot=\"tabs-list\"\n      data-kl-stretch=\"\"\n      data-kl-layout={layout}\n      activateOnFocus={activateOnFocus}\n      className={cn(\"kl-ctl kl-cells kl-tabs-list\", className)}\n      {...props}\n    >\n      <span data-kl-band=\"\" className=\"kl-tabs-band\" aria-hidden hidden />\n      {children}\n    </TabsPrimitive.List>\n  )\n}\n\n/** A tab. `count` adds the count voice under the label (e.g. records in a view). */\nfunction TabsTab({ className, children, count, ...props }: React.ComponentProps<typeof TabsPrimitive.Tab> & { count?: React.ReactNode }) {\n  return (\n    <TabsPrimitive.Tab data-slot=\"tabs-tab\" data-kl-item=\"\" data-has-count={count != null || undefined} className={cn(\"kl-key kl-tab\", className)} {...props}>\n      <span className=\"kl-tab-l\">{children}</span>\n      {count != null ? <span className=\"kl-tab-n\">{count}</span> : null}\n    </TabsPrimitive.Tab>\n  )\n}\n\nfunction TabsPanel({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Panel>) {\n  return <TabsPrimitive.Panel data-slot=\"tabs-panel\" className={cn(\"kl-tabs-panel\", className)} {...props} />\n}\n\nexport { Tabs, TabsList, TabsTab, TabsPanel }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tabs as TabsPrimitive } from \"@base-ui/react/tabs\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { useStretch } from \"../lib/keyline-motion\";\nimport { resolveClassName } from \"../lib/keyline-render\";\nimport { useScrollEdges } from \"../lib/scroll-edges\";\nimport { useMergedRef } from \"../lib/keyline-scope\";\n\n/*\n * Tabs: location. The current tab sits under a cobalt band that STRETCHES between tabs (leading edge first, zero\n * bounce). The band and the covered labels are drawn by the stretch engine (keyline-motion): it sizes the band and\n * marks each tab it covers with data-kl-covered. In flight it clones the row with every tab covered and drops the\n * clone's data-slot, so every style here sits on the element it styles, and the clone reads the same.\n *\n * The root is the outermost Keyline element (kl-type), so its panels take Keyline's type and ink from it, as the list\n * does, and a Tabs inside another Keyline element inherits instead.\n */\nconst root = \"kl-type grid min-w-0 [align-content:start] gap-(--kl-gutter)\";\n\n/** The row: one control frame of tab cells, scrolling sideways when it doesn't fit. */\nconst listVariants = cva(\"kl-ctl kl-cells relative isolate flex min-h-(--kl-ctl) max-w-full overflow-x-auto\", {\n  variants: {\n    // a cell gives its background to the enclosing frame (the foundation's layout=\"cell\") and fills the row\n    layout: { control: \"justify-self-start bg-kl-cell\", cell: \"justify-self-stretch\" },\n  },\n  defaultVariants: { layout: \"control\" },\n});\n\n/*\n * A tab: its label, and the count voice under it. The first tab after the band draws no divider and clears the\n * enclosing frame's cut (--kl-c-room). A disabled tab that is still the chosen one keeps the disabled ink.\n */\nconst tab = cn(\n  \"group/tab kl-key flex cursor-pointer flex-col items-start justify-center gap-[3px] bg-transparent px-4 py-1.5\",\n  \"text-start font-(family-name:--kl-font) whitespace-nowrap text-kl-ink\",\n  \"first-of-type:ps-[calc(16px+var(--kl-c-room,0px))] data-has-count:min-w-[104px] nth-2:border-s-0\",\n  \"hover:not-data-active:not-data-disabled:bg-kl-tint focus-visible:outline-offset-(--kl-ring-in)\",\n  \"data-kl-covered:not-data-disabled:text-kl-on-cobalt\",\n  \"data-disabled:cursor-not-allowed data-disabled:bg-(image:--kl-hatch) data-disabled:text-kl-dis\",\n  \"forced-colors:data-kl-covered:text-[HighlightText] forced-colors:data-kl-covered:forced-color-adjust-none\",\n);\n\nconst panel = cn(\n  \"min-w-0 outline-none\",\n  \"focus-visible:outline-(length:--kl-ring) focus-visible:outline-offset-(--kl-ring-out) focus-visible:outline-kl-focus focus-visible:outline-solid\",\n);\n\n/**\n * Tabs: location. Keyboard, roving focus, aria and panels come from Base UI Tabs; activation follows focus by\n * default, as in a view switcher. Works with or without panels (e.g. table views).\n */\nfunction TabsRoot({ className, ...props }: TabsPrimitive.Root.Props): React.ReactElement {\n  return <TabsPrimitive.Root className={resolveClassName(root, className)} {...props} data-slot=\"tabs\" />;\n}\n\ntype TabsListProps = TabsPrimitive.List.Props & {\n  /** control: its own frame. cell: inside an enclosing frame (no own border, no cut). */\n  layout?: \"control\" | \"cell\";\n};\n\n/** The tab row (Base UI Tabs.List), with the band beneath its tabs. */\nfunction TabsList({\n  className,\n  children,\n  layout = \"control\",\n  activateOnFocus = true,\n  ref: refProp,\n  ...props\n}: TabsListProps): React.ReactElement {\n  const ref = React.useRef<HTMLDivElement>(null);\n  const setRef = useMergedRef(ref, refProp);\n  const [active, setActive] = React.useState(-1);\n  // Base UI owns the value (controlled or not). Uncontrolled Tabs change selection without re-rendering\n  // this wrapper, so the active tab is read from the DOM on mount and whenever a tab's selection flips.\n  React.useLayoutEffect(() => {\n    const el = ref.current;\n    if (!el) return;\n    const read = () => {\n      const tabs = Array.from(el.querySelectorAll<HTMLElement>(\"[data-kl-item]\"));\n      const i = tabs.findIndex((t) => t.getAttribute(\"aria-selected\") === \"true\");\n      setActive((p) => (p === i ? p : i));\n    };\n    read();\n    const mo = new MutationObserver(read);\n    mo.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: [\"aria-selected\"] });\n    return () => mo.disconnect();\n  }, []);\n  useStretch(ref, active);\n  useScrollEdges(ref);\n  return (\n    <TabsPrimitive.List\n      ref={setRef}\n      data-kl-stretch=\"\"\n      data-kl-layout={layout}\n      activateOnFocus={activateOnFocus}\n      // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items\n      tabIndex={-1}\n      className={resolveClassName(cn(listVariants({ layout })), className)}\n      {...props}\n      data-slot=\"tabs-list\"\n    >\n      <span\n        data-kl-band=\"\"\n        className=\"pointer-events-none absolute -z-1 bg-kl-cobalt forced-colors:bg-[Highlight] forced-colors:forced-color-adjust-none\"\n        aria-hidden\n        hidden\n      />\n      {children}\n    </TabsPrimitive.List>\n  );\n}\n\ntype TabsTabProps = TabsPrimitive.Tab.Props & {\n  /** The count voice under the label (e.g. records in a view). */\n  count?: React.ReactNode;\n};\n\n/** A tab (Base UI Tabs.Tab). `count` adds the count voice under the label. */\nfunction TabsTab({ className, children, count, ...props }: TabsTabProps): React.ReactElement {\n  return (\n    <TabsPrimitive.Tab\n      data-kl-item=\"\"\n      data-has-count={count != null || undefined}\n      className={resolveClassName(tab, className)}\n      {...props}\n      data-slot=\"tabs-tab\"\n    >\n      <span\n        data-slot=\"tabs-tab-label\"\n        className=\"text-(length:--kl-text-body) font-(--kl-weight-strong) group-data-has-count/tab:text-(length:--kl-text-label)\"\n      >\n        {children}\n      </span>\n      {count != null ? (\n        <span data-slot=\"tabs-tab-count\" className=\"text-[21px]/none font-(--kl-weight-strong) tabular-nums\">\n          {count}\n        </span>\n      ) : null}\n    </TabsPrimitive.Tab>\n  );\n}\n\n/** A tab's panel (Base UI Tabs.Panel). */\nfunction TabsPanel({ className, ...props }: TabsPrimitive.Panel.Props): React.ReactElement {\n  return <TabsPrimitive.Panel className={resolveClassName(panel, className)} {...props} data-slot=\"tabs-panel\" />;\n}\n\n/** The root under its short name, as before the parts were named after Base UI's. */\nconst Tabs = TabsRoot;\n\nexport { Tabs, TabsRoot, TabsList, TabsTab, TabsPanel, type TabsListProps, type TabsTabProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/tabs.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-tabs": {
-        "display": "grid",
-        "gap": "var(--kl-gutter)",
-        "min-width": "0",
-        "align-content": "start"
-      },
-      ".kl-tabs-list": {
-        "position": "relative",
-        "isolation": "isolate",
-        "display": "flex",
-        "max-width": "100%",
-        "overflow-x": "auto",
-        "background-color": "var(--kl-cell)",
-        "min-height": "var(--kl-ctl)",
-        "justify-self": "start"
-      },
-      ".kl-tabs-list[data-kl-layout=\"cell\"]": {
-        "justify-self": "stretch"
-      },
-      ".kl-tabs-band": {
-        "position": "absolute",
-        "z-index": "-1",
-        "background-color": "var(--kl-cobalt)",
-        "pointer-events": "none"
-      },
-      ".kl-tab": {
-        "display": "flex",
-        "flex-direction": "column",
-        "justify-content": "center",
-        "align-items": "flex-start",
-        "gap": "3px",
-        "padding": "6px 16px",
-        "border": "0",
-        "background": "transparent",
-        "color": "var(--kl-ink)",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "cursor": "pointer",
-        "text-align": "start",
-        "white-space": "nowrap"
-      },
-      ".kl-tabs-list > .kl-tab:nth-child(2)": {
-        "border-inline-start": "0"
-      },
-      ".kl-tabs-list > .kl-tab:first-of-type": {
-        "padding-inline-start": "calc(16px + var(--kl-c-room, 0px))"
-      },
-      ".kl-tab-l": {
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "14px"
-      },
-      ".kl-tab[data-has-count]": {
-        "min-width": "104px"
-      },
-      ".kl-tab[data-has-count] .kl-tab-l": {
-        "font-size": "13px"
-      },
-      ".kl-tab-n": {
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "21px",
-        "line-height": "1",
-        "font-variant-numeric": "tabular-nums"
-      },
-      ".kl-tab:hover:not([data-active]):not([data-disabled])": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-tab[data-kl-covered]": {
-        "color": "var(--kl-on-cobalt)"
-      },
-      ".kl-tab:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-in)"
-      },
-      ".kl-tab[data-disabled]": {
-        "cursor": "not-allowed",
-        "color": "var(--kl-dis)",
-        "background-image": "var(--kl-hatch)"
-      },
-      ".kl-tabs-panel": {
-        "min-width": "0",
-        "outline": "0"
-      },
-      ".kl-tabs-panel:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-out)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-tabs-band": {
-          "forced-color-adjust": "none",
-          "background": "Highlight"
-        },
-        ".kl-tab[data-kl-covered]": {
-          "forced-color-adjust": "none",
-          "color": "HighlightText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

@@ -1,0 +1,100 @@
+{
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "Ink label docked to the focus ring of its trigger, with an optional shortcut cell. Never cut.",
+  "whenToUse": "Use it to name what a control does, with its shortcut, on hover and focus. Never put the only copy of needed information in it; for a link preview use Hover card.",
+  "parts": [
+    {
+      "name": "Tooltip",
+      "description": "The usual tooltip, built from the parts: it names or explains its trigger; it never holds the only copy of information needed to act.",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+          "default": "",
+          "required": true,
+          "description": "The trigger. Must be a focusable element that accepts a ref (a Button, a link, an icon button)."
+        },
+        {
+          "name": "content",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "default": "500",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Shortcut shown in its own cell, e.g. \"⌘K\"."
+        },
+        {
+          "name": "side",
+          "type": "\"bottom\" | \"top\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\"",
+          "default": "\"top\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TooltipPopup",
+      "description": "The label: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. An ink label docked to the trigger's FOCUS RING, not its box: the gap equals the ring (2px + 2px offset), so keyboard and pointer show the same geometry. Never cut, never a surface of its own. It carries the configuration of the place it is written.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<TooltipPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Tooltip.Portal."
+        },
+        {
+          "name": "shortcut",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Shortcut shown in its own cell, e.g. \"⌘K\"."
+        }
+      ]
+    },
+    {
+      "name": "TooltipTrigger",
+      "description": "The element the tooltip names. Rendered as another part (`render={<Button />}`), the element is that part's and carries its data-slot.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "tooltip-label",
+        "tooltip-popup",
+        "tooltip-shortcut",
+        "tooltip-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "tooltip-icons",
+      "title": "Tooltip: invoice tools",
+      "file": "tooltip-icons.tsx"
+    }
+  ]
+}

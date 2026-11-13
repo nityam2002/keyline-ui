@@ -1,0 +1,113 @@
+{
+  "name": "pagination",
+  "title": "Pagination",
+  "description": "Page numbers as cells with a cobalt current page; constant width while paging; folds to \"5 / 20\" when narrow; buttons or links.",
+  "whenToUse": "Use it to move between pages of a long list or table. For tables with paging worked out for you use Data table.",
+  "parts": [
+    {
+      "name": "Pagination",
+      "description": "Page numbers as cells in one frame: ┌───┬───┬───┬───┬━━━┳───┬───┬────┬───┐ │ ‹ │ 1 │ … │ 4 │ 5 ┃ 6 │ … │ 20 │ › │ the current page is the cobalt cell └───┴───┴───┴───┴━━━┻───┴───┴────┴───┘ - The window keeps a constant number of cells (first, last, the current page and its siblings, and gaps), and number cells are as wide as the largest page number: the frame never changes width while you page, so Previous and Next stay under the pointer. - The current page is cobalt (location) with aria-current=\"page\"; it stays focusable, it does nothing. - Below 360px of its own width the numbers fold into one \"5 / 20\" cell between Previous and Next. - Previous and Next mirror in RTL; they are out of service (hatched) at the ends. - Buttons by default; `getHref` makes them links (Previous/Next at the ends become plain cells).",
+      "props": [
+        {
+          "name": "getHref",
+          "type": "(page: number) => string",
+          "default": "",
+          "required": false,
+          "description": "Links instead of buttons: the page's URL. Each number is then an <a>, so pages open in new tabs."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "\"Pagination\"",
+          "required": false,
+          "description": "Name of the navigation landmark."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a row of an enclosing frame (a panel's or table's footer)."
+        },
+        {
+          "name": "onPageChange",
+          "type": "(page: number) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": "The current page, 1-based (the number printed)."
+        },
+        {
+          "name": "pageCount",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": "How many pages. null while unknown: the numbers show \"–\" and every cell is out of service."
+        },
+        {
+          "name": "pageLabel",
+          "type": "(page: number) => string",
+          "default": "(p) => `Page ${p}`",
+          "required": false,
+          "description": "Text read for a page number (default \"Page 4\")."
+        },
+        {
+          "name": "siblings",
+          "type": "number",
+          "default": "1",
+          "required": false,
+          "description": "Pages shown on each side of the current one (default 1)."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-disabled",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "pagination",
+        "pagination-ellipsis",
+        "pagination-frame",
+        "pagination-status"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-pg-ch",
+      "values": [
+        "digits"
+      ]
+    },
+    {
+      "name": "--kl-pg-sw",
+      "values": [
+        "calc(var(--kl-ctl)-2*var(--kl-bw,0px))",
+        "var(--kl-row)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "pagination-invoices",
+      "title": "Pagination: invoice archive",
+      "file": "pagination-invoices.tsx"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# Settings only: the site is not a separate workspace package.
+packages:
+  - "."
+
+# Hold new releases for a day before they can be installed, so a compromised publish is usually caught and
+# pulled before it reaches us.
+minimumReleaseAge: 1440
+
+# Install scripts run only for packages listed here. None currently need one; add a package only when it fails
+# without its script, and say why beside it.
+onlyBuiltDependencies: []

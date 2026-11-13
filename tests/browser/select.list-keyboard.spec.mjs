@@ -1,68 +1,175 @@
 // Select trigger and list: one mark, a distinct cursor, long labels, long
 // lists, typeahead, disabled options, and the form value.
-import { test, idle } from "./fixtures.mjs"
-import { until } from "./lib/flow.mjs"
+import { test, idle } from "./fixtures.mjs";
+import { until } from "./lib/flow.mjs";
 // the specimen entries these tests use (fixtures.mjs: only)
-test.use({ only: ["select","form","async","participants","month-jump"] })
+test.use({ only: ["select", "form", "async", "participants", "month-jump"] });
 
-const specimen = (open) => open({ route: "specimen", width: 1400, height: 1000, ready: "[data-slot=select]" })
+const specimen = (open) => open({ route: "specimen", width: 1400, height: 1000, ready: "[data-slot=select]" });
 
 test("select: narrow trigger truncates; list marks, wrapping, minimum width, cursor vs mark", async ({ open, ok }) => {
-  const p = await specimen(open)
-  const narrow = p.locator("[data-slot=select]").filter({ hasText: "Escalate to (narrow)" }).locator("[role=combobox]").first()
-  await narrow.scrollIntoViewIfNeeded()
-  const tv = await narrow.evaluate((e) => { const v = e.querySelector(".kl-select-value"); const c = e.querySelector(".kl-select-caret"); return { trunc: v.scrollWidth > v.clientWidth, ellipsis: getComputedStyle(v).textOverflow, caret: c.getBoundingClientRect().width, inside: v.getBoundingClientRect().right <= c.getBoundingClientRect().left + 0.5, name: e.textContent } })
-  ok("select trigger: a long value truncates with an ellipsis on the value cell; the caret cell stays 36px", tv.trunc && tv.ellipsis === "ellipsis" && Math.abs(tv.caret - 36) < 0.6 && tv.inside, tv)
-  await narrow.click()
-  await p.locator("[role=listbox]:visible").waitFor()
-  await idle(p)
-  const opts = await p.locator("[role=listbox]:visible [role=option]").evaluateAll((os) => os.map((o) => ({ sel: o.getAttribute("aria-selected") === "true", hi: o.hasAttribute("data-highlighted"), glyph: o.querySelector(".kl-select-ind")?.textContent ?? "", markVisible: getComputedStyle(o.querySelector(".kl-select-ind")).visibility === "visible", label: o.querySelector(".kl-select-label"), h: o.getBoundingClientRect().height, wraps: o.querySelector(".kl-select-label").scrollWidth <= o.querySelector(".kl-select-label").clientWidth })))
-  ok("select list: no default glyph; exactly one mark, on the selected option", opts.every((o) => o.glyph === "") && opts.filter((o) => o.markVisible).length === 1 && opts.find((o) => o.markVisible).sel, opts)
-  ok("select list: a long option wraps inside the panel (nothing clipped)", opts.every((o) => o.wraps) && opts[1].h > 50, opts.map((o) => o.h))
-  const pnl = await p.locator(".kl-select-panel:visible").boundingBox()
-  ok("select list: a clearly narrower owner (160px) gets the 15rem minimum, start-aligned, inside the viewport", Math.round(pnl.width) === 240 && pnl.x + pnl.width <= 1400, pnl)
-  await p.keyboard.press("ArrowDown")
-  await until(() => p.locator("[role=listbox]:visible [role=option][data-highlighted]:not([aria-selected=true])").count())
-  await idle(p)
-  const both = await p.locator("[role=listbox]:visible [role=option]").evaluateAll((os) => os.map((o) => ({ sel: o.getAttribute("aria-selected") === "true", hi: o.hasAttribute("data-highlighted"), bg: getComputedStyle(o).backgroundColor, mark: getComputedStyle(o.querySelector(".kl-select-ind")).borderTopColor, text: getComputedStyle(o).color })))
-  const selHi = both.find((o) => o.sel)
-  const other = both.find((o) => o.hi && !o.sel)
-  ok("select: the cursor (inverse row) and the selected mark are different cues, and the mark survives under the cursor", !!other && other.bg !== both.find((o) => !o.hi && !o.sel)?.bg && selHi && !selHi.hi, both)
-  ok("no page errors", p.errs.length === 0, p.errs)
-})
+  const p = await specimen(open);
+  const narrow = p
+    .locator("[data-slot=select]")
+    .filter({ hasText: "Escalate to (narrow)" })
+    .locator("[role=combobox]")
+    .first();
+  await narrow.scrollIntoViewIfNeeded();
+  const tv = await narrow.evaluate((e) => {
+    const v = e.querySelector("[data-slot=select-value]");
+    const c = e.querySelector("[data-slot=select-icon]");
+    return {
+      trunc: v.scrollWidth > v.clientWidth,
+      ellipsis: getComputedStyle(v).textOverflow,
+      caret: c.getBoundingClientRect().width,
+      inside: v.getBoundingClientRect().right <= c.getBoundingClientRect().left + 0.5,
+      name: e.textContent,
+    };
+  });
+  ok(
+    "select trigger: a long value truncates with an ellipsis on the value cell; the caret cell stays 36px",
+    tv.trunc && tv.ellipsis === "ellipsis" && Math.abs(tv.caret - 36) < 0.6 && tv.inside,
+    tv,
+  );
+  await narrow.click();
+  await p.locator("[role=listbox]:visible").waitFor();
+  await idle(p);
+  const opts = await p.locator("[role=listbox]:visible [role=option]").evaluateAll((os) =>
+    os.map((o) => ({
+      sel: o.getAttribute("aria-selected") === "true",
+      hi: o.hasAttribute("data-highlighted"),
+      glyph: o.querySelector("[data-slot=select-item-indicator]")?.textContent ?? "",
+      markVisible: getComputedStyle(o.querySelector("[data-slot=select-item-indicator]")).visibility === "visible",
+      label: o.querySelector("[data-slot=select-item-label]"),
+      h: o.getBoundingClientRect().height,
+      wraps:
+        o.querySelector("[data-slot=select-item-label]").scrollWidth <=
+        o.querySelector("[data-slot=select-item-label]").clientWidth,
+    })),
+  );
+  ok(
+    "select list: no default glyph; exactly one mark, on the selected option",
+    opts.every((o) => o.glyph === "") &&
+      opts.filter((o) => o.markVisible).length === 1 &&
+      opts.find((o) => o.markVisible).sel,
+    opts,
+  );
+  ok(
+    "select list: a long option wraps inside the panel (nothing clipped)",
+    opts.every((o) => o.wraps) && opts[1].h > 50,
+    opts.map((o) => o.h),
+  );
+  const pnl = await p.locator("[data-slot=select-popup]:visible").boundingBox();
+  ok(
+    "select list: a clearly narrower owner (160px) gets the 15rem minimum, start-aligned, inside the viewport",
+    Math.round(pnl.width) === 240 && pnl.x + pnl.width <= 1400,
+    pnl,
+  );
+  await p.keyboard.press("ArrowDown");
+  await until(() =>
+    p.locator("[role=listbox]:visible [role=option][data-highlighted]:not([aria-selected=true])").count(),
+  );
+  await idle(p);
+  const both = await p.locator("[role=listbox]:visible [role=option]").evaluateAll((os) =>
+    os.map((o) => ({
+      sel: o.getAttribute("aria-selected") === "true",
+      hi: o.hasAttribute("data-highlighted"),
+      bg: getComputedStyle(o).backgroundColor,
+      mark: getComputedStyle(o.querySelector("[data-slot=select-item-indicator]")).borderTopColor,
+      text: getComputedStyle(o).color,
+    })),
+  );
+  const selHi = both.find((o) => o.sel);
+  const other = both.find((o) => o.hi && !o.sel);
+  ok(
+    "select: the cursor (inverse row) and the selected mark are different cues, and the mark survives under the cursor",
+    !!other && other.bg !== both.find((o) => !o.hi && !o.sel)?.bg && selHi && !selHi.hi,
+    both,
+  );
+  ok("no page errors", p.errs.length === 0, p.errs);
+});
 
-test("select: long list reopen, scrolling cursor, disabled option, typeahead, choice and form value", async ({ open, ok }) => {
-  const p = await specimen(open)
-  const panel = p.locator(".kl-select-panel:visible")
-  const ports = p.locator("[data-slot=select]").filter({ hasText: "Port of loading" }).locator("[role=combobox]").first()
-  await ports.focus()
-  await p.keyboard.press("Enter")
-  await panel.waitFor()
-  await idle(p)
-  await until(() => panel.evaluate((pn) => pn.scrollTop > 0))
-  const reopen = await panel.evaluate((pn) => { const s = pn.querySelector("[aria-selected=true]"); const a = pn.getBoundingClientRect(), b = s.getBoundingClientRect(); return { label: s.textContent, hi: s.hasAttribute("data-highlighted"), visible: b.top >= a.top - 0.5 && b.bottom <= a.bottom + 0.5, scrolled: pn.scrollTop } })
-  ok("long list: reopening with a selection far down shows it highlighted and scrolled into view", reopen.hi && reopen.visible && reopen.scrolled > 0, reopen)
-  for (let i = 0; i < 6; i++) await p.keyboard.press("ArrowDown")
-  await idle(p)
-  await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))))
-  const nav = await panel.evaluate((pn) => { const s = pn.querySelector("[data-highlighted]"); const a = pn.getBoundingClientRect(), b = s.getBoundingClientRect(); return { label: s.textContent, visible: b.top >= a.top - 0.5 && b.bottom <= a.bottom + 0.5 } })
-  ok("long list: arrowing to off-screen options keeps the cursor in view", nav.visible && /Belgrade|Budapest|Linz/.test(nav.label), nav)
-  await p.keyboard.press("Home")
-  await p.keyboard.press("ArrowDown")
-  for (let i = 0; i < 6; i++) await p.keyboard.press("ArrowDown")
-  const skip = await p.locator(".kl-select-panel:visible [data-highlighted]").evaluate((o) => ({ label: o.textContent, disabled: o.hasAttribute("data-disabled") }))
-  await p.keyboard.press("Enter")
-  await p.waitForTimeout(250) // timing: "Enter on a disabled option does nothing" — the list must still be open after the time a choice takes
-  const still = { open: await p.locator(".kl-select-panel:visible").count(), value: await ports.textContent() }
+test("select: long list reopen, scrolling cursor, disabled option, typeahead, choice and form value", async ({
+  open,
+  ok,
+}) => {
+  const p = await specimen(open);
+  const panel = p.locator("[data-slot=select-popup]:visible");
+  const ports = p
+    .locator("[data-slot=select]")
+    .filter({ hasText: "Port of loading" })
+    .locator("[role=combobox]")
+    .first();
+  await ports.focus();
+  await p.keyboard.press("Enter");
+  await panel.waitFor();
+  await idle(p);
+  await until(() => panel.evaluate((pn) => pn.scrollTop > 0));
+  const reopen = await panel.evaluate((pn) => {
+    const s = pn.querySelector("[aria-selected=true]");
+    const a = pn.getBoundingClientRect(),
+      b = s.getBoundingClientRect();
+    return {
+      label: s.textContent,
+      hi: s.hasAttribute("data-highlighted"),
+      visible: b.top >= a.top - 0.5 && b.bottom <= a.bottom + 0.5,
+      scrolled: pn.scrollTop,
+    };
+  });
+  ok(
+    "long list: reopening with a selection far down shows it highlighted and scrolled into view",
+    reopen.hi && reopen.visible && reopen.scrolled > 0,
+    reopen,
+  );
+  for (let i = 0; i < 6; i++) await p.keyboard.press("ArrowDown");
+  await idle(p);
+  await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  const nav = await panel.evaluate((pn) => {
+    const s = pn.querySelector("[data-highlighted]");
+    const a = pn.getBoundingClientRect(),
+      b = s.getBoundingClientRect();
+    return { label: s.textContent, visible: b.top >= a.top - 0.5 && b.bottom <= a.bottom + 0.5 };
+  });
+  ok(
+    "long list: arrowing to off-screen options keeps the cursor in view",
+    nav.visible && /Belgrade|Budapest|Linz/.test(nav.label),
+    nav,
+  );
+  await p.keyboard.press("Home");
+  await p.keyboard.press("ArrowDown");
+  for (let i = 0; i < 6; i++) await p.keyboard.press("ArrowDown");
+  const skip = await p
+    .locator("[data-slot=select-popup]:visible [data-highlighted]")
+    .evaluate((o) => ({ label: o.textContent, disabled: o.hasAttribute("data-disabled") }));
+  await p.keyboard.press("Enter");
+  await p.waitForTimeout(250); // timing: "Enter on a disabled option does nothing" — the list must still be open after the time a choice takes
+  const still = { open: await p.locator("[data-slot=select-popup]:visible").count(), value: await ports.textContent() };
   // Base UI keeps disabled options reachable (APG allows it, so they can be read); they can never be chosen
-  ok("long list: a disabled option can be reached and read, but Enter cannot choose it", skip.disabled && /Valencia/.test(skip.label) && still.open === 1 && /Duisburg/.test(still.value), { skip, still })
-  await p.keyboard.type("Ro")
-  await until(async () => /Rotterdam/.test(await p.locator(".kl-select-panel:visible [data-highlighted]").textContent()))
-  ok("long list: typeahead moves the cursor", /Rotterdam/.test(await p.locator(".kl-select-panel:visible [data-highlighted]").textContent()))
-  await p.keyboard.press("Enter")
-  await until(async () => /Rotterdam/.test(await ports.textContent()) && (await p.evaluate(() => document.activeElement.classList.contains("kl-select-trigger"))))
-  ok("long list: Enter chooses and restores focus to the trigger", /Rotterdam/.test(await ports.textContent()) && (await p.evaluate(() => document.activeElement.classList.contains("kl-select-trigger"))))
-  const hidden = await p.evaluate(() => document.querySelector("input[name=port]")?.value)
-  ok("long list: the form value follows the choice", hidden === "p3", hidden)
-  ok("no page errors", p.errs.length === 0, p.errs)
-})
+  ok(
+    "long list: a disabled option can be reached and read, but Enter cannot choose it",
+    skip.disabled && /Valencia/.test(skip.label) && still.open === 1 && /Duisburg/.test(still.value),
+    { skip, still },
+  );
+  await p.keyboard.type("Ro");
+  await until(async () =>
+    /Rotterdam/.test(await p.locator("[data-slot=select-popup]:visible [data-highlighted]").textContent()),
+  );
+  ok(
+    "long list: typeahead moves the cursor",
+    /Rotterdam/.test(await p.locator("[data-slot=select-popup]:visible [data-highlighted]").textContent()),
+  );
+  await p.keyboard.press("Enter");
+  await until(
+    async () =>
+      /Rotterdam/.test(await ports.textContent()) &&
+      (await p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger")),
+  );
+  ok(
+    "long list: Enter chooses and restores focus to the trigger",
+    /Rotterdam/.test(await ports.textContent()) &&
+      (await p.evaluate(() => document.activeElement?.getAttribute("data-slot") === "select-trigger")),
+  );
+  const hidden = await p.evaluate(() => document.querySelector("input[name=port]")?.value);
+  ok("long list: the form value follows the choice", hidden === "p3", hidden);
+  ok("no page errors", p.errs.length === 0, p.errs);
+});

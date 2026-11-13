@@ -4,183 +4,23 @@
   "title": "Command menu",
   "description": "⌘K command menu: digit cells run by index, grouped results, empty state.",
   "dependencies": [
-    "@base-ui/react",
+    "@base-ui/react@1.9.0",
     "cmdk"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
-    "@keyline-ui/keyline-scope",
     "@keyline-ui/kbd",
-    "@keyline-ui/dialog"
+    "@keyline-ui/dialog",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/command.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Command as Cmdk } from \"cmdk\"\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\nimport { Kbd } from \"./kbd\"\n\n/**\n * ⌘K command menu. Results are numbered by a CSS counter, so the digit cell always matches the visible\n * order after filtering; ⌥1–⌥9 runs that result. Activation floods the row, then runs immediately.\n */\nfunction CommandDialog({ open, onOpenChange, children, label = \"Command menu\", container, finalFocus }: { open: boolean; onOpenChange: (o: boolean) => void; children: React.ReactNode; label?: string; container?: React.ComponentProps<typeof DialogPrimitive.Portal>[\"container\"]; /** Return false when a command hands focus to another surface (e.g. opens a dialog). */ finalFocus?: React.ComponentProps<typeof DialogPrimitive.Popup>[\"finalFocus\"] }) {\n  const [marker, scope] = useKeylineScope(open, container)\n  return (\n    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>\n      {marker}\n      <DialogPrimitive.Portal container={container}>\n        <DialogPrimitive.Backdrop {...scopeProps(scope, { className: \"kl-scrim\" })} />\n        <div {...scopeProps(scope, { className: \"kl-dialog-scope\" })}>\n        <DialogPrimitive.Popup aria-label={label} className=\"kl-frame kl-dialog kl-cmd\" finalFocus={finalFocus}>\n          <Cmdk\n            label={label}\n            loop\n            onKeyDown={(e) => {\n              if (!e.altKey || !/^Digit[1-9]$/.test(e.code)) return\n              const items = e.currentTarget.querySelectorAll<HTMLElement>(\"[cmdk-item]:not([aria-disabled=true])\")\n              const el = items[Number(e.code.slice(5)) - 1]\n              if (el) {\n                e.preventDefault()\n                el.click()\n              }\n            }}\n          >\n            {children}\n          </Cmdk>\n        </DialogPrimitive.Popup>\n        </div>\n      </DialogPrimitive.Portal>\n    </DialogPrimitive.Root>\n  )\n}\n\nfunction CommandInput({ className, ...props }: React.ComponentProps<typeof Cmdk.Input>) {\n  return (\n    <div className=\"kl-cells kl-cmd-q\">\n      <span className=\"kl-cell\" aria-hidden>\n        <svg viewBox=\"0 0 16 16\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n          <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n          <path d=\"m10.5 10.5 3.5 3.5\" />\n        </svg>\n      </span>\n      <Cmdk.Input className={cn(\"kl-cmd-input\", className)} {...props} />\n      <span className=\"kl-cell\" aria-hidden>\n        <Kbd>esc</Kbd>\n      </span>\n    </div>\n  )\n}\n\nfunction CommandList({ className, ...props }: React.ComponentProps<typeof Cmdk.List>) {\n  return <Cmdk.List className={cn(\"kl-cmd-list\", className)} {...props} />\n}\n\nfunction CommandEmpty({ children, query }: { children?: React.ReactNode; query?: string }) {\n  return (\n    <Cmdk.Empty className=\"kl-cells kl-cmd-empty\">\n      <span className=\"kl-count\">0</span>\n      <span>\n        <b>No commands match “{query}”.</b>\n        {children ? <small>{children}</small> : null}\n      </span>\n    </Cmdk.Empty>\n  )\n}\n\nfunction CommandGroup({ className, code, heading, ...props }: React.ComponentProps<typeof Cmdk.Group> & { code?: string }) {\n  return (\n    <Cmdk.Group\n      className={cn(\"kl-cmd-g\", className)}\n      heading={\n        <>\n          {code ? <span className=\"kl-code kl-cmd-gc\">{code}</span> : null}\n          {heading}\n        </>\n      }\n      {...props}\n    />\n  )\n}\n\nfunction CommandItem({ className, meta, shortcut, onSelect, children, ...props }: React.ComponentProps<typeof Cmdk.Item> & { meta?: React.ReactNode; shortcut?: React.ReactNode }) {\n  const [fired, setFired] = React.useState(false)\n  return (\n    <Cmdk.Item\n      className={cn(\"kl-cmd-item kl-flood\", className)}\n      data-kl-flood=\"manual\"\n      data-kl-on={fired ? \"\" : undefined}\n      onSelect={(v) => {\n        setFired(true)\n        onSelect?.(v)\n      }}\n      {...props}\n    >\n      <span className=\"kl-cmd-ix\" aria-hidden />\n      <span className=\"kl-cmd-l\">{children}</span>\n      <span className=\"kl-cmd-m\">\n        {meta}\n        {shortcut ? <Kbd>{shortcut}</Kbd> : null}\n      </span>\n    </Cmdk.Item>\n  )\n}\n\nfunction CommandFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-cmd-foot\", className)} {...props} />\n}\n\nexport { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandFooter }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Command as Cmdk } from \"cmdk\";\nimport { Dialog as DialogPrimitive } from \"@base-ui/react/dialog\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\nimport { Kbd } from \"./kbd\";\nimport { DialogPopup } from \"./dialog\";\n\n/*\n * ⌘K command menu, as parts named as cmdk names them (cmdk owns filtering and active-item scrolling), and\n * CommandDialog, the menu in Dialog's frame. Results are numbered by a CSS counter, so the digit cell always matches\n * the visible order after filtering; ⌥1–⌥9 runs that result. Activation floods the row, then runs immediately.\n *\n *   ┌────┬──────────────────────────────────┬─────┐\n *   │ ⌕  │ Type a command…                  │ esc │   input row, on the frame's 3px keyline\n *   ├────┴──────────────────────────────────┴─────┤\n *   │ VIEW                                         │   group heading\n *   │  1 │ Show overdue                    │  12   │   digit cell · label · meta and shortcut\n *   └────┴──────────────────────────────────┴─────┘\n */\n\n/** cmdk's root: the menu's filter and keyboard. ⌥1–⌥9 run the visible result with that number. */\nfunction Command({ className, onKeyDown, ...props }: React.ComponentProps<typeof Cmdk>): React.ReactElement {\n  return (\n    <Cmdk\n      className={cn(\"flex max-h-[inherit] flex-col\", className)}\n      onKeyDown={(e) => {\n        onKeyDown?.(e);\n        if (e.defaultPrevented || !e.altKey || !/^Digit[1-9]$/.test(e.code)) return;\n        const items = e.currentTarget.querySelectorAll<HTMLElement>(\"[cmdk-item]:not([aria-disabled=true])\");\n        const el = items[Number(e.code.slice(5)) - 1];\n        if (el) {\n          e.preventDefault();\n          el.click();\n        }\n      }}\n      {...props}\n      data-slot=\"command\"\n    />\n  );\n}\n\ntype CommandDialogProps = {\n  open: boolean;\n  onOpenChange: (open: boolean, eventDetails: DialogPrimitive.Root.ChangeEventDetails) => void;\n  children: React.ReactNode;\n  label?: string;\n  /** Class for the dialog's frame (Dialog's DialogPopup). */\n  className?: string;\n  /** Where the portal renders (defaults to <body>). */\n  container?: DialogPrimitive.Portal.Props[\"container\"];\n  /** Props for Base UI's Dialog.Portal. */\n  portalProps?: Omit<DialogPrimitive.Portal.Props, \"container\" | \"children\">;\n  /** Return false when a command hands focus to another surface (e.g. opens a dialog). */\n  finalFocus?: DialogPrimitive.Popup.Props[\"finalFocus\"];\n};\n\n/** The command menu in Dialog's frame: Base UI's Dialog root and DialogPopup around Command. */\nfunction CommandDialog({\n  open,\n  onOpenChange,\n  children,\n  label = \"Command menu\",\n  className,\n  container,\n  portalProps,\n  finalFocus,\n}: CommandDialogProps): React.ReactElement {\n  return (\n    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>\n      {/* Dialog's frame (it carries dialog-popup's slot); the command menu is wider and not a column of rows */}\n      <DialogPopup\n        aria-label={label}\n        className={cn(\"block w-[min(600px,calc(100vw-32px))] p-0\", className)}\n        container={container}\n        portalProps={portalProps}\n        finalFocus={finalFocus}\n      >\n        <Command label={label} loop>\n          {children}\n        </Command>\n      </DialogPopup>\n    </DialogPrimitive.Root>\n  );\n}\n\n/** The query row: a search glyph cell, the input, and an esc cell, on the frame's region keyline. `className` goes\n * to the input. */\nfunction CommandInput({ className, ...props }: React.ComponentProps<typeof Cmdk.Input>): React.ReactElement {\n  return (\n    <div className=\"kl-cells border-b-(length:--kl-k3) border-b-kl-line\" data-slot=\"command-input-wrapper\">\n      {/* the first cell keeps the cut's room (--kl-c) clear */}\n      <span className=\"kl-cell ps-[calc(14px+var(--kl-c,0px)*0.35)] pe-3.5\" aria-hidden>\n        <svg\n          viewBox=\"0 0 16 16\"\n          width=\"18\"\n          height=\"18\"\n          fill=\"none\"\n          stroke=\"currentColor\"\n          strokeWidth=\"1.75\"\n          strokeLinecap=\"square\"\n        >\n          <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n          <path d=\"m10.5 10.5 3.5 3.5\" />\n        </svg>\n      </span>\n      <Cmdk.Input\n        className={cn(\n          // a search field's own size, pinned: it heads the panel and does not follow density\n          \"min-h-[54px] min-w-0 flex-1 bg-transparent px-3.5 text-[18px] font-medium text-inherit outline-0\",\n          \"font-(family-name:--kl-font) placeholder:text-kl-ink-3 placeholder:opacity-100\",\n          className,\n        )}\n        {...props}\n        data-slot=\"command-input\"\n      />\n      <span className=\"kl-cell\" aria-hidden>\n        <Kbd>esc</Kbd>\n      </span>\n    </div>\n  );\n}\n\n/** The results. They scroll natively (cmdk scrolls the active row into view), in the Scroll Area's tones, and\n * number their rows with the kl-cmd counter. Rows are separated by soft rules. */\nfunction CommandList({ className, ...props }: React.ComponentProps<typeof Cmdk.List>): React.ReactElement {\n  return (\n    <Cmdk.List\n      className={cn(\n        \"max-h-[min(380px,52vh)] overflow-auto overscroll-contain [counter-reset:kl-cmd]\",\n        \"[scrollbar-width:thin] [scrollbar-color:var(--kl-ink-3)_transparent]\",\n        \"[&_[data-slot=command-item]+[data-slot=command-item]]:border-t-(length:--kl-k1)\",\n        \"[&_[data-slot=command-item]+[data-slot=command-item]]:border-t-kl-line-soft\",\n        className,\n      )}\n      {...props}\n      data-slot=\"command-list\"\n    />\n  );\n}\n\n/** Shown while nothing matches: a zero count beside what was searched for, and an optional hint. */\nfunction CommandEmpty({\n  className,\n  children,\n  query,\n  ...props\n}: Omit<React.ComponentProps<typeof Cmdk.Empty>, \"children\"> & {\n  children?: React.ReactNode;\n  /** The search, quoted in the message. */\n  query?: string;\n}): React.ReactElement {\n  return (\n    <Cmdk.Empty\n      className={cn(\"kl-cells border-b-(length:--kl-k1) border-b-kl-seam\", className)}\n      {...props}\n      data-slot=\"command-empty\"\n    >\n      {/* a glyph in its fixed 96px cell, not text: it does not follow the type scale */}\n      <span className=\"kl-count grid min-w-24 place-items-center py-3.5 text-[48px]\">0</span>\n      <span className=\"grid content-center gap-1 p-3.5\">\n        <b>No commands match “{query}”.</b>\n        {children ? <small className=\"text-(length:--kl-text-label) text-kl-ink-2\">{children}</small> : null}\n      </span>\n    </Cmdk.Empty>\n  );\n}\n\n/** Results under one heading (with an optional code). A group after a group is divided by a seam. */\nfunction CommandGroup({\n  className,\n  code,\n  heading,\n  ...props\n}: React.ComponentProps<typeof Cmdk.Group> & { code?: string }): React.ReactElement {\n  return (\n    <Cmdk.Group\n      className={cn(\n        \"[[data-slot=command-group]+&]:border-t-(length:--kl-k1) [[data-slot=command-group]+&]:border-t-kl-seam\",\n        \"[&_[cmdk-group-heading]]:flex [&_[cmdk-group-heading]]:items-baseline [&_[cmdk-group-heading]]:gap-2\",\n        \"[&_[cmdk-group-heading]]:px-3.5 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1.5\",\n        \"[&_[cmdk-group-heading]]:border-b-(length:--kl-k1) [&_[cmdk-group-heading]]:border-b-kl-seam\",\n        \"[&_[cmdk-group-heading]]:bg-kl-paper [&_[cmdk-group-heading]]:font-(--kl-weight-strong)\",\n        \"[&_[cmdk-group-heading]]:text-(length:--kl-text-meta)\",\n        className,\n      )}\n      heading={\n        <>\n          {code ? <span className=\"kl-code\">{code}</span> : null}\n          {heading}\n        </>\n      }\n      {...props}\n      data-slot=\"command-group\"\n    />\n  );\n}\n\n/** A seam between results. Drawn only: a listbox may hold options and groups, not a separator, so it is hidden from\n * assistive technology (cmdk fixes its role). */\nfunction CommandSeparator({ className, ...props }: React.ComponentProps<typeof Cmdk.Separator>): React.ReactElement {\n  return (\n    <Cmdk.Separator\n      className={cn(\"h-0 border-t-(length:--kl-k1) border-t-kl-seam\", className)}\n      aria-hidden\n      {...props}\n      data-slot=\"command-separator\"\n    />\n  );\n}\n\n/**\n * One result: its digit cell (the counter; · after the ninth), the label, and its meta and shortcut. The cursor is\n * the inverse row; running it floods the row yellow (the flood owns the fill while it is on).\n */\nfunction CommandItem({\n  className,\n  meta,\n  shortcut,\n  onSelect,\n  children,\n  ...props\n}: React.ComponentProps<typeof Cmdk.Item> & {\n  meta?: React.ReactNode;\n  shortcut?: React.ReactNode;\n}): React.ReactElement {\n  const [fired, setFired] = React.useState(false);\n  return (\n    <Cmdk.Item\n      className={cn(\n        \"kl-flood group/command-item grid min-h-11 cursor-pointer grid-cols-[44px_1fr_auto] items-stretch\",\n        \"[counter-increment:kl-cmd]\",\n        \"data-[selected=true]:not-data-kl-on:bg-kl-inverse data-[selected=true]:not-data-kl-on:text-kl-on-inverse\",\n        \"aria-disabled:cursor-not-allowed aria-disabled:bg-(image:--kl-hatch) aria-disabled:text-kl-dis\",\n        \"forced-colors:data-[selected=true]:outline-3 forced-colors:data-[selected=true]:outline-offset-[-4px]\",\n        \"forced-colors:data-[selected=true]:outline-[Highlight]\",\n        className,\n      )}\n      data-kl-flood=\"manual\"\n      data-kl-on={fired ? \"\" : undefined}\n      onSelect={(v) => {\n        setFired(true);\n        onSelect?.(v);\n      }}\n      {...props}\n      data-slot=\"command-item\"\n    >\n      <span\n        className={cn(\n          \"grid place-items-center border-e-(length:--kl-k1) border-e-kl-seam\",\n          \"font-(family-name:--kl-font-mono) text-(length:--kl-text-lead)/none font-bold not-italic normal-nums\",\n          \"before:content-[counter(kl-cmd)] group-nth-[n+10_of_[data-slot=command-item]]/command-item:before:content-['·']\",\n          \"group-[[data-selected=true]:not([data-kl-on])]/command-item:border-e-kl-on-inverse\",\n          \"group-data-kl-on/command-item:border-e-kl-on-yellow\",\n        )}\n        aria-hidden\n        data-slot=\"command-item-index\"\n      />\n      <span className=\"flex min-w-0 items-center px-3.5 text-(length:--kl-text-lead)\">{children}</span>\n      <span\n        className={cn(\n          \"flex items-center gap-1.5 px-3.5 text-(length:--kl-text-label) text-kl-ink-2\",\n          \"group-data-kl-on/command-item:text-inherit group-data-[selected=true]/command-item:text-inherit\",\n        )}\n      >\n        {meta}\n        {shortcut ? <Kbd>{shortcut}</Kbd> : null}\n      </span>\n    </Cmdk.Item>\n  );\n}\n\ntype PartState = Record<string, never>;\nconst PART_STATE: PartState = {};\n\n/** The menu's foot: hints and keys on the bottom keyline, in the meta voice. */\nfunction CommandFooter({ render, className, style, ...props }: PartProps<\"div\", PartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"command-footer\",\n    className: resolveClassName(\n      cn(\n        \"flex flex-wrap items-center gap-x-3.5 gap-y-1 border-t-(length:--kl-k1) border-t-kl-seam px-3.5 py-2\",\n        \"text-(length:--kl-text-meta) text-kl-ink-2\",\n        \"**:data-[slot=kbd]:text-kl-ink [&>span]:inline-flex [&>span]:items-center [&>span]:gap-[5px]\",\n      ),\n      className,\n    )(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\nexport {\n  Command,\n  CommandDialog,\n  CommandInput,\n  CommandList,\n  CommandEmpty,\n  CommandGroup,\n  CommandSeparator,\n  CommandItem,\n  CommandFooter,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/command.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-cmd": {
-        "width": "min(600px, calc(100vw - 32px))",
-        "padding": "0"
-      },
-      ".kl-cmd [cmdk-root]": {
-        "display": "flex",
-        "flex-direction": "column",
-        "max-height": "inherit"
-      },
-      ".kl-cmd-q": {
-        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
-      },
-      ".kl-cmd-q > .kl-cell:first-child": {
-        "padding-inline": "calc(14px + var(--kl-c, 0px) * 0.35) 14px"
-      },
-      ".kl-cmd-input": {
-        "flex": "1",
-        "min-width": "0",
-        "border": "0",
-        "background": "none",
-        "outline": "0",
-        "min-height": "54px",
-        "padding": "0 14px",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "font-size": "18px",
-        "font-weight": "500",
-        "color": "inherit"
-      },
-      ".kl-cmd-input::placeholder": {
-        "color": "var(--kl-ink-3)",
-        "opacity": "1"
-      },
-      ".kl-cmd-list": {
-        "max-height": "min(380px, 52vh)",
-        "overflow": "auto",
-        "counter-reset": "kl-cmd",
-        "overscroll-behavior": "contain"
-      },
-      ".kl-cmd-g [cmdk-group-heading]": {
-        "display": "flex",
-        "gap": "8px",
-        "align-items": "baseline",
-        "padding": "8px 14px 6px",
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)",
-        "background-color": "var(--kl-paper)",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "12px"
-      },
-      ".kl-cmd-g + .kl-cmd-g": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-cmd-item": {
-        "display": "grid",
-        "grid-template-columns": "44px 1fr auto",
-        "align-items": "stretch",
-        "min-height": "44px",
-        "cursor": "pointer",
-        "counter-increment": "kl-cmd",
-        "--kl-fc": "var(--kl-yellow)"
-      },
-      ".kl-cmd-item + .kl-cmd-item": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
-      },
-      ".kl-cmd-ix": {
-        "display": "grid",
-        "place-items": "center",
-        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
-        "font": "700 15px/1 var(--kl-font-mono)"
-      },
-      ".kl-cmd-ix::before": {
-        "content": "counter(kl-cmd)"
-      },
-      ".kl-cmd-item:nth-child(n + 10 of .kl-cmd-item) .kl-cmd-ix::before": {
-        "content": "\"·\""
-      },
-      ".kl-cmd-l": {
-        "display": "flex",
-        "align-items": "center",
-        "padding-inline": "14px",
-        "font-size": "15px",
-        "min-width": "0"
-      },
-      ".kl-cmd-m": {
-        "display": "flex",
-        "align-items": "center",
-        "gap": "6px",
-        "padding-inline": "14px",
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on])": {
-        "background-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)"
-      },
-      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on]) :is(.kl-cmd-m)": {
-        "color": "inherit"
-      },
-      ".kl-cmd-item[data-selected=\"true\"]:not([data-kl-on]) .kl-cmd-ix": {
-        "border-color": "var(--kl-on-inverse)"
-      },
-      ".kl-cmd-item[data-kl-on] .kl-cmd-m": {
-        "color": "inherit"
-      },
-      ".kl-cmd-item[data-kl-on] .kl-cmd-ix": {
-        "border-color": "var(--kl-on-yellow)"
-      },
-      ".kl-cmd-item[aria-disabled=\"true\"]": {
-        "color": "var(--kl-dis)",
-        "background-image": "var(--kl-hatch)",
-        "cursor": "not-allowed"
-      },
-      ".kl-cmd-empty": {
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-cmd-empty .kl-count": {
-        "display": "grid",
-        "place-items": "center",
-        "min-width": "96px",
-        "font-size": "48px",
-        "padding": "14px 0"
-      },
-      ".kl-cmd-empty > span:last-child": {
-        "display": "grid",
-        "gap": "4px",
-        "align-content": "center",
-        "padding": "14px"
-      },
-      ".kl-cmd-empty small": {
-        "color": "var(--kl-ink-2)",
-        "font-size": "13px"
-      },
-      ".kl-cmd-foot": {
-        "display": "flex",
-        "flex-wrap": "wrap",
-        "gap": "4px 14px",
-        "align-items": "center",
-        "padding": "8px 14px",
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)",
-        "font-size": "12px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-cmd-foot > span": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "5px"
-      },
-      ".kl-cmd-foot .kl-kbd": {
-        "color": "var(--kl-ink)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-cmd-item[data-selected=\"true\"]": {
-          "outline": "3px solid Highlight",
-          "outline-offset": "-4px"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

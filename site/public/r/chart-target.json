@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-target",
+  "title": "Chart: weekly target",
+  "description": "An example of Chart: weekly target.",
+  "dependencies": [
+    "recharts@3.10.1"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/chart",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/chart-target.tsx",
+      "content": "\"use client\";\n\nimport { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from \"recharts\";\nimport { ChartContainer, ChartFigure, ChartTooltip, ChartTooltipContent, type ChartConfig } from \"../ui/chart\";\n\nconst WEEKS = [\n  { week: \"W40\", reams: 1_620 },\n  { week: \"W41\", reams: 1_680 },\n  { week: \"W42\", reams: 1_540 },\n  { week: \"W43\", reams: 1_880 },\n  { week: \"W44\", reams: 1_760 },\n  { week: \"W45\", reams: 1_810 },\n];\n\nconst config = { reams: { label: \"Reams sold\", unit: \"reams\" } } satisfies ChartConfig;\n\nexport function WeeklyTarget() {\n  return (\n    <ChartFigure\n      title=\"Reams sold each week\"\n      description=\"Corporate's target is 1,700\"\n      data={WEEKS}\n      config={config}\n      labelKey=\"week\"\n      labelHeader=\"Week\"\n    >\n      <ChartContainer config={config} className=\"aspect-auto h-[240px]\">\n        <LineChart data={WEEKS} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>\n          <CartesianGrid vertical={false} />\n          <XAxis dataKey=\"week\" tickLine={false} tickMargin={8} />\n          <YAxis tickLine={false} axisLine={false} width={44} domain={[1_200, 2_000]} />\n          <ReferenceLine y={1_700} label={{ value: \"Target 1,700\", position: \"insideBottomLeft\" }} />\n          <ChartTooltip content={<ChartTooltipContent />} />\n          <Line\n            dataKey=\"reams\"\n            type=\"linear\"\n            stroke=\"var(--color-reams)\"\n            strokeWidth={2}\n            dot={{ r: 4, fill: \"var(--color-reams)\" }}\n            activeDot={{ r: 5 }}\n          />\n        </LineChart>\n      </ChartContainer>\n    </ChartFigure>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/chart-target.tsx"
+    }
+  ],
+  "categories": [
+    "chart"
+  ],
+  "type": "registry:block"
+}

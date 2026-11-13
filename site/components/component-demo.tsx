@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/keyline/ui/tabs"
-import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented"
+import * as React from "react";
+import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/keyline/ui/tabs";
+import { Segmented, SegmentedItem } from "@/components/keyline/ui/segmented";
 
-const MARKS = Array.from({ length: 21 }, (_, i) => i * 100)
+const MARKS = Array.from({ length: 21 }, (_, i) => i * 100);
 
 /** The container's measured width, marked on the ruler as a band from zero. */
 function useWidth(ref: React.RefObject<HTMLElement | null>) {
-  const [w, setW] = React.useState(0)
+  const [w, setW] = React.useState(0);
   React.useLayoutEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const ro = new ResizeObserver(() => setW(el.getBoundingClientRect().width))
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [ref])
-  return w
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setW(el.getBoundingClientRect().width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  return w;
 }
 
 /**
@@ -24,11 +24,21 @@ function useWidth(ref: React.RefObject<HTMLElement | null>) {
  * `widths`: offer Standard / Narrow, with the ruler marking the container. Only for examples whose point is
  * how they answer a narrower container (overflow); the rest get a plain stage.
  */
-export function ComponentDemo({ label, preview, code, widths = false }: { label: string; preview: React.ReactNode; code: React.ReactNode; widths?: boolean }) {
-  const [tab, setTab] = React.useState<string>("preview")
-  const [width, setWidth] = React.useState("standard")
-  const box = React.useRef<HTMLDivElement>(null)
-  const w = useWidth(box)
+export function ComponentDemo({
+  label,
+  preview,
+  code,
+  widths = false,
+}: {
+  label: string;
+  preview: React.ReactNode;
+  code: React.ReactNode;
+  widths?: boolean;
+}) {
+  const [tab, setTab] = React.useState<string>("preview");
+  const [width, setWidth] = React.useState("standard");
+  const box = React.useRef<HTMLDivElement>(null);
+  const w = useWidth(box);
   return (
     <Tabs
       value={tab}
@@ -48,9 +58,12 @@ export function ComponentDemo({ label, preview, code, widths = false }: { label:
           </Segmented>
         ) : null}
       </div>
-      <TabsPanel value="preview" keepMounted className="s-demo-stage relative flex items-stretch overflow-hidden bg-kl-paper p-6 data-[hidden]:hidden
-          data-[ruled]:[--s-origin:40px] data-[ruled]:pt-10 data-[ruled]:pe-6 data-[ruled]:pb-7 data-[ruled]:ps-(--s-origin)
-          max-[721px]:p-3.5 max-[721px]:data-[ruled]:[--s-origin:30px] max-[721px]:data-[ruled]:pt-9 max-[721px]:data-[ruled]:pe-3.5 max-[721px]:data-[ruled]:pb-6" data-ruled={widths ? "" : undefined}>
+      <TabsPanel
+        value="preview"
+        keepMounted
+        className="s-demo-stage relative flex items-stretch overflow-hidden bg-kl-paper p-6 data-[hidden]:hidden data-[ruled]:ps-(--s-origin) data-[ruled]:pe-6 data-[ruled]:pt-10 data-[ruled]:pb-7 data-[ruled]:[--s-origin:40px] max-[721px]:p-3.5 max-[721px]:data-[ruled]:pe-3.5 max-[721px]:data-[ruled]:pt-9 max-[721px]:data-[ruled]:pb-6 max-[721px]:data-[ruled]:[--s-origin:30px]"
+        data-ruled={widths ? "" : undefined}
+      >
         {widths ? (
           <>
             <div className="s-ruler-x" aria-hidden="true">
@@ -66,7 +79,12 @@ export function ComponentDemo({ label, preview, code, widths = false }: { label:
         ) : null}
         {/* the container the example is given: the full stage at Standard, 220px at Narrow. A definite width,
             so the toolbar grows back when the room returns. */}
-        <div className="relative min-h-[140px] w-full max-w-full bg-kl-cell p-7 data-[width=narrow]:w-[220px] data-[width=narrow]:px-3 max-[721px]:px-3 max-[721px]:py-5" data-width={widths ? width : "standard"} data-testid="preview-box" ref={box}>
+        <div
+          className="relative min-h-[140px] w-full max-w-full bg-kl-cell p-7 data-[width=narrow]:w-[220px] data-[width=narrow]:px-3 max-[721px]:px-3 max-[721px]:py-5"
+          data-width={widths ? width : "standard"}
+          data-testid="preview-box"
+          ref={box}
+        >
           <span className="s-box-crops" aria-hidden="true">
             <i />
             <i />
@@ -80,5 +98,5 @@ export function ComponentDemo({ label, preview, code, widths = false }: { label:
         {code}
       </TabsPanel>
     </Tabs>
-  )
+  );
 }

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "multiselect-memo",
+  "title": "Multiselect: memo recipients",
+  "description": "An example of Multiselect: memo recipients.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/multiselect"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/multiselect-memo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Multiselect, type MultiselectOption } from \"../ui/multiselect\";\n\nconst PEOPLE: MultiselectOption[] = [\n  { value: \"pam\", label: \"Pam Beesly\", description: \"Reception\" },\n  { value: \"angela\", label: \"Angela Martin\", description: \"Accounting\" },\n  { value: \"oscar\", label: \"Oscar Martinez\", description: \"Accounting\" },\n  { value: \"kevin\", label: \"Kevin Malone\", description: \"Accounting\" },\n  { value: \"darryl\", label: \"Darryl Philbin\", description: \"Warehouse\" },\n  { value: \"toby\", label: \"Toby Flenderson\", description: \"HR\" },\n  { value: \"creed\", label: \"Creed Bratton\", description: \"Quality assurance\" },\n];\n\n// a local list behind Multiselect's async source\nfunction findPeople(query: string, signal: AbortSignal): Promise<MultiselectOption[]> {\n  return new Promise((resolve) => {\n    const t = setTimeout(\n      () => resolve(PEOPLE.filter((p) => `${p.label} ${p.description}`.toLowerCase().includes(query.toLowerCase()))),\n      250,\n    );\n    signal.addEventListener(\"abort\", () => clearTimeout(t));\n  });\n}\n\nexport function MemoRecipients() {\n  const [to, setTo] = useState<MultiselectOption[]>(PEOPLE.slice(1, 2));\n\n  return (\n    <div className=\"grid max-w-[480px] gap-3\">\n      <Multiselect\n        label=\"Send the expense memo to\"\n        placeholder=\"Add people\"\n        noun={[\"person\", \"people\"]}\n        loadOptions={findPeople}\n        value={to}\n        onValueChange={setTo}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {to.length\n          ? `${to.length} ${to.length === 1 ? \"person\" : \"people\"} will get it.${to.some((p) => p.value === \"toby\") ? \" Michael will ask why Toby is on it.\" : \"\"}`\n          : \"Nobody yet. Accounting usually wants it.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/multiselect-memo.tsx"
+    }
+  ],
+  "categories": [
+    "multiselect"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-receipts",
+  "title": "Toggle: expense filter",
+  "description": "An example of Toggle: expense filter.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/toggle"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toggle-receipts.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Toggle } from \"../ui/toggle\";\n\nconst EXPENSES = [\n  { who: \"Kevin Malone\", what: \"Cookies for the 3 o’clock meeting\", amount: \"$14.99\", receipt: false },\n  { who: \"Michael Scott\", what: \"Dundies trophies (12)\", amount: \"$186.40\", receipt: false },\n  { who: \"Oscar Martinez\", what: \"Toner, Staples\", amount: \"$62.18\", receipt: true },\n  { who: \"Meredith Palmer\", what: \"Client lunch, Cugino’s\", amount: \"$48.75\", receipt: true },\n];\n\nexport function ExpenseFilter() {\n  const [missingOnly, setMissingOnly] = useState(false);\n  const missing = EXPENSES.filter((e) => !e.receipt);\n  const rows = missingOnly ? missing : EXPENSES;\n\n  return (\n    <div className=\"grid gap-4\">\n      <Toggle\n        pressed={missingOnly}\n        onPressedChange={setMissingOnly}\n        count={missing.length}\n        className=\"justify-self-start\"\n      >\n        Missing receipt\n      </Toggle>\n      <ul className=\"m-0 grid list-none gap-1 p-0 text-[14px]\" aria-label=\"Expenses this week\">\n        {rows.map((e) => (\n          <li key={e.what} className=\"grid grid-cols-[minmax(0,1fr)_auto] gap-x-4\">\n            <span className=\"min-w-0 truncate\">\n              {e.who} · <span className=\"text-kl-ink-2\">{e.what}</span>\n            </span>\n            <span className=\"tabular-nums\">{e.amount}</span>\n          </li>\n        ))}\n      </ul>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {missingOnly\n          ? `${missing.length} expenses Angela can’t approve yet.`\n          : `${EXPENSES.length} expenses this week.`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toggle-receipts.tsx"
+    }
+  ],
+  "categories": [
+    "toggle"
+  ],
+  "type": "registry:block"
+}

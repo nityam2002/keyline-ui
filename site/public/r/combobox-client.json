@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-client",
+  "title": "Combobox: find client",
+  "description": "An example of Combobox: find client.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/combobox",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/combobox-client.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Combobox, type ComboboxOption } from \"../ui/combobox\";\n\nconst CLIENTS: ComboboxOption[] = [\n  { value: \"blue-cross\", label: \"Blue Cross of Pennsylvania\", code: \"BC\", group: \"Scranton\" },\n  { value: \"business-park\", label: \"Scranton Business Park\", code: \"SBP\", group: \"Scranton\" },\n  { value: \"lackawanna\", label: \"Lackawanna County\", code: \"LC\", group: \"Scranton\" },\n  { value: \"library\", label: \"Wilkes-Barre Library\", code: \"WBL\", group: \"Wilkes-Barre\" },\n  { value: \"harper\", label: \"Harper Collins, regional office\", code: \"HC\", group: \"Wilkes-Barre\" },\n  {\n    value: \"steamtown\",\n    label: \"Steamtown Mall\",\n    code: \"STM\",\n    group: \"Scranton\",\n    disabled: true,\n    description: \"Account on hold\",\n  },\n];\n\nexport function FindClient() {\n  const [client, setClient] = useState<ComboboxOption | null>(null);\n\n  return (\n    <div className=\"grid max-w-[400px] gap-3\">\n      <Combobox\n        label=\"Client\"\n        placeholder=\"Search clients\"\n        noun={[\"client\", \"clients\"]}\n        options={CLIENTS}\n        onValueChange={(_, o) => setClient(o)}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {client ? `New order for ${client.label}.` : \"Type part of a name, such as “barre”.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/combobox-client.tsx"
+    }
+  ],
+  "categories": [
+    "combobox"
+  ],
+  "type": "registry:block"
+}

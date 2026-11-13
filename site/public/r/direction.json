@@ -4,15 +4,16 @@
   "title": "Direction",
   "description": "DirectionProvider: sets a subtree's writing direction for both the DOM (Keyline's CSS and DOM-reading components) and Base UI (the sides tooltips, popovers and menus take; arrow keys). useDirection reads it.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
-    "@keyline-ui/keyline"
+    "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/direction.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { DirectionProvider as BaseDirectionProvider, useDirection } from \"@base-ui/react/direction-provider\"\n\n/**\n * Sets the writing direction of a subtree in both places Keyline reads it: the DOM `dir` (Keyline's\n * CSS, logical sides, mirrored glyphs, and the components that read the DOM: toolbar, slider, scroll area,\n * carousel) and Base UI's DirectionProvider (the side a tooltip, popover, hover card or menu takes, and arrow\n * keys in Base UI's composite widgets). Wrap the app once, or a region whose language differs from the page.\n *\n *   <DirectionProvider direction=\"rtl\">…</DirectionProvider>\n *\n * The wrapper is `display: contents`, so it adds no box. Without it every Keyline item still follows the DOM\n * `dir`; only Base UI's positioning of `inline-start` / `inline-end` sides needs the provider.\n */\nfunction DirectionProvider({ direction, children, ...props }: Omit<React.ComponentProps<\"div\">, \"dir\"> & { direction: \"ltr\" | \"rtl\" }) {\n  return (\n    <div data-slot=\"direction\" dir={direction} style={{ display: \"contents\" }} {...props}>\n      <BaseDirectionProvider direction={direction}>{children}</BaseDirectionProvider>\n    </div>\n  )\n}\n\nexport { DirectionProvider, useDirection }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { DirectionProvider as BaseDirectionProvider, useDirection } from \"@base-ui/react/direction-provider\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype DirectionState = { direction: \"ltr\" | \"rtl\" };\n\ntype DirectionProviderProps = Omit<PartProps<\"div\", DirectionState>, \"dir\"> & { direction: \"ltr\" | \"rtl\" };\n\n/**\n * Sets the writing direction of a subtree in both places Keyline reads it: the DOM `dir` (Keyline's\n * CSS, logical sides, mirrored glyphs, and the components that read the DOM: toolbar, slider, scroll area,\n * carousel) and Base UI's DirectionProvider (the side a tooltip, popover, hover card or menu takes, and arrow\n * keys in Base UI's composite widgets). Wrap the app once, or a region whose language differs from the page.\n *\n *   <DirectionProvider direction=\"rtl\">…</DirectionProvider>\n *\n * The wrapper is `display: contents` (the `contents` class), so it adds no box. Without it every Keyline item still\n * follows the DOM `dir`; only Base UI's positioning of `inline-start` / `inline-end` sides needs the provider.\n */\nfunction DirectionProvider({\n  direction,\n  children,\n  render,\n  className,\n  style,\n  ...props\n}: DirectionProviderProps): React.ReactElement {\n  const state: DirectionState = { direction };\n  const own = {\n    dir: direction,\n    \"data-slot\": \"direction\",\n    className: resolveClassName(\"contents\", className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: <BaseDirectionProvider direction={direction}>{children}</BaseDirectionProvider>,\n  };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(props, own) });\n}\n\nexport { DirectionProvider, useDirection, type DirectionProviderProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/direction.tsx"
     }

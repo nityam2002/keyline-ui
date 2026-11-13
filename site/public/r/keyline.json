@@ -1,15 +1,21 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-  "extends": "none",
   "name": "keyline",
   "title": "Keyline",
-  "description": "Keyline tokens and construction primitives: role weights, the optional cut (--kl-cut), cells, flood, lamp, unfold, dock, pending.",
+  "description": "Keyline tokens and construction primitives: role weights, the optional cut (--kl-cut), cells, flood, lamp, unfold, dock, pending. Source tokens go to your :root and .dark; theme/tokens.ts holds them as data.",
   "dependencies": [
     "@fontsource-variable/atkinson-hyperlegible-mono",
     "@fontsource-variable/atkinson-hyperlegible-next"
   ],
   "registryDependencies": [],
-  "files": [],
+  "files": [
+    {
+      "path": "src/registry/keyline/theme/tokens.ts",
+      "content": "// Keyline's tokens, as data: the single source. scripts/registry/theme.ts generates theme/keyline.css and\n// theme/keyline-shadcn.css from it (pnpm registry:build), and lib/keyline-config reads its defaults from here.\n// Change a token here, never in the generated CSS.\n//\n// Where each kind of token ends up:\n//   sources       the app's own :root (cssVars.light) and .dark (cssVars.dark). `shadcn add` writes them into the\n//                 app's stylesheet, where the user edits them; re-adding the keyline item updates them.\n//   base          @layer base on :root, beside the scopes that override them on any element, <html> included\n//                 (density, cut, motion). Unlayered they would beat those scopes on <html>.\n//   theme         Tailwind theme entries (@theme inline, cssVars.theme): utilities such as bg-kl-cell, h-kl-ctl,\n//                 text-kl-label. `inline` so each scope's own value is used, not :root's.\n\n/** A token: its name without the leading `--kl-`, its value and why it is what it is. */\nexport type Token = readonly [name: string, value: string, note?: string];\n\n/* ------------------------------------------------------------------ sources (configurable) */\nexport const PALETTE = {\n  /** the working set: selection, tokens, ranges */\n  working: \"oklch(0.9 0.17 98)\",\n  /** location and commitment: current place, primary action */\n  commit: \"oklch(0.48 0.2 262)\",\n  /** invalid, failed, destructive, overdue */\n  attention: \"oklch(0.55 0.2 33)\",\n  /** hue of paper, ink and keylines */\n  neutralHue: 262,\n  /** tint of the neutrals: 0 grey, 1 default, 2.5 tinted */\n  neutralTint: 1,\n} as const;\n\nexport const TYPE = {\n  sans: '\"Atkinson Hyperlegible Next Variable\", ui-sans-serif, system-ui, sans-serif',\n  mono: '\"Atkinson Hyperlegible Mono Variable\", ui-monospace, monospace',\n  /** labels, headers, the Count */\n  strong: 700,\n  /** titles, glyph cells */\n  display: 800,\n  /** the npm packages the default faces come from; the theme item imports and depends on them */\n  packages: [\"@fontsource-variable/atkinson-hyperlegible-next\", \"@fontsource-variable/atkinson-hyperlegible-mono\"],\n} as const;\n\nexport const SOURCES: readonly Token[] = [\n  [\"working\", PALETTE.working, \"the working set: selection, tokens, ranges\"],\n  [\"commit\", PALETTE.commit, \"location and commitment: current place, primary action\"],\n  [\"attention\", PALETTE.attention, \"invalid, failed, destructive, overdue\"],\n  [\"neutral-h\", String(PALETTE.neutralHue), \"hue of paper, ink and keylines\"],\n  [\"neutral-c\", String(PALETTE.neutralTint), \"tint of the neutrals: 0 grey · 1 default · 2.5 tinted\"],\n  [\"font\", TYPE.sans],\n  [\"font-mono\", TYPE.mono],\n  [\"weight-strong\", String(TYPE.strong), \"labels, headers, the Count\"],\n  [\"weight-display\", String(TYPE.display), \"titles, glyph cells\"],\n  [\"dark\", \"0\", \"theme switch, set by .dark / .light; every derived colour interpolates on it\"],\n];\n\n/** The cut: 0 off, 0.5 quiet, 1 full. Inherits; set on any subtree. Square by default: the cut is an accent. */\nexport const CUT = { off: \"0\", quiet: \"0.5\", on: \"1\" } as const;\nexport const CUT_DEFAULT = CUT.off;\n\n/* ------------------------------------------------------------------ constants */\nexport const CONSTANTS: readonly Token[] = [\n  // keyline weights by role: identity, not configuration\n  [\"k3\", \"3px\"],\n  [\"k2\", \"2px\"],\n  [\"k1\", \"1px\"],\n  // focus ring: one thickness, two placements (outside a standalone control's frame with a gap of the surface;\n  // flush inside a cell). WCAG 2.4.13: 2px on the whole perimeter, >= 3:1 against the cell in both themes.\n  // Text-entry frames use the focus edge instead (.kl-edge): the same thickness, laid inside their own border.\n  [\"ring\", \"2px\"],\n  [\"ring-out\", \"2px\"],\n  [\"ring-in\", \"calc(-1 * var(--kl-ring))\"],\n  // focus edge band inside a standalone control's 2px border: 2 + 1 = one 3px commit-coloured edge\n  [\"edge-band\", \"1px\"],\n  // docked surfaces: an end closer than this to the owner's end snaps to it (no near-miss ends)\n  [\"snap\", \"48px\"],\n];\n\n/* ------------------------------------------------------------------ density */\nexport type Density = \"comfortable\" | \"default\" | \"compact\";\nexport const DENSITIES: readonly Density[] = [\"comfortable\", \"default\", \"compact\"];\n\n/** Rhythm and cut sizes by density. `gutter` is stated in every density, so a compact scope inside a comfortable\n * one does not inherit its 16px. */\nexport const RHYTHM: Record<Density, Record<string, string>> = {\n  comfortable: {\n    ctl: \"40px\",\n    row: \"48px\",\n    inset: \"16px\",\n    gutter: \"16px\",\n    fs: \"15px\",\n    \"cut-region\": \"20px\",\n    \"cut-control\": \"10px\",\n    \"cut-nested\": \"6px\",\n  },\n  default: {\n    ctl: \"36px\",\n    row: \"40px\",\n    inset: \"12px\",\n    gutter: \"12px\",\n    fs: \"14px\",\n    \"cut-region\": \"18px\",\n    \"cut-control\": \"9px\",\n    \"cut-nested\": \"5px\",\n  },\n  compact: {\n    ctl: \"28px\",\n    row: \"28px\",\n    inset: \"8px\",\n    gutter: \"12px\",\n    fs: \"13px\",\n    \"cut-region\": \"14px\",\n    \"cut-control\": \"7px\",\n    \"cut-nested\": \"4px\",\n  },\n};\n\n/**\n * The type scale, by role. Default-density values are the sizes the components already use for that role, so\n * nothing moves at default density; the other densities step with the body size (--kl-fs: 15 / 14 / 13).\n *   code     the Code voice: mono labels, keys, IDs (11px, the `500 11px` mono shorthands)\n *   meta     secondary lines: timestamps, counts beside a label, captions (12px)\n *   label    control and cell labels, list rows (13px, the most common size)\n *   body     running text: the body size itself (--kl-fs)\n *   lead     a heading inside a panel or dialog (15px)\n *   title    a region or page title (20px)\n *   display  a stat or a hero figure (32px)\n */\nexport const TEXT: Record<Density, Record<string, string>> = {\n  comfortable: {\n    code: \"12px\",\n    meta: \"13px\",\n    label: \"14px\",\n    body: \"15px\",\n    lead: \"16px\",\n    title: \"22px\",\n    display: \"36px\",\n  },\n  default: { code: \"11px\", meta: \"12px\", label: \"13px\", body: \"14px\", lead: \"15px\", title: \"20px\", display: \"32px\" },\n  compact: { code: \"11px\", meta: \"12px\", label: \"12px\", body: \"13px\", lead: \"14px\", title: \"18px\", display: \"28px\" },\n};\n\n/* ------------------------------------------------------------------ motion */\nexport const MOTION: readonly Token[] = [\n  [\"t-flood\", \"140ms\"],\n  [\"t-unflood\", \"110ms\"],\n  [\"t-unfold\", \"160ms\"],\n  [\"t-fold\", \"120ms\"],\n  [\"t-tick\", \"180ms\"],\n  [\"ease-out\", \"cubic-bezier(0.2, 0.7, 0.2, 1)\"],\n  [\"ease-in\", \"cubic-bezier(0.5, 0, 0.75, 0.4)\"],\n  [\"stretch-lead\", \"100\"],\n  [\"stretch-trail\", \"220\"],\n  [\"stretch-tug\", \"12\", \"how far (px) a held press pulls the band's leading edge toward the item under it\"],\n  [\"flood-seed\", \"7px\", \"the radius of the flood seed under a held press (the flood grows on from it at release)\"],\n];\n/** What `data-kl-motion=\"reduce\"` and prefers-reduced-motion set: every timing to zero. */\nexport const MOTION_REDUCED: readonly Token[] = [\n  [\"t-flood\", \"0ms\"],\n  [\"t-unflood\", \"0ms\"],\n  [\"t-unfold\", \"0ms\"],\n  [\"t-fold\", \"0ms\"],\n  [\"t-tick\", \"0ms\"],\n  [\"stretch-lead\", \"0\"],\n  [\"stretch-trail\", \"0\"],\n  [\"stretch-tug\", \"0\"],\n];\n\n/* ------------------------------------------------------------------ layering */\n/** Every overlay shares one level and stacks by DOM order (portals append in opening order, so a select opened\n * inside a dialog sits above it); floating toasts sit above all overlays. */\nexport const Z: readonly Token[] = [\n  [\"z-overlay\", \"60\"],\n  [\"z-toast\", \"70\"],\n];\n\n/* ------------------------------------------------------------------ Tailwind theme entries */\n/** The colour roles every scope derives (theme/foundation.css); each is a Tailwind colour of the same name. */\nexport const COLOUR_ROLES = [\n  \"paper\",\n  \"cell\",\n  \"raised\",\n  \"tint\",\n  \"press\",\n  \"ink\",\n  \"ink-2\",\n  \"ink-3\",\n  \"line\",\n  \"seam\",\n  \"line-soft\",\n  \"dis\",\n  \"dis-line\",\n  \"inverse\",\n  \"on-inverse\",\n  \"scrim\",\n  \"yellow\",\n  \"on-yellow\",\n  \"yellow-row\",\n  \"cobalt\",\n  \"cobalt-hi\",\n  \"cobalt-lo\",\n  \"cobalt-text\",\n  \"on-cobalt\",\n  \"red\",\n  \"red-hi\",\n  \"red-lo\",\n  \"red-text\",\n  \"on-red\",\n  \"focus\",\n  \"data-1\",\n  \"data-2\",\n  \"data-3\",\n  \"data-mark\",\n  \"data-alert\",\n] as const;\n\n/** Geometry and rhythm as Tailwind spacing: h-kl-ctl, py-kl-row, px-kl-inset, gap-kl-gutter, -m-kl-k2 … */\nexport const SPACING = [\"ctl\", \"row\", \"inset\", \"gutter\", \"k1\", \"k2\", \"k3\", \"cut-region\", \"cut-control\", \"cut-nested\"];\n\n/** Every Tailwind theme entry, as `[entry, token]`: `--<entry>: var(--kl-<token>)`. */\nexport const THEME_ENTRIES: readonly (readonly [string, string])[] = [\n  ...COLOUR_ROLES.map((r) => [`color-kl-${r}`, r] as const),\n  [\"font-kl\", \"font\"],\n  [\"font-kl-mono\", \"font-mono\"],\n  [\"font-weight-kl-strong\", \"weight-strong\"],\n  [\"font-weight-kl-display\", \"weight-display\"],\n  ...SPACING.map((s) => [`spacing-kl-${s}`, s] as const),\n  ...Object.keys(TEXT.default).map((t) => [`text-kl-${t}`, `text-${t}`] as const),\n  [\"ease-kl-out\", \"ease-out\"],\n  [\"ease-kl-in\", \"ease-in\"],\n];\n\n/* ------------------------------------------------------------------ the opt-in shadcn mapping */\n/** shadcn's semantic tokens, each mapped to a Keyline role; keyline-shadcn.css states it for :root and .light,\n * .dark and every configuration scope, where var() must resolve against the scope's own Keyline tokens. */\nexport const SHADCN_MAP: readonly (readonly [string, string])[] = [\n  [\"background\", \"paper\"],\n  [\"foreground\", \"ink\"],\n  [\"card\", \"cell\"],\n  [\"card-foreground\", \"ink\"],\n  [\"popover\", \"raised\"],\n  [\"popover-foreground\", \"ink\"],\n  [\"primary\", \"cobalt\"],\n  [\"primary-foreground\", \"on-cobalt\"],\n  [\"secondary\", \"tint\"],\n  [\"secondary-foreground\", \"ink\"],\n  [\"muted\", \"tint\"],\n  [\"muted-foreground\", \"ink-2\"],\n  [\"accent\", \"yellow\"],\n  [\"accent-foreground\", \"on-yellow\"],\n  [\"destructive\", \"red\"],\n  [\"border\", \"seam\"],\n  [\"input\", \"line\"],\n  [\"ring\", \"focus\"],\n  [\"sidebar\", \"cell\"],\n  [\"sidebar-foreground\", \"ink\"],\n  [\"sidebar-primary\", \"cobalt\"],\n  [\"sidebar-primary-foreground\", \"on-cobalt\"],\n  [\"sidebar-accent\", \"yellow\"],\n  [\"sidebar-accent-foreground\", \"on-yellow\"],\n  [\"sidebar-border\", \"seam\"],\n  [\"sidebar-ring\", \"focus\"],\n];\n",
+      "type": "registry:lib",
+      "target": "components/keyline/theme/tokens.ts"
+    }
+  ],
   "cssVars": {
     "theme": {
       "color-kl-paper": "var(--kl-paper)",
@@ -51,31 +57,63 @@
       "font-kl-mono": "var(--kl-font-mono)",
       "font-weight-kl-strong": "var(--kl-weight-strong)",
       "font-weight-kl-display": "var(--kl-weight-display)",
+      "spacing-kl-ctl": "var(--kl-ctl)",
+      "spacing-kl-row": "var(--kl-row)",
       "spacing-kl-inset": "var(--kl-inset)",
-      "spacing-kl-gutter": "var(--kl-gutter)"
+      "spacing-kl-gutter": "var(--kl-gutter)",
+      "spacing-kl-k1": "var(--kl-k1)",
+      "spacing-kl-k2": "var(--kl-k2)",
+      "spacing-kl-k3": "var(--kl-k3)",
+      "spacing-kl-cut-region": "var(--kl-cut-region)",
+      "spacing-kl-cut-control": "var(--kl-cut-control)",
+      "spacing-kl-cut-nested": "var(--kl-cut-nested)",
+      "text-kl-code": "var(--kl-text-code)",
+      "text-kl-meta": "var(--kl-text-meta)",
+      "text-kl-label": "var(--kl-text-label)",
+      "text-kl-body": "var(--kl-text-body)",
+      "text-kl-lead": "var(--kl-text-lead)",
+      "text-kl-title": "var(--kl-text-title)",
+      "text-kl-display": "var(--kl-text-display)",
+      "ease-kl-out": "var(--kl-ease-out)",
+      "ease-kl-in": "var(--kl-ease-in)"
     },
-    "light": {},
-    "dark": {}
+    "light": {
+      "kl-working": "oklch(0.9 0.17 98)",
+      "kl-commit": "oklch(0.48 0.2 262)",
+      "kl-attention": "oklch(0.55 0.2 33)",
+      "kl-neutral-h": "262",
+      "kl-neutral-c": "1",
+      "kl-font": "\"Atkinson Hyperlegible Next Variable\", ui-sans-serif, system-ui, sans-serif",
+      "kl-font-mono": "\"Atkinson Hyperlegible Mono Variable\", ui-monospace, monospace",
+      "kl-weight-strong": "700",
+      "kl-weight-display": "800",
+      "kl-dark": "0"
+    },
+    "dark": {
+      "kl-dark": "1"
+    }
   },
   "css": {
     "@import \"@fontsource-variable/atkinson-hyperlegible-next\"": {},
     "@import \"@fontsource-variable/atkinson-hyperlegible-mono\"": {},
     "@layer base": {
       ":root": {
-        "--kl-working": "oklch(0.9 0.17 98)",
-        "--kl-commit": "oklch(0.48 0.2 262)",
-        "--kl-attention": "oklch(0.55 0.2 33)",
-        "--kl-neutral-h": "262",
-        "--kl-neutral-c": "1",
-        "--kl-font": "\"Atkinson Hyperlegible Next Variable\", ui-sans-serif, system-ui, sans-serif",
-        "--kl-font-mono": "\"Atkinson Hyperlegible Mono Variable\", ui-monospace, monospace",
-        "--kl-weight-strong": "700",
-        "--kl-weight-display": "800",
         "--kl-cut": "0",
-        "--kl-dark": "0",
+        "--kl-ctl": "36px",
+        "--kl-row": "40px",
+        "--kl-inset": "12px",
+        "--kl-gutter": "12px",
+        "--kl-fs": "14px",
         "--kl-cut-region": "18px",
         "--kl-cut-control": "9px",
         "--kl-cut-nested": "5px",
+        "--kl-text-code": "11px",
+        "--kl-text-meta": "12px",
+        "--kl-text-label": "13px",
+        "--kl-text-body": "14px",
+        "--kl-text-lead": "15px",
+        "--kl-text-title": "20px",
+        "--kl-text-display": "32px",
         "--kl-k3": "3px",
         "--kl-k2": "2px",
         "--kl-k1": "1px",
@@ -84,11 +122,6 @@
         "--kl-ring-in": "calc(-1 * var(--kl-ring))",
         "--kl-edge-band": "1px",
         "--kl-snap": "48px",
-        "--kl-ctl": "36px",
-        "--kl-row": "40px",
-        "--kl-inset": "12px",
-        "--kl-gutter": "12px",
-        "--kl-fs": "14px",
         "--kl-t-flood": "140ms",
         "--kl-t-unflood": "110ms",
         "--kl-t-unfold": "160ms",
@@ -103,49 +136,8 @@
         "--kl-z-overlay": "60",
         "--kl-z-toast": "70"
       },
-      ".dark": {
-        "--kl-dark": "1"
-      },
       ".light": {
         "--kl-dark": "0"
-      },
-      ":root, .light, .dark, [data-kl-config]": {
-        "--kl-paper": "oklch(calc(0.952 - 0.772 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-cell": "oklch(calc(0.993 - 0.765 * var(--kl-dark)) calc((0.002 + 0.008 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-raised": "oklch(calc(0.993 - 0.728 * var(--kl-dark)) calc((0.002 + 0.009 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-tint": "oklch(calc(0.928 - 0.623 * var(--kl-dark)) calc((0.009 + 0.003 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-press": "oklch(calc(0.885 - 0.535 * var(--kl-dark)) calc((0.011 + 0.001 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-ink": "oklch(calc(0.17 + 0.755 * var(--kl-dark)) calc((0.012 - 0.006 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-ink-2": "oklch(calc(0.39 + 0.395 * var(--kl-dark)) calc((0.014 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-ink-3": "oklch(calc(0.47 + 0.245 * var(--kl-dark)) calc((0.012 - 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-line": "oklch(calc(0.17 + 0.53 * var(--kl-dark)) calc((0.012 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-seam": "oklch(calc(0.17 + 0.385 * var(--kl-dark)) calc((0.012 - 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-line-soft": "oklch(calc(0.82 - 0.455 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-dis": "oklch(calc(0.56 + 0.05 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-dis-line": "oklch(calc(0.74 - 0.29 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-inverse": "oklch(calc(0.17 + 0.59 * var(--kl-dark)) calc((0.012 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c)) var(--kl-neutral-h))",
-        "--kl-on-inverse": "var(--kl-cell)",
-        "--kl-scrim": "oklch(calc(0.17 - 0.12 * var(--kl-dark)) 0.01 var(--kl-neutral-h) / calc(0.45 + 0.15 * var(--kl-dark)))",
-        "--kl-yellow": "oklch(from var(--kl-working) calc(l - 0.04 * var(--kl-dark)) calc(c * (1 - 0.06 * var(--kl-dark))) h)",
-        "--kl-on-yellow": "oklch(from var(--kl-yellow) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
-        "--kl-yellow-row": "oklch(from var(--kl-working) calc(0.975 - 0.665 * var(--kl-dark)) calc(c * (0.265 + 0.065 * var(--kl-dark))) h)",
-        "--kl-cobalt": "oklch(from var(--kl-commit) min(calc(l + 0.09 * var(--kl-dark)), max(l, 0.54)) calc(c * (1 - 0.1 * var(--kl-dark))) h)",
-        "--kl-cobalt-hi": "oklch(from var(--kl-cobalt) calc(l - 0.07) c h)",
-        "--kl-cobalt-lo": "oklch(from var(--kl-cobalt) calc(l - 0.13) c h)",
-        "--kl-cobalt-text": "oklch(from var(--kl-commit) calc(min(l, 0.45) + (max(l, 0.77) - min(l, 0.45)) * var(--kl-dark)) calc(c * (1 - 0.4 * var(--kl-dark))) h)",
-        "--kl-on-cobalt": "oklch(from var(--kl-cobalt) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
-        "--kl-red": "oklch(from var(--kl-attention) min(calc(l + 0.02 * var(--kl-dark)), max(l, 0.54)) calc(c * (1 - 0.1 * var(--kl-dark))) h)",
-        "--kl-red-hi": "oklch(from var(--kl-red) calc(l - 0.08) calc(c * 0.9) h)",
-        "--kl-red-lo": "oklch(from var(--kl-red) calc(l - 0.15) calc(c * 0.85) h)",
-        "--kl-red-text": "oklch(from var(--kl-attention) calc(min(l, 0.52) + (max(l, 0.75) - min(l, 0.52)) * var(--kl-dark)) calc(c * (1 - 0.25 * var(--kl-dark))) h)",
-        "--kl-on-red": "oklch(from var(--kl-red) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
-        "--kl-focus": "var(--kl-cobalt-text)",
-        "--kl-data-1": "var(--kl-cobalt)",
-        "--kl-data-2": "oklch(from var(--kl-cobalt) calc(l + 0.18 + 0.02 * var(--kl-dark)) calc(c * 0.5) h)",
-        "--kl-data-3": "var(--kl-ink-3)",
-        "--kl-data-mark": "var(--kl-yellow)",
-        "--kl-data-alert": "var(--kl-red)",
-        "--kl-hatch": "repeating-linear-gradient(-45deg, transparent 0 5px, color-mix(in oklab, var(--kl-ink) 14%, transparent) 5px 6px)"
       },
       "[data-kl-cut=\"off\"]": {
         "--kl-cut": "0"
@@ -164,7 +156,14 @@
         "--kl-fs": "15px",
         "--kl-cut-region": "20px",
         "--kl-cut-control": "10px",
-        "--kl-cut-nested": "6px"
+        "--kl-cut-nested": "6px",
+        "--kl-text-code": "12px",
+        "--kl-text-meta": "13px",
+        "--kl-text-label": "14px",
+        "--kl-text-body": "15px",
+        "--kl-text-lead": "16px",
+        "--kl-text-title": "22px",
+        "--kl-text-display": "36px"
       },
       "[data-kl-density=\"default\"]": {
         "--kl-ctl": "36px",
@@ -174,7 +173,14 @@
         "--kl-fs": "14px",
         "--kl-cut-region": "18px",
         "--kl-cut-control": "9px",
-        "--kl-cut-nested": "5px"
+        "--kl-cut-nested": "5px",
+        "--kl-text-code": "11px",
+        "--kl-text-meta": "12px",
+        "--kl-text-label": "13px",
+        "--kl-text-body": "14px",
+        "--kl-text-lead": "15px",
+        "--kl-text-title": "20px",
+        "--kl-text-display": "32px"
       },
       "[data-kl-density=\"compact\"]": {
         "--kl-ctl": "28px",
@@ -184,7 +190,14 @@
         "--kl-fs": "13px",
         "--kl-cut-region": "14px",
         "--kl-cut-control": "7px",
-        "--kl-cut-nested": "4px"
+        "--kl-cut-nested": "4px",
+        "--kl-text-code": "11px",
+        "--kl-text-meta": "12px",
+        "--kl-text-label": "12px",
+        "--kl-text-body": "13px",
+        "--kl-text-lead": "14px",
+        "--kl-text-title": "18px",
+        "--kl-text-display": "28px"
       },
       "[data-kl-motion=\"reduce\"]": {
         "--kl-t-flood": "0ms",
@@ -208,6 +221,44 @@
           "--kl-stretch-tug": "0"
         }
       },
+      ":root, .light, .dark, [data-kl-config]": {
+        "--kl-paper": "oklch(\n      calc(0.952 - 0.772 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-cell": "oklch(\n      calc(0.993 - 0.765 * var(--kl-dark)) calc((0.002 + 0.008 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-raised": "oklch(\n      calc(0.993 - 0.728 * var(--kl-dark)) calc((0.002 + 0.009 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-tint": "oklch(\n      calc(0.928 - 0.623 * var(--kl-dark)) calc((0.009 + 0.003 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-press": "oklch(\n      calc(0.885 - 0.535 * var(--kl-dark)) calc((0.011 + 0.001 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-ink": "oklch(\n      calc(0.17 + 0.755 * var(--kl-dark)) calc((0.012 - 0.006 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-ink-2": "oklch(\n      calc(0.39 + 0.395 * var(--kl-dark)) calc((0.014 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-ink-3": "oklch(\n      calc(0.47 + 0.245 * var(--kl-dark)) calc((0.012 - 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-line": "oklch(\n      calc(0.17 + 0.53 * var(--kl-dark)) calc((0.012 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-seam": "oklch(\n      calc(0.17 + 0.385 * var(--kl-dark)) calc((0.012 - 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-line-soft": "oklch(\n      calc(0.82 - 0.455 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-dis": "oklch(\n      calc(0.56 + 0.05 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-dis-line": "oklch(\n      calc(0.74 - 0.29 * var(--kl-dark)) calc((0.006 + 0.002 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-inverse": "oklch(\n      calc(0.17 + 0.59 * var(--kl-dark)) calc((0.012 - 0.004 * var(--kl-dark)) * var(--kl-neutral-c))\n        var(--kl-neutral-h)\n    )",
+        "--kl-on-inverse": "var(--kl-cell)",
+        "--kl-scrim": "oklch(calc(0.17 - 0.12 * var(--kl-dark)) 0.01 var(--kl-neutral-h) / calc(0.45 + 0.15 * var(--kl-dark)))",
+        "--kl-yellow": "oklch(from var(--kl-working) calc(l - 0.04 * var(--kl-dark)) calc(c * (1 - 0.06 * var(--kl-dark))) h)",
+        "--kl-on-yellow": "oklch(from var(--kl-yellow) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
+        "--kl-yellow-row": "oklch(\n      from var(--kl-working) calc(0.975 - 0.665 * var(--kl-dark)) calc(c * (0.265 + 0.065 * var(--kl-dark))) h\n    )",
+        "--kl-cobalt": "oklch(\n      from var(--kl-commit) min(calc(l + 0.09 * var(--kl-dark)), max(l, 0.54)) calc(c * (1 - 0.1 * var(--kl-dark))) h\n    )",
+        "--kl-cobalt-hi": "oklch(from var(--kl-cobalt) calc(l - 0.07) c h)",
+        "--kl-cobalt-lo": "oklch(from var(--kl-cobalt) calc(l - 0.13) c h)",
+        "--kl-cobalt-text": "oklch(\n      from var(--kl-commit) calc(min(l, 0.45) + (max(l, 0.77) - min(l, 0.45)) * var(--kl-dark))\n        calc(c * (1 - 0.4 * var(--kl-dark))) h\n    )",
+        "--kl-on-cobalt": "oklch(from var(--kl-cobalt) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
+        "--kl-red": "oklch(\n      from var(--kl-attention) min(calc(l + 0.02 * var(--kl-dark)), max(l, 0.54)) calc(c * (1 - 0.1 * var(--kl-dark))) h\n    )",
+        "--kl-red-hi": "oklch(from var(--kl-red) calc(l - 0.08) calc(c * 0.9) h)",
+        "--kl-red-lo": "oklch(from var(--kl-red) calc(l - 0.15) calc(c * 0.85) h)",
+        "--kl-red-text": "oklch(\n      from var(--kl-attention) calc(min(l, 0.52) + (max(l, 0.75) - min(l, 0.52)) * var(--kl-dark))\n        calc(c * (1 - 0.25 * var(--kl-dark))) h\n    )",
+        "--kl-on-red": "oklch(from var(--kl-red) clamp(0.17, (0.575 - l) * 1000, 0.995) 0 0)",
+        "--kl-focus": "var(--kl-cobalt-text)",
+        "--kl-data-1": "var(--kl-cobalt)",
+        "--kl-data-2": "oklch(from var(--kl-cobalt) calc(l + 0.18 + 0.02 * var(--kl-dark)) calc(c * 0.5) h)",
+        "--kl-data-3": "var(--kl-ink-3)",
+        "--kl-data-mark": "var(--kl-yellow)",
+        "--kl-data-alert": "var(--kl-red)",
+        "--kl-hatch": "repeating-linear-gradient(\n      -45deg,\n      transparent 0 5px,\n      color-mix(in oklab, var(--kl-ink) 14%, transparent) 5px 6px\n    )"
+      },
       ":is([class^=\"kl-\"], [class*=\" kl-\"]):not(:where([class^=\"kl-\"], [class*=\" kl-\"]) *)": {
         "color": "var(--kl-ink)",
         "font-family": "var(--kl-font)",
@@ -225,6 +276,7 @@
         "outline-offset": "var(--kl-ring-out)"
       }
     },
+    "@custom-variant kl-rtl (&:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)))": {},
     "@layer components": {
       ".kl-positioner": {
         "outline": "0",
@@ -247,16 +299,24 @@
           "transform": "translateX(333.3333%)"
         }
       },
-      ":where(.kl-pending, .kl-progress-fill, .kl-skeleton, .kl-skel):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+      "@keyframes kl-drain": {
+        "from": {
+          "transform": "scaleX(1)"
+        },
+        "to": {
+          "transform": "scaleX(0)"
+        }
+      },
+      ":where( .kl-pending, [data-slot=\"progress-indicator\"], [data-slot=\"skeleton\"], [data-slot=\"skeleton-line\"], [data-slot=\"table-loading-bar\"] ):is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
         "--kl-run-dir": "reverse"
       },
-      ":where(.kl-attached, .kl-select-panel, .kl-ms-list, .kl-menu, .kl-cmd-list, .kl-popover, .kl-tabs-list, .kl-segmented, .kl-toggle-group, .kl-nav-list)": {
+      ":where( .kl-attached, [data-slot=\"popover-popup\"], [data-slot=\"tabs-list\"], [data-slot=\"segmented\"], [data-slot=\"toggle-group\"] )": {
         "scrollbar-width": "thin",
         "scrollbar-color": "var(--kl-ink-3) transparent"
       },
       ".kl-more-fade": {
         "--kl-more-s": "oklch(0 0 0 / calc(0.24 + 0.36 * var(--kl-dark)))",
-        "--kl-more-g": "var(--kl-more-s) 0%, color-mix(in oklab, var(--kl-more-s) 70%, transparent) 20%, color-mix(in oklab, var(--kl-more-s) 42%, transparent) 42%, color-mix(in oklab, var(--kl-more-s) 18%, transparent) 68%, transparent 100%",
+        "--kl-more-g": "var(--kl-more-s) 0%, color-mix(in oklab, var(--kl-more-s) 70%, transparent) 20%,\n      color-mix(in oklab, var(--kl-more-s) 42%, transparent) 42%,\n      color-mix(in oklab, var(--kl-more-s) 18%, transparent) 68%, transparent 100%",
         "--kl-more-w": "min(var(--kl-more, 24px), 50%)",
         "list-style": "none",
         "display": "none",
@@ -300,10 +360,10 @@
           "margin": "0 !important"
         }
       },
-      ".kl-more-fade[data-kl-fade=\"start\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+      ".kl-more-fade[data-kl-fade=\"start\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) )": {
         "background-image": "linear-gradient(to left, var(--kl-more-g))"
       },
-      ".kl-more-fade[data-kl-fade=\"end\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
+      ".kl-more-fade[data-kl-fade=\"end\"]:is([dir=\"rtl\"], [dir=\"rtl\"] *):where( :not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *) )": {
         "background-image": "linear-gradient(to right, var(--kl-more-g))"
       },
       "[data-kl-more~=\"start\"] > .kl-more-fade[data-kl-fade=\"start\"], [data-kl-more~=\"end\"] > .kl-more-fade[data-kl-fade=\"end\"]": {
@@ -323,18 +383,18 @@
         "[data-kl-more]": {
           "scrollbar-width": "thin"
         },
-        ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where(:focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible))": {
+        ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where( :focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible) )": {
           "border-color": "Highlight",
           "--kl-cut-line": "Highlight"
         },
-        ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where(:focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible))::before": {
+        ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where( :focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible) )::before": {
           "border-color": "Highlight",
           "border-width": "3px"
         },
         ".kl-flood::before": {
           "display": "none"
         },
-        ".kl-flood:is([data-kl-on], :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"]))": {
+        ".kl-flood:is( [data-kl-on], :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) )": {
           "forced-color-adjust": "none",
           "background-color": "Highlight",
           "color": "HighlightText"
@@ -383,11 +443,11 @@
         "overscroll-behavior": "contain"
       },
       ".kl-dock-min": {
-        "width": "max(var(--kl-dock-a), calc(var(--kl-dock-w, 0px) - 100000 * min(1px, max(0px, (var(--kl-dock-a) - var(--kl-dock-w, 0px) + var(--kl-snap)) * 1000))))"
+        "width": "max(\n      var(--kl-dock-a),\n      calc(\n        var(--kl-dock-w, 0px) - 100000 *\n          min(1px, max(0px, (var(--kl-dock-a) - var(--kl-dock-w, 0px) + var(--kl-snap)) * 1000))\n      )\n    )"
       },
       ".kl-dock-fit": {
-        "--kl-dock-on": "calc(100000 * min(1px, max(0px, (var(--kl-snap) - max(var(--kl-dock-a) - var(--kl-dock-w), var(--kl-dock-w) - var(--kl-dock-a))) * 1000)))",
-        "width": "clamp(calc(var(--kl-dock-w) - var(--kl-dock-on)), var(--kl-dock-a), calc(var(--kl-dock-w) + var(--kl-dock-on)))"
+        "--kl-dock-on": "calc(\n      100000 *\n        min(\n          1px,\n          max(\n            0px,\n            (var(--kl-snap) - max(var(--kl-dock-a) - var(--kl-dock-w), var(--kl-dock-w) - var(--kl-dock-a))) * 1000\n          )\n        )\n    )",
+        "width": "clamp(\n      calc(var(--kl-dock-w) - var(--kl-dock-on)),\n      var(--kl-dock-a),\n      calc(var(--kl-dock-w) + var(--kl-dock-on))\n    )"
       },
       ".kl-attached[data-side=\"bottom\"]": {
         "border-block-start-width": "var(--kl-attach, var(--kl-k2))"
@@ -408,10 +468,10 @@
       "@supports not (corner-start-start-shape: bevel)": {
         ".kl-frame, .kl-ctl": {
           "--kl-o": "6px",
-          "clip-path": "polygon(calc(var(--kl-c) + var(--kl-o)) calc(-1 * var(--kl-o)), calc(100% + var(--kl-o)) calc(-1 * var(--kl-o)), calc(100% + var(--kl-o)) calc(100% + var(--kl-o)), calc(-1 * var(--kl-o)) calc(100% + var(--kl-o)), calc(-1 * var(--kl-o)) calc(var(--kl-c) + var(--kl-o)))"
+          "clip-path": "polygon(\n        calc(var(--kl-c) + var(--kl-o)) calc(-1 * var(--kl-o)),\n        calc(100% + var(--kl-o)) calc(-1 * var(--kl-o)),\n        calc(100% + var(--kl-o)) calc(100% + var(--kl-o)),\n        calc(-1 * var(--kl-o)) calc(100% + var(--kl-o)),\n        calc(-1 * var(--kl-o)) calc(var(--kl-c) + var(--kl-o))\n      )"
         },
         ".kl-frame:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *)), .kl-ctl:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))": {
-          "clip-path": "polygon(calc(100% - var(--kl-c) - var(--kl-o)) calc(-1 * var(--kl-o)), calc(-1 * var(--kl-o)) calc(-1 * var(--kl-o)), calc(-1 * var(--kl-o)) calc(100% + var(--kl-o)), calc(100% + var(--kl-o)) calc(100% + var(--kl-o)), calc(100% + var(--kl-o)) calc(var(--kl-c) + var(--kl-o)))"
+          "clip-path": "polygon(\n        calc(100% - var(--kl-c) - var(--kl-o)) calc(-1 * var(--kl-o)),\n        calc(-1 * var(--kl-o)) calc(-1 * var(--kl-o)),\n        calc(-1 * var(--kl-o)) calc(100% + var(--kl-o)),\n        calc(100% + var(--kl-o)) calc(100% + var(--kl-o)),\n        calc(100% + var(--kl-o)) calc(var(--kl-c) + var(--kl-o))\n      )"
         },
         ".kl-frame::after, .kl-ctl::after": {
           "content": "\"\"",
@@ -423,10 +483,10 @@
           "width": "calc(var(--kl-c) + 2 * var(--kl-bw))",
           "height": "calc(var(--kl-c) + 2 * var(--kl-bw))",
           "--kl-d": "calc(var(--kl-c) * 0.7071)",
-          "background": "linear-gradient(to bottom right, transparent calc(var(--kl-d) - 0.5px), var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + 0.25px), var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) - 0.25px), transparent calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) + 0.5px))"
+          "background": "linear-gradient(\n        to bottom right,\n        transparent calc(var(--kl-d) - 0.5px),\n        var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + 0.25px),\n        var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) - 0.25px),\n        transparent calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) + 0.5px)\n      )"
         },
         ".kl-frame:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))::after, .kl-ctl:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))::after": {
-          "background": "linear-gradient(to bottom left, transparent calc(var(--kl-d) - 0.5px), var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + 0.25px), var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) - 0.25px), transparent calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) + 0.5px))"
+          "background": "linear-gradient(\n        to bottom left,\n        transparent calc(var(--kl-d) - 0.5px),\n        var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + 0.25px),\n        var(--kl-cut-line, var(--kl-line)) calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) - 0.25px),\n        transparent calc(var(--kl-d) + var(--kl-cut-w, var(--kl-bw)) + 0.5px)\n      )"
         }
       },
       ".kl-edge": {
@@ -444,13 +504,13 @@
       ".kl-ctl.kl-edge:not([data-kl-layout=\"cell\"])": {
         "--kl-edge-w": "var(--kl-edge-band)"
       },
-      ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where(:focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible))": {
+      ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where( :focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible) )": {
         "outline": "0",
         "border-color": "var(--kl-focus)",
         "--kl-cut-line": "var(--kl-focus)",
         "--kl-cut-w": "calc(var(--kl-bw) + var(--kl-edge-w, var(--kl-ring)))"
       },
-      ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where(:focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible))::before": {
+      ":is(.kl-ctl, .kl-cell, .kl-field-part).kl-edge:where( :focus-visible, :has(:is(input, textarea, .kl-edge-part):focus-visible) )::before": {
         "border-color": "var(--kl-focus)"
       },
       ":where(button.kl-cell, a.kl-cell)": {
@@ -499,6 +559,9 @@
       ".kl-rows > :not(:first-child)": {
         "border-block-start": "var(--kl-k1) solid var(--kl-line)"
       },
+      ".kl-frame > :first-child": {
+        "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
+      },
       ".kl-cell": {
         "display": "flex",
         "align-items": "center",
@@ -543,10 +606,10 @@
       ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled])": {
         "--kl-key-y": "1px"
       },
-      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is(.kl-slot, .kl-button-affix, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media)": {
+      ".kl-key:is(:active, [data-kl-pressed]):not(:disabled):not([data-disabled]) > :is( .kl-slot, [data-slot=\"button-affix\"], [data-slot=\"toolbar-affix\"], .kl-radio-meta, [data-slot=\"accordion-caret\"], [data-slot=\"item-media\"] )": {
         "translate": "none"
       },
-      ":is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, .kl-acc-caret, .kl-item-media)": {
+      ":is( .kl-slot > span > span, [data-slot=\"toolbar-affix\"], .kl-radio-meta, [data-slot=\"accordion-caret\"], [data-slot=\"item-media\"] )": {
         "box-sizing": "border-box",
         "padding-block-start": "calc(2 * var(--kl-key-y, 0px))"
       },
@@ -582,23 +645,23 @@
       ".kl-flood:is([dir=\"rtl\"], [dir=\"rtl\"] *):where(:not([dir=\"rtl\"] [dir=\"ltr\"], [dir=\"rtl\"] [dir=\"ltr\"] *))::before": {
         "clip-path": "circle(0px at var(--kl-fx, 100%) var(--kl-fy, 50%))"
       },
-      ".kl-flood[data-kl-press]:not([data-kl-on], [aria-disabled=\"true\"], [data-disabled], :disabled, :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"]))::before": {
+      ".kl-flood[data-kl-press]:not( [data-kl-on], [aria-disabled=\"true\"], [data-disabled], :disabled, :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) )::before": {
         "clip-path": "circle(var(--kl-flood-seed) at var(--kl-fx, 0%) var(--kl-fy, 50%))",
         "transition": "clip-path var(--kl-t-flood) var(--kl-ease-out)"
       },
-      ".kl-flood:is([data-kl-on], :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"]))::before": {
+      ".kl-flood:is( [data-kl-on], :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) )::before": {
         "clip-path": "circle(150% at var(--kl-fx, 0%) var(--kl-fy, 50%))",
         "transition": "clip-path var(--kl-t-flood) var(--kl-ease-out)"
       },
-      ".kl-flood:is([data-kl-on], :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"]))": {
+      ".kl-flood:is( [data-kl-on], :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) )": {
         "color": "var(--kl-fg)",
         "background-color": "var(--kl-fc)",
-        "transition": "background-color 0s linear var(--kl-t-flood), color 0s linear calc(var(--kl-t-flood) * 0.4)"
+        "transition": "background-color 0s linear var(--kl-t-flood),\n      color 0s linear calc(var(--kl-t-flood) * 0.4)"
       },
-      ".kl-flood:is([data-kl-on], :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"])) .kl-code": {
+      ".kl-flood:is( [data-kl-on], :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) ) .kl-code": {
         "color": "inherit"
       },
-      ".kl-flood:is([data-kl-on], :not([data-kl-flood=\"manual\"]):is([data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"])):focus-visible": {
+      ".kl-flood:is( [data-kl-on], :not([data-kl-flood=\"manual\"]):is( [data-pressed], [data-checked], [data-selected]:not([data-selected=\"false\"]), [aria-selected=\"true\"], [aria-current=\"page\"] ) ):focus-visible": {
         "outline-color": "var(--kl-fg)"
       },
       ".kl-flood.kl-sig-cobalt": {
@@ -761,6 +824,170 @@
         "width": "10px",
         "height": "0",
         "border-block-start": "2px solid currentColor"
+      },
+      ".kl-field": {
+        "display": "grid",
+        "gap": "6px",
+        "min-width": "0",
+        "align-content": "start",
+        "border": "0",
+        "margin": "0",
+        "padding": "0"
+      },
+      ".kl-field-label": {
+        "display": "flex",
+        "align-items": "baseline",
+        "gap": "8px",
+        "font-weight": "var(--kl-weight-strong)",
+        "font-size": "var(--kl-text-label)",
+        "padding": "0"
+      },
+      ".kl-field-frame": {
+        "display": "flex",
+        "min-height": "var(--kl-ctl)",
+        "background-color": "var(--kl-cell)",
+        "cursor": "text"
+      },
+      ".kl-field-frame:hover:not(:has(:is(input, textarea):focus))": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-field-input": {
+        "flex": "1",
+        "min-width": "0",
+        "width": "0",
+        "border": "0",
+        "margin": "0",
+        "background": "transparent",
+        "color": "inherit",
+        "padding": "0 var(--kl-inset)",
+        "font": "inherit",
+        "font-family": "var(--kl-font)",
+        "font-size": "var(--kl-text-lead)",
+        "outline": "0"
+      },
+      ".kl-field-input[data-align=\"end\"]": {
+        "text-align": "end",
+        "font-variant-numeric": "tabular-nums"
+      },
+      ".kl-field-input::-webkit-search-cancel-button, .kl-field-input::-webkit-search-decoration": {
+        "appearance": "none",
+        "display": "none"
+      },
+      ".kl-field-input::placeholder": {
+        "color": "var(--kl-ink-3)",
+        "opacity": "1"
+      },
+      ".kl-field-affix": {
+        "flex": "none",
+        "display": "grid",
+        "place-items": "center",
+        "min-width": "38px",
+        "padding-inline": "8px",
+        "font": "500 var(--kl-text-label) / 1 var(--kl-font-mono)",
+        "color": "var(--kl-ink-2)"
+      },
+      ".kl-field-bang > span > span": {
+        "display": "grid",
+        "place-items": "center",
+        "width": "30px",
+        "height": "100%",
+        "background-color": "var(--kl-red)",
+        "color": "var(--kl-on-red)",
+        "font-weight": "var(--kl-weight-display)",
+        "font-size": "var(--kl-text-lead)"
+      },
+      ".kl-field-bang > span": {
+        "display": "flex"
+      },
+      ".kl-field-frame > .kl-field-bang": {
+        "flex": "none"
+      },
+      ".kl-field[data-invalid] .kl-field-frame": {
+        "border-color": "var(--kl-red)",
+        "--kl-cut-line": "var(--kl-red)"
+      },
+      ".kl-field[data-invalid] .kl-ctl.kl-edge": {
+        "--kl-edge-w": "var(--kl-ring)"
+      },
+      ".kl-field[data-kl-layout=\"cell\"]": {
+        "gap": "0",
+        "flex": "1",
+        "align-self": "stretch",
+        "align-content": "stretch"
+      },
+      ".kl-field-frame[data-kl-layout=\"cell\"]": {
+        "min-height": "var(--kl-row)",
+        "height": "100%"
+      },
+      ".kl-field-frame[data-kl-layout=\"cell\"]:hover:not(:has(:is(input, textarea):focus))": {
+        "background-color": "var(--kl-tint)"
+      },
+      ".kl-field[data-invalid] .kl-field-bang": {
+        "grid-template-columns": "1fr",
+        "border-inline-start-color": "var(--kl-red)",
+        "transition": "grid-template-columns var(--kl-t-unfold) var(--kl-ease-out)"
+      },
+      ".kl-field[data-invalid] .kl-field-bang + *": {
+        "border-inline-start-color": "var(--kl-red)"
+      },
+      ".kl-field-frame > .kl-slot:first-child + *": {
+        "border-inline-start": "0"
+      },
+      ".kl-field[data-invalid] .kl-field-frame > .kl-slot:first-child + *": {
+        "border-inline-start": "var(--kl-k1) solid var(--kl-red)"
+      },
+      ".kl-field[data-disabled] .kl-field-frame": {
+        "background-color": "var(--kl-cell)",
+        "background-image": "var(--kl-hatch)",
+        "border-color": "var(--kl-dis-line)",
+        "--kl-cut-line": "var(--kl-dis-line)",
+        "cursor": "not-allowed"
+      },
+      ".kl-field[data-disabled] .kl-field-frame > * + *": {
+        "border-color": "var(--kl-dis-line)"
+      },
+      ".kl-field[data-disabled] .kl-field-input": {
+        "color": "var(--kl-dis)",
+        "cursor": "not-allowed"
+      },
+      ".kl-field[data-disabled] .kl-field-label": {
+        "color": "var(--kl-ink-2)"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field)": {
+        "grid-template-columns": "var(--kl-form-label, 11rem) minmax(0, 1fr)",
+        "column-gap": "var(--kl-form-gap, 16px)"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > *": {
+        "grid-column": "2",
+        "align-self": "start"
+      },
+      ":is( .kl-field[data-kl-orientation=\"horizontal\"], [data-kl-form-orientation=\"horizontal\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > .kl-field-label": {
+        "grid-column": "1",
+        "grid-row": "1",
+        "min-height": "var(--kl-ctl)",
+        "align-items": "center"
+      },
+      "[data-kl-form-orientation=\"horizontal\"] > :is([data-slot=\"form-actions\"], [data-kl-span=\"control\"])": {
+        "margin-inline-start": "calc(var(--kl-form-label, 11rem) + var(--kl-form-gap, 16px))"
+      },
+      "@container kl-form (min-width: 560px)": {
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field)": {
+          "grid-template-columns": "var(--kl-form-label, 11rem) minmax(0, 1fr)",
+          "column-gap": "var(--kl-form-gap, 16px)"
+        },
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > *": {
+          "grid-column": "2",
+          "align-self": "start"
+        },
+        ":is( .kl-field[data-kl-orientation=\"responsive\"], [data-kl-form-orientation=\"responsive\"] .kl-field:not([data-kl-orientation]) ):not([data-kl-layout=\"cell\"], .kl-field .kl-field) > .kl-field-label": {
+          "grid-column": "1",
+          "grid-row": "1",
+          "min-height": "var(--kl-ctl)",
+          "align-items": "center"
+        },
+        "[data-kl-form-orientation=\"responsive\"] > :is([data-slot=\"form-actions\"], [data-kl-span=\"control\"])": {
+          "margin-inline-start": "calc(var(--kl-form-label, 11rem) + var(--kl-form-gap, 16px))"
+        }
       }
     },
     "@keyframes kl-more-pin": {
@@ -773,5 +1000,5 @@
     }
   },
   "docs": "Shape: square by default (--kl-cut: 0). Set --kl-cut to 0.5 (quiet) or 1 (full) on :root or any subtree for the cut accent, or use data-kl-cut=\"quiet\" | \"on\" | \"off\". Density: data-kl-density=\"compact\". Reduced motion: honours prefers-reduced-motion; data-kl-motion=\"reduce\" forces it.",
-  "type": "registry:style"
+  "type": "registry:theme"
 }

@@ -13,103 +13,10 @@
   "files": [
     {
       "path": "src/registry/keyline/ui/resizable.tsx",
-      "content": "\"use client\";\n\nimport * as ResizablePrimitive from \"react-resizable-panels\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * Resizable (on react-resizable-panels v4 since the round-20 review): panels that share a seam\n * you can move. The library owns the behaviour: the separator's ARIA (value, bounds, controls), arrows,\n * Home/End, Enter to collapse, double-click to reset, pointer and touch hit targets, layout persistence\n * (`useDefaultLayout`) and the imperative API (`groupRef`, `panelRef`: collapse, expand, resize).\n * Keyline only draws it.\n *\n *   ┌────────────┃──────────────────┐\n *   │ Manifests  ┃ MSCU 1234567     │   the seam is the shared keyline (C1, C3): one 1px line, no gap.\n *   │            ▐▌                 │   hover or drag thickens it to 3px ink; keyboard focus draws it in\n *   │            ┃                  │   the focus colour; the grip cell (withHandle) sits on the seam.\n *   └────────────┃──────────────────┘\n *\n * - Sizes follow the library: numbers are pixels, strings are percentages (\"30%\" or \"30\").\n * - Name each separator (`aria-label`) after the panel it resizes.\n * - Dragging needs a pointer alternative (WCAG 2.5.7): double-click resets the layout; for collapse, give\n *   the page a button that calls `panelRef.current.collapse()` / `.expand()`.\n * - No frame of its own: put it in a Panel body, a shell column or any frame.\n */\nfunction ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupProps) {\n  return <ResizablePrimitive.Group data-slot=\"resizable\" className={cn(\"kl-rz\", className)} {...props} />\n}\n\nfunction ResizablePanel({ className, ...props }: ResizablePrimitive.PanelProps) {\n  return <ResizablePrimitive.Panel data-slot=\"resizable-panel\" className={cn(\"kl-rz-panel\", className)} {...props} />\n}\n\nfunction ResizableHandle({ withHandle, className, children, ...props }: ResizablePrimitive.SeparatorProps & { withHandle?: boolean }) {\n  return (\n    <ResizablePrimitive.Separator data-slot=\"resizable-handle\" className={cn(\"kl-rz-handle\", className)} {...props}>\n      {withHandle ? <span className=\"kl-rz-grip\" aria-hidden /> : null}\n      {children}\n    </ResizablePrimitive.Separator>\n  )\n}\n\nexport { ResizablePanelGroup, ResizablePanel, ResizableHandle }\nexport { usePanelRef, useGroupRef, useDefaultLayout, type PanelImperativeHandle, type GroupImperativeHandle, type Layout } from \"react-resizable-panels\"\n",
+      "content": "\"use client\";\n\nimport type * as React from \"react\";\nimport * as ResizablePrimitive from \"react-resizable-panels\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Resizable (on react-resizable-panels v4 since the round-20 review): panels that share a seam\n * you can move. The library owns the behaviour: the separator's ARIA (value, bounds, controls), arrows,\n * Home/End, Enter to collapse, double-click to reset, pointer and touch hit targets, layout persistence\n * (`useDefaultLayout`) and the imperative API (`groupRef`, `panelRef`: collapse, expand, resize).\n * Keyline only draws it.\n *\n *   ┌────────────┃──────────────────┐\n *   │ Manifests  ┃ MSCU 1234567     │   the seam is the shared keyline (C1, C3): one 1px line, no gap.\n *   │            ▐▌                 │   hover or drag thickens it to 3px ink; keyboard focus draws it in\n *   │            ┃                  │   the focus colour; the grip cell (withHandle) sits on the seam.\n *   └────────────┃──────────────────┘\n *\n * - Sizes follow the library: numbers are pixels, strings are percentages (\"30%\" or \"30\").\n * - Name each separator (`aria-label`) after the panel it resizes.\n * - Dragging needs a pointer alternative (WCAG 2.5.7): double-click resets the layout; for collapse, give\n *   the page a button that calls `panelRef.current.collapse()` / `.expand()`.\n * - No frame of its own: put it in a Panel body, a shell column or any frame.\n */\n/* The group is the outermost Keyline element of a layout that stands alone (kl-type): its panels take Keyline's type\n   and ink from it, and a group inside another Keyline element inherits instead. */\nfunction ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupProps): React.ReactElement {\n  return <ResizablePrimitive.Group className={cn(\"kl-type\", className)} {...props} data-slot=\"resizable\" />;\n}\n\n/* the library puts `className` on the panel's inner scroller, which may shrink below its content */\nfunction ResizablePanel({ className, ...props }: ResizablePrimitive.PanelProps): React.ReactElement {\n  return (\n    <ResizablePrimitive.Panel className={cn(\"min-h-0 min-w-0\", className)} {...props} data-slot=\"resizable-panel\" />\n  );\n}\n\n/*\n * The library draws nothing, so this is the whole look. Panels share one keyline and the keyline is the handle: at\n * rest the 1px seam (C1, C3: no gap, no second line). The library's state (data-separator: hover, active) thickens it\n * to 3px ink, centred on the seam (::after), so the panels never move under the pointer; keyboard focus draws it in\n * the focus colour. The library owns the hit target (larger than the line, larger still for touch).\n */\nconst handle = cn(\n  \"group/resizable-handle relative z-1 w-(--kl-k1) flex-none bg-kl-line outline-0 outline-none\",\n  \"aria-[orientation=horizontal]:h-(--kl-k1) aria-[orientation=horizontal]:w-auto\",\n  \"after:pointer-events-none after:absolute after:inset-y-0 after:left-1/2 after:w-(--kl-k3) after:[translate:-50%_0]\",\n  \"after:bg-kl-ink after:opacity-0 after:content-['']\",\n  \"aria-[orientation=horizontal]:after:inset-y-auto aria-[orientation=horizontal]:after:top-1/2\",\n  \"aria-[orientation=horizontal]:after:right-0 aria-[orientation=horizontal]:after:left-0\",\n  \"aria-[orientation=horizontal]:after:h-(--kl-k3) aria-[orientation=horizontal]:after:w-auto\",\n  \"aria-[orientation=horizontal]:after:[translate:0_-50%]\",\n  \"data-[separator=active]:after:opacity-100 data-[separator=hover]:after:opacity-100\",\n  \"focus-visible:after:bg-kl-focus focus-visible:after:opacity-100\",\n  \"forced-colors:bg-[CanvasText] forced-colors:after:bg-[Highlight] forced-colors:after:forced-color-adjust-none\",\n);\n\n/* the grip: a cell on the seam with two short keylines; it inverts while dragging */\nconst grip = cn(\n  \"pointer-events-none absolute top-1/2 left-1/2 z-1 box-border h-7 w-3.5 [translate:-50%_-50%]\",\n  \"border-(length:--kl-k1) border-kl-line bg-kl-cell\",\n  \"bg-[linear-gradient(var(--kl-ink-2),var(--kl-ink-2)),linear-gradient(var(--kl-ink-2),var(--kl-ink-2))]\",\n  \"bg-size-[1px_12px] bg-position-[4px_50%,7px_50%] bg-no-repeat\",\n  \"group-aria-[orientation=horizontal]/resizable-handle:h-3.5 group-aria-[orientation=horizontal]/resizable-handle:w-7\",\n  \"group-aria-[orientation=horizontal]/resizable-handle:bg-size-[12px_1px]\",\n  \"group-aria-[orientation=horizontal]/resizable-handle:bg-position-[50%_4px,50%_7px]\",\n  \"group-data-[separator=hover]/resizable-handle:border-kl-ink\",\n  \"group-data-[separator=active]/resizable-handle:border-kl-inverse group-data-[separator=active]/resizable-handle:bg-kl-inverse\",\n  \"group-data-[separator=active]/resizable-handle:bg-none\",\n  \"group-focus-visible/resizable-handle:border-(length:--kl-ring) group-focus-visible/resizable-handle:border-kl-focus\",\n  \"forced-colors:border-[CanvasText]\",\n);\n\nfunction ResizableHandle({\n  withHandle,\n  className,\n  children,\n  ...props\n}: ResizablePrimitive.SeparatorProps & { withHandle?: boolean }): React.ReactElement {\n  return (\n    <ResizablePrimitive.Separator className={cn(handle, className)} {...props} data-slot=\"resizable-handle\">\n      {withHandle ? <span data-slot=\"resizable-grip\" className={grip} aria-hidden /> : null}\n      {children}\n    </ResizablePrimitive.Separator>\n  );\n}\n\nexport { ResizablePanelGroup, ResizablePanel, ResizableHandle };\nexport {\n  usePanelRef,\n  useGroupRef,\n  useDefaultLayout,\n  type PanelImperativeHandle,\n  type GroupImperativeHandle,\n  type Layout,\n} from \"react-resizable-panels\";\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/resizable.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-rz-panel": {
-        "min-width": "0",
-        "min-height": "0"
-      },
-      ".kl-rz-handle": {
-        "position": "relative",
-        "z-index": "1",
-        "flex": "none",
-        "width": "var(--kl-k1)",
-        "background-color": "var(--kl-line)",
-        "outline": "0"
-      },
-      ".kl-rz-handle[aria-orientation=\"horizontal\"]": {
-        "width": "auto",
-        "height": "var(--kl-k1)"
-      },
-      ".kl-rz-handle::after": {
-        "content": "\"\"",
-        "position": "absolute",
-        "inset-block": "0",
-        "left": "50%",
-        "width": "var(--kl-k3)",
-        "translate": "-50% 0",
-        "background-color": "var(--kl-ink)",
-        "opacity": "0",
-        "pointer-events": "none"
-      },
-      ".kl-rz-handle[aria-orientation=\"horizontal\"]::after": {
-        "inset-block": "auto",
-        "top": "50%",
-        "left": "0",
-        "right": "0",
-        "width": "auto",
-        "height": "var(--kl-k3)",
-        "translate": "0 -50%"
-      },
-      ".kl-rz-handle:is([data-separator=\"hover\"], [data-separator=\"active\"])::after": {
-        "opacity": "1"
-      },
-      ".kl-rz-handle:focus-visible::after": {
-        "opacity": "1",
-        "background-color": "var(--kl-focus)"
-      },
-      ".kl-rz-grip": {
-        "position": "absolute",
-        "z-index": "1",
-        "top": "50%",
-        "left": "50%",
-        "translate": "-50% -50%",
-        "box-sizing": "border-box",
-        "width": "14px",
-        "height": "28px",
-        "border": "var(--kl-k1) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)",
-        "background-image": "linear-gradient(var(--kl-ink-2), var(--kl-ink-2)), linear-gradient(var(--kl-ink-2), var(--kl-ink-2))",
-        "background-repeat": "no-repeat",
-        "background-size": "1px 12px",
-        "background-position": "4px 50%, 7px 50%",
-        "pointer-events": "none"
-      },
-      ".kl-rz-handle[aria-orientation=\"horizontal\"] > .kl-rz-grip": {
-        "width": "28px",
-        "height": "14px",
-        "background-size": "12px 1px",
-        "background-position": "50% 4px, 50% 7px"
-      },
-      ".kl-rz-handle[data-separator=\"hover\"] > .kl-rz-grip": {
-        "border-color": "var(--kl-ink)"
-      },
-      ".kl-rz-handle[data-separator=\"active\"] > .kl-rz-grip": {
-        "background-color": "var(--kl-inverse)",
-        "border-color": "var(--kl-inverse)",
-        "background-image": "none"
-      },
-      ".kl-rz-handle:focus-visible > .kl-rz-grip": {
-        "border": "var(--kl-ring) solid var(--kl-focus)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-rz-handle": {
-          "background-color": "CanvasText"
-        },
-        ".kl-rz-handle::after": {
-          "background-color": "Highlight",
-          "forced-color-adjust": "none"
-        },
-        ".kl-rz-grip": {
-          "border-color": "CanvasText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

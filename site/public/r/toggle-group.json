@@ -4,7 +4,7 @@
   "title": "Toggle group",
   "description": "Independent toggles in one frame; each cell floods from the press point and carries a lamp.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
@@ -12,26 +12,16 @@
     "@keyline-ui/keyline-motion",
     "@keyline-ui/toggle",
     "@keyline-ui/scroll-edges",
-    "@keyline-ui/keyline-scope"
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/toggle-group.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { ToggleGroup as ToggleGroupPrimitive } from \"@base-ui/react/toggle-group\"\nimport { Toggle } from \"@base-ui/react/toggle\"\n\nimport { cn } from \"@/lib/utils\"\nimport { floodHandlers } from \"../lib/keyline-motion\"\nimport { ToggleLabel } from \"./toggle\"\nimport { useScrollEdges } from \"../lib/scroll-edges\"\nimport { useMergedRef } from \"../lib/keyline-scope\"\n\n/** Independent toggles in one frame. Each cell FLOODS yellow from the press point and carries a lamp. */\nfunction ToggleGroup({ className, multiple = true, layout = \"control\", ref: refProp, ...props }: React.ComponentProps<typeof ToggleGroupPrimitive> & { /** cell: a cell of an enclosing frame (no own border or cut). */ layout?: \"control\" | \"cell\" }) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  useScrollEdges(ref)\n  const setRef = useMergedRef(ref, refProp)\n  return <ToggleGroupPrimitive ref={setRef} data-slot=\"toggle-group\" data-kl-layout={layout} multiple={multiple} className={cn(\"kl-ctl kl-cells kl-toggle-group\", className)} {...props} />\n}\n\nfunction ToggleGroupItem({ className, children, count, ...props }: React.ComponentProps<typeof Toggle> & { count?: React.ReactNode }) {\n  return (\n    <Toggle data-slot=\"toggle-group-item\" className={cn(\"kl-flood kl-key kl-toggle\", className)} {...floodHandlers} {...props}>\n      <ToggleLabel count={count}>{children}</ToggleLabel>\n    </Toggle>\n  )\n}\n\nexport { ToggleGroup, ToggleGroupItem }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { ToggleGroup as ToggleGroupPrimitive } from \"@base-ui/react/toggle-group\";\nimport { Toggle as TogglePrimitive } from \"@base-ui/react/toggle\";\n\nimport { cn } from \"@/lib/utils\";\nimport { floodHandlers } from \"../lib/keyline-motion\";\nimport { resolveClassName } from \"../lib/keyline-render\";\nimport { toggleContents, toggleVariants } from \"./toggle\";\nimport { useScrollEdges } from \"../lib/scroll-edges\";\nimport { useMergedRef } from \"../lib/keyline-scope\";\n\ntype ToggleGroupProps = ToggleGroupPrimitive.Props & {\n  /** cell: a cell of an enclosing frame (no own border, cut or background). */\n  layout?: \"control\" | \"cell\";\n};\n\n/** Independent toggles in one frame. Each cell FLOODS yellow from the press point and carries a lamp. A row that\n * does not fit scrolls inside its frame. */\nfunction ToggleGroup({\n  className,\n  multiple = true,\n  layout = \"control\",\n  ref: refProp,\n  ...props\n}: ToggleGroupProps): React.ReactElement {\n  const ref = React.useRef<HTMLDivElement>(null);\n  useScrollEdges(ref);\n  const setRef = useMergedRef(ref, refProp);\n  return (\n    <ToggleGroupPrimitive\n      ref={setRef}\n      data-kl-layout={layout}\n      multiple={multiple}\n      // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items\n      tabIndex={-1}\n      className={resolveClassName(\n        cn(\n          \"kl-ctl kl-cells inline-flex min-h-(--kl-ctl) max-w-full overflow-x-auto\",\n          // a cell gives its background to the enclosing frame (the foundation's layout=\"cell\")\n          layout === \"control\" && \"bg-kl-cell\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"toggle-group\"\n    />\n  );\n}\n\ntype ToggleGroupItemProps = TogglePrimitive.Props & { count?: React.ReactNode };\n\n/** One toggle of the group: Base UI's Toggle, drawn as Toggle's cell inside the group's frame. */\nfunction ToggleGroupItem({ className, children, count, ...props }: ToggleGroupItemProps): React.ReactElement {\n  return (\n    <TogglePrimitive\n      className={resolveClassName(cn(toggleVariants()), className)}\n      {...floodHandlers}\n      {...props}\n      data-slot=\"toggle-group-item\"\n    >\n      {toggleContents(children, { count })}\n    </TogglePrimitive>\n  );\n}\n\nexport { ToggleGroup, ToggleGroupItem, type ToggleGroupProps, type ToggleGroupItemProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/toggle-group.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-toggle-group": {
-        "display": "inline-flex",
-        "max-width": "100%",
-        "overflow-x": "auto",
-        "background-color": "var(--kl-cell)",
-        "min-height": "var(--kl-ctl)"
-      }
-    }
-  },
   "type": "registry:ui"
 }

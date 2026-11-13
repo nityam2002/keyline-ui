@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-print",
+  "title": "Progress: print invoices",
+  "description": "An example of Progress: print invoices.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/progress"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/progress-print.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Progress } from \"../ui/progress\";\n\nconst PAGES = 40;\n\nexport function PrintInvoices() {\n  // null while the printer warms up: there is no figure to show yet, so the bar is indeterminate\n  const [printed, setPrinted] = useState<number | null>(0);\n  const [started, setStarted] = useState(false);\n  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);\n  useEffect(() => () => timers.current.forEach(clearTimeout), []);\n\n  const print = () => {\n    timers.current.forEach(clearTimeout);\n    setStarted(true);\n    setPrinted(null);\n    timers.current = [setTimeout(() => setPrinted(0), 2000)];\n    for (let p = 1; p <= PAGES; p++) timers.current.push(setTimeout(() => setPrinted(p), 2000 + p * 70));\n  };\n\n  return (\n    <div className=\"grid max-w-[480px] gap-4\">\n      <Progress\n        label=\"Invoices on the second-floor printer\"\n        value={printed}\n        max={PAGES}\n        getAriaValueText={(_, v) => (v == null ? \"Warming up\" : `${v} of ${PAGES} pages`)}\n        detail={\n          !started\n            ? `${PAGES} pages, waiting to start.`\n            : printed == null\n              ? \"Warming up. It takes a while; it always has.\"\n              : printed === PAGES\n                ? \"All 40 printed. Collect them before Creed does.\"\n                : `${printed} of ${PAGES} pages`\n        }\n      />\n      <Button className=\"justify-self-start\" disabled={started && printed !== PAGES} onClick={print}>\n        {printed === PAGES ? \"Print again\" : \"Print\"}\n      </Button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/progress-print.tsx"
+    }
+  ],
+  "categories": [
+    "progress"
+  ],
+  "type": "registry:block"
+}

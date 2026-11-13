@@ -1,11 +1,11 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
-import { Button } from "@/registry/keyline/ui/button"
-import { Marker,MarkerIcon,MarkerContent } from "@/registry/keyline/ui/marker"
-import { ICONS } from "./sidebar"
+import * as React from "react";
+import * as ui from "../demo-ui";
+import { Button } from "@/registry/keyline/ui/button";
+import { Marker, MarkerIcon, MarkerContent } from "@/registry/keyline/ui/marker";
+import { ICONS } from "./sidebar";
 
 export function MarkerSpecimen() {
-  const [busy, setBusy] = React.useState(true)
+  const [busy, setBusy] = React.useState(true);
   return (
     <div className={ui.stack} style={{ maxWidth: 420 }} data-testid="specimen-marker">
       <Marker variant="separator">
@@ -24,5 +24,5 @@ export function MarkerSpecimen() {
       </Marker>
       <Button onClick={() => setBusy(!busy)}>{busy ? "Finish the check" : "Run the check again"}</Button>
     </div>
-  )
+  );
 }

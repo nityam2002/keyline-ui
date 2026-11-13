@@ -4,161 +4,23 @@
   "title": "Drawer",
   "description": "A sheet you swipe away, on Base UI Drawer as the reference: swipe with velocity, snap points, nested drawers, focus trap, Escape and the keyboard inset are the library's. Keyline: the page-facing edge at region weight, a grip on it, logical sides (end and start mirror in RTL), the system's motion timings.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
     "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/keyline-motion",
     "@keyline-ui/dialog"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/drawer.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Drawer as DrawerPrimitive } from \"@base-ui/react/drawer\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope, type KeylineScope } from \"../lib/keyline-scope\"\nimport { releaseEasing, velocityTracker } from \"../lib/keyline-motion\"\nimport { DialogFooter, DialogHeader } from \"./dialog\"\n\n/* A drawer is a sheet you can swipe away, on Base UI Drawer (as the reference): the swipe, its velocity,\n   snap points, nested drawers, focus trap, Escape, scroll lock and the keyboard inset are the library's.\n   Keyline adds the construction (the page-facing edge at region weight, no radius, a grip cell on that\n   edge), logical sides (end and start mirror in RTL) and motion on the system's timings (reduced motion\n   lands at once; a swipe still follows the finger). Use Sheet when nothing should be swiped. */\n\ntype Side = \"bottom\" | \"end\" | \"start\"\nconst DrawerSide = React.createContext<{ side: Side; scope: KeylineScope; snap: boolean; probe: React.ReactNode }>({ side: \"bottom\", scope: {}, snap: false, probe: null })\n\nconst physical = (side: Side, rtl: boolean): React.ComponentProps<typeof DrawerPrimitive.Root>[\"swipeDirection\"] =>\n  side === \"bottom\" ? \"down\" : (side === \"end\") !== rtl ? \"right\" : \"left\"\n\ntype DrawerProps = Omit<React.ComponentProps<typeof DrawerPrimitive.Root>, \"swipeDirection\"> & {\n  /** bottom (default) · end (the inline end; right in LTR, left in RTL) · start. The drawer swipes away toward its side. */\n  side?: Side\n}\n\nfunction Drawer({ side = \"bottom\", children, ...props }: DrawerProps) {\n  // read only while the drawer is mounted (the probe sits in its portal); a closed drawer costs nothing\n  const [marker, scope, probe] = useKeylineScope(false)\n  return (\n    <DrawerSide.Provider value={{ side, scope, snap: !!props.snapPoints?.length, probe }}>\n      {marker}\n      <DrawerPrimitive.Root swipeDirection={physical(side, scope.dir === \"rtl\")} {...props}>\n        {children}\n      </DrawerPrimitive.Root>\n    </DrawerSide.Provider>\n  )\n}\n\nconst DrawerTrigger = DrawerPrimitive.Trigger\nconst DrawerClose = DrawerPrimitive.Close\n\ntype DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive.Popup> & {\n  /** Height (bottom) or width (end/start), px or any CSS length. */\n  size?: number | string\n  /** Hide the grip cell (it is decorative: the swipe works anywhere on the drawer, Escape and Close always do). */\n  hideGrip?: boolean\n  container?: React.ComponentProps<typeof DrawerPrimitive.Portal>[\"container\"]\n}\n\nfunction DrawerContent({ className, style, size, hideGrip, container, children, ref: refProp, ...props }: DrawerContentProps) {\n  const { side, scope, snap, probe } = React.useContext(DrawerSide)\n  const len = typeof size === \"number\" ? `${size}px` : size\n  const ref = useReleaseFromHand(refProp)\n  return (\n    <DrawerPrimitive.Portal container={container}>\n      {probe}\n      <DrawerPrimitive.Backdrop data-kl-snap={snap ? \"\" : undefined} {...scopeProps(scope, { className: \"kl-scrim kl-drawer-scrim\" })} />\n      <DrawerPrimitive.Viewport {...scopeProps(scope, { className: \"kl-drawer-vp\" })}>\n        <DrawerPrimitive.Popup\n          data-slot=\"drawer\"\n          data-side={side}\n          ref={ref}\n          className={cn(\"kl-frame kl-drawer\", className)}\n          style={(state) => ({ ...(len ? { \"--kl-drawer-size\": len } : null), ...(typeof style === \"function\" ? style(state) : style) }) as React.CSSProperties}\n          {...props}\n        >\n          {hideGrip ? null : <span className=\"kl-drawer-grip\" aria-hidden />}\n          {children}\n        </DrawerPrimitive.Popup>\n      </DrawerPrimitive.Viewport>\n    </DrawerPrimitive.Portal>\n  )\n}\n\n/**\n * RELEASE: a released drawer starts at the speed the hand let go at, both ways. Base UI decides\n * whether the swipe dismisses or springs back; at release Keyline writes one curve for each outcome\n * (--kl-release-back, --kl-release-out) whose first slope matches the pointer's velocity, so a fling leaves\n * without the stall an ease-in gave it (it nearly stopped, then accelerated away), and a drag that came to rest\n * returns from rest instead of jumping 20px in its first frame.\n */\nfunction useReleaseFromHand(forward?: React.Ref<HTMLDivElement>) {\n  const cleanup = React.useRef<() => void>(undefined)\n  const fwd = React.useRef(forward)\n  fwd.current = forward\n  return React.useCallback((el: HTMLDivElement | null) => {\n    const f = fwd.current\n    if (typeof f === \"function\") f(el)\n    else if (f) (f as React.RefObject<HTMLDivElement | null>).current = el\n    cleanup.current?.()\n    cleanup.current = undefined\n    if (!el) return\n    const vt = velocityTracker()\n    let clear: ReturnType<typeof setTimeout> | undefined\n    const move = (e: PointerEvent) => {\n      if (el.hasAttribute(\"data-swiping\")) vt.push(e)\n    }\n    const down = () => vt.reset()\n    const up = (e: PointerEvent) => {\n      if (!el.hasAttribute(\"data-swiping\")) return\n      const dir = el.getAttribute(\"data-swipe-direction\")\n      const y = dir === \"down\"\n      const cs = getComputedStyle(el)\n      const moved = Math.abs(parseFloat(cs.getPropertyValue(y ? \"--drawer-swipe-movement-y\" : \"--drawer-swipe-movement-x\")) || 0)\n      const size = y ? el.offsetHeight : el.offsetWidth\n      const v = vt.get(e.timeStamp)\n      const out = dir === \"down\" ? v.y : dir === \"right\" ? v.x : dir === \"left\" ? -v.x : 0 // toward dismissal\n      const ms = (name: string, k: number) => (parseFloat(cs.getPropertyValue(name)) || 0) * k\n      el.style.setProperty(\"--kl-release-back\", releaseEasing(-out, moved, ms(\"--kl-t-unfold\", 1.25)))\n      el.style.setProperty(\"--kl-release-out\", releaseEasing(out, size - moved, ms(\"--kl-t-fold\", 1.25)))\n      el.setAttribute(\"data-kl-released\", \"\")\n      clearTimeout(clear)\n      clear = setTimeout(() => el.removeAttribute(\"data-kl-released\"), ms(\"--kl-t-unfold\", 1.25) + 80)\n    }\n    el.addEventListener(\"pointerdown\", down, true)\n    window.addEventListener(\"pointermove\", move, true)\n    window.addEventListener(\"pointerup\", up, true)\n    cleanup.current = () => {\n      clearTimeout(clear)\n      el.removeEventListener(\"pointerdown\", down, true)\n      window.removeEventListener(\"pointermove\", move, true)\n      window.removeEventListener(\"pointerup\", up, true)\n    }\n  }, [])\n}\n\n/** The scrolling body. A swipe that starts here scrolls first and dismisses only from the scroll edge. */\nfunction DrawerBody({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Content>) {\n  return <DrawerPrimitive.Content data-slot=\"drawer-body\" className={cn(\"kl-drawer-b\", className)} {...props} />\n}\n\nfunction DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {\n  return <DrawerPrimitive.Title className={cn(\"kl-dialog-title\", className)} {...props} />\n}\n\nfunction DrawerDescription({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Description>) {\n  return <DrawerPrimitive.Description className={cn(\"kl-dialog-desc\", className)} {...props} />\n}\n\nconst DrawerHeader = DialogHeader\nconst DrawerFooter = DialogFooter\n\nexport { Drawer, DrawerTrigger, DrawerClose, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, DrawerTitle, DrawerDescription }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Drawer as DrawerPrimitive } from \"@base-ui/react/drawer\";\n\nimport { cn } from \"@/lib/utils\";\nimport { scopeProps, useKeylineScope, type KeylineScope } from \"../lib/keyline-scope\";\nimport { resolveClassName, resolveStyle } from \"../lib/keyline-render\";\nimport { releaseEasing, velocityTracker } from \"../lib/keyline-motion\";\nimport { DialogFooter, DialogHeader } from \"./dialog\";\n\n/* A drawer is a sheet you can swipe away, on Base UI Drawer (as the reference): the swipe, its velocity,\n   snap points, nested drawers, focus trap, Escape, scroll lock and the keyboard inset are the library's.\n   Keyline adds the construction (the page-facing edge at region weight, no radius, a grip cell on that\n   edge), logical sides (end and start mirror in RTL) and motion on the system's timings (reduced motion\n   lands at once; a swipe still follows the finger). Use Sheet when nothing should be swiped. */\n\ntype Side = \"bottom\" | \"end\" | \"start\";\nconst DrawerSide = React.createContext<{ side: Side; scope: KeylineScope; snap: boolean; probe: React.ReactNode }>({\n  side: \"bottom\",\n  scope: {},\n  snap: false,\n  probe: null,\n});\n\nconst physical = (side: Side, rtl: boolean): React.ComponentProps<typeof DrawerPrimitive.Root>[\"swipeDirection\"] =>\n  side === \"bottom\" ? \"down\" : (side === \"end\") !== rtl ? \"right\" : \"left\";\n\ntype DrawerProps = Omit<React.ComponentProps<typeof DrawerPrimitive.Root>, \"swipeDirection\"> & {\n  /** bottom (default) · end (the inline end; right in LTR, left in RTL) · start. The drawer swipes away toward its side. */\n  side?: Side;\n};\n\n/** The drawer's root: Base UI's Drawer.Root with a logical `side` in place of the physical `swipeDirection`. */\nfunction Drawer({ side = \"bottom\", children, ...props }: DrawerProps): React.ReactElement {\n  // read only while the drawer is mounted (the probe sits in its portal); a closed drawer costs nothing\n  const [marker, scope, probe] = useKeylineScope(false);\n  return (\n    <DrawerSide.Provider value={{ side, scope, snap: !!props.snapPoints?.length, probe }}>\n      {marker}\n      <DrawerPrimitive.Root swipeDirection={physical(side, scope.dir === \"rtl\")} {...props}>\n        {children}\n      </DrawerPrimitive.Root>\n    </DrawerSide.Provider>\n  );\n}\n\n/** The element that opens the drawer. Rendered as another part (`render={<Button />}`), the element is that part's\n * and carries its data-slot. */\nfunction DrawerTrigger(props: DrawerPrimitive.Trigger.Props): React.ReactElement {\n  return <DrawerPrimitive.Trigger {...props} data-slot=\"drawer-trigger\" />;\n}\n\nfunction DrawerClose(props: DrawerPrimitive.Close.Props): React.ReactElement {\n  return <DrawerPrimitive.Close {...props} data-slot=\"drawer-close\" />;\n}\n\n/* the scrim fades as the drawer is swiped away; with snap points a lower snap is a resting state, not a dismissal,\n   so the scrim keeps half its strength there */\nconst backdrop = cn(\n  \"fixed inset-0 z-(--kl-z-overlay) bg-kl-scrim\",\n  \"opacity-[max(var(--kl-scrim-min,0),calc(1_-_var(--drawer-swipe-progress,0)))]\",\n  \"transition-opacity duration-[calc(var(--kl-t-unfold)*1.5)] ease-linear data-swiping:duration-0\",\n  \"data-ending-style:opacity-0 data-ending-style:duration-(--kl-t-fold) data-starting-style:opacity-0\",\n  \"data-kl-snap:[--kl-scrim-min:0.5] data-kl-snap:data-ending-style:[--kl-scrim-min:0] data-kl-snap:data-starting-style:[--kl-scrim-min:0]\",\n);\n\n/*\n * The drawer: edge-attached, the page-facing edge at region weight (as Sheet); it follows the finger\n * (--drawer-swipe-movement-*) and slides from its side on the system's unfold timing. A sheet-sized travel gets 1.25×\n * the unfold (200ms), inside the 220ms everyday cap; it leaves on the fold. Released by the hand, the curve starts at\n * the release velocity (useReleaseFromHand).\n */\nconst popup = cn(\n  \"group/drawer kl-frame pointer-events-auto fixed flex flex-col border-0 bg-kl-cell text-kl-ink outline-0\",\n  \"[--kl-cell:var(--kl-raised)] [--kl-move:calc(var(--kl-t-unfold)*1.25)]\",\n  \"transition-[transform] duration-(--kl-move) ease-(--kl-ease-out) will-change-transform\",\n  \"data-swiping:duration-0 data-swiping:select-none\",\n  \"data-ending-style:ease-(--kl-ease-in) data-ending-style:[--kl-move:calc(var(--kl-t-fold)*1.25)]\",\n  \"data-kl-released:not-data-swiping:ease-[var(--kl-release-back,var(--kl-ease-out))]\",\n  \"data-kl-released:data-ending-style:ease-[var(--kl-release-out,var(--kl-ease-out))]\",\n  // bottom: full width, its top edge faces the page; the cut on its top-start corner\n  \"data-[swipe-direction=down]:inset-x-0 data-[swipe-direction=down]:bottom-0\",\n  \"data-[swipe-direction=down]:h-[var(--kl-drawer-size,auto)] data-[swipe-direction=down]:max-h-[calc(100dvh-48px)]\",\n  \"data-[swipe-direction=down]:border-t-(length:--kl-k3)\",\n  \"data-[swipe-direction=down]:[transform:translateY(calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y,0px)))]\",\n  \"data-[swipe-direction=down]:data-ending-style:[transform:translateY(100%)] data-[swipe-direction=down]:data-starting-style:[transform:translateY(100%)]\",\n  // after a grip, the header sits closer to the edge\n  \"data-[swipe-direction=down]:[&>[data-slot=drawer-grip]+[data-slot=dialog-header]]:pt-1\",\n  // end/start: full height; the page-facing edge is the inline one; no cut (its corner is the screen's)\n  \"[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:inset-y-0\",\n  \"[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:w-[min(var(--kl-drawer-size,400px),calc(100vw-40px))]\",\n  \"[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:[--kl-cut-size:0px]\",\n  \"[&:is([data-swipe-direction=right],[data-swipe-direction=left])]:[transform:translateX(var(--drawer-swipe-movement-x,0px))]\",\n  \"data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:border-l-(length:--kl-k3)\",\n  \"data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:border-r-(length:--kl-k3)\",\n  \"data-[swipe-direction=right]:data-ending-style:[transform:translateX(100%)] data-[swipe-direction=right]:data-starting-style:[transform:translateX(100%)]\",\n  \"data-[swipe-direction=left]:data-ending-style:[transform:translateX(-100%)] data-[swipe-direction=left]:data-starting-style:[transform:translateX(-100%)]\",\n);\n\n/* the grip: a short ink bar on the page-facing edge (decorative: Escape and Close always work) */\nconst grip = cn(\n  \"grid h-[18px] flex-none cursor-grab touch-none place-items-center\",\n  \"before:h-[3px] before:w-10 before:bg-kl-ink-3 forced-colors:before:bg-[CanvasText]\",\n  \"group-data-swiping/drawer:cursor-grabbing group-data-swiping/drawer:before:bg-kl-ink\",\n  \"group-data-[swipe-direction=right]/drawer:absolute group-data-[swipe-direction=right]/drawer:inset-y-0 group-data-[swipe-direction=right]/drawer:left-0\",\n  \"group-data-[swipe-direction=left]/drawer:absolute group-data-[swipe-direction=left]/drawer:inset-y-0 group-data-[swipe-direction=left]/drawer:right-0\",\n  \"group-data-[swipe-direction=right]/drawer:z-1 group-data-[swipe-direction=right]/drawer:h-auto group-data-[swipe-direction=right]/drawer:w-[18px]\",\n  \"group-data-[swipe-direction=left]/drawer:z-1 group-data-[swipe-direction=left]/drawer:h-auto group-data-[swipe-direction=left]/drawer:w-[18px]\",\n  \"group-data-[swipe-direction=right]/drawer:before:h-10 group-data-[swipe-direction=right]/drawer:before:w-[3px]\",\n  \"group-data-[swipe-direction=left]/drawer:before:h-10 group-data-[swipe-direction=left]/drawer:before:w-[3px]\",\n);\n\ntype DrawerPopupProps = DrawerPrimitive.Popup.Props & {\n  /** Height (bottom) or width (end/start), px or any CSS length. */\n  size?: number | string;\n  /** Hide the grip cell (it is decorative: the swipe works anywhere on the drawer, Escape and Close always do). */\n  hideGrip?: boolean;\n  /** Where the portal renders (defaults to <body>). */\n  container?: DrawerPrimitive.Portal.Props[\"container\"];\n  /** Props for Base UI's Drawer.Portal. */\n  portalProps?: Omit<DrawerPrimitive.Portal.Props, \"container\" | \"children\">;\n};\n\n/**\n * The drawer: Base UI's Portal, Backdrop, Viewport and Popup in one part. It carries the configuration of the place\n * the Drawer is written (read by Drawer, which needs the direction to pick the swipe side).\n */\nfunction DrawerPopup({\n  className,\n  style,\n  size,\n  hideGrip,\n  container,\n  portalProps,\n  children,\n  ref: refProp,\n  ...props\n}: DrawerPopupProps): React.ReactElement {\n  const { side, scope, snap, probe } = React.useContext(DrawerSide);\n  const len = typeof size === \"number\" ? `${size}px` : size;\n  const ref = useReleaseFromHand(refProp);\n  return (\n    <DrawerPrimitive.Portal container={container} {...portalProps}>\n      {probe}\n      <DrawerPrimitive.Backdrop\n        data-kl-snap={snap ? \"\" : undefined}\n        {...scopeProps(scope, { className: backdrop })}\n        data-slot=\"drawer-backdrop\"\n      />\n      <DrawerPrimitive.Viewport\n        {...scopeProps(scope, { className: \"pointer-events-none fixed inset-0 z-(--kl-z-overlay)\" })}\n        data-slot=\"drawer-viewport\"\n      >\n        <DrawerPrimitive.Popup\n          data-side={side}\n          ref={ref}\n          className={resolveClassName(popup, className)}\n          style={resolveStyle(len ? ({ \"--kl-drawer-size\": len } as React.CSSProperties) : undefined, style)}\n          {...props}\n          data-slot=\"drawer-popup\"\n        >\n          {hideGrip ? null : <span data-slot=\"drawer-grip\" className={grip} aria-hidden />}\n          {children}\n        </DrawerPrimitive.Popup>\n      </DrawerPrimitive.Viewport>\n    </DrawerPrimitive.Portal>\n  );\n}\n\n/**\n * RELEASE: a released drawer starts at the speed the hand let go at, both ways. Base UI decides\n * whether the swipe dismisses or springs back; at release Keyline writes one curve for each outcome\n * (--kl-release-back, --kl-release-out) whose first slope matches the pointer's velocity, so a fling leaves\n * without the stall an ease-in gave it (it nearly stopped, then accelerated away), and a drag that came to rest\n * returns from rest instead of jumping 20px in its first frame.\n */\nfunction useReleaseFromHand(forward?: React.Ref<HTMLDivElement>) {\n  const cleanup = React.useRef<() => void>(undefined);\n  const fwd = React.useRef(forward);\n  fwd.current = forward;\n  return React.useCallback((el: HTMLDivElement | null) => {\n    const f = fwd.current;\n    if (typeof f === \"function\") f(el);\n    else if (f) (f as React.RefObject<HTMLDivElement | null>).current = el;\n    cleanup.current?.();\n    cleanup.current = undefined;\n    if (!el) return;\n    const vt = velocityTracker();\n    let clear: ReturnType<typeof setTimeout> | undefined;\n    const move = (e: PointerEvent) => {\n      if (el.hasAttribute(\"data-swiping\")) vt.push(e);\n    };\n    const down = () => vt.reset();\n    const up = (e: PointerEvent) => {\n      if (!el.hasAttribute(\"data-swiping\")) return;\n      const dir = el.getAttribute(\"data-swipe-direction\");\n      const y = dir === \"down\";\n      const cs = getComputedStyle(el);\n      const moved = Math.abs(\n        parseFloat(cs.getPropertyValue(y ? \"--drawer-swipe-movement-y\" : \"--drawer-swipe-movement-x\")) || 0,\n      );\n      const size = y ? el.offsetHeight : el.offsetWidth;\n      const v = vt.get(e.timeStamp);\n      const out = dir === \"down\" ? v.y : dir === \"right\" ? v.x : dir === \"left\" ? -v.x : 0; // toward dismissal\n      const ms = (name: string, k: number) => (parseFloat(cs.getPropertyValue(name)) || 0) * k;\n      el.style.setProperty(\"--kl-release-back\", releaseEasing(-out, moved, ms(\"--kl-t-unfold\", 1.25)));\n      el.style.setProperty(\"--kl-release-out\", releaseEasing(out, size - moved, ms(\"--kl-t-fold\", 1.25)));\n      el.setAttribute(\"data-kl-released\", \"\");\n      clearTimeout(clear);\n      clear = setTimeout(() => el.removeAttribute(\"data-kl-released\"), ms(\"--kl-t-unfold\", 1.25) + 80);\n    };\n    el.addEventListener(\"pointerdown\", down, true);\n    window.addEventListener(\"pointermove\", move, true);\n    window.addEventListener(\"pointerup\", up, true);\n    cleanup.current = () => {\n      clearTimeout(clear);\n      el.removeEventListener(\"pointerdown\", down, true);\n      window.removeEventListener(\"pointermove\", move, true);\n      window.removeEventListener(\"pointerup\", up, true);\n    };\n  }, []);\n}\n\n/** The scrolling body (Base UI's Drawer.Content). A swipe that starts here scrolls first and dismisses only from the\n * scroll edge. */\nfunction DrawerBody({ className, ...props }: DrawerPrimitive.Content.Props): React.ReactElement {\n  return (\n    <DrawerPrimitive.Content\n      className={resolveClassName(\n        \"grid min-h-0 flex-[1_1_auto] content-start gap-4 overflow-y-auto overscroll-contain p-[18px]\",\n        className,\n      )}\n      {...props}\n      data-slot=\"drawer-body\"\n    />\n  );\n}\n\nfunction DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props): React.ReactElement {\n  return (\n    <DrawerPrimitive.Title\n      className={resolveClassName(\"m-0 text-(length:--kl-text-title)/[1.2] font-(--kl-weight-strong)\", className)}\n      {...props}\n      data-slot=\"drawer-title\"\n    />\n  );\n}\n\nfunction DrawerDescription({ className, ...props }: DrawerPrimitive.Description.Props): React.ReactElement {\n  return (\n    <DrawerPrimitive.Description\n      className={resolveClassName(\"m-0 text-kl-ink-2\", className)}\n      {...props}\n      data-slot=\"drawer-description\"\n    />\n  );\n}\n\nconst DrawerRoot = Drawer;\nconst DrawerHeader = DialogHeader;\nconst DrawerFooter = DialogFooter;\n\nexport {\n  Drawer,\n  DrawerRoot,\n  DrawerTrigger,\n  DrawerClose,\n  DrawerPopup,\n  DrawerHeader,\n  DrawerBody,\n  DrawerFooter,\n  DrawerTitle,\n  DrawerDescription,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/drawer.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-drawer-scrim": {
-        "opacity": "max(var(--kl-scrim-min, 0), calc(1 - var(--drawer-swipe-progress, 0)))",
-        "transition": "opacity calc(var(--kl-t-unfold) * 1.5) linear"
-      },
-      ".kl-drawer-scrim[data-swiping]": {
-        "transition-duration": "0ms"
-      },
-      ".kl-drawer-scrim[data-kl-snap]": {
-        "--kl-scrim-min": "0.5"
-      },
-      ".kl-drawer-scrim[data-kl-snap]:is([data-starting-style], [data-ending-style])": {
-        "--kl-scrim-min": "0",
-        "opacity": "0"
-      },
-      ".kl-drawer-vp": {
-        "position": "fixed",
-        "inset": "0",
-        "z-index": "var(--kl-z-overlay)",
-        "pointer-events": "none"
-      },
-      ".kl-drawer": {
-        "--kl-cell": "var(--kl-raised)",
-        "--kl-move": "calc(var(--kl-t-unfold) * 1.25)",
-        "position": "fixed",
-        "display": "flex",
-        "flex-direction": "column",
-        "pointer-events": "auto",
-        "outline": "0",
-        "border-width": "0",
-        "color": "var(--kl-ink)",
-        "background-color": "var(--kl-cell)",
-        "transition": "transform var(--kl-move) var(--kl-ease-out)",
-        "will-change": "transform"
-      },
-      ".kl-drawer[data-swiping]": {
-        "transition-duration": "0ms",
-        "user-select": "none"
-      },
-      ".kl-drawer[data-ending-style]": {
-        "--kl-move": "calc(var(--kl-t-fold) * 1.25)",
-        "transition-timing-function": "var(--kl-ease-in)"
-      },
-      ".kl-drawer[data-kl-released]:not([data-swiping])": {
-        "transition-timing-function": "var(--kl-release-back, var(--kl-ease-out))"
-      },
-      ".kl-drawer[data-kl-released][data-ending-style]": {
-        "transition-timing-function": "var(--kl-release-out, var(--kl-ease-out))"
-      },
-      ".kl-drawer[data-swipe-direction=\"down\"]": {
-        "inset-inline": "0",
-        "inset-block-end": "0",
-        "max-height": "calc(100dvh - 48px)",
-        "height": "var(--kl-drawer-size, auto)",
-        "border-block-start-width": "var(--kl-k3)",
-        "border-inline-start-width": "0",
-        "transform": "translateY(calc(var(--drawer-snap-point-offset, 0px) + var(--drawer-swipe-movement-y, 0px)))"
-      },
-      ".kl-drawer[data-swipe-direction=\"down\"]:is([data-starting-style], [data-ending-style])": {
-        "transform": "translateY(100%)"
-      },
-      ".kl-drawer:is([data-swipe-direction=\"right\"], [data-swipe-direction=\"left\"])": {
-        "inset-block": "0",
-        "width": "min(var(--kl-drawer-size, 400px), calc(100vw - 40px))",
-        "transform": "translateX(var(--drawer-swipe-movement-x, 0px))",
-        "--kl-cut-size": "0px"
-      },
-      ".kl-drawer[data-swipe-direction=\"right\"]": {
-        "right": "0",
-        "border-left-width": "var(--kl-k3)"
-      },
-      ".kl-drawer[data-swipe-direction=\"left\"]": {
-        "left": "0",
-        "border-right-width": "var(--kl-k3)"
-      },
-      ".kl-drawer[data-swipe-direction=\"right\"]:is([data-starting-style], [data-ending-style])": {
-        "transform": "translateX(100%)"
-      },
-      ".kl-drawer[data-swipe-direction=\"left\"]:is([data-starting-style], [data-ending-style])": {
-        "transform": "translateX(-100%)"
-      },
-      ".kl-drawer-grip": {
-        "flex": "none",
-        "display": "grid",
-        "place-items": "center",
-        "height": "18px",
-        "cursor": "grab",
-        "touch-action": "none"
-      },
-      ".kl-drawer-grip::before": {
-        "content": "\"\"",
-        "width": "40px",
-        "height": "3px",
-        "background-color": "var(--kl-ink-3)"
-      },
-      ".kl-drawer[data-swiping] .kl-drawer-grip": {
-        "cursor": "grabbing"
-      },
-      ".kl-drawer[data-swiping] .kl-drawer-grip::before": {
-        "background-color": "var(--kl-ink)"
-      },
-      ".kl-drawer:is([data-swipe-direction=\"right\"], [data-swipe-direction=\"left\"]) > .kl-drawer-grip": {
-        "position": "absolute",
-        "inset-block": "0",
-        "width": "18px",
-        "height": "auto",
-        "z-index": "1"
-      },
-      ".kl-drawer[data-swipe-direction=\"right\"] > .kl-drawer-grip": {
-        "left": "0"
-      },
-      ".kl-drawer[data-swipe-direction=\"left\"] > .kl-drawer-grip": {
-        "right": "0"
-      },
-      ".kl-drawer:is([data-swipe-direction=\"right\"], [data-swipe-direction=\"left\"]) > .kl-drawer-grip::before": {
-        "width": "3px",
-        "height": "40px"
-      },
-      ".kl-drawer[data-swipe-direction=\"down\"] > .kl-drawer-grip + .kl-dialog-h": {
-        "padding-block-start": "4px"
-      },
-      ".kl-drawer-b": {
-        "flex": "1 1 auto",
-        "min-height": "0",
-        "overflow-y": "auto",
-        "overscroll-behavior": "contain",
-        "display": "grid",
-        "gap": "16px",
-        "align-content": "start",
-        "padding": "18px"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-drawer-grip::before": {
-          "background-color": "CanvasText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

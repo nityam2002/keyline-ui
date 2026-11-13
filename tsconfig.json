@@ -1,21 +1,19 @@
 {
+  "files": [],
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "allowImportingTsExtensions": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] },
-    "tsBuildInfoFile": ".artifacts/tsconfig.tsbuildinfo",
-    "types": ["vite/client", "node"]
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.tests.json"
+    },
+    {
+      "path": "./tsconfig.scripts.json"
+    }
+  ]
 }

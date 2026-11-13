@@ -1,0 +1,123 @@
+{
+  "name": "hover-card",
+  "title": "Hover card",
+  "description": "A link that previews its destination (Base UI Preview Card): the underline draws along its keyline during the open delay; the card is a control frame of cells (media, title, code, facts on seams) one gutter from the link. Supplementary content only.",
+  "whenToUse": "Use it to preview what a link points to without leaving the page. For a short label naming a control use Tooltip; for interactive content use Popover.",
+  "parts": [
+    {
+      "name": "HoverCardBody",
+      "description": "Free content (a sentence, a Status, a Meter) in its own cell row.",
+      "props": []
+    },
+    {
+      "name": "HoverCardFacts",
+      "description": "Key facts as a grid of cells (a description list): the term small, the value in the UI voice. A narrow card (long words in a small viewport) sets them in one column.",
+      "props": [
+        {
+          "name": "facts",
+          "type": "readonly (readonly [ReactNode, ReactNode])[]",
+          "default": "",
+          "required": true,
+          "description": "[term, value] pairs, two to a row on shared seams; an odd last fact spans the row."
+        }
+      ]
+    },
+    {
+      "name": "HoverCardHeader",
+      "description": "The card's top row of cells: media · title and description · code. Long titles wrap; the code cell keeps its width.",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A trailing cell in the Code voice: the record's ID, a handle."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "One line under the title in the UI voice: a role, a place."
+        },
+        {
+          "name": "media",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A square leading cell: an Avatar with layout=\"cell\", a logo, a 16px glyph or a code."
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "HoverCardPopup",
+      "description": "The preview: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. A control frame one gutter from the link (a card about a word in running text is not docked to it; a frame cannot share an edge with an underline). It unfolds from the side that faces the link, carries the configuration of the place it is written, and lifts to the overlay surface. Supplementary only: Base UI keeps it out of the keyboard and screen-reader order, so put nothing in it that isn't also at the link's destination, and no controls.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<PreviewCardPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's PreviewCard.Portal."
+        }
+      ]
+    },
+    {
+      "name": "HoverCardTrigger",
+      "description": "The link being previewed. It stays an ordinary link: a press goes to `href` (the place with everything the card shows), keyboard focus also opens the card, and on touch the card never opens. While the open delay runs, its underline draws along the keyline from the reading start, so the wait reads as \"a preview is coming\", not as lag; leaving early retracts it. Open, the underline is a full ink 2px keyline.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "hover-card-body",
+        "hover-card-code",
+        "hover-card-description",
+        "hover-card-fact",
+        "hover-card-facts",
+        "hover-card-header",
+        "hover-card-media",
+        "hover-card-popup",
+        "hover-card-title",
+        "hover-card-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-hc-delay",
+      "values": [
+        "`${delay"
+      ]
+    },
+    {
+      "name": "--kl-hc-draw",
+      "values": [
+        "0%"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "hover-card-client",
+      "title": "Hover card: client cards",
+      "file": "hover-card-client.tsx"
+    }
+  ]
+}

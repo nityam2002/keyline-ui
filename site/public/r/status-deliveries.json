@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-deliveries",
+  "title": "Status and badge: delivery board",
+  "description": "An example of Status and badge: delivery board.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/status-deliveries.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Badge, Status, type StatusKind } from \"../ui/status\";\n\ntype Stop = {\n  id: string;\n  client: string;\n  cases: number;\n  state: \"loading\" | \"out\" | \"delivered\" | \"held\";\n  rush?: boolean;\n  note?: string;\n};\n\nconst START: Stop[] = [\n  { id: \"DM-4102\", client: \"Scranton Business Park\", cases: 40, state: \"out\", rush: true },\n  { id: \"DM-4107\", client: \"Lackawanna County\", cases: 120, state: \"out\" },\n  {\n    id: \"DM-4111\",\n    client: \"Vance Refrigeration\",\n    cases: 6,\n    state: \"held\",\n    note: \"No one to sign. Call Bob Vance before 3 PM.\",\n  },\n  { id: \"DM-4115\", client: \"Blue Cross of Pennsylvania\", cases: 60, state: \"loading\" },\n];\n\nconst SAY: Record<Stop[\"state\"], [StatusKind, string]> = {\n  loading: [\"waiting\", \"Loading at the warehouse\"],\n  out: [\"normal\", \"Out for delivery\"],\n  delivered: [\"done\", \"Delivered\"],\n  held: [\"attention\", \"Held\"],\n};\n\nexport function DeliveryBoard() {\n  const [stops, setStops] = useState(START);\n  const [last, setLast] = useState(\"Darryl's truck left at 9:40.\");\n  const advance = (s: Stop) => {\n    const next = s.state === \"loading\" ? \"out\" : \"delivered\";\n    setStops((all) => all.map((x) => (x.id === s.id ? { ...x, state: next } : x)));\n    setLast(next === \"out\" ? `${s.id} is on the truck.` : `${s.id} signed for at ${s.client}.`);\n  };\n  const done = stops.filter((s) => s.state === \"delivered\").length;\n\n  return (\n    <div className=\"grid gap-4\">\n      <ul className=\"m-0 grid list-none gap-0 p-0\">\n        {stops.map((s) => {\n          const [kind, words] = SAY[s.state];\n          return (\n            <li\n              key={s.id}\n              className=\"grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 border-b border-kl-line py-3 first:pt-0 last:border-b-0\"\n            >\n              <div className=\"grid min-w-0 gap-1\">\n                <div className=\"flex flex-wrap items-center gap-2\">\n                  <Badge>{s.id}</Badge>\n                  {s.rush ? <Badge tone=\"signal\">RUSH</Badge> : null}\n                  <span className=\"text-[14px] font-semibold\">{s.client}</span>\n                  <span className=\"text-[14px] text-kl-ink-3 tabular-nums\">{s.cases} cases</span>\n                </div>\n                <Status kind={kind}>{s.note ? `${words}: ${s.note}` : words}</Status>\n              </div>\n              {s.state === \"loading\" || s.state === \"out\" ? (\n                <Button size=\"compact\" onClick={() => advance(s)}>\n                  {s.state === \"loading\" ? \"Load truck\" : \"Mark delivered\"}\n                </Button>\n              ) : null}\n            </li>\n          );\n        })}\n      </ul>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {done === stops.length - 1\n          ? \"Every stop is done except Vance Refrigeration.\"\n          : `${done} of ${stops.length} delivered. ${last}`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/status-deliveries.tsx"
+    }
+  ],
+  "categories": [
+    "status"
+  ],
+  "type": "registry:block"
+}

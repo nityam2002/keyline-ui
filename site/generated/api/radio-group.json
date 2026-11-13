@@ -1,0 +1,137 @@
+{
+  "name": "radio-group",
+  "title": "Radio group",
+  "description": "Exclusive choice as framed rows; the ink band stretches to the chosen row.",
+  "whenToUse": "Use it for one choice of a few that need room for a description or price. For a compact choice on one line use Segmented; for a long list use Select.",
+  "parts": [
+    {
+      "name": "Radio",
+      "description": "One row: Base UI's Radio.Root. Compose its contents (a RadioIndicator in a box cell, the label).",
+      "props": []
+    },
+    {
+      "name": "RadioGroup",
+      "description": "Exclusive choice as framed rows. The chosen row is ink: one band that STRETCHES between rows (leading edge first, zero bounce), the same behaviour as the segmented control turned vertical. Arrow keys move and select (radio semantics and roving focus from Base UI); the group participates in forms via `name`. Its rows are its direct children (Radio or RadioGroupItem), each with a `value`.",
+      "props": [
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: rows sit directly in an enclosing frame (e.g. a panel body)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string, eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with the chosen value and Base UI's event details (the reason, the event)."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "RadioGroupItem",
+      "description": "A labelled row: the box cell, the label with an optional description, and an optional meta cell. Once one row has meta, every row keeps the meta column.",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing cell: price, count, code."
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "default": "",
+          "required": true,
+          "description": "The unique identifying value of the radio in a group."
+        }
+      ]
+    },
+    {
+      "name": "RadioIndicator",
+      "description": "The box: hollow, with a dot while its row is chosen. Kept mounted by default, so the box is always drawn.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "radio",
+        "radio-group",
+        "radio-group-item",
+        "radio-group-item-box",
+        "radio-group-item-description",
+        "radio-group-item-label",
+        "radio-group-item-meta",
+        "radio-group-item-text",
+        "radio-indicator"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "radio-group-delivery",
+      "title": "Radio group: delivery choice",
+      "file": "radio-group-delivery.tsx"
+    },
+    {
+      "name": "radio-group-panel",
+      "title": "Radio group: paper weight",
+      "file": "radio-group-panel.tsx"
+    }
+  ]
+}

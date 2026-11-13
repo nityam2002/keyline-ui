@@ -4,144 +4,20 @@
   "title": "Checkbox",
   "description": "Square check box and a labelled checkbox row with description; indeterminate supported.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/checkbox.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Checkbox as CheckboxPrimitive } from \"@base-ui/react/checkbox\"\nimport { Field } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * The box: 18px, square, never cut. Checked fills ink with a paper tick; indeterminate draws a bar.\n * Inside a yellow (working-set) cell the tick turns yellow, so the box keeps contrast on both fills.\n * All Base UI Checkbox props pass through (name, value, form participation, parent/child groups).\n */\nfunction Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {\n  return (\n    <CheckboxPrimitive.Root data-slot=\"checkbox\" className={cn(\"kl-check\", className)} {...props}>\n      <CheckboxPrimitive.Indicator className=\"kl-check-ind\" keepMounted />\n    </CheckboxPrimitive.Root>\n  )\n}\n\n/**\n * A labelled checkbox row: box cell + label + optional description. The whole row is the hit target,\n * the label is the accessible name, and the description is attached via aria-describedby (Base UI Field).\n */\nfunction CheckboxField({\n  label,\n  description,\n  className,\n  disabled,\n  layout = \"control\",\n  ...props\n}: React.ComponentProps<typeof CheckboxPrimitive.Root> & { label: React.ReactNode; description?: React.ReactNode; /** control (default): aligns to a form column. cell: a row inside an enclosing frame (40px box cell, inset text). */ layout?: \"control\" | \"cell\" }) {\n  return (\n    <Field.Root data-slot=\"checkbox-field\" data-kl-layout={layout} disabled={disabled} className={cn(\"kl-choice\", className)}>\n      <Field.Label className=\"kl-choice-row\">\n        <span className=\"kl-choice-box\">\n          <Checkbox disabled={disabled} {...props} />\n        </span>\n        <span className=\"kl-choice-text\">\n          <span className=\"kl-choice-label\">{label}</span>\n          {description ? <Field.Description className=\"kl-choice-desc\">{description}</Field.Description> : null}\n        </span>\n      </Field.Label>\n    </Field.Root>\n  )\n}\n\nexport { Checkbox, CheckboxField }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Checkbox as CheckboxPrimitive } from \"@base-ui/react/checkbox\";\nimport { Field } from \"@base-ui/react/field\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName } from \"../lib/keyline-render\";\n\n/*\n * Checkbox, as Base UI's parts (Checkbox, also exported as CheckboxRoot, and CheckboxIndicator), and CheckboxField,\n * a labelled row built from them:\n *\n *   ┌────┬──────────────────────────────┐\n *   │ ■  │ Lock the warehouse door       │   box cell · label + description; the whole row toggles the box\n *   │    │ Darryl leaves by the dock at 5│\n *   └────┴──────────────────────────────┘\n */\n\n/**\n * The choice row's look: a box cell, then the label and an optional description. CheckboxField, SwitchField,\n * CheckboxGroup's rows and RadioGroup's rows are built from it, and so is a component that draws the row over its\n * own input (Questionnaire). `root` goes on the Base UI Field.Root, which carries `data-kl-layout`: in the `control`\n * layout (a form column) the box sits on the column's edge and the text follows at a 12px gap; without the root (or in\n * the `cell` layout) the box has a 40px cell and the text an inset.\n */\nconst choiceStyles = {\n  root: \"group/choice min-w-0\",\n  row: \"group/choice-row flex min-h-(--kl-row) cursor-pointer items-stretch group-data-disabled/choice:cursor-not-allowed\",\n  box: cn(\n    \"grid w-10 flex-none place-items-center\",\n    \"group-data-[kl-layout=control]/choice:w-auto group-data-[kl-layout=control]/choice:pe-3\",\n  ),\n  text: \"grid min-w-0 flex-1 content-center gap-0.5 py-2 pe-(--kl-inset) group-data-[kl-layout=control]/choice:pe-0\",\n  label: \"text-(length:--kl-text-body)/[1.3] font-(--kl-weight-strong) group-data-disabled/choice:text-kl-dis\",\n  description: \"m-0 text-(length:--kl-text-label)/[1.35] text-kl-ink-2\",\n};\n\n/**\n * The box's look, for a component that draws it over its own input (Questionnaire). `root` is the box, `indicator`\n * the tick or bar inside it; both read Base UI's state attributes (data-checked, data-indeterminate, data-unchecked,\n * data-disabled).\n */\nconst checkboxStyles = {\n  root: cn(\n    \"group/checkbox m-0 grid size-[18px] flex-none cursor-pointer place-items-center p-0\",\n    \"border-2 border-current bg-kl-cell text-inherit\",\n    // the foundation's ring keys on a kl- class, and the box has none: it draws its own\n    \"focus-visible:outline-(length:--kl-ring) focus-visible:outline-offset-(--kl-ring-out) focus-visible:outline-kl-focus focus-visible:outline-solid\",\n    \"data-checked:border-kl-inverse data-checked:bg-kl-inverse data-indeterminate:border-kl-inverse data-indeterminate:bg-kl-inverse\",\n    // KEY: the box answers the press at once (an empty box darkens; a ticked box's tick travels 1px), whether the\n    // press lands on the box or on its choice row\n    \"active:not-data-disabled:*:translate-y-px active:not-data-disabled:not-data-checked:not-data-indeterminate:bg-kl-press\",\n    \"group-active/choice-row:not-data-disabled:not-data-checked:not-data-indeterminate:bg-kl-press\",\n    \"group-active/choice-row:not-data-disabled:*:translate-y-px\",\n    \"group-hover/choice-row:not-data-disabled:not-data-checked:not-data-indeterminate:bg-kl-tint\",\n    \"data-disabled:cursor-not-allowed data-disabled:bg-(image:--kl-hatch) data-disabled:not-data-checked:border-kl-dis-line\",\n    \"data-disabled:data-checked:border-kl-dis data-disabled:data-checked:bg-kl-dis data-disabled:data-checked:bg-none\",\n    // on a working-set (yellow) cell the box takes the signal's own foreground, so the tick stays visible in both themes\n    \"[[data-kl-on]_&:is([data-checked],[data-indeterminate])]:border-kl-on-yellow\",\n    \"[[data-kl-on]_&:is([data-checked],[data-indeterminate])]:bg-kl-on-yellow\",\n    \"forced-colors:data-checked:border-[CanvasText] forced-colors:data-checked:bg-[CanvasText] forced-colors:data-checked:bg-none\",\n    \"forced-colors:data-checked:forced-color-adjust-none forced-colors:data-indeterminate:border-[CanvasText]\",\n    \"forced-colors:data-indeterminate:bg-[CanvasText] forced-colors:data-indeterminate:bg-none\",\n    \"forced-colors:data-indeterminate:forced-color-adjust-none\",\n  ),\n  indicator: cn(\n    \"block [--kl-tick:var(--kl-on-inverse)] forced-colors:[--kl-tick:Canvas] [[data-kl-on]_&]:[--kl-tick:var(--kl-yellow)]\",\n    // the tick is a path whose ink is centred in its 12×12 box (a rotated border L is not: its ink sat right of and\n    // below the box's centre). Centred means the stroked outline, not the polyline: with a 2.4 stroke, square caps\n    // and a miter join the ink spans y 1.08–10.92. Physical: a tick never mirrors in RTL.\n    \"[--kl-tick-path:url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2012%2012%27%3E%3Cpath%20d=%27M1.6%206.18%204.6%209.18%2010.4%202.78%27%20fill=%27none%27%20stroke=%27%23000%27%20stroke-width=%272.4%27%20stroke-linecap=%27square%27/%3E%3C/svg%3E)]\",\n    \"data-checked:size-3 data-checked:bg-(--kl-tick)\",\n    \"data-checked:[-webkit-mask:var(--kl-tick-path)_center/100%_100%_no-repeat]\",\n    \"data-checked:[mask:var(--kl-tick-path)_center/100%_100%_no-repeat]\",\n    \"data-indeterminate:h-0 data-indeterminate:w-[9px] data-indeterminate:border-b-[2.5px] data-indeterminate:border-b-(color:--kl-tick)\",\n    \"data-unchecked:hidden\",\n  ),\n};\n\n/**\n * The box: 18px, square, never cut. Checked fills ink with a paper tick; indeterminate draws a bar. Inside a yellow\n * (working-set) cell the tick turns yellow, so the box keeps contrast on both fills. All Base UI Checkbox props pass\n * through (name, value, form participation, parent/child groups); `onCheckedChange` gets Base UI's event details\n * last. Without children it draws its CheckboxIndicator.\n */\nfunction Checkbox({ className, children, ...props }: CheckboxPrimitive.Root.Props): React.ReactElement {\n  return (\n    <CheckboxPrimitive.Root\n      className={resolveClassName(checkboxStyles.root, className)}\n      {...props}\n      data-slot=\"checkbox\"\n    >\n      {children ?? <CheckboxIndicator />}\n    </CheckboxPrimitive.Root>\n  );\n}\n\n/** Checkbox, by Base UI's name for the part. */\nconst CheckboxRoot = Checkbox;\n\n/** The tick (checked) or bar (indeterminate). Kept mounted by default, so the box's contents never jump. */\nfunction CheckboxIndicator({\n  className,\n  keepMounted = true,\n  ...props\n}: CheckboxPrimitive.Indicator.Props): React.ReactElement {\n  return (\n    <CheckboxPrimitive.Indicator\n      keepMounted={keepMounted}\n      className={resolveClassName(checkboxStyles.indicator, className)}\n      {...props}\n      data-slot=\"checkbox-indicator\"\n    />\n  );\n}\n\n/**\n * A labelled checkbox row: box cell + label + optional description. The whole row is the hit target, the label is\n * the accessible name, and the description is attached via aria-describedby (Base UI Field). `className` goes to the\n * row's Field.Root; every other prop goes to the Checkbox.\n */\nfunction CheckboxField({\n  label,\n  description,\n  className,\n  disabled,\n  layout = \"control\",\n  ...props\n}: Omit<CheckboxPrimitive.Root.Props, \"className\"> & {\n  label: React.ReactNode;\n  description?: React.ReactNode;\n  className?: string;\n  /** control (default): aligns to a form column. cell: a row inside an enclosing frame (40px box cell, inset text). */ layout?:\n    | \"control\"\n    | \"cell\";\n}): React.ReactElement {\n  return (\n    <Field.Root\n      data-slot=\"checkbox-field\"\n      data-kl-layout={layout}\n      disabled={disabled}\n      className={cn(choiceStyles.root, className)}\n    >\n      <Field.Label data-slot=\"checkbox-field-row\" className={choiceStyles.row}>\n        <span data-slot=\"checkbox-field-box\" className={choiceStyles.box}>\n          <Checkbox disabled={disabled} {...props} />\n        </span>\n        <span data-slot=\"checkbox-field-text\" className={choiceStyles.text}>\n          <span data-slot=\"checkbox-field-label\" className={choiceStyles.label}>\n            {label}\n          </span>\n          {description ? (\n            <Field.Description data-slot=\"checkbox-field-description\" className={choiceStyles.description}>\n              {description}\n            </Field.Description>\n          ) : null}\n        </span>\n      </Field.Label>\n    </Field.Root>\n  );\n}\n\nexport { Checkbox, CheckboxRoot, CheckboxIndicator, CheckboxField, checkboxStyles, choiceStyles };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/checkbox.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-check": {
-        "flex": "none",
-        "width": "18px",
-        "height": "18px",
-        "display": "grid",
-        "place-items": "center",
-        "padding": "0",
-        "margin": "0",
-        "border": "2px solid currentColor",
-        "background-color": "var(--kl-cell)",
-        "color": "inherit",
-        "cursor": "pointer"
-      },
-      ".kl-check[data-checked], .kl-check[data-indeterminate]": {
-        "background-color": "var(--kl-inverse)",
-        "border-color": "var(--kl-inverse)"
-      },
-      ".kl-check-ind": {
-        "display": "block",
-        "--kl-tick": "var(--kl-on-inverse)"
-      },
-      ".kl-check-ind[data-checked]": {
-        "width": "12px",
-        "height": "12px",
-        "background-color": "var(--kl-tick)",
-        "--kl-tick-path": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.6 6.18 4.6 9.18 10.4 2.78' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='square'/%3E%3C/svg%3E\")",
-        "-webkit-mask": "var(--kl-tick-path) center / 100% 100% no-repeat",
-        "mask": "var(--kl-tick-path) center / 100% 100% no-repeat"
-      },
-      ".kl-check-ind[data-indeterminate]": {
-        "width": "9px",
-        "height": "0",
-        "border-block-end": "2.5px solid var(--kl-tick)"
-      },
-      ".kl-check-ind[data-unchecked]": {
-        "display": "none"
-      },
-      ":is(.kl-check:active, .kl-choice-row:active .kl-check, .kl-ix-in:active .kl-check):not([data-disabled]):not([data-checked]):not([data-indeterminate])": {
-        "background-color": "var(--kl-press)"
-      },
-      ":is(.kl-check:active, .kl-choice-row:active .kl-check, .kl-ix-in:active .kl-check):not([data-disabled]) > .kl-check-ind": {
-        "translate": "0 1px"
-      },
-      ".kl-check[data-disabled]": {
-        "cursor": "not-allowed",
-        "border-color": "var(--kl-dis-line)",
-        "background-image": "var(--kl-hatch)"
-      },
-      ".kl-check[data-disabled][data-checked]": {
-        "background-color": "var(--kl-dis)",
-        "border-color": "var(--kl-dis)",
-        "background-image": "none"
-      },
-      "[data-kl-on] .kl-check-ind": {
-        "--kl-tick": "var(--kl-yellow)"
-      },
-      "[data-kl-on] .kl-check:is([data-checked], [data-indeterminate])": {
-        "background-color": "var(--kl-on-yellow)",
-        "border-color": "var(--kl-on-yellow)"
-      },
-      ".kl-choice": {
-        "min-width": "0"
-      },
-      ".kl-choice-row": {
-        "display": "flex",
-        "align-items": "stretch",
-        "min-height": "var(--kl-row)",
-        "cursor": "pointer"
-      },
-      ".kl-choice-box": {
-        "flex": "none",
-        "display": "grid",
-        "place-items": "center",
-        "width": "40px"
-      },
-      ".kl-choice-text": {
-        "flex": "1",
-        "min-width": "0",
-        "display": "grid",
-        "align-content": "center",
-        "gap": "2px",
-        "padding-block": "8px",
-        "padding-inline-end": "var(--kl-inset)"
-      },
-      ".kl-choice[data-kl-layout=\"control\"] .kl-choice-box": {
-        "width": "auto",
-        "padding-inline-end": "12px"
-      },
-      ".kl-choice[data-kl-layout=\"control\"] .kl-choice-text": {
-        "padding-inline-end": "0"
-      },
-      ".kl-choice-label": {
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "14px",
-        "line-height": "1.3"
-      },
-      ".kl-choice-desc": {
-        "margin": "0",
-        "font-size": "13px",
-        "line-height": "1.35",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-choice[data-disabled] .kl-choice-row": {
-        "cursor": "not-allowed"
-      },
-      ".kl-choice[data-disabled] .kl-choice-label": {
-        "color": "var(--kl-dis)"
-      },
-      ".kl-choice-row:hover .kl-check:not([data-checked]):not([data-disabled])": {
-        "background-color": "var(--kl-tint)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-check[data-checked], .kl-check[data-indeterminate]": {
-          "forced-color-adjust": "none",
-          "background": "CanvasText",
-          "border-color": "CanvasText"
-        },
-        ".kl-check-ind": {
-          "--kl-tick": "Canvas"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

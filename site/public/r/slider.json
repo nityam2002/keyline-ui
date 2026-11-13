@@ -4,11 +4,12 @@
   "title": "Slider",
   "description": "A continuous or stepped value (or a range) in one control frame: the Meter's rail with an ink fill, a 2px thumb with a grip keyline, and a readout cell sized for the longest value.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/keyline-scope",
     "@keyline-ui/options",
     "@keyline-ui/field"
@@ -16,192 +17,10 @@
   "files": [
     {
       "path": "src/registry/keyline/ui/slider.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Slider as SliderPrimitive } from \"@base-ui/react/slider\"\nimport { DirectionProvider } from \"@base-ui/react/direction-provider\"\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\nimport { useDomDirection } from \"../lib/keyline-scope\"\nimport { longestValue } from \"../lib/options\"\nimport { FieldMessages, type FieldParticipantProps } from \"./field\"\n\ntype SliderRootProps<V extends number | readonly number[]> = Omit<React.ComponentProps<typeof SliderPrimitive.Root<V>>, \"children\" | \"className\" | \"render\" | \"orientation\">\n\ntype SliderProps<V extends number | readonly number[]> = SliderRootProps<V> & {\n  /** Visible label (visually hidden with layout=\"cell\"). Names every thumb. */\n  label: React.ReactNode\n  /** Unit printed after the value in the readout cell, in the Code voice (\"kg\", \"°\", \"%\"). */\n  unit?: React.ReactNode\n  /** The readout cell. Hide it only when the surrounding text already prints the value. */\n  showValue?: boolean\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */\n  layout?: \"control\" | \"cell\"\n  /** Range sliders: one accessible name per thumb. Defaults to \"<label>, from\" / \"<label>, to\" when the label is text. */\n  thumbLabels?: string[]\n  /** Text read for a thumb's value (e.g. \"12 kilograms\"). Defaults to the formatted value and unit when the unit is text. */\n  getAriaValueText?: React.ComponentProps<typeof SliderPrimitive.Thumb>[\"getAriaValueText\"]\n  /** Paints the rail itself, for a slider whose scale is visual (a hue spectrum). The fill is then drawn as a hollow window. */\n  railStyle?: React.CSSProperties\n  className?: string\n} & FieldParticipantProps\n\nconst count = (v: unknown) => (Array.isArray(v) ? v.length : 1)\n\n/**\n * A continuous or stepped value in one control frame of two cells:\n *\n *   Weight\n *   ┌──────────────────────────────────┬────────┐\n *   │ [▓▓▓▓▓▓▓▓▓▓▓█▌─────────────────] │ 12 kg  │   rail (k1) · ink fill · thumb · readout cell\n *   └──────────────────────────────────┴────────┘\n *\n * - The rail is the Meter's rail (the same measured-quantity construction); the fill is ink, the current\n *   choice on a continuum. A range fills between its two thumbs.\n * - The thumb is a standalone 2px block with a grip keyline; it floods ink while dragged. Its ring is the\n *   standalone ring (outside), because it sits clear of the cell's keylines.\n * - The readout cell is sized for the longest value the scale can print, so the frame never jitters.\n * - Motion: a press on the rail or an arrow key moves the fill's end and the thumb with the stretch lead\n *   (100ms, zero bounce, retargets); while dragging there is no transition, the thumb is under the pointer.\n *   Reduced motion: instant.\n *\n * Keyboard, pointer, range collisions, form value (`name`), Field validation and controlled/uncontrolled\n * state are Base UI Slider's. Direction comes from the DOM `dir`, so RTL mirrors geometry and arrow keys.\n *\n * Field: the slider sits in a Base UI Field.Root, so a Form collects its value under `name`\n * (a number, or an array for a range) and `validate`, `invalid` and the Form's `errors` print under the\n * frame, and the frame inserts the ! cell before the rail, in either layout. The Field.Root is a `display: contents` host: the Slider root (role=\"group\") stays the grid\n * that a horizontal Form lays out.\n */\nfunction Slider<V extends number | readonly number[]>({ label, unit, showValue = true, layout = \"control\", thumbLabels, getAriaValueText, railStyle, className, invalid, error, description, validate, validationMode, orientation, ...props }: SliderProps<V>) {\n  const ref = React.useRef<HTMLDivElement>(null)\n  const [dir, refreshDir] = useDomDirection(ref)\n  const thumbs = count(props.value ?? props.defaultValue)\n  const min = props.min ?? 0\n  const max = props.max ?? 100\n  // A hidden sizer holding the longest value the scale can print shares the readout's grid cell, so the\n  // cell never changes width while the value moves (digits, separators and the unit measured in their own fonts).\n  const longest = React.useMemo(() => longestValue(min, max, props.step ?? 1, props.locale, props.format), [props.locale, props.format, props.step, min, max])\n  const unitText = typeof unit === \"string\" ? unit : \"\"\n  const labelText = typeof label === \"string\" ? label : undefined\n  const names = thumbLabels ?? (thumbs > 1 && labelText ? [`${labelText}, from`, `${labelText}, to`] : undefined)\n  const valueText = getAriaValueText ?? (unitText ? (formatted: string) => `${formatted} ${unitText}` : undefined)\n\n  return (\n    <FieldPrimitive.Root className=\"kl-field-host\" name={props.name} disabled={props.disabled} invalid={invalid} validate={validate} validationMode={validationMode}>\n      <DirectionProvider direction={dir}>\n        <SliderPrimitive.Root<V>\n          ref={ref}\n          data-slot=\"slider\"\n          data-kl-layout={layout}\n          data-kl-range={thumbs > 1 || undefined}\n          data-kl-rail={railStyle ? \"painted\" : undefined}\n          data-kl-orientation={orientation}\n          className={cn(\"kl-field kl-slider\", className)}\n          onPointerDownCapture={refreshDir}\n          onFocusCapture={refreshDir}\n          {...props}\n        >\n          <SliderPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>{label}</SliderPrimitive.Label>\n          <div data-kl-layout={layout} className=\"kl-ctl kl-cells kl-slider-frame\">\n            {/* the attention cell, as every field has: in a cell layout there is no frame to turn red, so\n                this is the only mark of the state beside the (visually hidden) message */}\n            <span className=\"kl-slot kl-field-bang\" aria-hidden>\n              <span>\n                <span>!</span>\n              </span>\n            </span>\n            <SliderPrimitive.Control className=\"kl-slider-control\">\n              <SliderPrimitive.Track className=\"kl-slider-rail\" style={railStyle}>\n                <SliderPrimitive.Indicator className=\"kl-slider-fill\" />\n                {Array.from({ length: thumbs }, (_, i) => (\n                  <SliderPrimitive.Thumb key={i} index={i} className=\"kl-key kl-slider-thumb\" getAriaLabel={names ? (j) => names[j] ?? names[0] : undefined} getAriaValueText={valueText}>\n                    <span className=\"kl-slider-grip\" aria-hidden />\n                  </SliderPrimitive.Thumb>\n                ))}\n              </SliderPrimitive.Track>\n            </SliderPrimitive.Control>\n            {showValue ? (\n              <SliderPrimitive.Value className=\"kl-slider-value\">\n                {(formatted) => (\n                  <>\n                    <Readout values={formatted} unit={unit} />\n                    <Readout values={Array.from({ length: thumbs }, () => longest)} unit={unit} sizer />\n                  </>\n                )}\n              </SliderPrimitive.Value>\n            ) : null}\n          </div>\n          <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n        </SliderPrimitive.Root>\n      </DirectionProvider>\n    </FieldPrimitive.Root>\n  )\n}\n\nfunction Readout({ values, unit, sizer }: { values: readonly string[]; unit?: React.ReactNode; sizer?: boolean }) {\n  return (\n    <span className={sizer ? \"kl-slider-out kl-slider-sizer\" : \"kl-slider-out\"} aria-hidden={sizer || undefined}>\n      {values.map((f, i) => (\n        <React.Fragment key={i}>\n          {i > 0 ? <span aria-hidden>–</span> : null}\n          <bdi>{f}</bdi>\n        </React.Fragment>\n      ))}\n      {/* isolated, so a unit led by a neutral character (\"°C\") keeps its order in RTL */}\n      {unit != null ? <bdi className=\"kl-code\">{unit}</bdi> : null}\n    </span>\n  )\n}\n\n\nexport { Slider, type SliderProps }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Slider as SliderPrimitive } from \"@base-ui/react/slider\";\nimport { DirectionProvider } from \"@base-ui/react/direction-provider\";\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { type PartProps, resolveClassName, resolveStyle } from \"../lib/keyline-render\";\nimport { useDomDirection, useMergedRef } from \"../lib/keyline-scope\";\nimport { longestValue } from \"../lib/options\";\nimport { FieldMessages, type FieldParticipantProps } from \"./field\";\n\n/*\n * Slider, as Base UI's parts (SliderRoot, SliderLabel, SliderControl, SliderTrack, SliderIndicator, SliderThumb,\n * SliderValue), Keyline's SliderFrame (the control frame of cells), and Slider, the field built from them.\n *\n *   Weight\n *   ┌──────────────────────────────────┬────────┐\n *   │ [▓▓▓▓▓▓▓▓▓▓▓█▌─────────────────] │ 12 kg  │   track (k1) · ink indicator · thumb · value cell\n *   └──────────────────────────────────┴────────┘\n *\n * The track and indicator are the Meter's construction (k1 rail, ink fill), so a measured quantity and a chosen one\n * read as the same family; the thumb is what makes it a control.\n */\n\ntype Layout = \"control\" | \"cell\";\n\ntype SliderRootProps<V extends number | readonly number[]> = SliderPrimitive.Root.Props<V> & {\n  /** control: the root is a field (label above the frame). cell: it fills a cell of an enclosing frame. */\n  layout?: Layout;\n};\n\nconst root = cn(\n  \"kl-field group/slider [--kl-slider-rail:10px] [--kl-slider-th:24px] [--kl-slider-tw:14px]\",\n  \"[[data-kl-density=compact]_&]:[--kl-slider-rail:8px] [[data-kl-density=compact]_&]:[--kl-slider-th:18px]\",\n  \"data-[kl-density=compact]:[--kl-slider-rail:8px] [[data-kl-density=compact]_&]:[--kl-slider-tw:12px]\",\n  \"data-[kl-density=compact]:[--kl-slider-th:18px] data-[kl-density=compact]:[--kl-slider-tw:12px]\",\n  // layout=\"cell\": the enclosing cell is the frame\n  \"data-[kl-layout=cell]:flex data-[kl-layout=cell]:min-w-0 data-[kl-layout=cell]:flex-1 data-[kl-layout=cell]:flex-col\",\n  \"data-[kl-layout=cell]:gap-0 data-[kl-layout=cell]:self-stretch\",\n);\n\n/**\n * Base UI's Slider.Root, laid out as a field (label, frame, messages). Direction comes from the DOM `dir` (read again\n * before each press and focus), so RTL mirrors geometry and arrow keys. Keyboard, pointer, range collisions, form\n * value (`name`) and controlled/uncontrolled state are Base UI's; `onValueChange` gets its event details last.\n */\nfunction SliderRoot<V extends number | readonly number[]>({\n  layout = \"control\",\n  className,\n  ref: refProp,\n  onPointerDownCapture,\n  onFocusCapture,\n  ...props\n}: SliderRootProps<V>): React.ReactElement {\n  const ref = React.useRef<HTMLDivElement>(null);\n  const setRef = useMergedRef(ref, refProp);\n  const [dir, refreshDir] = useDomDirection(ref);\n  return (\n    <DirectionProvider direction={dir}>\n      <SliderPrimitive.Root<V>\n        ref={setRef}\n        data-kl-layout={layout}\n        className={resolveClassName(root, className)}\n        onPointerDownCapture={(e) => {\n          refreshDir();\n          onPointerDownCapture?.(e);\n        }}\n        onFocusCapture={(e) => {\n          refreshDir();\n          onFocusCapture?.(e);\n        }}\n        {...props}\n        data-slot=\"slider\"\n      />\n    </DirectionProvider>\n  );\n}\n\n/** Names the slider; Base UI ties it to every thumb. */\nfunction SliderLabel({ className, ...props }: SliderPrimitive.Label.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Label\n      className={resolveClassName(\"kl-field-label\", className)}\n      {...props}\n      data-slot=\"slider-label\"\n    />\n  );\n}\n\ntype FrameState = { layout: Layout };\n\nconst frame = cn(\n  \"kl-ctl kl-cells min-h-(--kl-ctl) bg-kl-cell data-[kl-layout=cell]:min-h-(--kl-row) data-[kl-layout=cell]:flex-1\",\n  // a cell gives up its own background (the foundation's cell rule, which a utility would otherwise beat)\n  \"data-[kl-layout=cell]:bg-transparent\",\n  // the ! cell is Field's (closed slot, opens red while invalid); the cell after it draws no seam while it is closed\n  \"[&>.kl-slot:first-child+*]:border-s-0\",\n  // invalid (Base UI Field): the frame turns red, as a field does\n  \"group-[[data-invalid]:not([data-disabled])]/slider:border-kl-red\",\n  \"group-[[data-invalid]:not([data-disabled])]/slider:[--kl-cut-line:var(--kl-red)]\",\n  \"group-[[data-invalid]:not([data-disabled])]/slider:[&>*+*]:border-kl-red\",\n  \"group-[[data-invalid]:not([data-disabled])]/slider:[&>.kl-slot:first-child+*]:border-s-(length:--kl-k1)\",\n  \"group-[[data-invalid]:not([data-disabled])]/slider:[&>.kl-slot:first-child+*]:border-s-kl-red\",\n  // disabled: out of service; the value stays readable\n  \"group-data-disabled/slider:border-kl-dis-line group-data-disabled/slider:bg-(image:--kl-hatch)\",\n  \"group-data-disabled/slider:[--kl-cut-line:var(--kl-dis-line)] group-data-disabled/slider:[&>*+*]:border-kl-dis-line\",\n);\n\n/**\n * The control frame: a row of cells (the control, then the value). The attention cell is inserted at its start and\n * opens while the slider is invalid. `layout=\"cell\"`: the frame is a cell of an enclosing frame (no border of its own).\n * Sits inside SliderRoot, whose state it follows.\n */\nfunction SliderFrame({\n  layout = \"control\",\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: PartProps<\"div\", FrameState> & { layout?: Layout }): React.ReactElement {\n  const state = React.useMemo(() => ({ layout }), [layout]);\n  const own = {\n    \"data-slot\": \"slider-frame\",\n    \"data-kl-layout\": layout,\n    className: resolveClassName(frame, className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        {/* the attention cell, as every field has: in a cell layout there is no frame to turn red, so this is the\n            only mark of the state beside the (visually hidden) message */}\n        <span className=\"kl-slot kl-field-bang\" aria-hidden>\n          <span>\n            <span>!</span>\n          </span>\n        </span>\n        {children}\n      </>\n    ),\n  };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(props, own) });\n}\n\n/**\n * The rail cell: the whole cell is the hit area. The thumb's centre reaches the track's ends, so the cell keeps half a\n * thumb plus the inset clear on each side.\n */\nfunction SliderControl({ className, ...props }: SliderPrimitive.Control.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Control\n      className={resolveClassName(\n        cn(\n          \"relative flex min-w-[96px] flex-[1_1_auto] cursor-pointer touch-none items-center select-none\",\n          \"px-[calc(var(--kl-inset)+var(--kl-slider-tw)/2)] data-disabled:cursor-not-allowed data-dragging:cursor-grabbing\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"slider-control\"\n    />\n  );\n}\n\n/** The rail: the Meter's k1 track. Give it a `style` background to paint the scale itself (a hue spectrum). */\nfunction SliderTrack({ className, ...props }: SliderPrimitive.Track.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Track\n      className={resolveClassName(\n        cn(\n          \"relative box-border h-(--kl-slider-rail) flex-1 border-(length:--kl-k1) border-kl-line bg-kl-cell\",\n          \"data-disabled:border-kl-dis-line\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"slider-track\"\n    />\n  );\n}\n\n/**\n * The fill: ink, the current choice on a continuum; a range fills between its two thumbs. A press on the rail or an\n * arrow key moves its end with the stretch lead (100ms, zero bounce); while dragging it follows the pointer directly.\n * Hidden on a painted rail (`data-kl-rail=\"painted\"` on the root).\n */\nfunction SliderIndicator({ className, ...props }: SliderPrimitive.Indicator.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Indicator\n      className={resolveClassName(\n        cn(\n          \"bg-kl-inverse data-disabled:bg-kl-dis data-dragging:transition-none\",\n          \"[transition:width_calc(var(--kl-stretch-lead)*1ms)_var(--kl-ease-out),inset-inline-start_calc(var(--kl-stretch-lead)*1ms)_var(--kl-ease-out)]\",\n          \"group-data-[kl-rail=painted]/slider:invisible\",\n          \"forced-colors:bg-[CanvasText] forced-colors:forced-color-adjust-none\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"slider-indicator\"\n    />\n  );\n}\n\nconst thumb = cn(\n  \"kl-key box-border grid h-(--kl-slider-th) w-(--kl-slider-tw) cursor-grab place-items-center outline-none\",\n  \"border-(length:--kl-k2) border-kl-line bg-kl-cell text-kl-inverse hover:bg-kl-tint\",\n  \"[transition:inset-inline-start_calc(var(--kl-stretch-lead)*1ms)_var(--kl-ease-out),bottom_calc(var(--kl-stretch-lead)*1ms)_var(--kl-ease-out)]\",\n  // dragging: the thumb floods ink (its own state while held) and follows the pointer, no transition\n  \"data-dragging:cursor-grabbing data-dragging:border-kl-inverse data-dragging:bg-kl-inverse\",\n  \"data-dragging:text-kl-on-inverse data-dragging:transition-none\",\n  \"data-disabled:cursor-not-allowed data-disabled:border-kl-dis data-disabled:bg-kl-cell data-disabled:text-kl-dis\",\n  // focus lands on the hidden range input inside; the ring belongs to the thumb (standalone, outside)\n  \"has-[input:focus-visible]:outline-(length:--kl-ring) has-[input:focus-visible]:outline-offset-(--kl-ring-out)\",\n  \"has-[input:focus-visible]:outline-kl-focus has-[input:focus-visible]:outline-solid\",\n  \"forced-colors:border-[CanvasText] forced-colors:bg-[Canvas] forced-colors:text-[CanvasText]\",\n  \"forced-colors:forced-color-adjust-none forced-colors:data-dragging:border-[Highlight]\",\n  \"forced-colors:data-dragging:bg-[Highlight] forced-colors:data-dragging:text-[HighlightText]\",\n  \"forced-colors:has-[input:focus-visible]:outline-3 forced-colors:has-[input:focus-visible]:outline-[Highlight]\",\n);\n\n/** The thumb: a standalone 2px block; its centre is the value. Without children it draws its grip keyline. */\nfunction SliderThumb({ className, children, ...props }: SliderPrimitive.Thumb.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Thumb className={resolveClassName(thumb, className)} {...props} data-slot=\"slider-thumb\">\n      {children ?? (\n        <span\n          data-slot=\"slider-thumb-grip\"\n          className=\"h-[calc(var(--kl-slider-th)-12px)] w-0.5 bg-current\"\n          aria-hidden\n        />\n      )}\n    </SliderPrimitive.Thumb>\n  );\n}\n\n/**\n * The value cell. Its children are Base UI's: a function of the formatted values (and the numbers). Slider fills it\n * with the live value and a hidden sizer holding the longest value the scale can print, in one grid cell, so the cell\n * is as wide as its widest value and never moves the rail.\n */\nfunction SliderValue({ className, ...props }: SliderPrimitive.Value.Props): React.ReactElement {\n  return (\n    <SliderPrimitive.Value\n      className={resolveClassName(\n        cn(\n          \"box-border grid flex-none items-center justify-items-end px-(--kl-inset) text-[14px] font-(--kl-weight-strong)\",\n          \"whitespace-nowrap tabular-nums group-data-disabled/slider:text-kl-ink-2\",\n        ),\n        className,\n      )}\n      {...props}\n      data-slot=\"slider-value\"\n    />\n  );\n}\n\n/* ------------------------------------------------------------------ the field */\n\ntype SliderProps<V extends number | readonly number[]> = Omit<\n  SliderPrimitive.Root.Props<V>,\n  \"children\" | \"className\" | \"render\" | \"orientation\"\n> & {\n  /** Visible label (visually hidden with layout=\"cell\"). Names every thumb. */\n  label: React.ReactNode;\n  /** Unit printed after the value in the readout cell, in the Code voice (\"kg\", \"°\", \"%\"). */\n  unit?: React.ReactNode;\n  /** The readout cell. Hide it only when the surrounding text already prints the value. */\n  showValue?: boolean;\n  /** control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden). */\n  layout?: Layout;\n  /** Range sliders: one accessible name per thumb. Defaults to \"<label>, from\" / \"<label>, to\" when the label is text. */\n  thumbLabels?: string[];\n  /** Text read for a thumb's value (e.g. \"12 kilograms\"). Defaults to the formatted value and unit when the unit is text. */\n  getAriaValueText?: SliderPrimitive.Thumb.Props[\"getAriaValueText\"];\n  /** Paints the rail itself, for a slider whose scale is visual (a hue spectrum). The fill is then drawn as a hollow window. */\n  railStyle?: React.CSSProperties;\n  className?: string;\n} & FieldParticipantProps;\n\nconst count = (v: unknown) => (Array.isArray(v) ? v.length : 1);\n\n/**\n * A continuous or stepped value in one control frame of two cells, built from the parts above. The readout cell is\n * sized for the longest value the scale can print, so the frame never jitters.\n *\n * Field: the slider sits in a Base UI Field.Root, so a Form collects its value under `name` (a number, or an array for\n * a range) and `validate`, `invalid` and the Form's `errors` print under the frame, and the frame inserts the ! cell\n * before the rail, in either layout. The Field.Root is a `display: contents` host: the SliderRoot (role=\"group\") stays\n * the grid that a horizontal Form lays out.\n */\nfunction Slider<V extends number | readonly number[]>({\n  label,\n  unit,\n  showValue = true,\n  layout = \"control\",\n  thumbLabels,\n  getAriaValueText,\n  railStyle,\n  className,\n  invalid,\n  error,\n  description,\n  validate,\n  validationMode,\n  orientation,\n  ...props\n}: SliderProps<V>) {\n  const thumbs = count(props.value ?? props.defaultValue);\n  const min = props.min ?? 0;\n  const max = props.max ?? 100;\n  // A hidden sizer holding the longest value the scale can print shares the readout's grid cell, so the cell never\n  // changes width while the value moves (digits, separators and the unit measured in their own fonts).\n  const longest = React.useMemo(\n    () => longestValue(min, max, props.step ?? 1, props.locale, props.format),\n    [props.locale, props.format, props.step, min, max],\n  );\n  const unitText = typeof unit === \"string\" ? unit : \"\";\n  const labelText = typeof label === \"string\" ? label : undefined;\n  const names = thumbLabels ?? (thumbs > 1 && labelText ? [`${labelText}, from`, `${labelText}, to`] : undefined);\n  const firstName = names?.[0];\n  const valueText = getAriaValueText ?? (unitText ? (formatted: string) => `${formatted} ${unitText}` : undefined);\n\n  return (\n    <FieldPrimitive.Root\n      className=\"contents\"\n      name={props.name}\n      disabled={props.disabled}\n      invalid={invalid}\n      validate={validate}\n      validationMode={validationMode}\n    >\n      <SliderRoot<V>\n        layout={layout}\n        data-kl-range={thumbs > 1 || undefined}\n        data-kl-rail={railStyle ? \"painted\" : undefined}\n        data-kl-orientation={orientation}\n        className={className}\n        {...props}\n      >\n        <SliderLabel className={layout === \"cell\" ? \"kl-sr\" : undefined}>{label}</SliderLabel>\n        <SliderFrame layout={layout}>\n          <SliderControl>\n            <SliderTrack style={railStyle}>\n              <SliderIndicator />\n              {Array.from({ length: thumbs }, (_, i) => (\n                <SliderThumb\n                  key={i}\n                  index={i}\n                  getAriaLabel={names && firstName !== undefined ? (j) => names[j] ?? firstName : undefined}\n                  getAriaValueText={valueText}\n                />\n              ))}\n            </SliderTrack>\n          </SliderControl>\n          {showValue ? (\n            <SliderValue>\n              {(formatted) => (\n                <>\n                  <Readout values={formatted} unit={unit} />\n                  <Readout values={Array.from({ length: thumbs }, () => longest)} unit={unit} sizer />\n                </>\n              )}\n            </SliderValue>\n          ) : null}\n        </SliderFrame>\n        <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n      </SliderRoot>\n    </FieldPrimitive.Root>\n  );\n}\n\nfunction Readout({ values, unit, sizer }: { values: readonly string[]; unit?: React.ReactNode; sizer?: boolean }) {\n  return (\n    <span\n      data-slot=\"slider-readout\"\n      data-kl-sizer={sizer || undefined}\n      className={cn(\n        \"flex items-center gap-1 [grid-area:1/1] [&>span[aria-hidden]]:font-medium [&>span[aria-hidden]]:text-kl-ink-2\",\n        sizer && \"invisible\",\n      )}\n      aria-hidden={sizer || undefined}\n    >\n      {values.map((f, i) => (\n        <React.Fragment key={i}>\n          {i > 0 ? <span aria-hidden>–</span> : null}\n          <bdi>{f}</bdi>\n        </React.Fragment>\n      ))}\n      {/* isolated (a <bdi>), so a unit led by a neutral character (\"°C\") keeps its order in RTL */}\n      {unit != null ? <bdi className=\"kl-code\">{unit}</bdi> : null}\n    </span>\n  );\n}\n\nexport {\n  Slider,\n  SliderRoot,\n  SliderLabel,\n  SliderFrame,\n  SliderControl,\n  SliderTrack,\n  SliderIndicator,\n  SliderThumb,\n  SliderValue,\n  type SliderProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/slider.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-slider": {
-        "--kl-slider-rail": "10px",
-        "--kl-slider-tw": "14px",
-        "--kl-slider-th": "24px"
-      },
-      "[data-kl-density=\"compact\"] .kl-slider, .kl-slider[data-kl-density=\"compact\"]": {
-        "--kl-slider-rail": "8px",
-        "--kl-slider-tw": "12px",
-        "--kl-slider-th": "18px"
-      },
-      ".kl-slider-frame": {
-        "min-height": "var(--kl-ctl)",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-slider-control": {
-        "flex": "1 1 auto",
-        "min-width": "96px",
-        "position": "relative",
-        "display": "flex",
-        "align-items": "center",
-        "padding-inline": "calc(var(--kl-inset) + var(--kl-slider-tw) / 2)",
-        "touch-action": "none",
-        "cursor": "pointer",
-        "user-select": "none"
-      },
-      ".kl-slider-rail": {
-        "position": "relative",
-        "flex": "1",
-        "height": "var(--kl-slider-rail)",
-        "box-sizing": "border-box",
-        "border": "var(--kl-k1) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-slider-fill": {
-        "background-color": "var(--kl-inverse)",
-        "transition": "width calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out)"
-      },
-      ".kl-slider[data-kl-rail=\"painted\"] .kl-slider-fill": {
-        "visibility": "hidden"
-      },
-      ".kl-slider-thumb": {
-        "box-sizing": "border-box",
-        "width": "var(--kl-slider-tw)",
-        "height": "var(--kl-slider-th)",
-        "display": "grid",
-        "place-items": "center",
-        "border": "var(--kl-k2) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)",
-        "color": "var(--kl-inverse)",
-        "cursor": "grab",
-        "outline": "0",
-        "transition": "inset-inline-start calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out), bottom calc(var(--kl-stretch-lead) * 1ms) var(--kl-ease-out)"
-      },
-      ".kl-slider-grip": {
-        "width": "2px",
-        "height": "calc(var(--kl-slider-th) - 12px)",
-        "background-color": "currentColor"
-      },
-      ".kl-slider-thumb:hover": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-slider-thumb[data-dragging]": {
-        "cursor": "grabbing",
-        "background-color": "var(--kl-inverse)",
-        "border-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)"
-      },
-      ".kl-slider[data-dragging] .kl-slider-control": {
-        "cursor": "grabbing"
-      },
-      ".kl-slider-thumb:has(input:focus-visible)": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-out)"
-      },
-      ".kl-slider[data-dragging] :is(.kl-slider-thumb, .kl-slider-fill)": {
-        "transition": "none"
-      },
-      ".kl-slider-value": {
-        "flex": "none",
-        "display": "grid",
-        "align-items": "center",
-        "justify-items": "end",
-        "box-sizing": "border-box",
-        "padding-inline": "var(--kl-inset)",
-        "font-size": "14px",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-variant-numeric": "tabular-nums",
-        "white-space": "nowrap"
-      },
-      ".kl-slider-out": {
-        "grid-area": "1 / 1",
-        "display": "flex",
-        "align-items": "center",
-        "gap": "4px"
-      },
-      ".kl-slider-sizer": {
-        "visibility": "hidden"
-      },
-      ".kl-slider-out bdi": {
-        "unicode-bidi": "isolate"
-      },
-      ".kl-slider-out > .kl-code": {
-        "unicode-bidi": "isolate"
-      },
-      ".kl-slider-out > span[aria-hidden]": {
-        "color": "var(--kl-ink-2)",
-        "font-weight": "500"
-      },
-      ".kl-slider[data-kl-layout=\"cell\"]": {
-        "display": "flex",
-        "flex-direction": "column",
-        "gap": "0",
-        "flex": "1",
-        "align-self": "stretch",
-        "min-width": "0"
-      },
-      ".kl-slider-frame[data-kl-layout=\"cell\"]": {
-        "flex": "1",
-        "min-height": "var(--kl-row)"
-      },
-      ".kl-slider-frame > .kl-slot:first-child + *": {
-        "border-inline-start": "0"
-      },
-      ".kl-slider[data-invalid] .kl-slider-frame > .kl-slot:first-child + *": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-red)"
-      },
-      ".kl-slider[data-invalid] .kl-slider-frame": {
-        "border-color": "var(--kl-red)",
-        "--kl-cut-line": "var(--kl-red)"
-      },
-      ".kl-slider[data-invalid] .kl-slider-frame > * + *": {
-        "border-color": "var(--kl-red)"
-      },
-      ".kl-slider[data-disabled] .kl-slider-frame": {
-        "background-image": "var(--kl-hatch)",
-        "border-color": "var(--kl-dis-line)",
-        "--kl-cut-line": "var(--kl-dis-line)"
-      },
-      ".kl-slider[data-disabled] .kl-slider-frame > * + *": {
-        "border-color": "var(--kl-dis-line)"
-      },
-      ".kl-slider[data-disabled] :is(.kl-slider-control, .kl-slider-thumb)": {
-        "cursor": "not-allowed"
-      },
-      ".kl-slider[data-disabled] .kl-slider-rail": {
-        "border-color": "var(--kl-dis-line)"
-      },
-      ".kl-slider[data-disabled] .kl-slider-fill": {
-        "background-color": "var(--kl-dis)"
-      },
-      ".kl-slider[data-disabled] .kl-slider-thumb": {
-        "border-color": "var(--kl-dis)",
-        "color": "var(--kl-dis)",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-slider[data-disabled] :is(.kl-slider-value, .kl-field-label)": {
-        "color": "var(--kl-ink-2)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-slider-fill": {
-          "forced-color-adjust": "none",
-          "background": "CanvasText"
-        },
-        ".kl-slider-thumb": {
-          "forced-color-adjust": "none",
-          "background": "Canvas",
-          "border-color": "CanvasText",
-          "color": "CanvasText"
-        },
-        ".kl-slider-thumb[data-dragging]": {
-          "background": "Highlight",
-          "border-color": "Highlight",
-          "color": "HighlightText"
-        },
-        ".kl-slider-thumb:has(input:focus-visible)": {
-          "outline": "3px solid Highlight"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

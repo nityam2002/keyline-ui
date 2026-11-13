@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react"
+import * as React from "react";
 
 /* ------------------------------------------------------------------ *
  * PORTAL SCOPE
@@ -24,57 +24,57 @@ export const KEYLINE_CONFIG_TOKENS = [
   "--kl-weight-strong",
   "--kl-weight-display",
   "--kl-cut",
-] as const
+] as const;
 
 export type KeylineScope = {
-  style?: React.CSSProperties
-  className?: string
-  dir?: "ltr" | "rtl"
-  "data-kl-density"?: string
-  "data-kl-motion"?: string
-}
+  style?: React.CSSProperties;
+  className?: string;
+  dir?: "ltr" | "rtl";
+  "data-kl-density"?: string;
+  "data-kl-motion"?: string;
+};
 
 function read(marker: Element): KeylineScope {
-  return readAt(marker.parentElement ?? marker)
+  return readAt(marker.parentElement ?? marker);
 }
 
 function readAt(host: Element): KeylineScope {
-  const out: KeylineScope = {}
-  const cs = getComputedStyle(host)
-  const style: Record<string, string> = {}
+  const out: KeylineScope = {};
+  const cs = getComputedStyle(host);
+  const style: Record<string, string> = {};
   for (const t of KEYLINE_CONFIG_TOKENS) {
-    const v = cs.getPropertyValue(t).trim()
-    if (v) style[t] = v
+    const v = cs.getPropertyValue(t).trim();
+    if (v) style[t] = v;
   }
-  if (Object.keys(style).length) out.style = style as React.CSSProperties
-  const density = host.closest("[data-kl-density]")?.getAttribute("data-kl-density")
-  if (density) out["data-kl-density"] = density
-  const motion = host.closest("[data-kl-motion]")?.getAttribute("data-kl-motion")
-  if (motion) out["data-kl-motion"] = motion
-  const theme = host.closest(".dark, .light")
-  if (theme) out.className = theme.classList.contains("dark") ? "dark" : "light"
+  if (Object.keys(style).length) out.style = style as React.CSSProperties;
+  const density = host.closest("[data-kl-density]")?.getAttribute("data-kl-density");
+  if (density) out["data-kl-density"] = density;
+  const motion = host.closest("[data-kl-motion]")?.getAttribute("data-kl-motion");
+  if (motion) out["data-kl-motion"] = motion;
+  const theme = host.closest(".dark, .light");
+  if (theme) out.className = theme.classList.contains("dark") ? "dark" : "light";
   // the same lookup as domDir: a dir="auto" text run between the host and the page does not set the popup's direction
-  const dir = host.closest('[dir]:not([dir="auto" i])')?.getAttribute("dir")?.toLowerCase()
-  if (dir === "rtl" || dir === "ltr") out.dir = dir
-  return out
+  const dir = host.closest('[dir]:not([dir="auto" i])')?.getAttribute("dir")?.toLowerCase();
+  if (dir === "rtl" || dir === "ltr") out.dir = dir;
+  return out;
 }
 
-const same = (a: KeylineScope, b: KeylineScope) => JSON.stringify(a) === JSON.stringify(b)
+const same = (a: KeylineScope, b: KeylineScope) => JSON.stringify(a) === JSON.stringify(b);
 
 /** Everything but the direction matches: a portal under <body> would resolve the same configuration. */
-const inherits = (a: KeylineScope, b: KeylineScope) => same({ ...a, dir: undefined }, { ...b, dir: undefined })
+const inherits = (a: KeylineScope, b: KeylineScope) => same({ ...a, dir: undefined }, { ...b, dir: undefined });
 
 /** The first guess: the page's direction (what an overlay on a page configured at <html> ends up with). */
 function pageScope(): KeylineScope {
-  if (typeof document === "undefined" || !document.body) return {}
-  const dir = document.body.closest("[dir]")?.getAttribute("dir")
-  return dir === "rtl" || dir === "ltr" ? { dir } : {}
+  if (typeof document === "undefined" || !document.body) return {};
+  const dir = document.body.closest("[dir]")?.getAttribute("dir");
+  return dir === "rtl" || dir === "ltr" ? { dir } : {};
 }
 
 /** Reads the scope after every render of the overlay it sits in (see `useKeylineScope`). */
 function ScopeProbe({ sync }: { sync: () => void }) {
-  React.useLayoutEffect(sync)
-  return null
+  React.useLayoutEffect(sync);
+  return null;
 }
 
 /**
@@ -90,24 +90,40 @@ function ScopeProbe({ sync }: { sync: () => void }) {
  * <html>), only the direction is kept, and the first state is that guess, so opening an overlay does not
  * re-render it. Pass `container` when the portal goes elsewhere: the full scope is kept.
  */
-export function useKeylineScope(open = true, container?: unknown): [React.ReactElement, KeylineScope, React.ReactElement] {
-  const ref = React.useRef<HTMLSpanElement>(null)
-  const [scope, setScope] = React.useState<KeylineScope>(pageScope)
+export function useKeylineScope(
+  open = true,
+  container?: unknown,
+): [React.ReactElement, KeylineScope, React.ReactElement] {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [scope, setScope] = React.useState<KeylineScope>(pageScope);
   const sync = React.useCallback(() => {
-    if (!ref.current) return
-    let next = read(ref.current)
-    if (container == null && document.body && inherits(next, readAt(document.body))) next = next.dir ? { dir: next.dir } : {}
-    setScope((prev) => (same(prev, next) ? prev : next))
-  }, [container])
+    if (!ref.current) return;
+    let next = read(ref.current);
+    if (container == null && document.body && inherits(next, readAt(document.body)))
+      next = next.dir ? { dir: next.dir } : {};
+    setScope((prev) => (same(prev, next) ? prev : next));
+  }, [container]);
   React.useLayoutEffect(() => {
-    if (open) sync()
-  })
-  const marker = React.createElement("span", { ref, hidden: true, "data-kl-scope": "" })
-  return [marker, scope, React.createElement(ScopeProbe, { sync })]
+    if (open) sync();
+  });
+  const marker = React.createElement("span", { ref, hidden: true, "data-kl-scope": "" });
+  return [marker, scope, React.createElement(ScopeProbe, { sync })];
 }
 
+type ScopedProps = {
+  dir: KeylineScope["dir"];
+  "data-kl-config": string | undefined;
+  "data-kl-density": string | undefined;
+  "data-kl-motion": string | undefined;
+  className: string | undefined;
+  style: React.CSSProperties;
+};
+
 /** Merge a scope into props for a portaled element (keeps the element's own className and style). */
-export function scopeProps<P extends { className?: string; style?: React.CSSProperties }>(scope: KeylineScope, own: P = {} as P) {
+export function scopeProps<P extends { className?: string; style?: React.CSSProperties }>(
+  scope: KeylineScope,
+  own: P = {} as P,
+): P & ScopedProps {
   return {
     ...own,
     dir: scope.dir,
@@ -116,7 +132,7 @@ export function scopeProps<P extends { className?: string; style?: React.CSSProp
     "data-kl-motion": scope["data-kl-motion"],
     className: [own.className, scope.className].filter(Boolean).join(" ") || undefined,
     style: { ...scope.style, ...own.style },
-  }
+  };
 }
 
 /* ------------------------------------------------------------------ *
@@ -125,18 +141,18 @@ export function scopeProps<P extends { className?: string; style?: React.CSSProp
  * DateRangePicker cannot drift apart. Values are the keyline weights (k1 1px, k2 2px), which are
  * identity constants, not configuration.
  * ------------------------------------------------------------------ */
-export type DockLayout = "control" | "cell"
+export type DockLayout = "control" | "cell";
 
 /** Positioner offsets and popup style for a surface docked to a field-type trigger. */
 export function dockGeometry(layout: DockLayout) {
-  const cell = layout === "cell"
+  const cell = layout === "cell";
   return {
     /** control: overlap the trigger's own k2 border. cell: sit on the keyline just outside the cell. */
     sideOffset: cell ? 0 : -2,
     /** cell: start k2 before the trigger, so the surface's border covers the cell's start keyline. */
     alignOffset: cell ? -2 : 0,
     style: { "--kl-attach": cell ? "1px" : "2px", "--kl-dock-grow": cell ? "2px" : "0px" } as React.CSSProperties,
-  }
+  };
 }
 
 /* ------------------------------------------------------------------ *
@@ -150,30 +166,30 @@ export function dockGeometry(layout: DockLayout) {
 /** The element's direction from the nearest explicit `dir` (an attribute lookup: no style recalculation, so it is
  *  safe to call after every render; `dir="auto"` text runs are skipped, they do not set a component's layout). */
 export function domDir(el: Element): "ltr" | "rtl" {
-  return el.closest('[dir]:not([dir="auto" i])')?.getAttribute("dir")?.toLowerCase() === "rtl" ? "rtl" : "ltr"
+  return el.closest('[dir]:not([dir="auto" i])')?.getAttribute("dir")?.toLowerCase() === "rtl" ? "rtl" : "ltr";
 }
 
 export function useDomDirection(ref: React.RefObject<HTMLElement | null>): ["ltr" | "rtl", () => void] {
   // first guess: the page's direction, so an RTL page does not re-render every scroller on mount
-  const [dir, setDir] = React.useState<"ltr" | "rtl">(() => (pageScope().dir === "rtl" ? "rtl" : "ltr"))
+  const [dir, setDir] = React.useState<"ltr" | "rtl">(() => (pageScope().dir === "rtl" ? "rtl" : "ltr"));
   const refresh = React.useCallback(() => {
-    const el = ref.current
-    if (!el) return
-    const next = domDir(el)
-    setDir((prev) => (prev === next ? prev : next))
-  }, [ref])
-  React.useLayoutEffect(refresh)
-  return [dir, refresh]
+    const el = ref.current;
+    if (!el) return;
+    const next = domDir(el);
+    setDir((prev) => (prev === next ? prev : next));
+  }, [ref]);
+  React.useLayoutEffect(refresh);
+  return [dir, refresh];
 }
 
 /** A component's own ref and the one passed in, as one callback ref (both are kept current). */
 export function useMergedRef<T>(own: React.RefObject<T | null>, outer: React.Ref<T> | undefined) {
   return React.useCallback(
     (el: T | null) => {
-      own.current = el
-      if (typeof outer === "function") outer(el)
-      else if (outer) (outer as React.RefObject<T | null>).current = el
+      own.current = el;
+      if (typeof outer === "function") outer(el);
+      else if (outer) (outer as React.RefObject<T | null>).current = el;
     },
     [own, outer],
-  )
+  );
 }

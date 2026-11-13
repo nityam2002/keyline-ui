@@ -4,121 +4,20 @@
   "title": "Collapsible",
   "description": "One unframed disclosure: a caret box whose keyline runs down the panel as a spine; the panel unfolds.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/collapsible.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Collapsible as CollapsiblePrimitive } from \"@base-ui/react/collapsible\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * One disclosure, unframed, for a form or a panel body (\"Advanced options\", \"Show 12 more\").\n *\n *   ⊟  Advanced options                    the trigger: a square caret box and the label\n *   │  panel content                       the box's keyline runs down the panel's start edge,\n *   │                                      so the panel reads as the trigger's continuation\n *\n * The panel UNFOLDS from the trigger (160ms, folds in 120ms; instant under reduced motion). The spine is\n * the same idea as the table detail's merged index cell: continuity drawn by a keyline, not a connector.\n * Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.\n */\nfunction Collapsible({ className, ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {\n  return <CollapsiblePrimitive.Root data-slot=\"collapsible\" className={cn(\"kl-collapsible\", className)} {...props} />\n}\n\ntype CollapsibleTriggerProps = React.ComponentProps<typeof CollapsiblePrimitive.Trigger> & {\n  /** Trailing text in the Code voice: a count of what is hidden (\"12\"), a short status. */\n  meta?: React.ReactNode\n}\n\nfunction CollapsibleTrigger({ className, children, meta, ...props }: CollapsibleTriggerProps) {\n  return (\n    <CollapsiblePrimitive.Trigger data-slot=\"collapsible-trigger\" className={cn(\"kl-key kl-coll-trigger\", className)} {...props}>\n      <span className=\"kl-coll-box\" aria-hidden>\n        <svg viewBox=\"0 0 16 16\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\" strokeLinecap=\"square\">\n          <path d=\"m4 6 4 4 4-4\" />\n        </svg>\n      </span>\n      <span className=\"kl-coll-label\">{children}</span>\n      {meta != null ? <span className=\"kl-code kl-coll-meta\">{meta}</span> : null}\n    </CollapsiblePrimitive.Trigger>\n  )\n}\n\nfunction CollapsiblePanel({ className, children, ...props }: React.ComponentProps<typeof CollapsiblePrimitive.Panel>) {\n  return (\n    <CollapsiblePrimitive.Panel data-slot=\"collapsible-panel\" className=\"kl-coll-panel\" {...props}>\n      <div className={cn(\"kl-coll-body\", className)}>{children as React.ReactNode}</div>\n    </CollapsiblePrimitive.Panel>\n  )\n}\n\nexport { Collapsible, CollapsibleTrigger, CollapsiblePanel }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Collapsible as CollapsiblePrimitive } from \"@base-ui/react/collapsible\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName } from \"../lib/keyline-render\";\n\n/*\n * COLLAPSIBLE: an unframed disclosure. The caret box (--kl-coll-box, 18px) is the anchor; its keyline continues down\n * the panel's start edge (the spine), centred on the box. The root is the outermost Keyline element (kl-type), so its\n * content takes Keyline's type from it, and a Collapsible inside another Keyline element inherits instead.\n */\nconst root = \"kl-type grid min-w-0 [--kl-coll-box:18px]\";\n\nconst trigger = cn(\n  \"group/collapsible-trigger kl-key m-0 inline-flex min-h-8 max-w-full cursor-pointer items-center gap-2.5 justify-self-start\",\n  \"bg-transparent p-0 pe-1 text-start font-(family-name:--kl-font) text-inherit focus-visible:outline-offset-(--kl-ring-out)\",\n  \"data-disabled:cursor-not-allowed data-disabled:text-kl-dis\",\n  \"forced-colors:focus-visible:outline-[3px] forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:outline-solid\",\n);\n\n/* the square caret box: tints under the pointer, darkens while pressed, hatched out of service */\nconst box = cn(\n  \"box-border grid size-(--kl-coll-box) flex-none place-items-center border-(length:--kl-k2) border-kl-line bg-kl-cell\",\n  \"group-hover/collapsible-trigger:group-not-data-disabled/collapsible-trigger:bg-kl-tint\",\n  \"group-active/collapsible-trigger:group-not-data-disabled/collapsible-trigger:bg-kl-press\",\n  \"group-data-disabled/collapsible-trigger:border-kl-dis-line group-data-disabled/collapsible-trigger:bg-(image:--kl-hatch)\",\n);\nconst boxIcon = cn(\n  \"transition-[rotate] duration-(--kl-t-fold) ease-(--kl-ease-in)\",\n  \"group-data-panel-open/collapsible-trigger:rotate-180 group-data-panel-open/collapsible-trigger:duration-(--kl-t-unfold) group-data-panel-open/collapsible-trigger:ease-(--kl-ease-out)\",\n);\nconst label = cn(\n  \"text-(length:--kl-text-body) font-(--kl-weight-strong) wrap-anywhere\",\n  \"group-hover/collapsible-trigger:group-not-data-disabled/collapsible-trigger:underline\",\n  \"group-hover/collapsible-trigger:group-not-data-disabled/collapsible-trigger:decoration-[1.5px]\",\n  \"group-hover/collapsible-trigger:group-not-data-disabled/collapsible-trigger:underline-offset-3\",\n);\n\n/* UNFOLD (Base UI measures --collapsible-panel-height); reduced motion makes both durations 0 */\nconst panel = cn(\n  \"h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-(--kl-t-unfold) ease-(--kl-ease-out)\",\n  \"data-ending-style:h-0 data-ending-style:duration-(--kl-t-fold) data-ending-style:ease-(--kl-ease-in) data-starting-style:h-0\",\n);\n/* the spine: the box's 2px keyline continues down the content's start edge */\nconst content = cn(\n  \"ms-[calc(var(--kl-coll-box)/2-1px)] min-w-0 border-s-(length:--kl-k2) border-s-kl-line pt-2 pb-1\",\n  \"ps-[calc(var(--kl-coll-box)/2+9px)] [&>:first-child]:mt-0 [&>:last-child]:mb-0\",\n);\n\n/**\n * One disclosure, unframed, for a form or a panel body (\"Advanced options\", \"Show 12 more\").\n *\n *   ⊟  Advanced options                    the trigger: a square caret box and the label\n *   │  panel content                       the box's keyline runs down the panel's start edge,\n *   │                                      so the panel reads as the trigger's continuation\n *\n * The panel UNFOLDS from the trigger (160ms, folds in 120ms; instant under reduced motion). The spine is\n * the same idea as the table detail's merged index cell: continuity drawn by a keyline, not a connector.\n * Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.\n */\nfunction CollapsibleRoot({ className, ...props }: CollapsiblePrimitive.Root.Props): React.ReactElement {\n  return <CollapsiblePrimitive.Root className={resolveClassName(root, className)} {...props} data-slot=\"collapsible\" />;\n}\n\ntype CollapsibleTriggerProps = CollapsiblePrimitive.Trigger.Props & {\n  /** Trailing text in the Code voice: a count of what is hidden (\"12\"), a short status. */\n  meta?: React.ReactNode;\n};\n\n/** The trigger (Base UI Collapsible.Trigger): the caret box, the label and the meta. */\nfunction CollapsibleTrigger({ className, children, meta, ...props }: CollapsibleTriggerProps): React.ReactElement {\n  return (\n    <CollapsiblePrimitive.Trigger\n      className={resolveClassName(trigger, className)}\n      {...props}\n      data-slot=\"collapsible-trigger\"\n    >\n      <span data-slot=\"collapsible-box\" className={box} aria-hidden>\n        <svg\n          className={boxIcon}\n          viewBox=\"0 0 16 16\"\n          width=\"12\"\n          height=\"12\"\n          fill=\"none\"\n          stroke=\"currentColor\"\n          strokeWidth=\"2\"\n          strokeLinecap=\"square\"\n        >\n          <path d=\"m4 6 4 4 4-4\" />\n        </svg>\n      </span>\n      <span data-slot=\"collapsible-label\" className={label}>\n        {children}\n      </span>\n      {meta != null ? (\n        <span data-slot=\"collapsible-meta\" className=\"kl-code ps-0.5\">\n          {meta}\n        </span>\n      ) : null}\n    </CollapsiblePrimitive.Trigger>\n  );\n}\n\ntype CollapsiblePanelProps = CollapsiblePrimitive.Panel.Props & {\n  /** Classes for the content inside the panel's clip (its layout: `grid gap-4`). */\n  contentClassName?: string;\n};\n\n/** The panel (Base UI Collapsible.Panel). It unfolds; its content sits inside the clip, on the spine. */\nfunction CollapsiblePanel({\n  className,\n  contentClassName,\n  children,\n  ...props\n}: CollapsiblePanelProps): React.ReactElement {\n  return (\n    <CollapsiblePrimitive.Panel className={resolveClassName(panel, className)} {...props} data-slot=\"collapsible-panel\">\n      <div data-slot=\"collapsible-content\" className={cn(content, contentClassName)}>\n        {children}\n      </div>\n    </CollapsiblePrimitive.Panel>\n  );\n}\n\n/** The root under its short name, as before the parts were named after Base UI's. */\nconst Collapsible = CollapsibleRoot;\n\nexport {\n  Collapsible,\n  CollapsibleRoot,\n  CollapsibleTrigger,\n  CollapsiblePanel,\n  type CollapsibleTriggerProps,\n  type CollapsiblePanelProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/collapsible.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-collapsible": {
-        "--kl-coll-box": "18px",
-        "display": "grid",
-        "min-width": "0"
-      },
-      ".kl-coll-trigger": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "10px",
-        "justify-self": "start",
-        "max-width": "100%",
-        "min-height": "32px",
-        "margin": "0",
-        "padding": "0 4px 0 0",
-        "border": "0",
-        "background": "none",
-        "color": "inherit",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "text-align": "start",
-        "cursor": "pointer"
-      },
-      ".kl-coll-box": {
-        "flex": "none",
-        "display": "grid",
-        "place-items": "center",
-        "width": "var(--kl-coll-box)",
-        "height": "var(--kl-coll-box)",
-        "box-sizing": "border-box",
-        "border": "var(--kl-k2) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-coll-box svg": {
-        "transition": "rotate var(--kl-t-fold) var(--kl-ease-in)"
-      },
-      ".kl-coll-trigger[data-panel-open] .kl-coll-box svg": {
-        "rotate": "180deg",
-        "transition": "rotate var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-coll-label": {
-        "font-size": "14px",
-        "font-weight": "var(--kl-weight-strong)",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-coll-meta": {
-        "padding-inline-start": "2px"
-      },
-      ".kl-coll-trigger:hover:not([data-disabled]) .kl-coll-box": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-coll-trigger:hover:not([data-disabled]) .kl-coll-label": {
-        "text-decoration": "underline 1.5px",
-        "text-underline-offset": "3px"
-      },
-      ".kl-coll-trigger:active:not([data-disabled]) .kl-coll-box": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-coll-trigger:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "var(--kl-ring-out)"
-      },
-      ".kl-coll-trigger[data-disabled]": {
-        "cursor": "not-allowed",
-        "color": "var(--kl-dis)"
-      },
-      ".kl-coll-trigger[data-disabled] .kl-coll-box": {
-        "border-color": "var(--kl-dis-line)",
-        "background-image": "var(--kl-hatch)"
-      },
-      ".kl-coll-panel": {
-        "height": "var(--collapsible-panel-height)",
-        "overflow": "hidden",
-        "transition": "height var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-coll-panel:is([data-starting-style], [data-ending-style])": {
-        "height": "0"
-      },
-      ".kl-coll-panel[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)",
-        "transition-timing-function": "var(--kl-ease-in)"
-      },
-      ".kl-coll-body": {
-        "margin-inline-start": "calc(var(--kl-coll-box) / 2 - 1px)",
-        "padding": "8px 0 4px calc(var(--kl-coll-box) / 2 + 9px)",
-        "border-inline-start": "var(--kl-k2) solid var(--kl-line)",
-        "min-width": "0"
-      },
-      ".kl-coll-body > :first-child": {
-        "margin-block-start": "0"
-      },
-      ".kl-coll-body > :last-child": {
-        "margin-block-end": "0"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-coll-trigger:focus-visible": {
-          "outline": "3px solid Highlight"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

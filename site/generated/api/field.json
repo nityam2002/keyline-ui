@@ -1,0 +1,309 @@
+{
+  "name": "field",
+  "title": "Field",
+  "description": "Field, input, affix cells, field group and validation with an inserted attention cell. Form (Base UI Form) and vertical, horizontal or responsive field orientation.",
+  "whenToUse": "Use it to give any input a label, description and error, and Form to line fields up. Reach for it around every text input in a form.",
+  "parts": [
+    {
+      "name": "FieldAffix",
+      "description": "A unit, currency or icon cell inside the frame.",
+      "props": []
+    },
+    {
+      "name": "FieldBar",
+      "description": "A row across the frame's whole width, above (`side=\"start\"`) or below (`side=\"end\"`) the input row: a textarea's formatting toggles, its character count, a hint. Its children are cells. Buttons inside a frame are Button `layout=\"cell\"` (size \"icon\" with an aria-label for icon-only); toggles are Toggle `layout=\"cell\"`. They sit beside the input as cells and keep their own focus ring. A child with `data-kl-spacer` takes the room between.",
+      "props": [
+        {
+          "name": "side",
+          "type": "\"end\" | \"start\"",
+          "default": "\"end\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldControl",
+      "description": "The text input cell: Base UI's Field.Control. `align=\"end\"` right-aligns a number with tabular figures.",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\" | \"start\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldDescription",
+      "description": "A line under the frame, read out with the control (Base UI ties it through aria-describedby).",
+      "props": []
+    },
+    {
+      "name": "FieldError",
+      "description": "The field's error. With children it shows them (pair with `match` for a specific check). Without children it shows Base UI's own message: a `validate` result, a native constraint message, or a server error from Form `errors` for this field's name. Either way the attention glyph leads.",
+      "props": []
+    },
+    {
+      "name": "FieldFrame",
+      "description": "The control frame: a row of cells (affixes, the control, buttons and toggles with `layout=\"cell\"`, bars). The attention cell is inserted at its start and opens while the field is invalid. Its edge is the focus indicator. `layout=\"cell\"`: the frame is a cell of an enclosing frame (no border or cut of its own).",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldGroup",
+      "description": "Several labelled inputs in ONE frame (e.g. L × W × H). Each part is a cell with its own label.",
+      "props": [
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Marks the whole group invalid (e.g. a cross-field rule). Parts mark themselves with `invalid`."
+        },
+        {
+          "name": "legend",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldGroupError",
+      "description": "Error for a whole group (cross-field rules such as \"height exceeds the trailer\"). Announced politely.",
+      "props": []
+    },
+    {
+      "name": "FieldGroupJoin",
+      "description": "The sign between two parts of a group (× by default). Hidden from assistive technology.",
+      "props": []
+    },
+    {
+      "name": "FieldGroupPart",
+      "description": "One labelled cell of a FieldGroup: a Base UI Field.Root with its label and control. It takes the focus edge (a flush band on the group frame's keylines); the frame does not.",
+      "props": [
+        {
+          "name": "inputProps",
+          "type": "FieldControlProps",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldLabel",
+      "description": "Names the control; Base UI ties it to the control (`for`, or `aria-labelledby` for a non-native control).",
+      "props": []
+    },
+    {
+      "name": "FieldMessages",
+      "description": "The description and error a single-control component (Select, Combobox, Slider, NumberField) prints under its frame. `error` with `invalid` always shows; `error` alone replaces Base UI's message whenever the field fails a check; no `error` shows Base UI's own (a `validate` result, a native constraint, or the Form's `errors` entry for the field's name). Must sit inside the component's Field.Root. With layout=\"cell\" there is no room under the frame: the messages are visually hidden but still describe the control (the frame's red edge and ! cell are the visible signal).",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "error",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldRoot",
+      "description": "Base UI's Field.Root: label, frame, description and error, with Base UI's validation (invalid, validate, match). `orientation`: vertical (label above, the default), horizontal (label in a start column of --kl-form-label, everything else in the control column), responsive (horizontal while the enclosing Form, or any element with `container: kl-form / inline-size`, is at least 560px wide). Without it the field follows its Form's orientation. A field with layout=\"cell\" never goes horizontal.",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldTextarea",
+      "description": "A multi-line control cell: Base UI's Field.Control rendering a <textarea>, resizable in height.",
+      "props": []
+    },
+    {
+      "name": "Fieldset",
+      "description": "Base UI's Fieldset.Root: a group of fields under one legend, laid out as a field.",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FieldsetLegend",
+      "description": "Base UI's Fieldset.Legend, in the field label's voice.",
+      "props": []
+    },
+    {
+      "name": "Form",
+      "description": "Base UI's Form (submit-time validation, server `errors` keyed by field name, `actionsRef`), laid out as a column of fields. It is the container the responsive orientation measures. While its fields are horizontal, FormActions sits in the control column, under the inputs; mark any other element (a row of checkboxes, a notice about one field) data-kl-span=\"control\" to put it there too.",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "\"vertical\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "FormActions",
+      "description": "The form's commit row: buttons in reading order, the commit action first.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-align",
+      "values": []
+    },
+    {
+      "name": "data-invalid",
+      "values": []
+    },
+    {
+      "name": "data-kind",
+      "values": [
+        "attention"
+      ]
+    },
+    {
+      "name": "data-kl-form-orientation",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-kl-span",
+      "values": [
+        "control"
+      ]
+    },
+    {
+      "name": "data-side",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "field",
+        "field-affix",
+        "field-bar",
+        "field-control",
+        "field-description",
+        "field-error",
+        "field-frame",
+        "field-group",
+        "field-group-error",
+        "field-group-frame",
+        "field-group-join",
+        "field-group-legend",
+        "field-group-part",
+        "field-group-part-control",
+        "field-group-part-label",
+        "field-label",
+        "field-textarea",
+        "fieldset",
+        "fieldset-legend",
+        "form",
+        "form-actions"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-form-gap",
+      "values": [
+        "12px",
+        "16px"
+      ]
+    },
+    {
+      "name": "--kl-form-label",
+      "values": [
+        "10rem",
+        "11rem"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "field-carton",
+      "title": "Field: carton size",
+      "file": "field-carton.tsx"
+    },
+    {
+      "name": "field-order",
+      "title": "Field: new order",
+      "file": "field-order.tsx"
+    },
+    {
+      "name": "field-tracking",
+      "title": "Field: track shipment",
+      "file": "field-tracking.tsx"
+    }
+  ]
+}

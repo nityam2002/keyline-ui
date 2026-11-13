@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-status",
+  "title": "Avatar: whos in",
+  "description": "An example of Avatar: whos in.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/avatar",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/avatar-status.tsx",
+      "content": "\"use client\";\n\nimport { Avatar, type AvatarStatus } from \"../ui/avatar\";\n\nconst PEOPLE: { name: string; role: string; status: AvatarStatus; where: string; src?: string }[] = [\n  {\n    name: \"Michael Scott\",\n    role: \"Regional Manager\",\n    status: \"normal\",\n    where: \"In his office\",\n    src: \"/avatars/michael-scott.svg\",\n  },\n  {\n    name: \"Jim Halpert\",\n    role: \"Sales\",\n    status: \"waiting\",\n    where: \"At a client, back at 2\",\n    src: \"/avatars/jim-halpert.svg\",\n  },\n  {\n    name: \"Dwight Schrute\",\n    role: \"Assistant to the Regional Manager\",\n    status: \"attention\",\n    where: \"Three missed calls from corporate\",\n    src: \"/avatars/dwight-schrute.svg\",\n  },\n  // this photo is damaged on purpose: the initials hold the cell and no broken image shows\n  {\n    name: \"Toby Flenderson\",\n    role: \"Human Resources\",\n    status: \"none\",\n    where: \"Out today\",\n    src: \"data:image/jpeg;base64,AAAA\",\n  },\n];\n\nexport function WhosIn() {\n  return (\n    <ul className=\"m-0 grid list-none gap-3 p-0\">\n      {PEOPLE.map((p) => (\n        <li key={p.name} className=\"grid grid-cols-[auto_1fr] items-center gap-3\">\n          <Avatar name={p.name} src={p.src} status={p.status} size=\"lg\" />\n          <div className=\"grid min-w-0 gap-0.5 text-[14px]\">\n            <span className=\"font-semibold\">{p.name}</span>\n            <span className=\"text-kl-ink-2\">\n              {p.role} · {p.where}\n            </span>\n          </div>\n        </li>\n      ))}\n    </ul>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/avatar-status.tsx"
+    }
+  ],
+  "categories": [
+    "avatar"
+  ],
+  "type": "registry:block"
+}

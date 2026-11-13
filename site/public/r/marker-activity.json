@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marker-activity",
+  "title": "Marker: order activity",
+  "description": "An example of Marker: order activity.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/marker",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/marker-activity.tsx",
+      "content": "\"use client\";\n\nimport { Package, Phone, Truck } from \"lucide-react\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Marker, MarkerContent, MarkerIcon } from \"../ui/marker\";\nimport { Status } from \"../ui/status\";\n\nconst PHONE = <Phone size={16} aria-hidden=\"true\" />;\nconst BOX = <Package size={16} aria-hidden=\"true\" />;\nconst TRUCK = <Truck size={16} aria-hidden=\"true\" />;\n\ntype Step = \"idle\" | \"picking\" | \"picked\";\n\nexport function OrderActivity() {\n  const [step, setStep] = useState<Step>(\"idle\");\n  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);\n  useEffect(() => () => clearTimeout(timer.current), []);\n\n  const send = () => {\n    setStep(\"picking\");\n    timer.current = setTimeout(() => setStep(\"picked\"), 2400);\n  };\n\n  return (\n    <div className=\"grid max-w-[460px] gap-3\">\n      <Marker variant=\"border\">\n        <MarkerContent>DM-4107 · Lackawanna County</MarkerContent>\n      </Marker>\n      <Marker variant=\"separator\">\n        <MarkerContent>Yesterday</MarkerContent>\n      </Marker>\n      <Marker>\n        <MarkerIcon>{PHONE}</MarkerIcon>\n        <MarkerContent>Dwight took the order by phone: 120 cases</MarkerContent>\n      </Marker>\n      <Marker variant=\"separator\">\n        <MarkerContent>Today</MarkerContent>\n      </Marker>\n      <Marker>\n        <MarkerIcon>{BOX}</MarkerIcon>\n        <MarkerContent>Angela approved the credit check</MarkerContent>\n      </Marker>\n      {step !== \"idle\" ? (\n        <Marker pending={step === \"picking\"}>\n          <MarkerIcon>{step === \"picking\" ? TRUCK : <Status kind=\"done\" />}</MarkerIcon>\n          <MarkerContent>\n            {step === \"picking\" ? \"Darryl's team is picking 120 cases…\" : \"Picked and on the truck for Thursday\"}\n          </MarkerContent>\n        </Marker>\n      ) : null}\n      <Button className=\"mt-2 justify-self-start\" disabled={step !== \"idle\"} onClick={send}>\n        {step === \"idle\" ? \"Send to the warehouse\" : \"Sent to the warehouse\"}\n      </Button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/marker-activity.tsx"
+    }
+  ],
+  "categories": [
+    "marker"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table-lines",
+  "title": "Table: order lines",
+  "description": "An example of Table: order lines.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/table"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/table-lines.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport {\n  Table,\n  TableBody,\n  TableCell,\n  TableDetail,\n  TableExpandCell,\n  TableFrame,\n  TableHeader,\n  TableHead,\n  TableRow,\n  TableScroll,\n  useDetailPresence,\n} from \"../ui/table\";\n\nconst ORDERS = [\n  {\n    id: \"DM-4107\",\n    client: \"Lackawanna County\",\n    total: \"$9,610.00\",\n    lines: [\n      [\"Copy paper, letter, 20 lb\", \"100 cases\", \"$7,400.00\"],\n      [\"Cardstock, white, 110 lb\", \"20 cases\", \"$2,210.00\"],\n    ],\n  },\n  {\n    id: \"DM-4115\",\n    client: \"Blue Cross of Pennsylvania\",\n    total: \"$4,980.00\",\n    lines: [\n      [\"Copy paper, legal, 20 lb\", \"50 cases\", \"$4,150.00\"],\n      [\"Envelopes, #10, security tint\", \"10 boxes\", \"$830.00\"],\n    ],\n  },\n  {\n    id: \"DM-4120\",\n    client: \"Scranton White Pages\",\n    total: \"$740.00\",\n    lines: [[\"Copy paper, letter, 20 lb\", \"10 cases\", \"$740.00\"]],\n  },\n];\n\nexport function OrderLines() {\n  const [open, setOpen] = useState<Set<string>>(new Set([\"DM-4107\"]));\n  const toggle = (id: string) =>\n    setOpen((o) => {\n      const n = new Set(o);\n      if (n.has(id)) n.delete(id);\n      else n.add(id);\n      return n;\n    });\n\n  return (\n    <TableFrame>\n      <TableScroll>\n        <Table aria-label=\"Orders with their lines\">\n          <TableHeader>\n            <tr>\n              <TableExpandCell header label=\"Show lines\" />\n              <TableHead>Order</TableHead>\n              <TableHead>Client</TableHead>\n              <TableHead align=\"end\">Total</TableHead>\n            </tr>\n          </TableHeader>\n          <TableBody>\n            {ORDERS.map((o) => (\n              <OrderRow key={o.id} order={o} open={open.has(o.id)} onToggle={() => toggle(o.id)} />\n            ))}\n          </TableBody>\n        </Table>\n      </TableScroll>\n    </TableFrame>\n  );\n}\n\n/** One order and its lines. The row holds its detail's presence, so the lines fold away before they unmount. */\nfunction OrderRow({\n  order: o,\n  open,\n  onToggle,\n}: {\n  order: (typeof ORDERS)[number];\n  open: boolean;\n  onToggle: () => void;\n}) {\n  const presence = useDetailPresence(open);\n  return (\n    <>\n      <TableRow expanded={open}>\n        <TableExpandCell expanded={open} onToggle={onToggle} label={`Lines in ${o.id}`} />\n        <TableCell className=\"font-kl-mono text-[13px]\">{o.id}</TableCell>\n        <TableCell>{o.client}</TableCell>\n        <TableCell align=\"end\" className=\"tabular-nums\">\n          {o.total}\n        </TableCell>\n      </TableRow>\n      <TableDetail presence={presence} colSpan={4}>\n        <dl className=\"m-0 grid grid-cols-[1fr_auto_auto] gap-x-6 gap-y-1 px-3 py-3 text-[14px]\">\n          {o.lines.map(([item, qty, amount]) => (\n            <div key={item} className=\"contents\">\n              <dt>{item}</dt>\n              <dd className=\"m-0 text-kl-ink-2 tabular-nums\">{qty}</dd>\n              <dd className=\"m-0 text-end tabular-nums\">{amount}</dd>\n            </div>\n          ))}\n        </dl>\n      </TableDetail>\n    </>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/table-lines.tsx"
+    }
+  ],
+  "categories": [
+    "table"
+  ],
+  "type": "registry:block"
+}

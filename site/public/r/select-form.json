@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select-form",
+  "title": "Select: quote form",
+  "description": "An example of Select: quote form.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline",
+    "@keyline-ui/select"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/select-form.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Form, FormActions } from \"../ui/field\";\nimport { Select } from \"../ui/select\";\n\nconst WEIGHTS = [\n  { value: \"20\", label: \"20 lb copy\" },\n  { value: \"24\", label: \"24 lb premium\" },\n  { value: \"110\", label: \"110 lb cardstock\" },\n];\n\nexport function QuoteForm() {\n  const [sent, setSent] = useState<string | null>(null);\n\n  return (\n    <Form\n      className=\"max-w-[360px]\"\n      onFormSubmit={(v) => setSent(`Quote sent with ${WEIGHTS.find((w) => w.value === v[\"weight\"])?.label}.`)}\n    >\n      <Select\n        name=\"weight\"\n        label=\"Paper weight\"\n        placeholder=\"Choose a weight\"\n        required\n        options={WEIGHTS}\n        error=\"Choose a weight. The price depends on it.\"\n      />\n      <FormActions>\n        <Button type=\"submit\" variant=\"primary\">\n          Send quote\n        </Button>\n      </FormActions>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {sent}\n      </p>\n    </Form>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/select-form.tsx"
+    }
+  ],
+  "categories": [
+    "select"
+  ],
+  "type": "registry:block"
+}

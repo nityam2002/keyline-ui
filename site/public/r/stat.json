@@ -4,120 +4,21 @@
   "title": "Stat",
   "description": "Count voice with label, unit, delta signal and an optional meter.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/stat.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Meter as MeterPrimitive } from \"@base-ui/react/meter\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype Delta = { value: React.ReactNode; /** up/down is direction; tone says whether that is good. */ direction: \"up\" | \"down\" | \"flat\"; tone?: \"good\" | \"bad\" | \"neutral\"; label?: string }\n\n/**\n * A metric: label, the Count voice, unit as code, and an optional delta and meter.\n * The delta is a shape + text, coloured only when it needs attention (tone=\"bad\" → red).\n */\nfunction Stat({ label, value, unit, delta, meter, className, ...props }: Omit<React.ComponentProps<\"div\">, \"children\"> & { label: React.ReactNode; value: React.ReactNode; unit?: React.ReactNode; delta?: Delta; meter?: { value: number; max?: number; label?: string } }) {\n  return (\n    <div data-slot=\"stat\" className={cn(\"kl-stat\", className)} {...props}>\n      <span className=\"kl-stat-l\">{label}</span>\n      <span className=\"kl-stat-v\">\n        <span className=\"kl-count\">{value}</span>\n        {unit != null ? <span className=\"kl-code\">{unit}</span> : null}\n      </span>\n      {delta ? (\n        <span className=\"kl-stat-d\" data-tone={delta.tone ?? \"neutral\"}>\n          <span className=\"kl-stat-arrow\" data-dir={delta.direction} aria-hidden />\n          {/* a label on a plain span is prohibited ARIA and was not read; the words are text, the figure is shown */}\n          {delta.label ? <span aria-hidden>{delta.value}</span> : delta.value}\n          {delta.label ? <span className=\"kl-sr\">{delta.label}</span> : null}\n        </span>\n      ) : null}\n      {meter ? <Meter value={meter.value} max={meter.max} label={meter.label ?? (typeof label === \"string\" ? label : \"Progress\")} hideLabel /> : null}\n    </div>\n  )\n}\n\n/** A measured quantity in a 1px frame. Ink fill; red when over `high`. Value is announced by Base UI Meter. */\nfunction Meter({ value, max = 100, high, label, hideLabel, className }: { value: number; max?: number; high?: number; label: string; /** The label and value are visible by default; hide them only when the surrounding text already says both (e.g. inside Stat). */ hideLabel?: boolean; className?: string }) {\n  const over = high != null && value > high\n  return (\n    <MeterPrimitive.Root value={value} max={max} aria-label={hideLabel ? label : undefined} className={cn(\"kl-meter\", className)} data-over={over || undefined}>\n      {hideLabel ? null : (\n        <span className=\"kl-meter-head\">\n          <MeterPrimitive.Label className=\"kl-meter-l\">{label}</MeterPrimitive.Label>\n          <span className=\"kl-code kl-meter-v\" aria-hidden>\n            {value}/{max}\n          </span>\n        </span>\n      )}\n      <MeterPrimitive.Track className=\"kl-meter-track\">\n        <MeterPrimitive.Indicator className=\"kl-meter-fill\" />\n      </MeterPrimitive.Track>\n    </MeterPrimitive.Root>\n  )\n}\n\nexport { Stat, Meter }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { Meter as MeterPrimitive } from \"@base-ui/react/meter\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype Delta = {\n  value: React.ReactNode;\n  /** up/down is direction; tone says whether that is good. */ direction: \"up\" | \"down\" | \"flat\";\n  tone?: \"good\" | \"bad\" | \"neutral\";\n  label?: string;\n};\n\n/*\n * A stat measures its cell (cqi), so it has no width of its own: in a row of cells it takes an equal share (in a\n * grid or PanelGrid the track sizes it) instead of collapsing to its padding. The Count never breaks inside a number\n * (\"12,345,6 / 78,901\"); it scales down with its cell instead.\n */\nconst stat = cn(\n  \"@container grid min-w-0 flex-[1_1_0] content-start gap-1.5\",\n  \"px-[calc(var(--kl-inset)+4px)] py-[calc(var(--kl-inset)+2px)]\",\n);\n\nconst deltaVariants = cva(\n  \"inline-flex items-center gap-1.5 text-(length:--kl-text-label) font-(--kl-weight-strong) tabular-nums\",\n  {\n    variants: {\n      tone: { neutral: \"text-kl-ink-2\", good: \"text-kl-ink\", bad: \"text-kl-red-text\" },\n    },\n  },\n);\n\n/* the delta's shape, drawn with borders: a triangle up or down, a bar for flat */\nconst arrowVariants = cva(\"h-0 w-0\", {\n  variants: {\n    direction: {\n      up: \"border-x-[5px] border-b-8 border-x-transparent border-b-current\",\n      down: \"border-x-[5px] border-t-8 border-x-transparent border-t-current\",\n      flat: \"w-2.5 border-t-2 border-t-current\",\n    },\n  },\n});\n\ntype StatState = Record<string, never>;\nconst STAT_STATE: StatState = {};\n\ntype StatProps = Omit<PartProps<\"div\", StatState>, \"children\"> & {\n  label: React.ReactNode;\n  value: React.ReactNode;\n  unit?: React.ReactNode;\n  delta?: Delta;\n  meter?: { value: number; max?: number; label?: string };\n};\n\n/**\n * A metric: label, the Count voice, unit as code, and an optional delta and meter.\n * The delta is a shape + text, coloured only when it needs attention (tone=\"bad\" → red).\n */\nfunction Stat({ label, value, unit, delta, meter, render, className, style, ...props }: StatProps): React.ReactElement {\n  const tone = delta?.tone ?? \"neutral\";\n  const own = {\n    \"data-slot\": \"stat\",\n    className: resolveClassName(stat, className)(STAT_STATE),\n    style: resolveStyle(undefined, style)(STAT_STATE),\n    children: (\n      <>\n        <span data-slot=\"stat-label\" className=\"text-(length:--kl-text-label) font-(--kl-weight-strong) text-kl-ink-2\">\n          {label}\n        </span>\n        <span data-slot=\"stat-value\" className=\"flex min-w-0 flex-wrap items-baseline gap-1.5\">\n          <span className=\"kl-count text-[length:clamp(18px,13cqi,32px)] whitespace-nowrap\">{value}</span>\n          {unit != null ? <span className=\"kl-code\">{unit}</span> : null}\n        </span>\n        {delta ? (\n          <span data-slot=\"stat-delta\" data-tone={tone} className={cn(deltaVariants({ tone }))}>\n            <span\n              data-slot=\"stat-arrow\"\n              data-dir={delta.direction}\n              className={cn(arrowVariants({ direction: delta.direction }))}\n              aria-hidden\n            />\n            {/* a label on a plain span is prohibited ARIA and was not read; the words are text, the figure is shown */}\n            {delta.label ? <span aria-hidden>{delta.value}</span> : delta.value}\n            {delta.label ? <span className=\"kl-sr\">{delta.label}</span> : null}\n          </span>\n        ) : null}\n        {meter ? (\n          <Meter\n            value={meter.value}\n            max={meter.max}\n            label={meter.label ?? (typeof label === \"string\" ? label : \"Progress\")}\n            hideLabel\n          />\n        ) : null}\n      </>\n    ),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: STAT_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\n/* the root is a two-column grid: the label and the value share the first row, the track spans both */\nconst meter = \"group/meter grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1\";\n\ntype MeterProps = Omit<MeterPrimitive.Root.Props, \"children\"> & {\n  /** Over this value the fill and the readout turn red. */\n  high?: number;\n} & (\n    | {\n        label: string;\n        /** The label and value are visible by default; hide them only when the surrounding text already says both\n         *  (e.g. inside Stat). */\n        hideLabel?: boolean;\n        children?: undefined;\n      }\n    | {\n        /** The parts, composed: MeterLabel, MeterValue, MeterTrack with MeterIndicator. */\n        children: React.ReactNode;\n        label?: undefined;\n        hideLabel?: undefined;\n      }\n  );\n\n/** A measured quantity in a 1px frame (Base UI Meter). Ink fill; red when over `high`. Value is announced by Base\n * UI Meter. Given `label`, it renders its parts itself; pass children (the parts) to compose them instead. */\nfunction Meter({\n  value,\n  max = 100,\n  high,\n  label,\n  hideLabel,\n  className,\n  style,\n  children,\n  ...props\n}: MeterProps): React.ReactElement {\n  const over = high != null && value > high;\n  return (\n    <MeterPrimitive.Root\n      value={value}\n      max={max}\n      aria-label={hideLabel ? label : undefined}\n      {...dataAttrs({ over: over ? \"\" : undefined })}\n      className={resolveClassName(meter, className)}\n      style={resolveStyle(undefined, style)}\n      {...props}\n      data-slot=\"meter\"\n    >\n      {children ?? (\n        <>\n          {hideLabel ? null : (\n            <>\n              <MeterLabel>{label}</MeterLabel>\n              <MeterValue>{() => `${value}/${max}`}</MeterValue>\n            </>\n          )}\n          <MeterTrack>\n            <MeterIndicator />\n          </MeterTrack>\n        </>\n      )}\n    </MeterPrimitive.Root>\n  );\n}\n\n/** What is measured (Base UI Meter.Label): it names the meter. */\nfunction MeterLabel({ className, ...props }: MeterPrimitive.Label.Props): React.ReactElement {\n  return (\n    <MeterPrimitive.Label\n      className={resolveClassName(\n        \"col-start-1 self-baseline text-(length:--kl-text-label) font-(--kl-weight-strong)\",\n        className,\n      )}\n      {...props}\n      data-slot=\"meter-label\"\n    />\n  );\n}\n\n/** The readout in the Code voice (Base UI Meter.Value), red when over `high`. Hidden from assistive technology:\n * the meter announces its value. */\nfunction MeterValue({ className, ...props }: MeterPrimitive.Value.Props): React.ReactElement {\n  return (\n    <MeterPrimitive.Value\n      aria-hidden\n      className={resolveClassName(\n        \"kl-code col-start-2 self-baseline group-data-over/meter:text-kl-red-text\",\n        className,\n      )}\n      {...props}\n      data-slot=\"meter-value\"\n    />\n  );\n}\n\nconst track = \"relative col-span-full block h-2.5 overflow-hidden border-(length:--kl-k1) border-kl-line bg-kl-cell\";\n\n/** The frame (Base UI Meter.Track): a k1 keyline box, 10px tall. */\nfunction MeterTrack({ className, ...props }: MeterPrimitive.Track.Props): React.ReactElement {\n  return <MeterPrimitive.Track className={resolveClassName(track, className)} {...props} data-slot=\"meter-track\" />;\n}\n\nconst indicator = cn(\n  \"block h-full bg-kl-inverse transition-[width] duration-(--kl-t-unfold) ease-(--kl-ease-out)\",\n  \"group-data-over/meter:bg-kl-red forced-colors:bg-[CanvasText] forced-colors:forced-color-adjust-none\",\n);\n\n/** The fill (Base UI Meter.Indicator): ink, red when over `high`. */\nfunction MeterIndicator({ className, ...props }: MeterPrimitive.Indicator.Props): React.ReactElement {\n  return (\n    <MeterPrimitive.Indicator\n      className={resolveClassName(indicator, className)}\n      {...props}\n      data-slot=\"meter-indicator\"\n    />\n  );\n}\n\nexport {\n  Stat,\n  Meter,\n  MeterLabel,\n  MeterValue,\n  MeterTrack,\n  MeterIndicator,\n  type StatProps,\n  type MeterProps,\n  type Delta as StatDelta,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/stat.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-stat": {
-        "container-type": "inline-size",
-        "display": "grid",
-        "gap": "6px",
-        "align-content": "start",
-        "min-width": "0",
-        "padding": "calc(var(--kl-inset) + 2px) calc(var(--kl-inset) + 4px)",
-        "flex": "1 1 0"
-      },
-      ".kl-stat-l": {
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-stat-v": {
-        "display": "flex",
-        "flex-wrap": "wrap",
-        "align-items": "baseline",
-        "gap": "6px",
-        "min-width": "0"
-      },
-      ".kl-stat-v .kl-count": {
-        "font-size": "clamp(18px, 13cqi, 32px)",
-        "white-space": "nowrap"
-      },
-      ".kl-stat-d": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "6px",
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-variant-numeric": "tabular-nums",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-stat-d[data-tone=\"bad\"]": {
-        "color": "var(--kl-red-text)"
-      },
-      ".kl-stat-d[data-tone=\"good\"]": {
-        "color": "var(--kl-ink)"
-      },
-      ".kl-stat-arrow": {
-        "width": "0",
-        "height": "0",
-        "border-inline": "5px solid transparent"
-      },
-      ".kl-stat-arrow[data-dir=\"up\"]": {
-        "border-block-end": "8px solid currentColor"
-      },
-      ".kl-stat-arrow[data-dir=\"down\"]": {
-        "border-block-start": "8px solid currentColor"
-      },
-      ".kl-stat-arrow[data-dir=\"flat\"]": {
-        "width": "10px",
-        "border": "0",
-        "border-block-start": "2px solid currentColor"
-      },
-      ".kl-meter": {
-        "display": "block",
-        "min-width": "0"
-      },
-      ".kl-meter-head": {
-        "display": "flex",
-        "align-items": "baseline",
-        "justify-content": "space-between",
-        "gap": "12px",
-        "margin-block-end": "4px"
-      },
-      ".kl-meter-l": {
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)"
-      },
-      ".kl-meter[data-over] .kl-meter-v": {
-        "color": "var(--kl-red-text)"
-      },
-      ".kl-meter-track": {
-        "display": "block",
-        "position": "relative",
-        "height": "10px",
-        "border": "var(--kl-k1) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)",
-        "overflow": "hidden"
-      },
-      ".kl-meter-fill": {
-        "display": "block",
-        "height": "100%",
-        "background-color": "var(--kl-inverse)",
-        "transition": "width var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-meter[data-over] .kl-meter-fill": {
-        "background-color": "var(--kl-red)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-meter-fill": {
-          "forced-color-adjust": "none",
-          "background": "CanvasText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

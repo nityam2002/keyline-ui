@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "native-select-transfer",
+  "title": "Native select: transfer request",
+  "description": "An example of Native select: transfer request.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline",
+    "@keyline-ui/native-select"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/native-select-transfer.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Form, FormActions } from \"../ui/field\";\nimport { NativeSelect } from \"../ui/native-select\";\n\nconst BRANCHES = [\n  {\n    group: \"Pennsylvania\",\n    options: [\n      { value: \"scranton\", label: \"Scranton (your branch)\", disabled: true },\n      { value: \"pittsburgh\", label: \"Pittsburgh\" },\n    ],\n  },\n  {\n    group: \"New York\",\n    options: [\n      { value: \"utica\", label: \"Utica\" },\n      { value: \"albany\", label: \"Albany\" },\n      { value: \"buffalo\", label: \"Buffalo (closed)\", disabled: true },\n    ],\n  },\n  {\n    group: \"New England\",\n    options: [\n      { value: \"nashua\", label: \"Nashua\" },\n      { value: \"stamford\", label: \"Stamford (merged into Scranton)\", disabled: true },\n    ],\n  },\n];\n\nconst START = [\n  { value: \"monday\", label: \"Next Monday\" },\n  { value: \"two-weeks\", label: \"In two weeks\" },\n  { value: \"month\", label: \"First of the month\" },\n];\n\nexport function TransferRequest() {\n  const [sent, setSent] = useState<string | null>(null);\n  const label = (v: unknown) => BRANCHES.flatMap((g) => g.options).find((o) => o.value === v)?.label;\n\n  return (\n    <Form\n      className=\"max-w-[400px]\"\n      onFormSubmit={(v) => setSent(`Request sent to ${label(v[\"branch\"])}. Toby has a copy.`)}\n    >\n      <NativeSelect\n        name=\"branch\"\n        label=\"Transfer to\"\n        placeholder=\"Choose a branch\"\n        required\n        options={BRANCHES}\n        description=\"Closed branches can't take transfers.\"\n        error=\"Choose a branch to send the request to.\"\n      />\n      <NativeSelect name=\"start\" label=\"Starting\" defaultValue=\"two-weeks\" options={START} />\n      <FormActions>\n        <Button type=\"submit\" variant=\"primary\">\n          Request transfer\n        </Button>\n      </FormActions>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {sent}\n      </p>\n    </Form>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/native-select-transfer.tsx"
+    }
+  ],
+  "categories": [
+    "native-select"
+  ],
+  "type": "registry:block"
+}

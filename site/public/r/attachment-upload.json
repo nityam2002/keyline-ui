@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "attachment-upload",
+  "title": "Attachment: invoice uploads",
+  "description": "An example of Attachment: invoice uploads.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/attachment",
+    "@keyline-ui/button",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/attachment-upload.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport {\n  Attachment,\n  AttachmentAction,\n  AttachmentActions,\n  AttachmentContent,\n  AttachmentDescription,\n  AttachmentGlyph,\n  AttachmentMedia,\n  AttachmentTitle,\n} from \"../ui/attachment\";\nimport { Button } from \"../ui/button\";\n\ntype File = {\n  id: number;\n  name: string;\n  size: string;\n  kind: \"file\" | \"image\";\n  state: \"uploading\" | \"error\" | \"done\";\n  progress: number;\n  fails: boolean;\n};\n\nconst NEXT = [\n  { name: \"invoice-DM-4107.pdf\", size: \"212 KB\", kind: \"file\" as const, fails: false },\n  { name: \"loading-dock.jpg\", size: \"1.8 MB\", kind: \"image\" as const, fails: true },\n  { name: \"q4-price-list.pdf\", size: \"96 KB\", kind: \"file\" as const, fails: false },\n];\n\nexport function InvoiceUploads() {\n  const [files, setFiles] = useState<File[]>([\n    {\n      id: 0,\n      name: \"signed-delivery-note.pdf\",\n      size: \"88 KB\",\n      kind: \"file\",\n      state: \"done\",\n      progress: 100,\n      fails: false,\n    },\n  ]);\n  const n = useRef(1);\n\n  // a pretend upload: 20% a tick; the dock photo fails at 60% the first time\n  useEffect(() => {\n    if (!files.some((f) => f.state === \"uploading\")) return;\n    const t = setInterval(() => {\n      setFiles((fs) =>\n        fs.map((f) => {\n          if (f.state !== \"uploading\") return f;\n          if (f.fails && f.progress >= 60) return { ...f, state: \"error\", fails: false };\n          const p = Math.min(100, f.progress + 20);\n          return { ...f, progress: p, state: p === 100 ? \"done\" : \"uploading\" };\n        }),\n      );\n    }, 400);\n    return () => clearInterval(t);\n  }, [files]);\n\n  const attach = () => {\n    const id = n.current++;\n    const next = NEXT[(id - 1) % NEXT.length];\n    if (!next) return;\n    setFiles((fs) => [...fs, { id, ...next, state: \"uploading\", progress: 0 }]);\n  };\n\n  return (\n    <div className=\"grid max-w-[460px] gap-3\">\n      <ul aria-label=\"Attachments\" className=\"m-0 grid list-none gap-2 p-0\">\n        {files.map((f) => (\n          <li key={f.id}>\n            <Attachment state={f.state} progress={f.progress}>\n              <AttachmentMedia>\n                <AttachmentGlyph name={f.kind} />\n              </AttachmentMedia>\n              <AttachmentContent>\n                <AttachmentTitle>{f.name}</AttachmentTitle>\n                <AttachmentDescription>\n                  {f.state === \"error\" ? \"The connection dropped at 60%.\" : f.size}\n                </AttachmentDescription>\n              </AttachmentContent>\n              <AttachmentActions>\n                {f.state === \"error\" ? (\n                  <AttachmentAction\n                    aria-label={`Retry ${f.name}`}\n                    onClick={() =>\n                      setFiles((fs) => fs.map((x) => (x.id === f.id ? { ...x, state: \"uploading\", progress: 0 } : x)))\n                    }\n                  >\n                    <AttachmentGlyph name=\"retry\" />\n                  </AttachmentAction>\n                ) : null}\n                <AttachmentAction\n                  aria-label={`Remove ${f.name}`}\n                  onClick={() => setFiles((fs) => fs.filter((x) => x.id !== f.id))}\n                >\n                  <AttachmentGlyph name=\"close\" />\n                </AttachmentAction>\n              </AttachmentActions>\n            </Attachment>\n          </li>\n        ))}\n      </ul>\n      <Button size=\"compact\" className=\"justify-self-start\" onClick={attach}>\n        Attach a file\n      </Button>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/attachment-upload.tsx"
+    }
+  ],
+  "categories": [
+    "attachment"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,120 @@
+{
+  "name": "empty",
+  "title": "Empty",
+  "description": "Nothing here, said plainly: a count cell, the message and the way out, in one frame or as a cell. Empty, error and first-use kinds.",
+  "whenToUse": "Use it where a list or view has nothing to show, to say why and offer the way out. For a temporary loading state use Skeleton.",
+  "parts": [
+    {
+      "name": "Empty",
+      "description": "A place with nothing in it, said plainly: ┌────────┬──────────────────────────────────────┬──────────────┐ │ 0 │ No shipments match these filters │ [Clear all] │ │RESULTS │ Status is Delayed · Carrier is DHL │ │ └────────┴──────────────────────────────────────┴──────────────┘ One frame of three cells: the count (the Count voice: how many there are, which is the fact), the message, and the way out. Below 520px of its own width the actions drop to a row of cells under the message, and the count cell shrinks to a band. No illustration: the number is the picture.",
+      "props": [
+        {
+          "name": "actions",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Recovery or first actions: Buttons. The first is the way out (clear filters, retry, create)."
+        },
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The Code word under the figure. Defaults to RESULTS, ERROR or NEW."
+        },
+        {
+          "name": "count",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The figure in the count cell. Defaults to 0 for empty, \"!\" for error; start shows a glyph."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "default": "3",
+          "required": false,
+          "description": "Heading level of the title (default 3)."
+        },
+        {
+          "name": "kind",
+          "type": "\"error\" | \"start\" | \"empty\"",
+          "default": "\"empty\"",
+          "required": false,
+          "description": "empty: a query or filter matched nothing (the count is 0) · error: the content could not be loaded (red count cell) · start: nothing has been made yet (first use; the count cell shows a + key line)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px region frame. cell: a cell of an enclosing frame (a panel body, a table)."
+        },
+        {
+          "name": "live",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Announce when it appears (status; alert for error). Use when it replaces content the user was looking at."
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "empty",
+        "empty-actions",
+        "empty-code",
+        "empty-content",
+        "empty-count",
+        "empty-description",
+        "empty-figure",
+        "empty-title"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-red)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "empty-calls",
+      "title": "Empty: call log",
+      "file": "empty-calls.tsx"
+    },
+    {
+      "name": "empty-search",
+      "title": "Empty: client search",
+      "file": "empty-search.tsx"
+    }
+  ]
+}

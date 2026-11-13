@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "item-settings",
+  "title": "Item: alert settings",
+  "description": "An example of Item: alert settings.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/item",
+    "@keyline-ui/keyline",
+    "@keyline-ui/switch"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/item-settings.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Item, ItemActions, ItemContent, ItemList, ItemMedia } from \"../ui/item\";\nimport { Switch } from \"../ui/switch\";\n\nconst ALERTS = [\n  { id: \"new\", code: \"ORD\", title: \"New orders\", desc: \"When a client places an order through the website.\" },\n  { id: \"held\", code: \"DLV\", title: \"Held deliveries\", desc: \"When Darryl can't get a signature.\" },\n  { id: \"low\", code: \"STK\", title: \"Low paper stock\", desc: \"When a grade drops under a week's deliveries.\" },\n  { id: \"party\", code: \"PTY\", title: \"Party planning\", desc: \"Every message from the committee.\" },\n];\n\nexport function AlertSettings() {\n  const [on, setOn] = useState<Record<string, boolean>>({ new: true, held: true, low: false, party: false });\n  return (\n    <ItemList aria-label=\"Email me about\">\n      {ALERTS.map((a) => (\n        <Item key={a.id}>\n          <ItemMedia>{a.code}</ItemMedia>\n          <ItemContent title={<span id={`alert-${a.id}`}>{a.title}</span>} description={a.desc} />\n          <ItemActions>\n            <Switch\n              aria-labelledby={`alert-${a.id}`}\n              checked={on[a.id]}\n              onCheckedChange={(v) => setOn((s) => ({ ...s, [a.id]: v }))}\n            />\n          </ItemActions>\n        </Item>\n      ))}\n    </ItemList>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/item-settings.tsx"
+    }
+  ],
+  "categories": [
+    "item"
+  ],
+  "type": "registry:block"
+}

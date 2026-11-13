@@ -4,94 +4,22 @@
   "title": "Split button",
   "description": "One control frame, two cells: the action and its menu. The menu docks to the frame.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
-    "@keyline-ui/menu"
+    "@keyline-ui/menu",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/split-button.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Menu as MenuPrimitive } from \"@base-ui/react/menu\"\n\nimport { cn } from \"@/lib/utils\"\nimport { MenuContent } from \"./menu\"\n\ntype Ctx = { frame: React.RefObject<HTMLDivElement | null>; variant: \"primary\" | \"secondary\"; layout: \"control\" | \"cell\" }\nconst SplitCtx = React.createContext<Ctx | null>(null)\n\n/** One control frame, two cells: the action and its menu. The menu docks to the whole frame. */\nfunction SplitButton({ className, variant = \"secondary\", layout = \"control\", children, ...props }: React.ComponentProps<\"div\"> & { variant?: \"primary\" | \"secondary\"; /** cell: a cell of an enclosing frame (e.g. a bulk bar). */ layout?: \"control\" | \"cell\" }) {\n  const frame = React.useRef<HTMLDivElement>(null)\n  return (\n    <SplitCtx.Provider value={{ frame, variant, layout }}>\n      <div ref={frame} role=\"group\" data-slot=\"split-button\" data-variant={variant} data-kl-layout={layout} className={cn(\"kl-ctl kl-cells kl-split\", className)} {...props}>\n        {children}\n      </div>\n    </SplitCtx.Provider>\n  )\n}\n\nfunction SplitButtonAction({ className, children, ...props }: React.ComponentProps<\"button\">) {\n  return (\n    <button type=\"button\" data-slot=\"split-button-action\" className={cn(\"kl-key kl-split-cell kl-split-action\", className)} {...props}>\n      <span>{children}</span>\n    </button>\n  )\n}\n\nfunction SplitButtonMenu({ label, children, contentClassName, finalFocus }: { label: string; children: React.ReactNode; contentClassName?: string; finalFocus?: React.ComponentProps<typeof MenuContent>[\"finalFocus\"] }) {\n  const ctx = React.useContext(SplitCtx)\n  return (\n    <MenuPrimitive.Root>\n      <MenuPrimitive.Trigger aria-label={label} data-slot=\"split-button-trigger\" className=\"kl-key kl-split-cell kl-split-caret\">\n        <span>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </MenuPrimitive.Trigger>\n      <MenuContent anchor={ctx?.frame} attachWeight={ctx?.layout === \"cell\" ? 1 : 2} className={contentClassName} finalFocus={finalFocus}>\n        {children}\n      </MenuContent>\n    </MenuPrimitive.Root>\n  )\n}\n\nexport { SplitButton, SplitButtonAction, SplitButtonMenu }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { Menu as MenuPrimitive } from \"@base-ui/react/menu\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\nimport { MenuPopup } from \"./menu\";\n\n/*\n * One control frame, two cells: the action and the caret that opens its menu. The menu docks to the whole frame,\n * not to the caret cell. Parts are named as Base UI names them:\n *\n *   <SplitButton>\n *     <SplitButtonAction>Book pickup</SplitButtonAction>\n *     <SplitButtonMenu>                                         Base UI's Menu.Root\n *       <SplitButtonTrigger aria-label=\"More booking options\" />   Menu.Trigger, the caret cell\n *       <SplitButtonPopup>…MenuItem…</SplitButtonPopup>            MenuPopup, docked to the frame\n *     </SplitButtonMenu>\n *   </SplitButton>\n */\n\ntype Variant = \"primary\" | \"secondary\";\ntype Layout = \"control\" | \"cell\";\n\ntype Ctx = { frame: React.RefObject<HTMLDivElement | null>; variant: Variant; layout: Layout };\nconst SplitCtx = React.createContext<Ctx | null>(null);\n\nconst frameVariants = cva(\"kl-ctl kl-cells inline-flex min-h-(--kl-ctl)\", {\n  variants: {\n    variant: {\n      secondary: \"\",\n      // the frame takes the fill's colour, and the seam between the cells the fill's ink\n      primary: [\n        \"border-kl-cobalt bg-kl-cobalt text-kl-on-cobalt [--kl-cut-line:var(--kl-cobalt)]\",\n        \"[&>:not(:first-child)]:border-s-kl-on-cobalt\",\n      ],\n    },\n    // a cell gives its background to the enclosing frame (the foundation's layout=\"cell\"); a primary frame keeps its fill\n    layout: { control: \"\", cell: \"\" },\n  },\n  compoundVariants: [{ variant: \"secondary\", layout: \"control\", className: \"bg-kl-cell\" }],\n  defaultVariants: { variant: \"secondary\", layout: \"control\" },\n});\n\n/* an open menu is a held state: the frame goes back to the line, and the caret cell turns ink */\nconst openFrame = \"has-[[data-slot=split-button-trigger][data-popup-open]]:border-kl-line\";\n\ntype SplitButtonState = { variant: Variant; layout: Layout };\n\ntype SplitButtonProps = PartProps<\"div\", SplitButtonState> & {\n  variant?: Variant;\n  /** cell: a cell of an enclosing frame (e.g. a bulk bar). */\n  layout?: Layout;\n};\n\n/** The frame: a group of the action cell and the menu's caret cell. */\nfunction SplitButton({\n  render,\n  className,\n  style,\n  variant = \"secondary\",\n  layout = \"control\",\n  ref,\n  ...props\n}: SplitButtonProps): React.ReactElement {\n  const frame = React.useRef<HTMLDivElement>(null);\n  const state: SplitButtonState = { variant, layout };\n  const own = {\n    \"data-slot\": \"split-button\",\n    \"data-kl-layout\": layout,\n    ...dataAttrs({ variant }),\n    className: resolveClassName(cn(frameVariants({ variant, layout }), openFrame), className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  const element = useRender({\n    defaultTagName: \"div\",\n    render,\n    ref: ref ? [frame, ref] : frame,\n    state,\n    props: mergeProps<\"div\">({ role: \"group\" }, props, own),\n  });\n  const ctx = React.useMemo(() => ({ frame, variant, layout }), [variant, layout]);\n  return <SplitCtx.Provider value={ctx}>{element}</SplitCtx.Provider>;\n}\n\nconst cellVariants = cva(\n  [\n    \"kl-key inline-flex cursor-pointer items-center justify-center bg-transparent px-3.5 whitespace-nowrap text-inherit\",\n    \"text-(length:--kl-text-body) font-(--kl-weight-strong) focus-visible:outline-offset-(--kl-ring-in)\",\n    \"data-popup-open:bg-kl-inverse data-popup-open:text-kl-on-inverse\",\n    \"data-disabled:cursor-not-allowed data-disabled:bg-kl-cell data-disabled:bg-(image:--kl-hatch) data-disabled:text-kl-dis\",\n  ],\n  {\n    variants: {\n      variant: {\n        // an open menu is a held state: the caret stays ink under the pointer and the press\n        secondary: [\n          \"hover:not-data-disabled:not-data-popup-open:bg-kl-tint\",\n          \"active:not-data-disabled:not-data-popup-open:bg-kl-press\",\n        ],\n        // a press deepens the cobalt (it turned ink, so a press read as a different button)\n        primary: [\n          \"hover:not-data-disabled:not-data-popup-open:bg-kl-cobalt-hi\",\n          \"active:not-data-disabled:not-data-popup-open:bg-kl-cobalt-lo\",\n          \"focus-visible:outline-current\",\n        ],\n      },\n    },\n    defaultVariants: { variant: \"secondary\" },\n  },\n);\n\n/** The action cell: Base UI's Button. */\nfunction SplitButtonAction({ className, children, ...props }: ButtonPrimitive.Props): React.ReactElement {\n  const ctx = React.useContext(SplitCtx);\n  return (\n    <ButtonPrimitive\n      className={resolveClassName(cn(cellVariants({ variant: ctx?.variant })), className)}\n      {...props}\n      data-slot=\"split-button-action\"\n    >\n      <span className=\"inline-flex items-center gap-2\">{children}</span>\n    </ButtonPrimitive>\n  );\n}\n\n/** The menu: Base UI's Menu.Root (no element). Holds the trigger and the popup. */\nconst SplitButtonMenu = MenuPrimitive.Root;\n\ntype SplitButtonTriggerProps = MenuPrimitive.Trigger.Props & {\n  /** The caret shows no text: say what the menu holds (\"More booking options\"). */\n  \"aria-label\": string;\n};\n\n/** The caret cell that opens the menu: Base UI's Menu.Trigger. Its children replace the caret. */\nfunction SplitButtonTrigger({ className, children, ...props }: SplitButtonTriggerProps): React.ReactElement {\n  const ctx = React.useContext(SplitCtx);\n  return (\n    <MenuPrimitive.Trigger\n      className={resolveClassName(cn(cellVariants({ variant: ctx?.variant }), \"px-[9px]\"), className)}\n      {...props}\n      data-slot=\"split-button-trigger\"\n    >\n      <span className=\"inline-flex items-center gap-2\">\n        {children ?? (\n          <svg\n            viewBox=\"0 0 16 16\"\n            width=\"16\"\n            height=\"16\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"1.75\"\n            strokeLinecap=\"square\"\n            aria-hidden\n          >\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        )}\n      </span>\n    </MenuPrimitive.Trigger>\n  );\n}\n\n/** The menu's popup: MenuPopup docked to the whole frame, taking the frame's weight on the shared edge. */\nfunction SplitButtonPopup(props: React.ComponentProps<typeof MenuPopup>): React.ReactElement {\n  const ctx = React.useContext(SplitCtx);\n  return <MenuPopup anchor={ctx?.frame} attachWeight={ctx?.layout === \"cell\" ? 1 : 2} {...props} />;\n}\n\nexport {\n  SplitButton,\n  SplitButtonAction,\n  SplitButtonMenu,\n  SplitButtonTrigger,\n  SplitButtonPopup,\n  type SplitButtonProps,\n  type SplitButtonTriggerProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/split-button.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-split": {
-        "display": "inline-flex",
-        "background-color": "var(--kl-cell)",
-        "min-height": "var(--kl-ctl)"
-      },
-      ".kl-split-cell": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "justify-content": "center",
-        "padding-inline": "14px",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "14px",
-        "white-space": "nowrap",
-        "cursor": "pointer",
-        "background": "transparent",
-        "color": "inherit",
-        "border": "0"
-      },
-      ".kl-split-cell > span": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "8px"
-      },
-      ".kl-split-caret": {
-        "padding-inline": "9px"
-      },
-      ".kl-split-cell:hover": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-split-cell:active": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-split-cell:focus-visible": {
-        "outline-offset": "var(--kl-ring-in)"
-      },
-      ".kl-split-caret[data-popup-open]": {
-        "background-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)"
-      },
-      ".kl-split-cell:disabled": {
-        "color": "var(--kl-dis)",
-        "background-color": "var(--kl-cell)",
-        "background-image": "var(--kl-hatch)",
-        "cursor": "not-allowed"
-      },
-      ".kl-split[data-variant=\"primary\"]": {
-        "background-color": "var(--kl-cobalt)",
-        "border-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)",
-        "--kl-cut-line": "var(--kl-cobalt)"
-      },
-      ".kl-split[data-variant=\"primary\"] > :not(:first-child)": {
-        "border-inline-start-color": "var(--kl-on-cobalt)"
-      },
-      ".kl-split[data-variant=\"primary\"] .kl-split-cell:hover": {
-        "background-color": "var(--kl-cobalt-hi)"
-      },
-      ".kl-split[data-variant=\"primary\"] .kl-split-cell:active:not([data-popup-open])": {
-        "background-color": "var(--kl-cobalt-lo)"
-      },
-      ".kl-split[data-variant=\"primary\"] .kl-split-caret[data-popup-open]": {
-        "background-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)"
-      },
-      ".kl-split[data-variant=\"primary\"] .kl-split-cell:focus-visible": {
-        "outline-color": "currentColor"
-      },
-      ".kl-split:has(.kl-split-caret[data-popup-open])": {
-        "border-color": "var(--kl-line)"
-      }
-    }
-  },
   "type": "registry:ui"
 }

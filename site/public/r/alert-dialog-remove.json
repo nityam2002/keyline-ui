@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-dialog-remove",
+  "title": "Alert dialog: remove client",
+  "description": "An example of Alert dialog: remove client.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/dialog",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/alert-dialog-remove.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { AlertDialog, AlertDialogContent, AlertDialogTrigger } from \"../ui/dialog\";\n\nconst START = [\n  { name: \"Vance Refrigeration\", orders: 6 },\n  { name: \"Penn Paper Supply\", orders: 2 },\n  { name: \"Mount Airy Casino\", orders: 0 },\n];\n\nexport function RemoveClient() {\n  const [clients, setClients] = useState(START);\n  const [last, setLast] = useState(\"\");\n\n  return (\n    <div className=\"grid gap-4\">\n      <ul aria-label=\"Clients\" className=\"m-0 grid list-none gap-3 p-0 text-[14px]\">\n        {clients.map((c) => (\n          <li key={c.name} className=\"grid grid-cols-[1fr_auto] items-center gap-3\">\n            <span>\n              {c.name}{\" \"}\n              <span className=\"text-kl-ink-3\">· {c.orders === 0 ? \"no orders\" : `${c.orders} open orders`}</span>\n            </span>\n            <AlertDialog>\n              <AlertDialogTrigger render={<Button size=\"compact\" />}>Remove</AlertDialogTrigger>\n              <AlertDialogContent\n                title={`Remove ${c.name}?`}\n                description={\n                  c.orders\n                    ? `Their ${c.orders} open orders are cancelled and the account closes. This can't be undone.`\n                    : \"The account closes. This can't be undone.\"\n                }\n                cancelLabel=\"Keep the client\"\n                confirmLabel=\"Remove client\"\n                onConfirm={() => {\n                  setClients((all) => all.filter((x) => x.name !== c.name));\n                  setLast(`${c.name} removed.`);\n                }}\n              />\n            </AlertDialog>\n          </li>\n        ))}\n      </ul>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {clients.length ? last : `${last} No clients left; refresh the page to bring them back.`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/alert-dialog-remove.tsx"
+    }
+  ],
+  "categories": [
+    "alert-dialog"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-upload",
+  "title": "Progress: upload report",
+  "description": "An example of Progress: upload report.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/progress"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/progress-upload.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useRef, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Progress } from \"../ui/progress\";\n\nconst SIZE = 4.8; // MB\n\nexport function UploadReport() {\n  const [sent, setSent] = useState<number | null>(null);\n  const [failed, setFailed] = useState(false);\n  const tries = useRef(0);\n  const timer = useRef<ReturnType<typeof setInterval>>(undefined);\n  useEffect(() => () => clearInterval(timer.current), []);\n\n  const upload = () => {\n    tries.current += 1;\n    // the first try drops at 62%, as corporate's server does on Fridays; the retry goes through\n    const dropAt = tries.current === 1 ? 62 : Infinity;\n    setFailed(false);\n    setSent(0);\n    clearInterval(timer.current);\n    timer.current = setInterval(() => {\n      setSent((v) => {\n        const next = Math.min(100, (v ?? 0) + 7);\n        if (next >= dropAt) {\n          clearInterval(timer.current);\n          setFailed(true);\n          return dropAt;\n        }\n        if (next === 100) clearInterval(timer.current);\n        return next;\n      });\n    }, 180);\n  };\n\n  const mb = sent == null ? 0 : (SIZE * sent) / 100;\n  const running = sent != null && sent < 100 && !failed;\n\n  return (\n    <div className=\"grid max-w-[480px] gap-4\">\n      <Progress\n        label=\"Q4 sales report.xlsx to corporate\"\n        value={sent ?? 0}\n        failed={failed}\n        detail={\n          failed\n            ? \"The connection to Stamford dropped. Nothing was saved there; try again.\"\n            : sent === 100\n              ? `${SIZE} MB sent. Jan in New York has it.`\n              : sent == null\n                ? `${SIZE} MB, not sent yet.`\n                : `${mb.toFixed(1)} of ${SIZE} MB · about ${Math.ceil(((100 - sent) / 7) * 0.18)} s left`\n        }\n      />\n      <div className=\"flex flex-wrap gap-3\">\n        <Button variant=\"primary\" disabled={running} onClick={upload}>\n          {failed ? \"Try again\" : sent === 100 ? \"Send again\" : \"Send report\"}\n        </Button>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/progress-upload.tsx"
+    }
+  ],
+  "categories": [
+    "progress"
+  ],
+  "type": "registry:block"
+}

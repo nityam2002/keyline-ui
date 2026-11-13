@@ -1,0 +1,139 @@
+{
+  "name": "panel",
+  "title": "Panel",
+  "description": "Region frame with header, body and footer cells; PanelGrid joins panels into one frame with shared keylines.",
+  "whenToUse": "Use it to frame one region of a screen with a header, body and footer of actions. For a whole application frame use App shell; for a record beside a list use Inspector.",
+  "parts": [
+    {
+      "name": "Panel",
+      "description": "A region: 3px frame, region cut. Header, body and footer are cells stacked on shared keylines. Standalone panels sit one gutter apart. Inside a PanelGrid they become cells of ONE frame.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "cell: a cell of a PanelGrid (or any frame); no own border or cut."
+        }
+      ]
+    },
+    {
+      "name": "PanelBody",
+      "description": "Padded content. Standalone controls (2px) live here, one gutter apart.",
+      "props": [
+        {
+          "name": "flush",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "No padding: for rows, lists or tables that bring their own keylines."
+        }
+      ]
+    },
+    {
+      "name": "PanelFooter",
+      "description": "A row of cells on the bottom keyline: use Button layout=\"cell\" for actions, or text cells for status.",
+      "props": []
+    },
+    {
+      "name": "PanelGrid",
+      "description": "Joins panels into one region frame: children are separated by 1px keylines that stay correct at any wrap (the frame's line shows through a 1px gap), so a dashboard reads as one instrument, not a pile of cards. Children should be <Panel layout=\"cell\"> (or any element with a background).",
+      "props": [
+        {
+          "name": "min",
+          "type": "number",
+          "default": "240",
+          "required": false,
+          "description": "Minimum cell width in px before the grid wraps."
+        }
+      ]
+    },
+    {
+      "name": "PanelHeader",
+      "description": "Title (+ optional code and actions). The first header of a cut frame reserves the cut's room.",
+      "props": [
+        {
+          "name": "actions",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4",
+          "default": "2",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "panel",
+        "panel-actions",
+        "panel-body",
+        "panel-description",
+        "panel-footer",
+        "panel-grid",
+        "panel-header",
+        "panel-heading",
+        "panel-title"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-c-room",
+      "values": [
+        "calc(var(--kl-c,0px)*0.35)"
+      ]
+    },
+    {
+      "name": "--kl-pg-min",
+      "values": [
+        "`${min"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "panel-grid",
+      "title": "Panel: branch board",
+      "file": "panel-grid.tsx"
+    },
+    {
+      "name": "panel-targets",
+      "title": "Panel: sales targets",
+      "file": "panel-targets.tsx"
+    }
+  ]
+}

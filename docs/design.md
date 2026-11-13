@@ -1,7 +1,8 @@
 # Keyline design model
 
 This is the model every Keyline component follows, and the rules a new component must meet. Consumer-facing
-setup is in [usage.md](usage.md); per-component APIs are on the documentation site (`npm run site:dev`).
+setup and per-component APIs are on the documentation site (`pnpm site:dev`; installation, theming, modes,
+configuration and composition guides).
 
 ## The idea
 
@@ -33,6 +34,10 @@ crossing a keyline.
 ```
 
 ## Construction
+
+Every token (sources, rhythm, the type scale, keyline weights, motion, layering) is data in
+`src/registry/keyline/theme/tokens.ts`; `theme/keyline.css` is generated from it and `theme/foundation.css`
+(`pnpm registry:build`). Edit those two, never `keyline.css`.
 
 - **Frames and controls.** `.kl-frame` is a region (3px, cell background); `.kl-ctl` is a control (2px).
   Both get their weight from `--kl-bw` and have `border-radius: 0`.
@@ -131,7 +136,8 @@ commit first; motion explains them afterwards. Never two behaviours on one trans
 
 ## Colour hierarchy
 
-Components name a **role**; `keyline.css` decides its tone per theme. No per-component dark overrides.
+Components name a **role**; the theme decides its tone per theme (derived in `theme/foundation.css` from the
+sources in `theme/tokens.ts`). No per-component dark overrides.
 
 | Role | Tokens | Purpose |
 |---|---|---|
@@ -201,7 +207,8 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
 
 - **Base UI is the primitive layer.** It is unstyled, owns behaviour, ARIA and keyboard models (menus,
   dialogs, toolbar, scroll area, forms, fields, drawer, toast), and composes through `render` props, which
-  lets Keyline add cells and frames without forking behaviour. Keyline's CSS styles its state attributes.
+  lets Keyline add cells and frames without forking behaviour. Keyline's utilities and foundation style its state
+  attributes.
 - **Wrap the maintained library; draw it in Keyline.** Where the reference libraries (shadcn and its
   ecosystem) build on a library, Keyline wraps the same one, pinned exactly, and never re-implements its
   behaviour:
@@ -214,6 +221,7 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
   | Carousel | `embla-carousel-react` | Dragging, snapping, scrolling |
   | Message scroller, Questionnaire | `@shadcn/react` | Log behaviour, stick-to-newest; multi-step form flow |
   | Command | `cmdk` | Filtering, active-item scrolling |
+  | Data table | `@tanstack/react-table` | Row models (sorting, filtering, paging), selection and ranges, state slices |
 
   Keyline adds construction, tokens, RTL, reduced motion and the accessibility the library leaves to the
   author. Hand-written behaviour drifts from platform conventions, misses edge cases the library has fixed,
@@ -224,8 +232,9 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
 ## Rules for a new component
 
 1. Build on a Base UI primitive or the library the references use; don't hand-code behaviour.
-2. Declare its role: region (`.kl-frame`), control (`.kl-ctl`) or cell. If it can sit in another frame,
-   accept `layout="control" | "cell"`.
+2. Declare its role with the foundation classes: region (`kl-frame`), control (`kl-ctl`) or cell; a row of
+   cells is `kl-cells`, a text-entry frame adds `kl-edge`, a docked surface is `kl-attached kl-dock`. If it can
+   sit in another frame, accept `layout="control" | "cell"`.
 3. One edge, one owner: let the row of cells draw dividers; never double a line.
 4. Name colour roles, never colours. No per-component dark values.
 5. Use the five motion behaviours and their tokens only; never a hard-coded duration.
@@ -234,10 +243,12 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
    `dockGeometry`.
 8. Write only Keyline's own names. Outermost elements carry Keyline type; components that reset
    `font: inherit` re-state `font-family: var(--kl-font)`.
-9. Never depend on CSS order across items: the CLI appends CSS in install order. Where two items' rules meet,
-   the owning rule gets one more class, or the shared rule uses `:where()`.
+9. Never depend on CSS order across items. Components carry no CSS; the CLI appends the foundation (the theme
+   item) and a block's CSS in install order, and a re-add appends any rule that is new. Where a block's rules
+   meet the foundation's, the owning rule gets one more class, or the shared rule uses `:where()`.
+   `pnpm test:css-order` reverses their order and fails on any style that changes.
 10. Measure narrow layouts on the component, and keep the page from scrolling sideways.
 11. Work in light and dark, every density, cut off and on, RTL, reduced motion and forced colours.
-12. Register it in `src/registry/manifest.mjs`. Dependencies are derived from imports and from the `kl-` classes
-    it uses; the build fails on a missing file, an import outside the registry, an ambiguous class owner, or a
-    CSS rule that does not reach its item.
+12. Register it in its `<name>.meta.ts`. Dependencies are derived from imports; the build fails on a missing
+    file, an import outside the registry, a ui item that lists a CSS file, a theme or block CSS rule that does
+    not reach its item, or declared dependencies that differ from the derived ones.

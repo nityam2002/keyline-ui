@@ -1,71 +1,252 @@
+# Every check on every pull request, as parallel jobs. The repository requires one status check, `ci` (the last
+# job): it fails when any job failed, was cancelled or was skipped. Keyline has no path filters, so a skipped job is
+# always a bug, never a pass. .github/CONTRIBUTING.md lists each job by its check name and how to fix it.
+#
+# Hardening: no permissions by default, `contents: read` per job; every action pinned to a full commit SHA (Renovate
+# updates the pin and the version comment); checkout never persists the token; every job has a timeout. Fork pull
+# requests run the same jobs with the same read-only token: the workflow uses `pull_request`, never
+# `pull_request_target`, and never sees a secret.
 name: CI
 
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
+  workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
+# A new push to a pull request cancels its superseded run. Runs on main each get their own group (the run id), so
+# one is never cancelled by the next.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Pinned: ubuntu-latest moves to a new Ubuntu release on GitHub's schedule; switch here after a green run on it.
 jobs:
-  check:
-    name: Types, tests and builds
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+  static:
+    name: Static (typecheck, lint, format, type tests)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run test:format
-      - name: Registry is up to date
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test:types
+
+  unit:
+    name: Unit (tests, versions, changelog)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      # includes the registry freshness test (tests/registry/rebuild.test.ts: the committed registry equals a fresh
+      # in-memory build, checked before anything regenerates it), the policing and surface tests
+      - run: pnpm test
+      - run: pnpm versions:check
+      - run: pnpm changelog:check
+
+  parts:
+    name: Parts (${{ matrix.engine }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          browsers: ${{ matrix.engine }}
+      # --browser picks one of the instances in vitest.config.ts
+      - run: pnpm test:parts --browser=${{ matrix.engine }}
+
+  browser:
+    name: Page specs (${{ matrix.engine }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: chromium
+            browsers: chrome
+            args: --project=chromium
+          - engine: firefox
+            browsers: firefox
+            args: --project=firefox
+          - engine: webkit
+            browsers: webkit
+            args: --project=webkit
+          # The @timing tests, one at a time (--workers=1) on a runner of their own. --no-deps: the main projects
+          # they depend on in playwright.config.mjs run in the jobs above.
+          - engine: timing
+            browsers: chrome webkit
+            args: --project=chromium-timing --project=webkit-timing --no-deps --workers=1
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          browsers: ${{ matrix.browsers }}
+      - name: pnpm test:browser ${{ matrix.args }}
+        env:
+          ARGS: ${{ matrix.args }}
         run: |
-          npm run registry:build
-          if [ -n "$(git status --porcelain -- site/public/r)" ]; then
-            git status --short -- site/public/r
-            echo "::error::site/public/r is out of date. Run npm run registry:build and commit the result."
-            exit 1
-          fi
-      - run: npm run build
-      - run: npm run site:build
-      - run: npx playwright install --with-deps chrome webkit
-      - run: npm run test:browser
-      - run: npm run test:css-order
-      - name: Upload test report and traces
+          read -ra args <<< "$ARGS"
+          pnpm test:browser "${args[@]}"
+      - name: Upload the report and traces
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
-          name: playwright
+          name: playwright-${{ matrix.engine }}
           path: .artifacts/playwright*
           retention-days: 7
 
+  css-order:
+    name: CSS order
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          browsers: chrome
+      - run: pnpm test:css-order
+
+  registry:
+    name: Registry (build, diff, validate, verify)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - name: Registry is up to date
+        run: |
+          pnpm registry:build
+          if [ -n "$(git status --porcelain -- site/public/r registry.json)" ]; then
+            git status --short -- site/public/r registry.json
+            git diff --stat -- site/public/r registry.json
+            echo "::error::The registry is out of date. Run pnpm registry:build and commit the result."
+            exit 1
+          fi
+      - run: pnpm exec shadcn registry validate
+      - run: pnpm registry:verify
+
+  site:
+    name: Site and demo builds
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm build
+      - run: pnpm site:build
+
   consumer:
     name: Consumer installs
-    needs: check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chrome webkit
-      - run: npm run test:consumer
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          browsers: chrome webkit
+      - run: pnpm test:consumer
       - name: Upload consumer logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: consumer
           path: .artifacts/consumer
           retention-days: 7
+
+  # Advisory: not in `ci`'s needs, so it never blocks a merge. It fails on any pixel that differs from the pull
+  # request's base, which is the point for a refactor or conversion and expected for a change meant to look
+  # different; the uploaded shots show which.
+  visual:
+    name: Visual parity (advisory)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          # the base commit's tree is checked out as a worktree, so its history must be here
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+        with:
+          browsers: chrome webkit
+      - name: pnpm test:visual --base <pull request base>
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: pnpm test:visual --base "$BASE_SHA"
+      - name: Upload the differing shots
+        if: failure()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: visual
+          path: |
+            .artifacts/visual/report.txt
+            .artifacts/visual/diff
+          retention-days: 7
+
+  # The only required check. It always runs, and fails unless every job it needs succeeded: a failed, cancelled or
+  # skipped job all fail it.
+  ci:
+    name: ci
+    if: always()
+    needs: [static, unit, parts, browser, css-order, registry, site, consumer]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Fail unless every job succeeded
+        if: >-
+          contains(needs.*.result, 'failure') ||
+          contains(needs.*.result, 'cancelled') ||
+          contains(needs.*.result, 'skipped')
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS"
+          exit 1
+      - run: echo "every job succeeded"

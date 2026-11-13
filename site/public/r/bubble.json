@@ -4,179 +4,20 @@
   "title": "Bubble",
   "description": "One message as a control-weight frame (2px, no radius) holding cells: the text, then files (Attachment layout=\"cell\"). Consecutive bubbles attach on a 1px seam. Tone by role: plain (theirs), tint (yours), attention (not sent: the attention frame and an inserted ! cell). pending runs the Signal segment on the bottom keyline while it sends. Reactions sit on the bottom keyline.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/bubble.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { mergeProps } from \"@base-ui/react/merge-props\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\n\n/* A bubble is one message: a control-weight frame (2px, no radius; the control cut only on the first of a run)\n   holding a column of cells, the text and then any files (Attachment layout=\"cell\").\n   - consecutive bubbles of a run are attached: the later one lies on the earlier's bottom keyline and the\n     shared edge is a 1px seam, so a run reads as one stack of messages, not a pile of boxes;\n   - an attachment-only message is a bubble holding only file cells; the file glyph sits on the text edge;\n   - tone by role, never decoration: plain (the other party, the cell surface), tint (the reader's own, one\n     step off it), attention (not sent: the attention frame, and a ! cell inserted before the text);\n   - pending: the message is on its way; the Signal segment runs inside the bottom keyline until it lands.\n   Reactions sit on the bottom keyline as a small frame of their own. */\n\ntype Tone = \"plain\" | \"tint\" | \"attention\"\n\nfunction BubbleGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"bubble-group\" className={cn(\"kl-bubble-group\", className)} {...props} />\n}\n\ntype BubbleProps = React.ComponentProps<\"div\"> & {\n  tone?: Tone\n  /** Sending: the pending segment runs along the bottom keyline (a static hatch under reduced motion). */\n  pending?: boolean\n}\n\nfunction Bubble({ tone = \"plain\", pending, className, children, ...props }: BubbleProps) {\n  return (\n    <div data-slot=\"bubble\" data-tone={tone} data-pending={pending ? \"\" : undefined} aria-busy={pending || undefined} className={cn(\"kl-ctl kl-bubble\", className)} {...props}>\n      {children}\n      {pending ? <span className=\"kl-pending kl-bubble-pend\" aria-hidden /> : null}\n    </div>\n  )\n}\n\n/** The text cell. Render it as a button or link (`render`) when the message itself acts (open a thread). */\nfunction BubbleContent({ className, render, children, ...props }: useRender.ComponentProps<\"div\">) {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    props: mergeProps<\"div\">(\n      {\n        className: cn(\"kl-bubble-c\", className),\n        children: (\n          <>\n            {/* the ! cell is inserted (0 → its width) when a message turns out not to be sent */}\n            <span className=\"kl-slot kl-bubble-bang\" aria-hidden>\n              <span>\n                <span>!</span>\n              </span>\n            </span>\n            {/* people write in their own language: the text takes its direction from its first strong letter */}\n            <span className=\"kl-bubble-t\" dir=\"auto\">\n              {children}\n            </span>\n          </>\n        ),\n      },\n      props,\n    ),\n  })\n}\n\n/** Reactions on the bubble's bottom keyline: a row of small cells (\"👍 2\"). Buttons inside are fine. */\nfunction BubbleReactions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"bubble-reactions\" className={cn(\"kl-cells kl-bubble-rx\", className)} {...props} />\n}\n\nexport { BubbleGroup, Bubble, BubbleContent, BubbleReactions }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\n/* A bubble is one message: a control-weight frame (2px, no radius; the control cut only on the first of a run)\n   holding a column of cells, the text and then any files (Attachment layout=\"cell\").\n   - consecutive bubbles of a run are attached: the later one lies on the earlier's bottom keyline and the\n     shared edge is a 1px seam, so a run reads as one stack of messages, not a pile of boxes;\n   - an attachment-only message is a bubble holding only file cells; the file glyph sits on the text edge;\n   - tone by role, never decoration: plain (the other party, the cell surface), tint (the reader's own, one\n     step off it), attention (not sent: the attention frame, and a ! cell inserted before the text);\n   - pending: the message is on its way; the Signal segment runs inside the bottom keyline until it lands.\n   Reactions sit on the bottom keyline as a small frame of their own. */\n\ntype Tone = \"plain\" | \"tint\" | \"attention\";\n\n/* ------------------------------------------------------------------ *\n * CLASSES\n * ------------------------------------------------------------------ */\n\nconst group = \"kl-type flex min-w-0 max-w-full flex-col items-[inherit]\";\n\n/** the frame: as wide as its words (short replies stay compact), at most the column */\nconst frame = cn(\n  \"kl-ctl group/bubble flex w-fit max-w-full min-w-0 flex-col overflow-visible bg-kl-cell text-kl-ink\",\n  \"[--kl-bubble-x:var(--kl-msg-x,var(--kl-inset))]\",\n  \"data-[tone=tint]:bg-kl-tint\",\n  // an attention bubble paints its whole red frame over the shared line\n  \"data-[tone=attention]:z-1 data-[tone=attention]:border-kl-red\",\n  // ATTACHED: the next bubble of a run lies on this one's bottom keyline, so the two share one 2px line (as a docked\n  // surface takes its owner's weight on the shared edge). Where widths differ the line runs on as the wider bubble's\n  // own edge: a clean T-junction, never a doubled or thinned line. Only the first of a run has the cut.\n  \"[[data-slot=bubble]+&]:-mt-(--kl-k2) [[data-slot=bubble]+&]:[--kl-cut-size:0px]\",\n  // a bubble after an attention bubble, or after reactions, stands apart (each selector names its own case, so\n  // neither depends on the other's order)\n  \"[[data-slot=bubble][data-tone=attention]:not(:has(>[data-slot=bubble-reactions]))+&]:mt-[var(--kl-msg-gap,6px)]\",\n  \"[[data-slot=bubble]:has(>[data-slot=bubble-reactions])+&]:mt-[14px]\",\n  // reactions hang over the bottom keyline\n  \"has-[>[data-slot=bubble-reactions]]:mb-3\",\n  // files inside the bubble are cells: a seam between each (zero specificity on the file, so its states restyle it)\n  \"[&>:where([data-slot=attachment])]:border-t-(length:--kl-k1) [&>:where([data-slot=attachment])]:border-t-kl-seam\",\n  \"[&>:where([data-slot=attachment]:first-child)]:border-t-0\",\n);\n\n/** the text cell; one that acts (a button or link) presses like a key */\nconst content = cn(\n  \"flex min-w-0 items-stretch text-start text-inherit\",\n  \"font-(family-name:--kl-font) text-(length:--kl-fs)/[1.45]\",\n  \"[:is(button,a)&]:cursor-pointer [:is(button,a)&]:no-underline\",\n  \"[:is(button,a)&]:hover:bg-kl-press group-data-[tone=plain]/bubble:[:is(button,a)&]:hover:bg-kl-tint\",\n  \"focus-visible:outline-(length:--kl-ring) focus-visible:-outline-offset-(--kl-ring) focus-visible:outline-kl-focus focus-visible:outline-solid\",\n);\n\nconst text = cn(\n  \"block min-w-0 flex-auto px-(--kl-bubble-x) pt-[7px] pb-2 wrap-anywhere whitespace-pre-wrap\",\n  \"[:is(button,a):active>&]:translate-y-px\",\n  \"[&_a]:wrap-anywhere [&_a]:text-kl-cobalt-text [&_a]:underline [&_a]:underline-offset-2\",\n  \"[&_a:focus-visible]:outline-(length:--kl-ring) [&_a:focus-visible]:outline-offset-1 [&_a:focus-visible]:outline-kl-focus [&_a:focus-visible]:outline-solid\",\n);\n\n/** the ! cell: inserted (Signal: failed) on an attention bubble, as on fields and buttons */\nconst bang = cn(\n  \"kl-slot\",\n  \"group-data-[tone=attention]/bubble:grid-cols-[1fr]\",\n  \"group-data-[tone=attention]/bubble:[transition:grid-template-columns_var(--kl-t-unfold)_var(--kl-ease-out)]\",\n);\nconst bangCell = cn(\n  \"grid w-7 place-items-center bg-kl-red font-(--kl-weight-display) text-kl-on-red\",\n  \"forced-colors:bg-[Mark] forced-colors:text-[MarkText] forced-colors:forced-color-adjust-none\",\n);\n\n/** reactions: a small frame on the bubble's bottom keyline, toward the inline end */\nconst reactions = cn(\n  \"kl-cells absolute end-2.5 -bottom-3 z-1 h-[22px] border-(length:--kl-k1) border-kl-line bg-kl-raised text-[12px]/none\",\n  \"*:inline-flex *:items-center *:gap-1 *:px-1.5\",\n  \"[&>button]:cursor-pointer [&>button:not([aria-pressed=true])]:hover:bg-kl-tint\",\n  \"[&>button[aria-pressed=true]]:bg-kl-inverse [&>button[aria-pressed=true]]:text-kl-on-inverse\",\n  \"[&>button]:focus-visible:outline-(length:--kl-ring) [&>button]:focus-visible:-outline-offset-(--kl-ring)\",\n  \"[&>button]:focus-visible:outline-kl-focus [&>button]:focus-visible:outline-solid\",\n  \"[&_.kl-code]:text-inherit\",\n);\n\n/* ------------------------------------------------------------------ *\n * PARTS\n * ------------------------------------------------------------------ */\n\ntype BubbleState = { tone: Tone; pending: boolean };\ntype BubblePartState = Record<string, never>;\nconst PART_STATE: BubblePartState = {};\n\n/** A column of bubbles outside a Message (a Message's content is already one). */\nfunction BubbleGroup({ render, className, style, ...props }: PartProps<\"div\", BubblePartState>): React.ReactElement {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"div\">(props, {\n      className: resolveClassName(group, className)(PART_STATE),\n      style: resolveStyle(undefined, style)(PART_STATE),\n      \"data-slot\": \"bubble-group\",\n    } as React.ComponentProps<\"div\">),\n  });\n}\n\ntype BubbleProps = PartProps<\"div\", BubbleState> & {\n  tone?: Tone;\n  /** Sending: the pending segment runs along the bottom keyline (a static hatch under reduced motion). */\n  pending?: boolean;\n};\n\nfunction Bubble({\n  tone = \"plain\",\n  pending = false,\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: BubbleProps): React.ReactElement {\n  const state: BubbleState = { tone, pending };\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    state,\n    props: mergeProps<\"div\">(props, {\n      \"data-tone\": tone,\n      \"data-pending\": pending ? \"\" : undefined,\n      \"aria-busy\": pending || undefined,\n      className: resolveClassName(frame, className)(state),\n      style: resolveStyle(undefined, style)(state),\n      children: (\n        <>\n          {children}\n          {pending ? <span className=\"kl-pending [--kl-bw:3px]\" aria-hidden /> : null}\n        </>\n      ),\n      \"data-slot\": \"bubble\",\n    } as React.ComponentProps<\"div\">),\n  });\n}\n\n/** The text cell. Render it as a button or link (`render`) when the message itself acts (open a thread). */\nfunction BubbleContent({\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: PartProps<\"div\", BubblePartState>): React.ReactElement {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"div\">(props, {\n      className: resolveClassName(content, className)(PART_STATE),\n      style: resolveStyle(undefined, style)(PART_STATE),\n      children: (\n        <>\n          {/* the ! cell is inserted (0 → its width) when a message turns out not to be sent */}\n          <span data-slot=\"bubble-bang\" className={bang} aria-hidden>\n            <span className=\"flex\">\n              <span className={bangCell}>!</span>\n            </span>\n          </span>\n          {/* people write in their own language: the text takes its direction from its first strong letter */}\n          <span data-slot=\"bubble-text\" className={text} dir=\"auto\">\n            {children}\n          </span>\n        </>\n      ),\n      \"data-slot\": \"bubble-content\",\n    } as React.ComponentProps<\"div\">),\n  });\n}\n\n/** Reactions on the bubble's bottom keyline: a row of small cells (\"👍 2\"). Buttons inside are fine. */\nfunction BubbleReactions({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"div\", BubblePartState>): React.ReactElement {\n  return useRender({\n    defaultTagName: \"div\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"div\">(props, {\n      className: resolveClassName(reactions, className)(PART_STATE),\n      style: resolveStyle(undefined, style)(PART_STATE),\n      \"data-slot\": \"bubble-reactions\",\n    } as React.ComponentProps<\"div\">),\n  });\n}\n\nexport { BubbleGroup, Bubble, BubbleContent, BubbleReactions };\nexport type { BubbleProps, BubbleState };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/bubble.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-bubble-group": {
-        "display": "flex",
-        "flex-direction": "column",
-        "align-items": "inherit",
-        "min-width": "0",
-        "max-width": "100%"
-      },
-      ".kl-bubble": {
-        "--kl-bubble-x": "var(--kl-msg-x, var(--kl-inset))",
-        "display": "flex",
-        "flex-direction": "column",
-        "inline-size": "fit-content",
-        "min-inline-size": "3rem",
-        "max-inline-size": "100%",
-        "min-width": "0",
-        "background-color": "var(--kl-cell)",
-        "color": "var(--kl-ink)",
-        "overflow": "visible"
-      },
-      ".kl-bubble[data-tone=\"tint\"]": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-bubble[data-tone=\"attention\"]": {
-        "border-color": "var(--kl-red)",
-        "z-index": "1"
-      },
-      ".kl-bubble + .kl-bubble": {
-        "margin-block-start": "calc(-1 * var(--kl-k2))",
-        "--kl-cut-size": "0px"
-      },
-      ".kl-bubble:is([data-tone=\"attention\"], :has(> .kl-bubble-rx)) + .kl-bubble": {
-        "margin-block-start": "var(--kl-msg-gap, 6px)"
-      },
-      ".kl-bubble:has(> .kl-bubble-rx) + .kl-bubble": {
-        "margin-block-start": "14px"
-      },
-      ".kl-bubble-c": {
-        "display": "flex",
-        "align-items": "stretch",
-        "min-width": "0",
-        "color": "inherit",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "font-size": "var(--kl-fs)",
-        "line-height": "1.45",
-        "text-align": "start"
-      },
-      ".kl-bubble-t": {
-        "display": "block",
-        "flex": "1 1 auto",
-        "min-width": "0",
-        "padding": "7px var(--kl-bubble-x) 8px",
-        "white-space": "pre-wrap",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-bubble-t a": {
-        "color": "var(--kl-cobalt-text)",
-        "text-decoration": "underline",
-        "text-underline-offset": "2px",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-bubble-t a:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "1px"
-      },
-      ".kl-bubble-bang > span": {
-        "display": "flex"
-      },
-      ".kl-bubble-bang > span > span": {
-        "display": "grid",
-        "place-items": "center",
-        "width": "28px",
-        "background-color": "var(--kl-red)",
-        "color": "var(--kl-on-red)",
-        "font-weight": "var(--kl-weight-display, 800)"
-      },
-      ".kl-bubble[data-tone=\"attention\"] .kl-bubble-bang": {
-        "grid-template-columns": "1fr",
-        "transition": "grid-template-columns var(--kl-t-unfold) var(--kl-ease-out)"
-      },
-      ".kl-bubble > .kl-att": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-bubble > .kl-att:first-child": {
-        "border-block-start": "0"
-      },
-      ".kl-bubble-pend": {
-        "--kl-bw": "3px"
-      },
-      ":is(button, a).kl-bubble-c": {
-        "cursor": "pointer",
-        "text-decoration": "none"
-      },
-      ":is(button, a).kl-bubble-c:hover": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-bubble[data-tone=\"plain\"] > :is(button, a).kl-bubble-c:hover": {
-        "background-color": "var(--kl-tint)"
-      },
-      ":is(button, a).kl-bubble-c:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "calc(var(--kl-ring) * -1)"
-      },
-      ":is(button, a).kl-bubble-c:active > .kl-bubble-t": {
-        "translate": "0 1px"
-      },
-      ".kl-bubble-rx": {
-        "position": "absolute",
-        "inset-block-end": "-12px",
-        "inset-inline-end": "10px",
-        "z-index": "1",
-        "height": "22px",
-        "border": "var(--kl-k1) solid var(--kl-line)",
-        "background-color": "var(--kl-raised)",
-        "font-size": "12px",
-        "line-height": "1"
-      },
-      ".kl-bubble:has(> .kl-bubble-rx)": {
-        "margin-block-end": "12px"
-      },
-      ".kl-bubble-rx > *": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "4px",
-        "padding-inline": "6px"
-      },
-      ".kl-bubble-rx > button": {
-        "all": "unset",
-        "box-sizing": "border-box",
-        "display": "inline-flex",
-        "align-items": "center",
-        "gap": "4px",
-        "padding-inline": "6px",
-        "cursor": "pointer"
-      },
-      ".kl-bubble-rx > button:hover": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-bubble-rx > button[aria-pressed=\"true\"]": {
-        "background-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)"
-      },
-      ".kl-bubble-rx > button:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "calc(var(--kl-ring) * -1)"
-      },
-      ".kl-bubble-rx .kl-code": {
-        "color": "inherit"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-bubble-bang > span > span": {
-          "forced-color-adjust": "none",
-          "background-color": "Mark",
-          "color": "MarkText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

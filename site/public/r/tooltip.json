@@ -4,62 +4,21 @@
   "title": "Tooltip",
   "description": "Ink label docked to the focus ring of its trigger, with an optional shortcut cell. Never cut.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
-    "@keyline-ui/keyline-scope"
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/tooltip.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\"\n\nimport { cn } from \"@/lib/utils\"\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\"\n\n/** Wrap a region once to share the open delay between neighbouring tooltips (optional). */\nconst TooltipProvider = TooltipPrimitive.Provider\n\ntype TooltipProps = {\n  /** The trigger. Must be a focusable element that accepts a ref (a Button, a link, an icon button). */\n  children: React.ReactElement\n  content: React.ReactNode\n  /** Shortcut shown in its own cell, e.g. \"⌘K\". */\n  shortcut?: React.ReactNode\n  side?: \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\"\n  delay?: number\n}\n\n/**\n * An ink label docked to the trigger's FOCUS RING, not its box: the gap equals the ring (2px + 2px offset),\n * so keyboard and pointer show the same geometry. Never cut, never a surface of its own. It names or\n * explains; it never holds the only copy of information needed to act.\n */\nfunction Tooltip({ children, content, shortcut, side = \"top\", delay = 500 }: TooltipProps) {\n  const [open, setOpen] = React.useState(false)\n  const [marker, scope] = useKeylineScope(open)\n  return (\n    <TooltipPrimitive.Root onOpenChange={setOpen}>\n      <TooltipPrimitive.Trigger delay={delay} render={children} />\n      {marker}\n      <TooltipPrimitive.Portal>\n        <TooltipPrimitive.Positioner side={side} sideOffset={4} {...scopeProps(scope, { className: \"kl-positioner\" })}>\n          <TooltipPrimitive.Popup data-slot=\"tooltip\" className={cn(\"kl-tip\", shortcut != null && \"kl-cells\")}>\n            <span className=\"kl-tip-t\">{content}</span>\n            {shortcut != null ? <kbd className=\"kl-tip-k\">{shortcut}</kbd> : null}\n          </TooltipPrimitive.Popup>\n        </TooltipPrimitive.Positioner>\n      </TooltipPrimitive.Portal>\n    </TooltipPrimitive.Root>\n  )\n}\n\nexport { Tooltip, TooltipProvider }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Tooltip as TooltipPrimitive } from \"@base-ui/react/tooltip\";\n\nimport { cn } from \"@/lib/utils\";\nimport { scopeProps, useKeylineScope } from \"../lib/keyline-scope\";\nimport { resolveClassName } from \"../lib/keyline-render\";\n\n/** Wrap a region once to share the open delay between neighbouring tooltips (optional). */\nconst TooltipProvider = TooltipPrimitive.Provider;\n/* Root is Base UI's own part: open state, handles and event details pass through untouched. */\nconst TooltipRoot = TooltipPrimitive.Root;\n\n/** The element the tooltip names. Rendered as another part (`render={<Button />}`), the element is that part's and\n * carries its data-slot. */\nfunction TooltipTrigger(props: TooltipPrimitive.Trigger.Props): React.ReactElement {\n  return <TooltipPrimitive.Trigger {...props} data-slot=\"tooltip-trigger\" />;\n}\n\nconst popup = cn(\n  \"flex max-w-[min(320px,calc(100vw-16px))] items-stretch bg-kl-inverse text-kl-on-inverse\",\n  \"text-(length:--kl-text-label)/[1.3] font-(--kl-weight-strong)\",\n  // with a shortcut the popup is a row of cells; the keyline between them is drawn in the label's colour\n  \"[&.kl-cells>:not(:first-child)]:border-s-kl-on-inverse\",\n  \"opacity-100 transition-opacity duration-(--kl-t-unfold) ease-linear\",\n  \"data-ending-style:opacity-0 data-ending-style:duration-(--kl-t-fold) data-starting-style:opacity-0\",\n  \"data-instant:transition-none\",\n  \"forced-colors:border forced-colors:border-solid forced-colors:border-[CanvasText]\",\n);\n\ntype PositionerProps = TooltipPrimitive.Positioner.Props;\n\ntype TooltipPopupProps = TooltipPrimitive.Popup.Props &\n  Pick<PositionerProps, \"anchor\" | \"side\" | \"align\" | \"sideOffset\" | \"alignOffset\" | \"collisionPadding\"> & {\n    /** Shortcut shown in its own cell, e.g. \"⌘K\". */\n    shortcut?: React.ReactNode;\n    /** Where the portal renders (defaults to <body>). */\n    container?: TooltipPrimitive.Portal.Props[\"container\"];\n    /** Props for Base UI's Tooltip.Portal. */\n    portalProps?: Omit<TooltipPrimitive.Portal.Props, \"container\" | \"children\">;\n  };\n\n/**\n * The label: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. An\n * ink label docked to the trigger's FOCUS RING, not its box: the gap equals the ring (2px + 2px offset), so keyboard\n * and pointer show the same geometry. Never cut, never a surface of its own. It carries the configuration of the\n * place it is written.\n */\nfunction TooltipPopup({\n  shortcut,\n  anchor,\n  side = \"top\",\n  align,\n  sideOffset = 4,\n  alignOffset,\n  collisionPadding,\n  container,\n  portalProps,\n  className,\n  children,\n  ...props\n}: TooltipPopupProps): React.ReactElement {\n  const [marker, scope, probe] = useKeylineScope(false, container);\n  return (\n    <>\n      {marker}\n      <TooltipPrimitive.Portal container={container} {...portalProps}>\n        {probe}\n        <TooltipPrimitive.Positioner\n          anchor={anchor}\n          side={side}\n          align={align}\n          sideOffset={sideOffset}\n          alignOffset={alignOffset}\n          collisionPadding={collisionPadding}\n          {...scopeProps(scope, { className: \"kl-positioner\" })}\n        >\n          <TooltipPrimitive.Popup\n            className={resolveClassName(cn(popup, shortcut != null && \"kl-cells\"), className)}\n            {...props}\n            data-slot=\"tooltip-popup\"\n          >\n            <span data-slot=\"tooltip-label\" className=\"px-2.5 py-1.5\">\n              {children}\n            </span>\n            {shortcut != null ? (\n              <kbd\n                data-slot=\"tooltip-shortcut\"\n                className={cn(\n                  \"grid place-items-center px-2 font-(family-name:--kl-font-mono) text-(length:--kl-text-code)/none\",\n                  \"font-medium not-italic normal-nums\",\n                )}\n              >\n                {shortcut}\n              </kbd>\n            ) : null}\n          </TooltipPrimitive.Popup>\n        </TooltipPrimitive.Positioner>\n      </TooltipPrimitive.Portal>\n    </>\n  );\n}\n\ntype TooltipProps = {\n  /** The trigger. Must be a focusable element that accepts a ref (a Button, a link, an icon button). */\n  children: React.ReactElement;\n  content: React.ReactNode;\n  /** Shortcut shown in its own cell, e.g. \"⌘K\". */\n  shortcut?: React.ReactNode;\n  side?: \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";\n  delay?: number;\n};\n\n/**\n * The usual tooltip, built from the parts: it names or explains its trigger; it never holds the only copy of\n * information needed to act.\n */\nfunction Tooltip({ children, content, shortcut, side = \"top\", delay = 500 }: TooltipProps): React.ReactElement {\n  return (\n    <TooltipRoot>\n      <TooltipTrigger delay={delay} render={children} />\n      <TooltipPopup side={side} shortcut={shortcut}>\n        {content}\n      </TooltipPopup>\n    </TooltipRoot>\n  );\n}\n\nexport { Tooltip, TooltipProvider, TooltipRoot, TooltipTrigger, TooltipPopup };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/tooltip.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-tip": {
-        "display": "flex",
-        "align-items": "stretch",
-        "max-width": "min(320px, calc(100vw - 16px))",
-        "background-color": "var(--kl-inverse)",
-        "color": "var(--kl-on-inverse)",
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.3",
-        "transition": "opacity var(--kl-t-unfold) linear",
-        "opacity": "1"
-      },
-      ".kl-tip:is([data-starting-style], [data-ending-style])": {
-        "opacity": "0"
-      },
-      ".kl-tip[data-ending-style]": {
-        "transition-duration": "var(--kl-t-fold)"
-      },
-      ".kl-tip[data-instant]": {
-        "transition": "none"
-      },
-      ".kl-tip.kl-cells > :not(:first-child)": {
-        "border-inline-start-color": "var(--kl-on-inverse)"
-      },
-      ".kl-tip-t": {
-        "padding": "6px 10px"
-      },
-      ".kl-tip-k": {
-        "display": "grid",
-        "place-items": "center",
-        "padding-inline": "8px",
-        "font": "500 11px/1 var(--kl-font-mono)"
-      },
-      "@media (forced-colors: active)": {
-        ".kl-tip": {
-          "border": "1px solid CanvasText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

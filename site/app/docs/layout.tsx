@@ -1,5 +1,5 @@
-import { DocsShell } from "@site/components/docs-shell"
-import { CropMarks } from "@site/components/land"
+import { DocsShell } from "@site/components/docs-shell";
+import { CropMarks } from "@site/components/land";
 
 /**
  * The sheet and Keyline's AppShell for every docs page (the guides and each component). It is a layout, not part of each page, so it
@@ -18,5 +18,5 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       <CropMarks />
       <DocsShell>{children}</DocsShell>
     </div>
-  )
+  );
 }

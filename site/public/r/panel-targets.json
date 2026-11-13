@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "panel-targets",
+  "title": "Panel: sales targets",
+  "description": "An example of Panel: sales targets.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/stat"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/panel-targets.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Meter } from \"../ui/stat\";\nimport { Panel, PanelBody, PanelFooter, PanelHeader } from \"../ui/panel\";\n\nconst REPS = [\n  { name: \"Dwight Schrute\", reams: 1_680, target: 1_500 },\n  { name: \"Jim Halpert\", reams: 1_240, target: 1_500 },\n  { name: \"Phyllis Vance\", reams: 1_120, target: 1_200 },\n  { name: \"Stanley Hudson\", reams: 910, target: 1_200 },\n];\n\nexport function SalesTargets() {\n  const [sent, setSent] = useState(false);\n  return (\n    <Panel>\n      <PanelHeader code=\"Q4\" title=\"Sales targets\" description=\"Reams sold against each rep's target, this quarter.\" />\n      <PanelBody className=\"grid gap-4\">\n        {REPS.map((r) => (\n          <Meter key={r.name} label={r.name} value={r.reams} max={r.target} />\n        ))}\n      </PanelBody>\n      <PanelFooter>\n        <span className=\"flex flex-1 items-center px-3 text-[13px] text-kl-ink-2\" role=\"status\">\n          {sent ? \"Sent to Jan.\" : \"Updated at 9:00\"}\n        </span>\n        <Button layout=\"cell\" variant=\"primary\" disabled={sent} onClick={() => setSent(true)}>\n          Send to corporate\n        </Button>\n      </PanelFooter>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/panel-targets.tsx"
+    }
+  ],
+  "categories": [
+    "panel"
+  ],
+  "type": "registry:block"
+}

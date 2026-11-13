@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog-new-client",
+  "title": "Dialog: new client",
+  "description": "An example of Dialog: new client.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/dialog",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/dialog-new-client.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Dialog,\n  DialogBody,\n  DialogClose,\n  DialogPopup,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from \"../ui/dialog\";\nimport { Field, FieldDescription, FieldError, FieldFrame, FieldControl, FieldLabel, Form } from \"../ui/field\";\n\nexport function NewClient() {\n  const [open, setOpen] = useState(false);\n  const [clients, setClients] = useState([\"Lackawanna County\", \"Blue Cross of Pennsylvania\"]);\n\n  return (\n    <div className=\"grid gap-4\">\n      <ul aria-label=\"Clients\" className=\"m-0 grid list-none gap-2 p-0 text-[14px]\">\n        {clients.map((c) => (\n          <li key={c}>{c}</li>\n        ))}\n      </ul>\n      <Dialog open={open} onOpenChange={setOpen}>\n        <DialogTrigger render={<Button className=\"justify-self-start\" />}>Add a client</DialogTrigger>\n        <DialogPopup>\n          <DialogHeader>\n            <DialogTitle>Add a client</DialogTitle>\n            <DialogDescription>They join Dwight&apos;s accounts until you assign a rep.</DialogDescription>\n          </DialogHeader>\n          <DialogBody>\n            {/* the footer's submit button names this form, so the form can stay in the scrolling body */}\n            <Form\n              id=\"new-client\"\n              onFormSubmit={(v) => {\n                setClients((all) => [...all, String(v[\"company\"]).trim()]);\n                setOpen(false);\n              }}\n            >\n              <Field name=\"company\">\n                <FieldLabel>Company</FieldLabel>\n                <FieldFrame>\n                  <FieldControl required autoComplete=\"organization\" />\n                </FieldFrame>\n                <FieldError match=\"valueMissing\">Which company?</FieldError>\n              </Field>\n              <Field name=\"contact\">\n                <FieldLabel>Contact</FieldLabel>\n                <FieldFrame>\n                  <FieldControl autoComplete=\"name\" />\n                </FieldFrame>\n                <FieldDescription>Who orders the paper.</FieldDescription>\n              </Field>\n            </Form>\n          </DialogBody>\n          <DialogFooter>\n            <DialogClose render={<Button layout=\"cell\" />}>Cancel</DialogClose>\n            <Button layout=\"cell\" variant=\"primary\" type=\"submit\" form=\"new-client\">\n              Add client\n            </Button>\n          </DialogFooter>\n        </DialogPopup>\n      </Dialog>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/dialog-new-client.tsx"
+    }
+  ],
+  "categories": [
+    "dialog"
+  ],
+  "type": "registry:block"
+}

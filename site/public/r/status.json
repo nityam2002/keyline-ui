@@ -3,57 +3,22 @@
   "name": "status",
   "title": "Status and badge",
   "description": "Status glyph + text (shape survives forced colours); square code badge.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/status.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype StatusKind = \"normal\" | \"waiting\" | \"attention\" | \"done\" | \"none\"\n\n/** Status = glyph shape + text. The shape carries meaning in grayscale and forced colours; only attention is red. */\nfunction Status({ kind, className, children, ...props }: React.ComponentProps<\"span\"> & { kind: StatusKind }) {\n  return (\n    <span data-slot=\"status\" className={cn(\"kl-status\", className)} data-kind={kind} {...props}>\n      <span className=\"kl-glyph\" data-kind={kind} aria-hidden />\n      {children}\n    </span>\n  )\n}\n\n/** A square code badge: mono text in a 1px frame. Never cut, never a pill. `tone=\"signal\"` is the only filled form. */\nfunction Badge({ className, tone = \"plain\", ...props }: React.ComponentProps<\"span\"> & { tone?: \"plain\" | \"signal\" | \"attention\" }) {\n  return <span data-slot=\"badge\" data-tone={tone} className={cn(\"kl-badge\", className)} {...props} />\n}\n\nexport { Status, Badge, type StatusKind }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype StatusKind = \"normal\" | \"waiting\" | \"attention\" | \"done\" | \"none\";\n\n/* text on the row's baseline whatever the glyph (centring moved labels 0.4–1.6px between rows) */\nconst statusVariants = cva(\"inline-flex items-baseline gap-2\", {\n  variants: {\n    kind: {\n      normal: \"\",\n      waiting: \"\",\n      attention: \"font-(--kl-weight-display) text-kl-red-text\",\n      done: \"text-kl-ink-2\",\n      none: \"text-kl-ink-2\",\n    },\n  },\n});\n\ntype StatusState = { kind: StatusKind };\n\ntype StatusProps = PartProps<\"span\", StatusState> & { kind: StatusKind };\n\n/** Status = glyph shape + text. The shape carries meaning in grayscale and forced colours; only attention is red. */\nfunction Status({ kind, render, className, style, children, ...props }: StatusProps): React.ReactElement {\n  const state: StatusState = { kind };\n  const own = {\n    ...dataAttrs({ kind }),\n    \"data-slot\": \"status\",\n    className: resolveClassName(cn(statusVariants({ kind })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        <span className=\"kl-glyph self-center\" data-kind={kind} aria-hidden />\n        {children}\n      </>\n    ),\n  };\n  return useRender({ defaultTagName: \"span\", render, state, props: mergeProps<\"span\">(props, own) });\n}\n\ntype BadgeTone = \"plain\" | \"signal\" | \"attention\";\n\nconst badgeVariants = cva(\n  [\n    \"inline-flex h-5 items-center px-1.5 align-middle whitespace-nowrap\",\n    \"border-(length:--kl-k1) border-current text-kl-ink-2\",\n    \"font-(family-name:--kl-font-mono) text-(length:--kl-text-code)/none font-medium not-italic normal-nums\",\n  ],\n  {\n    variants: {\n      tone: {\n        plain: \"\",\n        // the only filled form\n        signal: \"border-kl-on-yellow bg-kl-yellow text-kl-on-yellow\",\n        attention: \"font-(--kl-weight-strong) text-kl-red-text\",\n      },\n    },\n    defaultVariants: { tone: \"plain\" },\n  },\n);\n\ntype BadgeState = { tone: BadgeTone };\n\ntype BadgeProps = PartProps<\"span\", BadgeState> & { tone?: BadgeTone };\n\n/** A square code badge: mono text in a 1px frame. Never cut, never a pill. `tone=\"signal\"` is the only filled form. */\nfunction Badge({ tone = \"plain\", render, className, style, ...props }: BadgeProps): React.ReactElement {\n  const state: BadgeState = { tone };\n  const own = {\n    ...dataAttrs({ tone }),\n    \"data-slot\": \"badge\",\n    className: resolveClassName(cn(badgeVariants({ tone })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  return useRender({ defaultTagName: \"span\", render, state, props: mergeProps<\"span\">(props, own) });\n}\n\nexport { Status, Badge, type StatusKind, type StatusProps, type BadgeProps, type BadgeTone };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/status.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-status": {
-        "display": "inline-flex",
-        "align-items": "baseline",
-        "gap": "8px"
-      },
-      ".kl-status > .kl-glyph": {
-        "align-self": "center"
-      },
-      ".kl-status[data-kind=\"attention\"]": {
-        "color": "var(--kl-red-text)",
-        "font-weight": "var(--kl-weight-display)"
-      },
-      ".kl-status[data-kind=\"done\"], .kl-status[data-kind=\"none\"]": {
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-badge": {
-        "display": "inline-flex",
-        "align-items": "center",
-        "height": "20px",
-        "padding-inline": "6px",
-        "border": "var(--kl-k1) solid currentColor",
-        "font": "500 11px/1 var(--kl-font-mono)",
-        "white-space": "nowrap",
-        "color": "var(--kl-ink-2)",
-        "vertical-align": "middle"
-      },
-      ".kl-badge[data-tone=\"signal\"]": {
-        "background-color": "var(--kl-yellow)",
-        "color": "var(--kl-on-yellow)",
-        "border-color": "var(--kl-on-yellow)"
-      },
-      ".kl-badge[data-tone=\"attention\"]": {
-        "color": "var(--kl-red-text)",
-        "font-weight": "var(--kl-weight-strong)"
-      }
-    }
-  },
   "type": "registry:ui"
 }

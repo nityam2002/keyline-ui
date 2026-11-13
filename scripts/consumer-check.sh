@@ -12,8 +12,8 @@
 #             Keyline), installs button, dialog and chart, checks the files, re-adds, builds; tests/consumer/next.mjs
 #             then checks the running app in Chrome and WebKit
 #
-#   npm run test:consumer               all four
-#   npm run test:consumer -- isolated   some of them
+#   pnpm test:consumer               all four
+#   pnpm test:consumer -- isolated   some of them
 #
 # Needs network access (npm and the shadcn CLI). The apps are built in a temporary directory; logs go to
 # .artifacts/consumer/.
@@ -34,7 +34,7 @@ PIDS=()
 cleanup() { for p in "${PIDS[@]}"; do kill "$p" 2>/dev/null || true; wait "$p" 2>/dev/null || true; done; rm -rf "$WORK"; }
 trap cleanup EXIT
 
-npm run registry:build >"$LOGS/registry.log" 2>&1 || { cat "$LOGS/registry.log"; exit 1; }
+pnpm registry:build >"$LOGS/registry.log" 2>&1 || { cat "$LOGS/registry.log"; exit 1; }
 node -e '
   const http = require("http"), fs = require("fs"), path = require("path")
   const dir = path.resolve("site/public")

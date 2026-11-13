@@ -3,124 +3,21 @@
   "name": "panel",
   "title": "Panel",
   "description": "Region frame with header, body and footer cells; PanelGrid joins panels into one frame with shared keylines.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/panel.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * A region: 3px frame, region cut. Header, body and footer are cells stacked on shared keylines.\n * Standalone panels sit one gutter apart. Inside a PanelGrid they become cells of ONE frame.\n */\nfunction Panel({ className, layout = \"control\", ...props }: React.ComponentProps<\"section\"> & { /** cell: a cell of a PanelGrid (or any frame); no own border or cut. */ layout?: \"control\" | \"cell\" }) {\n  return <section data-slot=\"panel\" data-kl-layout={layout} className={cn(\"kl-frame kl-panel\", className)} {...props} />\n}\n\n/** Title (+ optional code and actions). The first header of a cut frame reserves the cut's room. */\nfunction PanelHeader({ title, code, description, actions, className, headingLevel = 2 }: { title: React.ReactNode; code?: React.ReactNode; description?: React.ReactNode; actions?: React.ReactNode; className?: string; headingLevel?: 2 | 3 | 4 }) {\n  const H = `h${headingLevel}` as \"h2\"\n  return (\n    <header data-slot=\"panel-header\" className={cn(\"kl-cells kl-panel-h\", className)}>\n      <div className=\"kl-panel-t\">\n        {code != null ? <span className=\"kl-code\">{code}</span> : null}\n        <H>{title}</H>\n        {description ? <p>{description}</p> : null}\n      </div>\n      {actions ? <div className=\"kl-panel-x\">{actions}</div> : null}\n    </header>\n  )\n}\n\n/** Padded content. Standalone controls (2px) live here, one gutter apart. */\nfunction PanelBody({ className, flush, ...props }: React.ComponentProps<\"div\"> & { /** No padding: for rows, lists or tables that bring their own keylines. */ flush?: boolean }) {\n  return <div data-slot=\"panel-body\" data-flush={flush || undefined} className={cn(\"kl-panel-b\", className)} {...props} />\n}\n\n/** A row of cells on the bottom keyline: use Button layout=\"cell\" for actions, or text cells for status. */\nfunction PanelFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"panel-footer\" className={cn(\"kl-cells kl-panel-f\", className)} {...props} />\n}\n\n/**\n * Joins panels into one region frame: children are separated by 1px keylines that stay correct at any\n * wrap (the frame's line shows through a 1px gap), so a dashboard reads as one instrument, not a pile of cards.\n * Children should be <Panel layout=\"cell\"> (or any element with a background).\n */\nfunction PanelGrid({ className, min = 240, style, ...props }: React.ComponentProps<\"div\"> & { /** Minimum cell width in px before the grid wraps. */ min?: number }) {\n  return <div data-slot=\"panel-grid\" className={cn(\"kl-frame kl-panel-grid\", className)} style={{ \"--kl-pg-min\": `${min}px`, ...style } as React.CSSProperties} {...props} />\n}\n\nexport { Panel, PanelHeader, PanelBody, PanelFooter, PanelGrid }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype PanelLayout = \"control\" | \"cell\";\ntype PanelState = { layout: PanelLayout };\ntype PanelBodyState = { flush: boolean };\ntype PanelPartState = Record<string, never>;\nconst PART_STATE: PanelPartState = {};\n\n/*\n * A region: 3px frame, region cut. Header, body and footer are cells stacked on shared keylines. Its rows keep their\n * height (the body takes the rest). A cell row placed straight in the panel (a Toolbar, a Notice, an ItemList as a\n * cell) is a row of the frame: the body or row under it owns the keyline between them (one edge, one owner).\n * The rules over its children have no specificity (:where), so a child's own utilities win, as they did over the\n * panel's stylesheet (a Scroll Area given `flex-[1_1_auto]` takes the rest). A cell Toolbar and a cell field are left\n * out: their own flex (the toolbar's flex-auto, .kl-field's flex 1) stands.\n */\nconst panel = cn(\n  \"kl-frame flex min-h-0 min-w-0 flex-col\",\n  \"[:where(&>:not(:is([data-slot=toolbar],.kl-field)[data-kl-layout=cell]))]:flex-none\",\n  \"[:where(&>[data-kl-layout=cell]+:is([data-slot=panel-body],[data-kl-layout=cell]))]:border-t-(length:--kl-k1)\",\n  \"[:where(&>[data-kl-layout=cell]+:is([data-slot=panel-body],[data-kl-layout=cell]))]:border-t-kl-line\",\n);\n\ntype PanelProps = PartProps<\"section\", PanelState> & {\n  /** cell: a cell of a PanelGrid (or any frame); no own border or cut. */\n  layout?: PanelLayout;\n};\n\n/**\n * A region: 3px frame, region cut. Header, body and footer are cells stacked on shared keylines.\n * Standalone panels sit one gutter apart. Inside a PanelGrid they become cells of ONE frame.\n */\nfunction Panel({ layout = \"control\", render, className, style, ...props }: PanelProps): React.ReactElement {\n  const state: PanelState = { layout };\n  const own = {\n    ...dataAttrs({ \"kl-layout\": layout }),\n    \"data-slot\": \"panel\",\n    className: resolveClassName(panel, className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  return useRender({ defaultTagName: \"section\", render, state, props: mergeProps<\"section\">(props, own) });\n}\n\n/* In a cell panel the header and footer keylines drop to 1px: the grid's keylines are the region's. */\nconst header = cn(\n  \"kl-cells min-h-[52px] border-b-(length:--kl-k3) border-b-kl-line\",\n  \"[[data-slot=panel][data-kl-layout=cell]>&]:border-b-(length:--kl-k1)\",\n);\n/* the title block clears the frame's cut (--kl-c-room) */\nconst heading = cn(\n  \"grid min-w-0 flex-1 [align-content:center] gap-0.5 py-2.5 pe-(--kl-inset)\",\n  \"ps-[calc(var(--kl-inset)+2px+var(--kl-c-room,0px))]\",\n);\n/* actions are controls one gutter apart, or cells (layout=\"cell\") that run edge to edge on seams */\nconst actionsCell = cn(\n  \"flex flex-none items-center gap-(--kl-gutter) px-(--kl-inset)\",\n  \"has-[>[data-kl-layout=cell]]:items-stretch has-[>[data-kl-layout=cell]]:gap-0 has-[>[data-kl-layout=cell]]:p-0\",\n  \"[:where(&>[data-kl-layout=cell]+[data-kl-layout=cell])]:border-s-(length:--kl-k1)\",\n  \"[:where(&>[data-kl-layout=cell]+[data-kl-layout=cell])]:border-s-kl-seam\",\n);\n\ntype PanelHeaderProps = Omit<PartProps<\"header\", PanelPartState>, \"title\" | \"children\"> & {\n  title: React.ReactNode;\n  code?: React.ReactNode;\n  description?: React.ReactNode;\n  actions?: React.ReactNode;\n  headingLevel?: 2 | 3 | 4;\n};\n\n/** Title (+ optional code and actions). The first header of a cut frame reserves the cut's room. */\nfunction PanelHeader({\n  title,\n  code,\n  description,\n  actions,\n  headingLevel = 2,\n  render,\n  className,\n  style,\n  ...props\n}: PanelHeaderProps): React.ReactElement {\n  const H = `h${headingLevel}` as \"h2\";\n  const own = {\n    \"data-slot\": \"panel-header\",\n    className: resolveClassName(header, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n    children: (\n      <>\n        <div data-slot=\"panel-heading\" className={heading}>\n          {code != null ? <span className=\"kl-code\">{code}</span> : null}\n          <H data-slot=\"panel-title\" className=\"m-0 text-[16px]/[1.25] font-(--kl-weight-strong)\">\n            {title}\n          </H>\n          {description ? (\n            <p data-slot=\"panel-description\" className=\"m-0 text-[13px] text-kl-ink-2\">\n              {description}\n            </p>\n          ) : null}\n        </div>\n        {actions ? (\n          <div data-slot=\"panel-actions\" className={actionsCell}>\n            {actions}\n          </div>\n        ) : null}\n      </>\n    ),\n  };\n  return useRender({\n    defaultTagName: \"header\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"header\">(props, own),\n  });\n}\n\nconst body = cn(\n  \"grid min-h-0 flex-[1_1_auto] [align-content:start] gap-(--kl-gutter) p-[calc(var(--kl-inset)+4px)]\",\n  \"data-flush:gap-0 data-flush:p-0\",\n);\n\ntype PanelBodyProps = PartProps<\"div\", PanelBodyState> & {\n  /** No padding: for rows, lists or tables that bring their own keylines. */\n  flush?: boolean;\n};\n\n/** Padded content. Standalone controls (2px) live here, one gutter apart. */\nfunction PanelBody({ flush = false, render, className, style, ...props }: PanelBodyProps): React.ReactElement {\n  const state: PanelBodyState = { flush };\n  const own = {\n    \"data-slot\": \"panel-body\",\n    className: resolveClassName(body, className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(props, own) });\n}\n\n/* footer cells share the row (flex 1 1 0); a cell field keeps its own (flex: 1), which beat the footer's rule */\nconst footer = cn(\n  \"kl-cells mt-auto border-t-(length:--kl-k3) border-t-kl-line [:where(&>*)]:min-w-0\",\n  \"[:where(&>:not(:is([data-slot=toolbar],.kl-field)[data-kl-layout=cell]))]:flex-[1_1_0]\",\n  \"[[data-slot=panel][data-kl-layout=cell]>&]:border-t-(length:--kl-k1)\",\n  \"[:where(&)>.kl-cell]:flex-auto [:where(&)>.kl-cell]:text-[13px] [:where(&)>.kl-cell]:text-kl-ink-2\",\n);\n\n/** A row of cells on the bottom keyline: use Button layout=\"cell\" for actions, or text cells for status. */\nfunction PanelFooter({ render, className, style, ...props }: PartProps<\"div\", PanelPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"panel-footer\",\n    className: resolveClassName(footer, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\n/*\n * Joined grid (its rules over the children have no specificity, so a child's own utilities win): each cell draws a 1px ring that fills the 1px gap, so neighbours share ONE keyline at any wrap; the\n * frame clips the outer half of the ring under its own border. A child gets the cell surface unless it is a frame\n * given up to the grid (layout=\"cell\": the foundation keeps it transparent). Unfilled grid area stays paper. The first\n * cell clears the frame's cut.\n */\nconst grid = cn(\n  \"kl-frame grid grid-cols-[repeat(auto-fit,minmax(min(var(--kl-pg-min,240px),100%),1fr))] gap-(--kl-k1)\",\n  \"[:where(&>*)]:min-w-0 [:where(&>*)]:[box-shadow:0_0_0_var(--kl-k1)_var(--kl-seam)]\",\n  \"[:where(&>:not(:is(.kl-frame,.kl-ctl)[data-kl-layout=cell]))]:bg-kl-cell\",\n  \"[:where(&>[data-span='2'])]:col-span-2 [@media(max-width:640px)]:[:where(&>[data-span])]:col-auto\",\n  \"[:where(&>:first-child)]:[--kl-c-room:calc(var(--kl-c,0px)*0.35)]\",\n);\n\ntype PanelGridProps = PartProps<\"div\", PanelPartState> & {\n  /** Minimum cell width in px before the grid wraps. */\n  min?: number;\n};\n\n/**\n * Joins panels into one region frame: children are separated by 1px keylines that stay correct at any\n * wrap (the frame's line shows through a 1px gap), so a dashboard reads as one instrument, not a pile of cards.\n * Children should be <Panel layout=\"cell\"> (or any element with a background).\n */\nfunction PanelGrid({ min = 240, render, className, style, ...props }: PanelGridProps): React.ReactElement {\n  const own = {\n    \"data-slot\": \"panel-grid\",\n    className: resolveClassName(grid, className)(PART_STATE),\n    style: resolveStyle({ \"--kl-pg-min\": `${min}px` } as React.CSSProperties, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\nexport {\n  Panel,\n  PanelHeader,\n  PanelBody,\n  PanelFooter,\n  PanelGrid,\n  type PanelProps,\n  type PanelHeaderProps,\n  type PanelBodyProps,\n  type PanelGridProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/panel.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-panel": {
-        "display": "flex",
-        "flex-direction": "column",
-        "min-width": "0",
-        "min-height": "0"
-      },
-      ".kl-panel > *": {
-        "flex": "none"
-      },
-      ".kl-panel-h": {
-        "border-block-end": "var(--kl-k3) solid var(--kl-line)",
-        "min-height": "52px"
-      },
-      ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-h": {
-        "border-block-end-width": "var(--kl-k1)"
-      },
-      ".kl-panel-t": {
-        "flex": "1",
-        "min-width": "0",
-        "display": "grid",
-        "align-content": "center",
-        "gap": "2px",
-        "padding": "10px var(--kl-inset) 10px calc(var(--kl-inset) + 2px + var(--kl-c-room, 0px))"
-      },
-      ".kl-panel-t h2, .kl-panel-t h3, .kl-panel-t h4": {
-        "margin": "0",
-        "font-size": "16px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.25"
-      },
-      ".kl-panel-t p": {
-        "margin": "0",
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-panel-x": {
-        "flex": "none",
-        "display": "flex",
-        "align-items": "center",
-        "gap": "var(--kl-gutter)",
-        "padding-inline": "var(--kl-inset)"
-      },
-      ".kl-panel-x:has(> [data-kl-layout=\"cell\"])": {
-        "padding": "0",
-        "gap": "0",
-        "align-items": "stretch"
-      },
-      ".kl-panel-x > [data-kl-layout=\"cell\"] + [data-kl-layout=\"cell\"]": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-panel-b": {
-        "flex": "1 1 auto",
-        "min-height": "0",
-        "display": "grid",
-        "gap": "var(--kl-gutter)",
-        "align-content": "start",
-        "padding": "calc(var(--kl-inset) + 4px)"
-      },
-      ".kl-panel-b[data-flush]": {
-        "padding": "0",
-        "gap": "0"
-      },
-      ".kl-panel > [data-kl-layout=\"cell\"] + :is(.kl-panel-b, [data-kl-layout=\"cell\"])": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-line)"
-      },
-      ".kl-panel-f": {
-        "border-block-start": "var(--kl-k3) solid var(--kl-line)",
-        "margin-block-start": "auto"
-      },
-      ".kl-panel[data-kl-layout=\"cell\"] > .kl-panel-f": {
-        "border-block-start-width": "var(--kl-k1)"
-      },
-      ".kl-panel-f > *": {
-        "flex": "1 1 0",
-        "min-width": "0"
-      },
-      ".kl-panel-f > .kl-cell": {
-        "flex": "1 1 auto",
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-panel-grid": {
-        "display": "grid",
-        "grid-template-columns": "repeat(auto-fit, minmax(min(var(--kl-pg-min, 240px), 100%), 1fr))",
-        "gap": "var(--kl-k1)"
-      },
-      ".kl-panel-grid > *": {
-        "background-color": "var(--kl-cell)",
-        "min-width": "0",
-        "box-shadow": "0 0 0 var(--kl-k1) var(--kl-seam)"
-      },
-      ".kl-panel-grid > [data-span=\"2\"]": {
-        "grid-column": "span 2"
-      },
-      "@media (max-width: 640px)": {
-        ".kl-panel-grid > [data-span]": {
-          "grid-column": "auto"
-        }
-      },
-      ".kl-panel-grid > :first-child": {
-        "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
-      }
-    }
-  },
   "type": "registry:ui"
 }

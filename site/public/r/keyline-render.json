@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "keyline-render",
+  "title": "Keyline render helpers",
+  "description": "Merge Keyline's classes and styles with a className or style given as a function of state, and mirror variant props to data attributes.",
+  "dependencies": [
+    "@base-ui/react@1.9.0"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/lib/keyline-render.ts",
+      "content": "import type * as React from \"react\";\nimport type { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\n\n/* ------------------------------------------------------------------ *\n * KEYLINE RENDER HELPERS\n * A Base UI part takes `className` and `style` either as values or as functions of the part's state. A wrapper\n * that writes cn(\"…\", className) breaks the function form. These helpers merge Keyline's look with either form.\n * ------------------------------------------------------------------ */\n\nexport type ClassName<State> = string | ((state: State) => string | undefined) | undefined;\nexport type Style<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined) | undefined;\n\n/** Keyline's classes first, then the consumer's (a string, or the result of their function of state), merged by\n * cn() so a consumer utility replaces the matching Keyline one. */\nexport function resolveClassName<State>(base: string, className: ClassName<State>): (state: State) => string {\n  return (state) => cn(base, typeof className === \"function\" ? className(state) : className);\n}\n\n/** Keyline's style, then the consumer's (an object, or the result of their function of state). */\nexport function resolveStyle<State>(\n  base: React.CSSProperties | ((state: State) => React.CSSProperties) | undefined,\n  style: Style<State>,\n): (state: State) => React.CSSProperties {\n  return (state) => ({\n    ...(typeof base === \"function\" ? base(state) : base),\n    ...(typeof style === \"function\" ? style(state) : style),\n  });\n}\n\n/** Variant props mirrored to data attributes (data-variant, data-size, data-layout), so CSS and consumers select\n * on attributes, never on class strings. Undefined values are left out. */\nexport function dataAttrs(props: Record<string, string | null | undefined>): Record<`data-${string}`, string> {\n  const out: Record<`data-${string}`, string> = {};\n  for (const [k, v] of Object.entries(props)) if (v != null) out[`data-${k}`] = v;\n  return out;\n}\n\n/** Props of a Keyline part that is not a Base UI primitive (it renders through useRender): the element's props,\n * `render`, and `className`/`style` as values or functions of the part's state, like a Base UI part. */\nexport type PartProps<Tag extends keyof React.JSX.IntrinsicElements, State> = Omit<\n  React.ComponentPropsWithRef<Tag>,\n  \"className\" | \"style\"\n> & {\n  render?: useRender.RenderProp<State>;\n  className?: ClassName<State>;\n  style?: Style<State>;\n};\n",
+      "type": "registry:lib",
+      "target": "components/keyline/lib/keyline-render.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

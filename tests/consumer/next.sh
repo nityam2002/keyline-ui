@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds an independent Next.js App Router consumer the way the installation guide describes, and checks what the
-# install left behind. Run through scripts/consumer-check.sh (npm run test:consumer -- next), which serves the
+# install left behind. Run through scripts/consumer-check.sh (pnpm test:consumer -- next), which serves the
 # registry; by hand: KEYLINE_REGISTRY='<url>/r/{name}.json' tests/consumer/next.sh <empty-dir>
 #
 # The app deliberately differs from this repository: a src/ directory, the import alias ~/* instead of @/*, and a
@@ -49,13 +49,13 @@ node -e '
   const need = ["@base-ui/react", "recharts", "@fontsource-variable/atkinson-hyperlegible-next", "@fontsource-variable/atkinson-hyperlegible-mono"].filter((p) => !(p in d))
   if (extra.length || need.length) { console.error({ extra, need }); process.exit(1) }'
 ok $? "dependencies: what button, dialog and chart need, and nothing the demo or site uses"
-grep -q '@fontsource-variable/atkinson-hyperlegible-next' src/app/globals.css && grep -q -- '--kl-ink' src/app/globals.css && grep -q '\.kl-dialog' src/app/globals.css
-ok $? "globals.css received the fonts, tokens and the dialog's rules"
+grep -q '@fontsource-variable/atkinson-hyperlegible-next' src/app/globals.css && grep -q -- '--kl-ink' src/app/globals.css && grep -q '\.kl-frame' src/app/globals.css
+ok $? "globals.css received the fonts, tokens and the foundation's rules"
 
 # Pages: the server page imports Keyline directly; the island is the user's own client component.
 cat > src/app/page.tsx <<'TSX'
 import { Button } from "~/components/keyline/ui/button"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogBody } from "~/components/keyline/ui/dialog"
+import { Dialog, DialogTrigger, DialogPopup, DialogHeader, DialogTitle, DialogBody } from "~/components/keyline/ui/dialog"
 import { Button as ShadcnButton } from "~/components/ui/button"
 import { Island } from "./island"
 
@@ -69,12 +69,12 @@ export default function Page() {
       </div>
       <Dialog>
         <DialogTrigger render={<Button />}>Open dialog</DialogTrigger>
-        <DialogContent>
+        <DialogPopup>
           <DialogHeader>
             <DialogTitle>Server-rendered dialog</DialogTitle>
           </DialogHeader>
           <DialogBody>Written in a server component, opened in the browser.</DialogBody>
-        </DialogContent>
+        </DialogPopup>
       </Dialog>
       <Island />
     </main>

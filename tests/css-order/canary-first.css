@@ -1,0 +1,6 @@
+/* The CSS-order check's canary (scripts/css-order-check.mjs): imported before the Keyline stylesheets, while
+   canary-second.css is imported after them. Both set one property on the same selector, so whichever comes last
+   wins: the check must see this element change when it reverses the order, or it is not reordering anything. */
+.kl-css-order-canary {
+  text-decoration-line: overline;
+}

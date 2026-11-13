@@ -2,7 +2,7 @@
 # The opt-in `keyline-shadcn` item in a fresh shadcn project. setup.sh never installs it (that consumer
 # checks Keyline leaves stock shadcn alone), so this builds a bare base-nova app, adds the item twice (the second time
 # with --overwrite, as an upgrade would), and checks that stock shadcn takes Keyline's radius, colours and color-scheme.
-#   Run through scripts/consumer-check.sh (npm run test:consumer), which builds and serves the registry and
+#   Run through scripts/consumer-check.sh (pnpm test:consumer), which builds and serves the registry and
 #   sets KEYLINE_REGISTRY. By hand: KEYLINE_REGISTRY='<url>/r/{name}.json' tests/consumer/shadcn-optin.sh <empty-dir>
 set -euo pipefail
 DIR=${1:?usage: shadcn-optin.sh <empty-dir>}

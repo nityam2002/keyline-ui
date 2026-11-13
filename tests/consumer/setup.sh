@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds an independent consumer: Vite + React + Tailwind 4 + stock shadcn (base-nova), then installs Keyline
 # from a locally served registry into components/keyline/, alongside shadcn's components/ui/.
-#   Run through scripts/consumer-check.sh (npm run test:consumer), which builds and serves the registry and
+#   Run through scripts/consumer-check.sh (pnpm test:consumer), which builds and serves the registry and
 #   sets KEYLINE_REGISTRY. By hand: KEYLINE_REGISTRY='<url>/r/{name}.json' tests/consumer/setup.sh <empty-dir>
 set -euo pipefail
 DIR=${1:?usage: setup.sh <empty-dir>}

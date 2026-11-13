@@ -1,0 +1,158 @@
+{
+  "name": "attachment",
+  "title": "Attachment",
+  "description": "A file as a frame of cells that never change: media, name (the extension stays in view) and detail, one action. Uploading fills the bottom keyline; processing runs the pending segment; error stops the bar in red and floods the media cell with !; an upload that lands floods it yellow with a tick for 900ms. layout=\"cell\" makes it a cell of a Bubble.",
+  "whenToUse": "Use it to show a file as a row, with upload progress, failure and retry. In a chat message, put it in a Bubble as a cell.",
+  "parts": [
+    {
+      "name": "Attachment",
+      "description": "",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): its own frame. cell: a cell of the Bubble it sits in."
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "0–100 while uploading; on error, where it stopped."
+        },
+        {
+          "name": "size",
+          "type": "\"default\" | \"compact\" | \"tile\"",
+          "default": "\"default\"",
+          "required": false,
+          "description": "default: one row. compact: a smaller row for a composer. tile: media above the name (thumbnails)."
+        },
+        {
+          "name": "state",
+          "type": "\"idle\" | \"uploading\" | \"processing\" | \"error\" | \"done\"",
+          "default": "\"done\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "AttachmentAction",
+      "description": "",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element."
+        }
+      ]
+    },
+    {
+      "name": "AttachmentActions",
+      "description": "The action cell(s), each a square key on a seam (cancel, retry, open, remove). Name each button. Keep one action in every state of a sent file, so the frame keeps its width while the action changes.",
+      "props": []
+    },
+    {
+      "name": "AttachmentContent",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "AttachmentDescription",
+      "description": "Size and type in the Code voice; while uploading it adds the percentage, on error it is the reason (announced). It never widens the frame: the name sets the width, and a long reason wraps.",
+      "props": []
+    },
+    {
+      "name": "AttachmentGlyph",
+      "description": "",
+      "props": [
+        {
+          "name": "name",
+          "type": "\"image\" | \"file\" | \"close\" | \"retry\" | \"download\"",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "AttachmentMedia",
+      "description": "The media cell: a 16px glyph, or an <img> (a thumbnail; give it alt=\"\" when the name says what it is). It is also where the outcome lands: it floods red with ! on failure, and yellow with a tick when an upload completes.",
+      "props": []
+    },
+    {
+      "name": "AttachmentTitle",
+      "description": "The file name; a long name keeps its extension in view (end-truncation would hide it). Its direction follows its own text (a Latin name stays \"CMR.pdf\" in an RTL page).",
+      "props": []
+    },
+    {
+      "name": "AttachmentTrigger",
+      "description": "Makes the whole frame open the file: an overlay button or link (render={<a href=…/>}) under the actions. Name it.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-mark",
+      "values": []
+    },
+    {
+      "name": "data-size",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "attachment",
+        "attachment-action",
+        "attachment-actions",
+        "attachment-bar",
+        "attachment-content",
+        "attachment-description",
+        "attachment-mark",
+        "attachment-media",
+        "attachment-title",
+        "attachment-title-extension",
+        "attachment-title-stem",
+        "attachment-trigger"
+      ]
+    },
+    {
+      "name": "data-status",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-att-x",
+      "values": [
+        "var(--kl-msg-x,var(--kl-inset))"
+      ]
+    },
+    {
+      "name": "--kl-bw",
+      "values": [
+        "3px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "attachment-upload",
+      "title": "Attachment: invoice uploads",
+      "file": "attachment-upload.tsx"
+    }
+  ]
+}

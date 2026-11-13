@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar-editor",
+  "title": "Toolbar: memo editor",
+  "description": "An example of Toolbar: memo editor.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/menu",
+    "@keyline-ui/toolbar",
+    "@keyline-ui/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toolbar-editor.tsx",
+      "content": "\"use client\";\n\nimport { AlignCenter, AlignLeft, AlignRight, Bold, Italic, Redo2, Underline, Undo2 } from \"lucide-react\";\nimport { useState } from \"react\";\nimport {\n  Toolbar,\n  ToolbarButton,\n  ToolbarGroup,\n  ToolbarMenuContent,\n  ToolbarMenuTrigger,\n  ToolbarSpacer,\n  ToolbarToggle,\n  ToolbarToggleGroup,\n} from \"../ui/toolbar\";\nimport { Menu, MenuItem } from \"../ui/menu\";\nimport { Tooltip } from \"../ui/tooltip\";\n\nexport function MemoEditor() {\n  const [style, setStyle] = useState<string[]>([\"bold\"]);\n  const [align, setAlign] = useState<string[]>([\"start\"]);\n  const [comments, setComments] = useState(true);\n  const [last, setLast] = useState(\"none\");\n\n  return (\n    <>\n      <Toolbar aria-label=\"Memo formatting\" overflow=\"menu\">\n        <ToolbarGroup aria-label=\"History\">\n          <Tooltip content=\"Undo\" shortcut=\"⌘Z\">\n            <ToolbarButton icon aria-label=\"Undo\" onClick={() => setLast(\"Undo\")}>\n              <Undo2 size={16} aria-hidden=\"true\" />\n            </ToolbarButton>\n          </Tooltip>\n          <ToolbarButton icon aria-label=\"Redo\" disabled>\n            <Redo2 size={16} aria-hidden=\"true\" />\n          </ToolbarButton>\n        </ToolbarGroup>\n        <ToolbarToggleGroup aria-label=\"Text style\" value={style} onValueChange={setStyle}>\n          <ToolbarToggle icon value=\"bold\" aria-label=\"Bold\">\n            <Bold size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"italic\" aria-label=\"Italic\">\n            <Italic size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"underline\" aria-label=\"Underline\">\n            <Underline size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n        </ToolbarToggleGroup>\n        <ToolbarToggleGroup\n          aria-label=\"Alignment\"\n          multiple={false}\n          value={align}\n          onValueChange={(v) => v.length && setAlign(v)}\n        >\n          <ToolbarToggle icon value=\"start\" aria-label=\"Align start\">\n            <AlignLeft size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"centre\" aria-label=\"Align centre\">\n            <AlignCenter size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"end\" aria-label=\"Align end\">\n            <AlignRight size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n        </ToolbarToggleGroup>\n        <Menu>\n          <ToolbarMenuTrigger>Insert</ToolbarMenuTrigger>\n          <ToolbarMenuContent>\n            <MenuItem onClick={() => setLast(\"Insert table\")}>Table</MenuItem>\n            <MenuItem onClick={() => setLast(\"Insert checklist\")}>Checklist</MenuItem>\n            <MenuItem description=\"From the Scranton letterhead\" onClick={() => setLast(\"Insert signature\")}>\n              Signature block\n            </MenuItem>\n          </ToolbarMenuContent>\n        </Menu>\n        <ToolbarSpacer />\n        <ToolbarToggle pressed={comments} onPressedChange={setComments} affix=\"3\">\n          Comments\n        </ToolbarToggle>\n        <ToolbarButton primary onClick={() => setLast(\"Send\")}>\n          Send memo\n        </ToolbarButton>\n      </Toolbar>\n      <p role=\"status\">\n        Last command: {last} · style {style.join(\", \") || \"none\"} · align {align[0]} · comments{\" \"}\n        {comments ? \"on\" : \"off\"}\n      </p>\n    </>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toolbar-editor.tsx"
+    }
+  ],
+  "categories": [
+    "toolbar"
+  ],
+  "type": "registry:block"
+}

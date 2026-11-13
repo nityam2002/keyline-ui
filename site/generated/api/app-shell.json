@@ -1,0 +1,406 @@
+{
+  "name": "app-shell",
+  "title": "App shell",
+  "description": "Header frame (navigation toggle, breadcrumb, actions), a sidebar, the page and an aside, one gutter apart; the sidebar is a full-height column that can collapse to a rail; below a width of its own the sidebar and aside become sheets.",
+  "whenToUse": "Use it as the frame of an application: header, sidebar, page and an optional aside that fold into sheets as its own width shrinks. For one region of a screen use Panel.",
+  "parts": [
+    {
+      "name": "AppShell",
+      "description": "The page around a product's screens: a header frame, the sidebar, the page, and an optional aside, built from the parts above (AppShellRoot, AppShellHeader with AppShellToggle, AppShellCrumbs and AppShellActions, AppShellNav, AppShellMain, AppShellAside). ┌──┬──────────────────────────────────────────────────┬───────┐ │▥ │ Shipments / Rotterdam / SHP-24018 │ acts │ header frame: toggle cell · crumbs · actions └──┴──────────────────────────────────────────────────┴───────┘ ┌────────┐ ┌──────────────────────────────┐ ┌──────────────┐ │ Nav │ │ main │ │ aside │ one gutter apart (C1) └────────┘ └──────────────────────────────┘ └──────────────┘ Three layouts, by the shell's own width: - wide (≥ asideInlineAt): sidebar, page and aside side by side. The toggle cell shows and hides the sidebar column (aria-expanded, aria-controls). The sidebar and aside are sticky, one gutter from the top. - medium (≥ narrowAt): the sidebar stays; the aside opens as an end Sheet, so it never crushes the page. - narrow: the sidebar is a start Sheet opened by the same cell and closed by choosing an item; the aside is an end Sheet bound to `asideOpen` (focus moves in, Escape and the scrim close it, focus returns). - The width is the shell's own, so a shell inside a pane or a preview frame decides for itself. CSS lays the columns out by it (a container query), so the server's HTML is already right for the width it lands in; the measurement (ResizeObserver) then decides only which parts become sheets, and moves nothing. - Motion: the sheets unfold from their edge; the wide column toggles without animation (a layout change that moves the page should be immediate).",
+      "props": [
+        {
+          "name": "actions",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Cells at the header's end. For several commands pass a `<Toolbar layout=\"cell\" overflow=\"menu\">`: it is one Tab stop, and when the header narrows the crumbs give up room first, then the toolbar's last items move into More."
+        },
+        {
+          "name": "aside",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Contextual panel at the end (an Inspector). Shown while `asideOpen`."
+        },
+        {
+          "name": "asideFinalFocus",
+          "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => boolean | void | HTMLElement | null)",
+          "default": "",
+          "required": false,
+          "description": "Where focus goes when the aside's sheet closes (AppShellAside's finalFocus)."
+        },
+        {
+          "name": "asideInlineAt",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "The aside sits beside the page only from this shell width (default narrowAt + 440: room for the sidebar, the aside and a page still worth reading). Between narrowAt and this, the sidebar stays and the aside opens as a sheet, so opening it never crushes the page."
+        },
+        {
+          "name": "asideLabel",
+          "type": "string",
+          "default": "\"Details\"",
+          "required": false,
+          "description": "Names the aside's sheet on narrow layouts."
+        },
+        {
+          "name": "asideOpen",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Whether the aside (AppShellAside) is shown: beside the page where there is room, else as an end sheet."
+        },
+        {
+          "name": "asideSize",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "collapse",
+          "type": "\"hide\" | \"rail\"",
+          "default": "",
+          "required": false,
+          "description": "Wide layout: what closing the sidebar does. \"hide\" (default) removes the column; \"rail\" keeps a narrow column of the Nav's key cells (items need `icon`), with each label as a tooltip on hover and focus."
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Portal container for the sheets (the keyline scope travels with them either way)."
+        },
+        {
+          "name": "defaultNavOpen",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "header",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Header content after the toggle cell: usually <Breadcrumb layout=\"cell\" …/>."
+        },
+        {
+          "name": "mainProps",
+          "type": "DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>",
+          "default": "",
+          "required": false,
+          "description": "Props for the <main> element (AppShellMain)."
+        },
+        {
+          "name": "narrowAt",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "Below this width of the shell itself (not the viewport), the sidebar and aside become sheets. Default 960."
+        },
+        {
+          "name": "nav",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "The sidebar: usually <Nav layout=\"cell\" …/>."
+        },
+        {
+          "name": "navLabel",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Names the sidebar: the toggle cell says \"Show <navLabel>\", the narrow sheet is called this."
+        },
+        {
+          "name": "navOpen",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Wide layout: whether the sidebar column is shown. Controlled or not (default open)."
+        },
+        {
+          "name": "navSize",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": "Wide-layout widths of the sidebar and the inline aside (any CSS length; numbers are px). Defaults 15rem and 22rem."
+        },
+        {
+          "name": "onAsideOpenChange",
+          "type": "(open: boolean, eventDetails: DialogRootChangeEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Called when the aside's sheet asks to close (Escape, the scrim), with Base UI's eventDetails."
+        },
+        {
+          "name": "onNavOpenChange",
+          "type": "(open: boolean) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "stickyHeader",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Keep the header in view while the page scrolls. The sidebar and aside then sit one gutter below it and never move: the page scrolls past a fixed frame. The header sticks at --kl-shell-top (default one gutter; set it to where the shell starts on the page, so nothing shifts on the first scroll), and the columns leave the same room at the bottom."
+        }
+      ]
+    },
+    {
+      "name": "AppShellActions",
+      "description": "Cells at the header's end. For several commands put a `<Toolbar layout=\"cell\" overflow=\"menu\">` here: it is one Tab stop, and when the header narrows the crumbs give up room first, then the toolbar's last items move into More.",
+      "props": []
+    },
+    {
+      "name": "AppShellAside",
+      "description": "A contextual panel at the end (an Inspector), shown while the root's `asideOpen`: beside the page from asideInlineAt, an end sheet below it (focus moves in, Escape and the scrim close it, focus returns). `className`, `style` and `render` reach the column.",
+      "props": [
+        {
+          "name": "finalFocus",
+          "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => boolean | void | HTMLElement | null)",
+          "default": "",
+          "required": false,
+          "description": "Where focus goes when the aside's sheet closes (Base UI finalFocus). The sheet is opened by state, not by a trigger, so pass the control that opened it (a ref): WebKit does not focus a button on click, and without this focus would fall back to whatever was focused before."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "\"Details\"",
+          "required": false,
+          "description": "Names the aside's sheet on narrow and medium layouts. Default \"Details\"."
+        }
+      ]
+    },
+    {
+      "name": "AppShellCrumbs",
+      "description": "The header's content after the toggle, taking the rest of the row: usually a <Breadcrumb layout=\"cell\" />.",
+      "props": []
+    },
+    {
+      "name": "AppShellHeader",
+      "description": "The header frame: a row of cells across the top (AppShellToggle, AppShellCrumbs, AppShellActions).",
+      "props": []
+    },
+    {
+      "name": "AppShellMain",
+      "description": "The page: a <main> landmark in the shell's middle column.",
+      "props": []
+    },
+    {
+      "name": "AppShellNav",
+      "description": "The sidebar: usually a <Nav layout=\"cell\" />. Wide and medium, a sticky column the toggle shows and hides (or collapses to a rail); narrow, a start sheet the toggle opens, closed by choosing a place. `className`, `style` and `render` reach the column.",
+      "props": []
+    },
+    {
+      "name": "AppShellRoot",
+      "description": "The shell's root: the grid, the width it measures, and the sidebar's state. Holds AppShellHeader, AppShellNav, AppShellMain and AppShellAside as direct children.",
+      "props": [
+        {
+          "name": "asideInlineAt",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "The aside sits beside the page only from this shell width (default narrowAt + 440: room for the sidebar, the aside and a page still worth reading). Between narrowAt and this, the sidebar stays and the aside opens as a sheet, so opening it never crushes the page."
+        },
+        {
+          "name": "asideOpen",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Whether the aside (AppShellAside) is shown: beside the page where there is room, else as an end sheet."
+        },
+        {
+          "name": "asideSize",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "collapse",
+          "type": "\"hide\" | \"rail\"",
+          "default": "\"hide\"",
+          "required": false,
+          "description": "Wide layout: what closing the sidebar does. \"hide\" (default) removes the column; \"rail\" keeps a narrow column of the Nav's key cells (items need `icon`), with each label as a tooltip on hover and focus."
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Portal container for the sheets (the keyline scope travels with them either way)."
+        },
+        {
+          "name": "defaultNavOpen",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "narrowAt",
+          "type": "number",
+          "default": "960",
+          "required": false,
+          "description": "Below this width of the shell itself (not the viewport), the sidebar and aside become sheets. Default 960."
+        },
+        {
+          "name": "navLabel",
+          "type": "string",
+          "default": "\"Navigation\"",
+          "required": false,
+          "description": "Names the sidebar: the toggle cell says \"Show <navLabel>\", the narrow sheet is called this."
+        },
+        {
+          "name": "navOpen",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Wide layout: whether the sidebar column is shown. Controlled or not (default open)."
+        },
+        {
+          "name": "navSize",
+          "type": "string | number",
+          "default": "",
+          "required": false,
+          "description": "Wide-layout widths of the sidebar and the inline aside (any CSS length; numbers are px). Defaults 15rem and 22rem."
+        },
+        {
+          "name": "onAsideOpenChange",
+          "type": "(open: boolean, eventDetails: DialogRootChangeEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Called when the aside's sheet asks to close (Escape, the scrim), with Base UI's eventDetails."
+        },
+        {
+          "name": "onNavOpenChange",
+          "type": "(open: boolean) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "stickyHeader",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Keep the header in view while the page scrolls. The sidebar and aside then sit one gutter below it and never move: the page scrolls past a fixed frame. The header sticks at --kl-shell-top (default one gutter; set it to where the shell starts on the page, so nothing shifts on the first scroll), and the columns leave the same room at the bottom."
+        }
+      ]
+    },
+    {
+      "name": "AppShellToggle",
+      "description": "The header's first cell: shows and hides the sidebar column (wide), collapses it to its rail (collapse=\"rail\"), or opens the start sheet (narrow). Named from the root's navLabel; its glyph is the default children.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-aside",
+      "values": []
+    },
+    {
+      "name": "data-kl-at",
+      "values": []
+    },
+    {
+      "name": "data-kl-nav",
+      "values": []
+    },
+    {
+      "name": "data-kl-rail",
+      "values": []
+    },
+    {
+      "name": "data-kl-shell",
+      "values": []
+    },
+    {
+      "name": "data-kl-shell-sheet",
+      "values": [
+        "aside",
+        "nav"
+      ]
+    },
+    {
+      "name": "data-kl-sticky-head",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "app-shell",
+        "app-shell-actions",
+        "app-shell-aside",
+        "app-shell-crumbs",
+        "app-shell-header",
+        "app-shell-main",
+        "app-shell-nav",
+        "app-shell-sentinel",
+        "app-shell-toggle"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bw",
+      "values": [
+        "0px"
+      ]
+    },
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "0px"
+      ]
+    },
+    {
+      "name": "--kl-shell-aside",
+      "values": [
+        "typeof asideSize === \"number\" ? `${asideSize"
+      ]
+    },
+    {
+      "name": "--kl-shell-cols-top",
+      "values": [
+        "calc(var(--kl-shell-top,var(--kl-gutter))+var(--kl-shell-head-h,0px)+var(--kl-gutter))"
+      ]
+    },
+    {
+      "name": "--kl-shell-head-h",
+      "values": [
+        "`${h.getBoundingClientRect("
+      ]
+    },
+    {
+      "name": "--kl-shell-nav",
+      "values": [
+        "typeof navSize === \"number\" ? `${navSize"
+      ]
+    },
+    {
+      "name": "--kl-shell-nav-h",
+      "values": [
+        "h"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "app-shell-office",
+      "title": "App shell: office shell",
+      "file": "app-shell-office.tsx"
+    }
+  ]
+}

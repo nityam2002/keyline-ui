@@ -1,14 +1,14 @@
-import * as ui from "../demo-ui"
+import * as ui from "../demo-ui";
 import {
-NavigationMenu,
-NavigationMenuList,
-NavigationMenuItem,
-NavigationMenuTrigger,
-NavigationMenuLink,
-NavigationMenuContent,
-NavigationMenuGrid,
-NavigationMenuCard,
-} from "@/registry/keyline/ui/navigation-menu"
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuLink,
+  NavigationMenuContent,
+  NavigationMenuGrid,
+  NavigationMenuCard,
+} from "@/registry/keyline/ui/navigation-menu";
 
 /* ------------------------------------------------------------------ *
  * 2. Navigation menu
@@ -21,10 +21,31 @@ function SiteNav({ label = "Main", testid }: { label?: string; testid?: string }
           <NavigationMenuTrigger>Services</NavigationMenuTrigger>
           <NavigationMenuContent>
             <NavigationMenuGrid>
-              <NavigationMenuCard href="#ocean" title="Ocean freight" code="OCN" description="Port to port or door to door, full and part loads." />
-              <NavigationMenuCard href="#air" title="Air freight" code="AIR" description="Next-flight-out and consolidated air cargo." />
-              <NavigationMenuCard href="#customs" title="Customs" code="CUS" description="Declarations, permits and bonded storage." active />
-              <NavigationMenuCard href="#warehousing" title="Warehousing" code="WHS" description="Cross-dock and long-term storage near the quay." />
+              <NavigationMenuCard
+                href="#ocean"
+                title="Ocean freight"
+                code="OCN"
+                description="Port to port or door to door, full and part loads."
+              />
+              <NavigationMenuCard
+                href="#air"
+                title="Air freight"
+                code="AIR"
+                description="Next-flight-out and consolidated air cargo."
+              />
+              <NavigationMenuCard
+                href="#customs"
+                title="Customs"
+                code="CUS"
+                description="Declarations, permits and bonded storage."
+                active
+              />
+              <NavigationMenuCard
+                href="#warehousing"
+                title="Warehousing"
+                code="WHS"
+                description="Cross-dock and long-term storage near the quay."
+              />
             </NavigationMenuGrid>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -32,7 +53,12 @@ function SiteNav({ label = "Main", testid }: { label?: string; testid?: string }
           <NavigationMenuTrigger>Terminals</NavigationMenuTrigger>
           <NavigationMenuContent>
             <NavigationMenuGrid>
-              <NavigationMenuCard href="#rtm" title="Rotterdam" code="RTM" description="ECT Delta, APM Maasvlakte II, RWG." />
+              <NavigationMenuCard
+                href="#rtm"
+                title="Rotterdam"
+                code="RTM"
+                description="ECT Delta, APM Maasvlakte II, RWG."
+              />
               <NavigationMenuCard href="#anr" title="Antwerp" code="ANR" description="PSA Europa, MPET." />
               <NavigationMenuCard href="#ham" title="Hamburg" code="HAM" description="Burchardkai, Altenwerder." />
             </NavigationMenuGrid>
@@ -48,7 +74,7 @@ function SiteNav({ label = "Main", testid }: { label?: string; testid?: string }
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  )
+  );
 }
 export function NavigationMenuSpecimen() {
   return (
@@ -67,7 +93,12 @@ export function NavigationMenuSpecimen() {
               <NavigationMenuTrigger>الخدمات</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <NavigationMenuGrid>
-                  <NavigationMenuCard href="#ocean" title="الشحن البحري" code="OCN" description="من الميناء إلى الميناء." />
+                  <NavigationMenuCard
+                    href="#ocean"
+                    title="الشحن البحري"
+                    code="OCN"
+                    description="من الميناء إلى الميناء."
+                  />
                   <NavigationMenuCard href="#air" title="الشحن الجوي" code="AIR" description="الرحلة التالية." />
                 </NavigationMenuGrid>
               </NavigationMenuContent>
@@ -81,5 +112,5 @@ export function NavigationMenuSpecimen() {
         </NavigationMenu>
       </div>
     </div>
-  )
+  );
 }

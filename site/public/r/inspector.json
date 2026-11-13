@@ -3,117 +3,22 @@
   "name": "inspector",
   "title": "Inspector",
   "description": "Non-modal contextual panel: header with the inspected object's code, key/value cells and a sticky action strip.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "utils",
+    "@keyline-ui/keyline-render",
     "@keyline-ui/scroll-area"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/inspector.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\nimport { ScrollArea } from \"./scroll-area\"\n\n/**\n * Non-modal contextual panel. Its header cites the inspected object's code (e.g. R3/12) so the object\n * and its detail share an address; the action strip is sticky and part of the frame.\n */\nfunction Inspector({ className, ...props }: React.ComponentProps<\"aside\">) {\n  return <aside data-slot=\"inspector\" className={cn(\"kl-frame kl-insp\", className)} {...props} />\n}\n\nfunction InspectorHeader({ code, title, status, onClose, closeLabel = \"Close inspector\" }: { code?: React.ReactNode; title: React.ReactNode; status?: React.ReactNode; onClose?: () => void; closeLabel?: string }) {\n  return (\n    <header className=\"kl-cells kl-insp-h\">\n      <div className=\"kl-insp-t\">\n        {code ? <span className=\"kl-code\">{code}</span> : null}\n        <h2>{title}</h2>\n        {status}\n      </div>\n      {onClose ? (\n        <button type=\"button\" className=\"kl-cell kl-insp-x\" onClick={onClose} aria-label={closeLabel}>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"m4.5 4.5 7 7m0-7-7 7\" />\n          </svg>\n        </button>\n      ) : null}\n    </header>\n  )\n}\n\n/** Key/value cells, two-up. */\nfunction InspectorFacts({ items }: { items: { label: string; value: React.ReactNode }[] }) {\n  return (\n    <dl className=\"kl-insp-kv\">\n      {items.map((it) => (\n        <div key={it.label}>\n          <dt className=\"kl-code\">{it.label}</dt>\n          <dd>{it.value}</dd>\n        </div>\n      ))}\n    </dl>\n  )\n}\n\n/** The inspector's scrolling body: a Keyline Scroll Area (bar on the inline-end edge, native scrolling). */\nfunction InspectorBody({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <ScrollArea data-slot=\"inspector-body\" className=\"kl-insp-scroll\" contentClassName={cn(\"kl-insp-b\", className)} {...(props as object)}>\n      {children}\n    </ScrollArea>\n  )\n}\n\n/** A labelled cell. `span` makes two short sections share a row. */\nfunction InspectorSection({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-insp-s\", className)} {...props} />\n}\nfunction InspectorRow({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-insp-row\", className)} {...props} />\n}\n\nfunction InspectorActions({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div className={cn(\"kl-cells kl-insp-a\", className)} {...props} />\n}\n\nexport { Inspector, InspectorHeader, InspectorFacts, InspectorBody, InspectorSection, InspectorRow, InspectorActions }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\nimport { ScrollArea } from \"./scroll-area\";\n\ntype InspectorPartState = Record<string, never>;\nconst PART_STATE: InspectorPartState = {};\n\n/*\n * Non-modal contextual panel: a region frame (kl-frame clips it) stacking a header, facts, a scrolling body and a\n * sticky action strip. A Notice (layout=\"cell\") under the header is a row of the inspector: like a section it owns its\n * bottom keyline; folded away it owns none. Its rules over children it does not render have no specificity (:where),\n * so the child's own utilities win, as they did over the inspector's stylesheet.\n */\nconst inspector = cn(\n  \"kl-frame flex min-h-0 flex-col\",\n  \"[:where(&>[data-slot=notice-root])]:flex-none\",\n  \"[:where(&>[data-slot=notice-root][data-open])]:border-b-(length:--kl-k1)\",\n  \"[:where(&>[data-slot=notice-root][data-open])]:border-b-kl-seam\",\n);\n\n/**\n * Non-modal contextual panel. Its header cites the inspected object's code (e.g. R3/12) so the object\n * and its detail share an address; the action strip is sticky and part of the frame.\n */\nfunction Inspector({ render, className, style, ...props }: PartProps<\"aside\", InspectorPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector\",\n    className: resolveClassName(inspector, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"aside\", render, state: PART_STATE, props: mergeProps<\"aside\">(props, own) });\n}\n\n/* the title block clears the frame's cut (--kl-c-room); the code is the record's address, the title its name */\nconst heading = \"grid min-w-0 flex-1 gap-[3px] pt-2.5 pe-3.5 pb-3 ps-[calc(14px+var(--kl-c-room,0px))]\";\n\ntype InspectorHeaderProps = Omit<PartProps<\"header\", InspectorPartState>, \"title\" | \"children\"> & {\n  code?: React.ReactNode;\n  title: React.ReactNode;\n  status?: React.ReactNode;\n  onClose?: () => void;\n  closeLabel?: string;\n};\n\nfunction InspectorHeader({\n  code,\n  title,\n  status,\n  onClose,\n  closeLabel = \"Close inspector\",\n  render,\n  className,\n  style,\n  ...props\n}: InspectorHeaderProps): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector-header\",\n    className: resolveClassName(\"kl-cells flex-none border-b-(length:--kl-k3) border-b-kl-line\", className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n    children: (\n      <>\n        <div data-slot=\"inspector-heading\" className={heading}>\n          {code ? <span className=\"kl-code\">{code}</span> : null}\n          <h2\n            data-slot=\"inspector-title\"\n            className=\"m-0 font-(family-name:--kl-font-mono) text-[24px]/[1.1] font-(--kl-weight-strong)\"\n          >\n            {title}\n          </h2>\n          {status}\n        </div>\n        {onClose ? (\n          <button\n            type=\"button\"\n            data-slot=\"inspector-close\"\n            className=\"kl-cell w-[46px] flex-none justify-center\"\n            onClick={onClose}\n            aria-label={closeLabel}\n          >\n            <svg\n              viewBox=\"0 0 16 16\"\n              width=\"16\"\n              height=\"16\"\n              fill=\"none\"\n              stroke=\"currentColor\"\n              strokeWidth=\"1.75\"\n              strokeLinecap=\"square\"\n              aria-hidden\n            >\n              <path d=\"m4.5 4.5 7 7m0-7-7 7\" />\n            </svg>\n          </button>\n        ) : null}\n      </>\n    ),\n  };\n  return useRender({\n    defaultTagName: \"header\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"header\">(props, own),\n  });\n}\n\n/* two facts to a row on seams: the second of a row draws the seam between them, rows after the first the one above */\nconst facts = \"m-0 grid flex-none grid-cols-[1fr_1fr] border-b-(length:--kl-k1) border-b-kl-seam\";\nconst fact = cn(\n  \"grid min-w-0 gap-0.5 px-3.5 py-2\",\n  \"even:border-s-(length:--kl-k1) even:border-s-kl-seam nth-[n+3]:border-t-(length:--kl-k1) nth-[n+3]:border-t-kl-seam\",\n);\n\ntype InspectorFactsProps = Omit<PartProps<\"dl\", InspectorPartState>, \"children\"> & {\n  items: { label: string; value: React.ReactNode }[];\n};\n\n/** Key/value cells, two-up. */\nfunction InspectorFacts({ items, render, className, style, ...props }: InspectorFactsProps): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector-facts\",\n    className: resolveClassName(facts, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n    children: items.map((it) => (\n      <div key={it.label} data-slot=\"inspector-fact\" className={fact}>\n        <dt className=\"kl-code\">{it.label}</dt>\n        <dd className=\"m-0 font-(--kl-weight-strong) wrap-anywhere\">{it.value}</dd>\n      </div>\n    )),\n  };\n  return useRender({ defaultTagName: \"dl\", render, state: PART_STATE, props: mergeProps<\"dl\">(props, own) });\n}\n\ntype InspectorBodyProps = Omit<React.ComponentProps<typeof ScrollArea>, \"className\" | \"style\"> & {\n  className?: string | ((state: InspectorPartState) => string | undefined);\n  style?: React.CSSProperties | ((state: InspectorPartState) => React.CSSProperties | undefined);\n};\n\n/** The inspector's scrolling body: a Keyline Scroll Area (bar on the inline-end edge, native scrolling). `className`\n * and `style` reach the scroll area itself; `contentClassName` lays out what it holds. */\nfunction InspectorBody({ className, style, children, ...props }: InspectorBodyProps): React.ReactElement {\n  return (\n    <ScrollArea\n      className={resolveClassName(\"min-h-0 flex-[1_1_auto]\", className)(PART_STATE)}\n      style={resolveStyle(undefined, style)(PART_STATE)}\n      viewportClassName=\"overscroll-contain\"\n      {...props}\n      data-slot=\"inspector-body\"\n    >\n      {children}\n    </ScrollArea>\n  );\n}\n\nconst section = \"border-b-(length:--kl-k1) border-b-kl-seam px-3.5 pt-3 pb-3.5\";\n\n/** A labelled cell of the body. */\nfunction InspectorSection({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"div\", InspectorPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector-section\",\n    className: resolveClassName(section, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\n/* two short sections sharing a row: the row owns the bottom keyline, the second section the seam between them */\nconst row = cn(\n  \"grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] border-b-(length:--kl-k1) border-b-kl-seam\",\n  \"*:data-[slot=inspector-section]:border-b-0\",\n  \"[&>[data-slot=inspector-section]+[data-slot=inspector-section]]:border-s-(length:--kl-k1)\",\n  \"[&>[data-slot=inspector-section]+[data-slot=inspector-section]]:border-s-kl-seam\",\n);\n\n/** Two sections side by side. */\nfunction InspectorRow({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"div\", InspectorPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector-row\",\n    className: resolveClassName(row, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\n/* the action strip: cells sharing the frame's bottom keyline; a plain cell button is a centred, strong action */\nconst actions = cn(\n  \"kl-cells flex-none border-t-(length:--kl-k3) border-t-kl-line bg-kl-cell [:where(&>*)]:flex-1\",\n  \"[:where(&)>button.kl-cell]:min-h-12 [:where(&)>button.kl-cell]:justify-center\",\n  \"[:where(&)>button.kl-cell]:font-(--kl-weight-strong)\",\n);\n\nfunction InspectorActions({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"div\", InspectorPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"inspector-actions\",\n    className: resolveClassName(actions, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"div\", render, state: PART_STATE, props: mergeProps<\"div\">(props, own) });\n}\n\nexport {\n  Inspector,\n  InspectorHeader,\n  InspectorFacts,\n  InspectorBody,\n  InspectorSection,\n  InspectorRow,\n  InspectorActions,\n  type InspectorHeaderProps,\n  type InspectorFactsProps,\n  type InspectorBodyProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/inspector.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-insp": {
-        "display": "flex",
-        "flex-direction": "column",
-        "min-height": "0",
-        "overflow": "clip"
-      },
-      ".kl-insp-h": {
-        "flex": "none",
-        "border-block-end": "var(--kl-k3) solid var(--kl-line)"
-      },
-      ".kl-insp-t": {
-        "flex": "1",
-        "display": "grid",
-        "gap": "3px",
-        "padding": "10px 14px 12px calc(14px + var(--kl-c-room, 0px))",
-        "min-width": "0"
-      },
-      ".kl-insp-t h2": {
-        "margin": "0",
-        "font-family": "var(--kl-font-mono)",
-        "font-size": "24px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.1"
-      },
-      ".kl-insp-x": {
-        "flex": "none",
-        "width": "46px",
-        "justify-content": "center"
-      },
-      ".kl-insp-kv": {
-        "flex": "none",
-        "display": "grid",
-        "grid-template-columns": "1fr 1fr",
-        "margin": "0",
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-kv > div": {
-        "display": "grid",
-        "gap": "2px",
-        "padding": "8px 14px",
-        "min-width": "0"
-      },
-      ".kl-insp-kv > div:nth-child(even)": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-kv > div:nth-child(n + 3)": {
-        "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-kv dd": {
-        "margin": "0",
-        "font-weight": "var(--kl-weight-strong)",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-insp-scroll": {
-        "flex": "1 1 auto",
-        "min-height": "0"
-      },
-      ".kl-insp-scroll > .kl-scroll-vp": {
-        "overscroll-behavior": "contain"
-      },
-      ".kl-insp-s": {
-        "padding": "12px 14px 14px",
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-row": {
-        "display": "grid",
-        "grid-template-columns": "minmax(0, 1fr) minmax(0, 1fr)",
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-row > .kl-insp-s": {
-        "border-block-end": "0"
-      },
-      ".kl-insp-row > .kl-insp-s + .kl-insp-s": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp > .kl-notice-fold": {
-        "flex": "none"
-      },
-      ".kl-insp > .kl-notice-fold[data-open]": {
-        "border-block-end": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      ".kl-insp-a": {
-        "flex": "none",
-        "border-block-start": "var(--kl-k3) solid var(--kl-line)",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-insp-a > *": {
-        "flex": "1"
-      },
-      ".kl-insp-a > button.kl-cell": {
-        "justify-content": "center",
-        "font-weight": "var(--kl-weight-strong)",
-        "min-height": "48px"
-      }
-    }
-  },
   "type": "registry:ui"
 }

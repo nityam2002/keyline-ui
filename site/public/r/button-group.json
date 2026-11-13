@@ -3,63 +3,23 @@
   "name": "button-group",
   "title": "Button group",
   "description": "Buttons attached in one control frame: Button cells on shared seams, each its own Tab stop; text cells and a heavier separator; horizontal or vertical. Toolbar is the one-Tab-stop row; SplitButton the action with its menu.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
     "@keyline-ui/button",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/button-group.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * Buttons attached in one control frame: cells on shared seams (C1), each button its own Tab stop.\n * Use it for a few related commands that are not a toolbar: Previous · Next, − · 100% · +, Copy · Share. For\n * a row of many commands that should be one Tab stop with arrow keys, use Toolbar; for an action with its\n * menu, SplitButton; for one exclusive choice, Segmented.\n *\n * Children are cells: Button layout=\"cell\", ButtonGroupText, a MenuTrigger rendering a Button cell.\n * `orientation=\"vertical\"` stacks them on horizontal seams. A group inside a group is not drawn (put the\n * groups one gutter apart instead: unrelated parts sit apart).\n */\nfunction ButtonGroup({ className, orientation = \"horizontal\", ...props }: React.ComponentProps<\"div\"> & { orientation?: \"horizontal\" | \"vertical\" }) {\n  return (\n    <div\n      role=\"group\"\n      data-slot=\"button-group\"\n      data-orientation={orientation}\n      className={cn(\"kl-ctl kl-button-group\", orientation === \"vertical\" ? \"kl-rows\" : \"kl-cells\", className)}\n      {...props}\n    />\n  )\n}\n\n/** A text cell in the group: a value between steppers, a unit, a label (\"Page 3\"). Not focusable. */\nfunction ButtonGroupText({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"button-group-text\" className={cn(\"kl-cell kl-button-group-text\", className)} {...props} />\n}\n\n/** A heavier seam between sub-groups of cells (2px, a control's weight) where a plain seam reads as one run. */\nfunction ButtonGroupSeparator({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span role=\"separator\" data-slot=\"button-group-separator\" className={cn(\"kl-button-group-sep\", className)} {...props} />\n}\n\nexport { ButtonGroup, ButtonGroupText, ButtonGroupSeparator }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { Separator as SeparatorPrimitive } from \"@base-ui/react/separator\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype Orientation = \"horizontal\" | \"vertical\";\n\n/** The group's orientation, for its separators (a horizontal row is divided by vertical separators). */\nconst OrientationContext = React.createContext<Orientation>(\"horizontal\");\n\nconst groupVariants = cva(\n  [\n    \"kl-ctl inline-flex w-fit max-w-full bg-kl-cell\",\n    // a Button cell in the group (layout=\"cell\", or a trigger rendering one): the frame's height inside its k2\n    // border, and a roomier label. The group owns these, so they key on the button's slot and layout.\n    \"[&>[data-slot=button][data-kl-layout=cell]]:flex-none\",\n    \"[&>[data-slot=button][data-kl-layout=cell]]:min-h-[calc(var(--kl-ctl)-2*var(--kl-k2))]\",\n    \"[&>[data-slot=button][data-kl-layout=cell]]:[--kl-button-px:calc(var(--kl-inset)+14px)]\",\n    // the separator carries the seam; the next cell does not draw its own (C3, one edge, one owner)\n    \"[&>[data-slot=button-group-separator]+*]:border-s-0 [&>[data-slot=button-group-separator]+*]:border-t-0\",\n  ],\n  {\n    variants: {\n      orientation: {\n        horizontal: \"kl-cells\",\n        vertical: \"kl-rows flex-col [&>[data-slot=button][data-kl-layout=cell]]:justify-start\",\n      },\n    },\n    defaultVariants: { orientation: \"horizontal\" },\n  },\n);\n\ntype ButtonGroupState = { orientation: Orientation };\n\ntype ButtonGroupProps = PartProps<\"div\", ButtonGroupState> & { orientation?: Orientation };\n\n/**\n * Buttons attached in one control frame: cells on shared seams (C1), each button its own Tab stop.\n * Use it for a few related commands that are not a toolbar: Previous · Next, − · 100% · +, Copy · Share. For\n * a row of many commands that should be one Tab stop with arrow keys, use Toolbar; for an action with its\n * menu, SplitButton; for one exclusive choice, Segmented.\n *\n * Children are cells: Button layout=\"cell\", ButtonGroupText, a MenuTrigger rendering a Button cell.\n * `orientation=\"vertical\"` stacks them on horizontal seams. A group inside a group is not drawn (put the\n * groups one gutter apart instead: unrelated parts sit apart).\n */\nfunction ButtonGroup({\n  render,\n  className,\n  style,\n  orientation = \"horizontal\",\n  ...props\n}: ButtonGroupProps): React.ReactElement {\n  const state: ButtonGroupState = { orientation };\n  const own = {\n    ...dataAttrs({ orientation }),\n    \"data-slot\": \"button-group\",\n    className: resolveClassName(cn(groupVariants({ orientation })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  const element = useRender({\n    defaultTagName: \"div\",\n    render,\n    state,\n    props: mergeProps<\"div\">({ role: \"group\" }, props, own),\n  });\n  return <OrientationContext.Provider value={orientation}>{element}</OrientationContext.Provider>;\n}\n\ntype ButtonGroupTextState = Record<string, never>;\nconst TEXT_STATE: ButtonGroupTextState = {};\n\nconst text = cn(\n  \"flex min-h-0 min-w-0 items-center justify-center gap-2 px-(--kl-inset) whitespace-nowrap\",\n  \"text-(length:--kl-text-body) font-(--kl-weight-strong) text-kl-ink-2 tabular-nums\",\n);\n\n/** A text cell in the group: a value between steppers, a unit, a label (\"Page 3\"). Not focusable. */\nfunction ButtonGroupText({\n  render,\n  className,\n  style,\n  ...props\n}: PartProps<\"span\", ButtonGroupTextState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"button-group-text\",\n    className: resolveClassName(text, className)(TEXT_STATE),\n    style: resolveStyle(undefined, style)(TEXT_STATE),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: TEXT_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\nconst separatorVariants = cva(\"flex-none\", {\n  variants: {\n    // across the group's direction: a vertical seam in a row, a horizontal one in a column (a control's weight)\n    orientation: { vertical: \"w-0 border-s-(length:--kl-k2)\", horizontal: \"h-0 border-t-(length:--kl-k2)\" },\n  },\n});\n\n/** A heavier seam between sub-groups of cells (2px, a control's weight) where a plain seam reads as one run. Base\n * UI's Separator, oriented across the group. */\nfunction ButtonGroupSeparator({ className, orientation: own, ...props }: SeparatorPrimitive.Props): React.ReactElement {\n  const group = React.useContext(OrientationContext);\n  const orientation = own ?? (group === \"vertical\" ? \"horizontal\" : \"vertical\");\n  return (\n    <SeparatorPrimitive\n      orientation={orientation}\n      className={resolveClassName(cn(separatorVariants({ orientation })), className)}\n      {...props}\n      data-slot=\"button-group-separator\"\n    />\n  );\n}\n\nexport { ButtonGroup, ButtonGroupText, ButtonGroupSeparator, type ButtonGroupProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/button-group.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-button-group": {
-        "display": "inline-flex",
-        "width": "fit-content",
-        "max-width": "100%",
-        "background-color": "var(--kl-cell)"
-      },
-      ".kl-button-group.kl-rows": {
-        "flex-direction": "column"
-      },
-      ".kl-button-group > .kl-button-cell": {
-        "flex": "none",
-        "min-height": "calc(var(--kl-ctl) - 2 * var(--kl-k2))",
-        "--kl-button-px": "calc(var(--kl-inset) + 14px)"
-      },
-      ".kl-button-group.kl-rows > .kl-button-cell": {
-        "justify-content": "flex-start"
-      },
-      ".kl-button-group-text": {
-        "justify-content": "center",
-        "min-height": "0",
-        "font-variant-numeric": "tabular-nums",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "14px",
-        "color": "var(--kl-ink-2)",
-        "white-space": "nowrap"
-      },
-      ".kl-button-group.kl-cells > .kl-button-group-sep": {
-        "flex": "none",
-        "width": "0",
-        "border-inline-start-width": "var(--kl-k2)"
-      },
-      ".kl-button-group.kl-rows > .kl-button-group-sep": {
-        "flex": "none",
-        "height": "0",
-        "border-block-start-width": "var(--kl-k2)"
-      },
-      ".kl-button-group > .kl-button-group-sep + *": {
-        "border-inline-start": "0",
-        "border-block-start": "0"
-      }
-    }
-  },
   "type": "registry:ui"
 }

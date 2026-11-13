@@ -1,56 +1,68 @@
-import * as React from "react"
-import * as ui from "../demo-ui"
+import * as React from "react";
+import * as ui from "../demo-ui";
 import {
-Menubar,MenubarMenu,MenubarTrigger,MenubarContent,MenubarItem,MenubarCheckboxItem,MenubarRadioGroup,MenubarRadioItem,
-MenubarSeparator,MenubarGroup,MenubarGroupLabel,MenubarSubmenu,MenubarSubmenuTrigger,MenubarSubmenuContent,
-} from "@/registry/keyline/ui/menubar"
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarPopup,
+  MenubarItem,
+  MenubarCheckboxItem,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarGroup,
+  MenubarGroupLabel,
+  MenubarSubmenuRoot,
+  MenubarSubmenuTrigger,
+  MenubarSubmenuPopup,
+} from "@/registry/keyline/ui/menubar";
 
 /* ------------------------------------------------------------------ *
  * 6. Menubar
  * ------------------------------------------------------------------ */
 export function MenubarSpecimen() {
-  const [last, setLast] = React.useState("nothing yet")
-  const [cols, setCols] = React.useState({ status: true, eta: true, value: false })
-  const [rows, setRows] = React.useState("24")
+  const [last, setLast] = React.useState("nothing yet");
+  const [cols, setCols] = React.useState({ status: true, eta: true, value: false });
+  const [rows, setRows] = React.useState("24");
   return (
     <div className={ui.stack}>
       <Menubar aria-label="Shipments">
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem shortcut="⌘N" onClick={() => setLast("New shipment")}>
               New shipment
             </MenubarItem>
             <MenubarItem shortcut="⌘O" onClick={() => setLast("Open")}>
               Open…
             </MenubarItem>
-            <MenubarSubmenu>
+            <MenubarSubmenuRoot>
               <MenubarSubmenuTrigger>Export</MenubarSubmenuTrigger>
-              <MenubarSubmenuContent>
+              <MenubarSubmenuPopup>
                 <MenubarItem onClick={() => setLast("Export CSV")}>CSV</MenubarItem>
                 <MenubarItem onClick={() => setLast("Export XLSX")}>Excel workbook</MenubarItem>
-              </MenubarSubmenuContent>
-            </MenubarSubmenu>
+              </MenubarSubmenuPopup>
+            </MenubarSubmenuRoot>
             <MenubarSeparator />
             <MenubarItem variant="destructive" onClick={() => setLast("Cancel shipment")}>
               Cancel shipment…
             </MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>Edit</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem shortcut="⌘Z" onClick={() => setLast("Undo")}>
               Undo
             </MenubarItem>
             <MenubarItem disabled shortcut="⇧⌘Z">
               Redo
             </MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>View</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarGroup>
               <MenubarGroupLabel>Columns</MenubarGroupLabel>
               <MenubarCheckboxItem checked={cols.status} onCheckedChange={(v) => setCols((c) => ({ ...c, status: v }))}>
@@ -74,24 +86,29 @@ export function MenubarSpecimen() {
                 ))}
               </MenubarRadioGroup>
             </MenubarGroup>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu disabled>
           <MenubarTrigger>Automations</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem>Rules</MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>Help</MenubarTrigger>
-          <MenubarContent>
+          <MenubarPopup>
             <MenubarItem onClick={() => setLast("Shortcuts")}>Keyboard shortcuts</MenubarItem>
-          </MenubarContent>
+          </MenubarPopup>
         </MenubarMenu>
       </Menubar>
       <p className={ui.note} data-testid="specimen-menubar">
-        Last command: {last} · Columns: {Object.entries(cols).filter(([, v]) => v).map(([k]) => k).join(", ") || "none"} · {rows} rows
+        Last command: {last} · Columns:{" "}
+        {Object.entries(cols)
+          .filter(([, v]) => v)
+          .map(([k]) => k)
+          .join(", ") || "none"}{" "}
+        · {rows} rows
       </p>
     </div>
-  )
+  );
 }

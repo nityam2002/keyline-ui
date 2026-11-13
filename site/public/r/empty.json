@@ -3,134 +3,22 @@
   "name": "empty",
   "title": "Empty",
   "description": "Nothing here, said plainly: a count cell, the message and the way out, in one frame or as a cell. Empty, error and first-use kinds.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/empty.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\ntype EmptyKind = \"empty\" | \"error\" | \"start\"\n\ntype EmptyProps = Omit<React.ComponentProps<\"div\">, \"title\"> & {\n  /**\n   * empty: a query or filter matched nothing (the count is 0) · error: the content could not be loaded\n   * (red count cell) · start: nothing has been made yet (first use; the count cell shows a + key line).\n   */\n  kind?: EmptyKind\n  /** The figure in the count cell. Defaults to 0 for empty, \"!\" for error; start shows a glyph. */\n  count?: React.ReactNode\n  /** The Code word under the figure. Defaults to RESULTS, ERROR or NEW. */\n  code?: React.ReactNode\n  title: React.ReactNode\n  description?: React.ReactNode\n  /** Recovery or first actions: Buttons. The first is the way out (clear filters, retry, create). */\n  actions?: React.ReactNode\n  /** control: its own 2px region frame. cell: a cell of an enclosing frame (a panel body, a table). */\n  layout?: \"control\" | \"cell\"\n  /** Heading level of the title (default 3). */\n  headingLevel?: 2 | 3 | 4 | 5 | 6\n  /** Announce when it appears (status; alert for error). Use when it replaces content the user was looking at. */\n  live?: boolean\n}\n\nconst CODE: Record<EmptyKind, string> = { empty: \"RESULTS\", error: \"ERROR\", start: \"NEW\" }\n\n/**\n * A place with nothing in it, said plainly:\n *\n *   ┌────────┬──────────────────────────────────────┬──────────────┐\n *   │   0    │ No shipments match these filters     │ [Clear all]  │\n *   │RESULTS │ Status is Delayed · Carrier is DHL   │              │\n *   └────────┴──────────────────────────────────────┴──────────────┘\n *\n * One frame of three cells: the count (the Count voice: how many there are, which is the fact), the\n * message, and the way out. Below 520px of its own width the actions drop to a row of cells under the\n * message, and the count cell shrinks to a band. No illustration: the number is the picture.\n */\nfunction Empty({ kind = \"empty\", count, code, title, description, actions, layout = \"control\", headingLevel = 3, live, className, ...props }: EmptyProps) {\n  const H = `h${headingLevel}` as \"h3\"\n  const figure = count ?? (kind === \"empty\" ? 0 : kind === \"error\" ? \"!\" : null)\n  const role = live ? (kind === \"error\" ? \"alert\" : \"status\") : undefined\n  return (\n    <div data-slot=\"empty\" data-kind={kind} data-kl-layout={layout} role={role} className={cn(layout === \"control\" ? \"kl-frame\" : null, \"kl-empty\", className)} {...props}>\n      <div className=\"kl-empty-n\">\n        {figure != null ? (\n          <span className=\"kl-empty-fig\">{figure}</span>\n        ) : (\n          <svg className=\"kl-empty-fig\" viewBox=\"0 0 32 32\" width=\"40\" height=\"40\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"3\" strokeLinecap=\"square\" aria-hidden>\n            <path d=\"M16 6v20M6 16h20\" />\n          </svg>\n        )}\n        <span className=\"kl-code\">{code ?? CODE[kind]}</span>\n      </div>\n      <div className=\"kl-empty-t\">\n        <H className=\"kl-empty-title\">{title}</H>\n        {description ? <div className=\"kl-empty-desc\">{description}</div> : null}\n      </div>\n      {actions ? <div className=\"kl-empty-a\">{actions}</div> : null}\n    </div>\n  )\n}\n\nexport { Empty, type EmptyKind, type EmptyProps }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype EmptyKind = \"empty\" | \"error\" | \"start\";\ntype EmptyLayout = \"control\" | \"cell\";\n\n/*\n * EMPTY: one frame of cells (count · message · actions). It is its own size container (kl-empty), so the narrow\n * layout (520px and under) follows the space it is given (a sidebar, a panel cell), not the viewport: the count\n * becomes a band across the top, the actions a row under the message. Every narrow rule is written in full\n * ([@container_kl-empty_(max-width:520px)]:…), the inclusive bound the design measures with.\n */\nconst emptyVariants = cva(\n  [\n    \"@container/kl-empty grid min-h-[200px] min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch\",\n    \"bg-kl-cell text-kl-ink\",\n  ],\n  {\n    variants: {\n      layout: { control: \"kl-frame\", cell: \"min-h-0\" },\n      kind: { empty: \"\", error: \"\", start: \"\" },\n    },\n    compoundVariants: [{ layout: \"control\", kind: \"error\", className: \"border-kl-red [--kl-cut-line:var(--kl-red)]\" }],\n  },\n);\n\n/* the count cell; compact density outranks the narrow band (one attribute more), as it did in the stylesheet */\nconst countVariants = cva(\n  [\n    \"grid min-w-[168px] place-items-center content-center gap-2 py-6 ps-[calc(16px+var(--kl-c,0px)*0.35)] pe-4\",\n    \"border-e-(length:--kl-k1) border-e-kl-line text-[72px]/none font-(--kl-weight-strong) tabular-nums\",\n    \"[[data-kl-density=compact]_&]:min-w-32 [[data-kl-density=compact]_&]:px-3 [[data-kl-density=compact]_&]:py-4\",\n    \"[[data-kl-density=compact]_&]:text-[56px]\",\n    \"[@container_kl-empty_(max-width:520px)]:col-span-full [@container_kl-empty_(max-width:520px)]:grid-flow-col\",\n    \"[@container_kl-empty_(max-width:520px)]:items-baseline [@container_kl-empty_(max-width:520px)]:justify-start\",\n    \"[@container_kl-empty_(max-width:520px)]:min-w-0 [@container_kl-empty_(max-width:520px)]:gap-3\",\n    \"[@container_kl-empty_(max-width:520px)]:border-e-0 [@container_kl-empty_(max-width:520px)]:py-3\",\n    \"[@container_kl-empty_(max-width:520px)]:border-b-(length:--kl-k1)\",\n    \"[@container_kl-empty_(max-width:520px)]:border-b-kl-line [@container_kl-empty_(max-width:520px)]:text-[40px]\",\n  ],\n  {\n    variants: {\n      kind: {\n        empty: \"\",\n        error:\n          \"bg-kl-red text-kl-on-red forced-colors:bg-[Mark] forced-colors:text-[MarkText] forced-colors:forced-color-adjust-none\",\n        start: \"text-kl-ink-2\",\n      },\n    },\n  },\n);\n\nconst content = cn(\n  \"grid min-w-0 content-center gap-1.5 p-6\",\n  \"[@container_kl-empty_(max-width:520px)]:col-span-full [@container_kl-empty_(max-width:520px)]:px-(--kl-inset)\",\n  \"[@container_kl-empty_(max-width:520px)]:py-4\",\n);\n\nconst actions = cn(\n  \"flex flex-col justify-center gap-2 border-s-(length:--kl-k1) border-s-kl-line-soft p-6\",\n  \"[@container_kl-empty_(max-width:520px)]:col-span-full [@container_kl-empty_(max-width:520px)]:flex-row\",\n  \"[@container_kl-empty_(max-width:520px)]:flex-wrap [@container_kl-empty_(max-width:520px)]:justify-start\",\n  \"[@container_kl-empty_(max-width:520px)]:px-(--kl-inset) [@container_kl-empty_(max-width:520px)]:pt-0\",\n  \"[@container_kl-empty_(max-width:520px)]:border-s-0 [@container_kl-empty_(max-width:520px)]:pb-4\",\n);\n\ntype EmptyState = { kind: EmptyKind; layout: EmptyLayout };\n\ntype EmptyProps = Omit<PartProps<\"div\", EmptyState>, \"title\" | \"children\"> & {\n  /**\n   * empty: a query or filter matched nothing (the count is 0) · error: the content could not be loaded\n   * (red count cell) · start: nothing has been made yet (first use; the count cell shows a + key line).\n   */\n  kind?: EmptyKind;\n  /** The figure in the count cell. Defaults to 0 for empty, \"!\" for error; start shows a glyph. */\n  count?: React.ReactNode;\n  /** The Code word under the figure. Defaults to RESULTS, ERROR or NEW. */\n  code?: React.ReactNode;\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  /** Recovery or first actions: Buttons. The first is the way out (clear filters, retry, create). */\n  actions?: React.ReactNode;\n  /** control: its own 2px region frame. cell: a cell of an enclosing frame (a panel body, a table). */\n  layout?: EmptyLayout;\n  /** Heading level of the title (default 3). */\n  headingLevel?: 2 | 3 | 4 | 5 | 6;\n  /** Announce when it appears (status; alert for error). Use when it replaces content the user was looking at. */\n  live?: boolean;\n};\n\nconst CODE: Record<EmptyKind, string> = { empty: \"RESULTS\", error: \"ERROR\", start: \"NEW\" };\n\n/**\n * A place with nothing in it, said plainly:\n *\n *   ┌────────┬──────────────────────────────────────┬──────────────┐\n *   │   0    │ No shipments match these filters     │ [Clear all]  │\n *   │RESULTS │ Status is Delayed · Carrier is DHL   │              │\n *   └────────┴──────────────────────────────────────┴──────────────┘\n *\n * One frame of three cells: the count (the Count voice: how many there are, which is the fact), the\n * message, and the way out. Below 520px of its own width the actions drop to a row of cells under the\n * message, and the count cell shrinks to a band. No illustration: the number is the picture.\n */\nfunction Empty({\n  kind = \"empty\",\n  count,\n  code,\n  title,\n  description,\n  actions: actionNodes,\n  layout = \"control\",\n  headingLevel = 3,\n  live,\n  render,\n  className,\n  style,\n  ...props\n}: EmptyProps): React.ReactElement {\n  const H = `h${headingLevel}` as \"h3\";\n  const figure = count ?? (kind === \"empty\" ? 0 : kind === \"error\" ? \"!\" : null);\n  const state: EmptyState = { kind, layout };\n  const own = {\n    ...dataAttrs({ kind, \"kl-layout\": layout }),\n    \"data-slot\": \"empty\",\n    className: resolveClassName(cn(emptyVariants({ layout, kind })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        <div data-slot=\"empty-count\" className={cn(countVariants({ kind }))}>\n          {figure != null ? (\n            <span data-slot=\"empty-figure\">{figure}</span>\n          ) : (\n            <svg\n              data-slot=\"empty-figure\"\n              viewBox=\"0 0 32 32\"\n              width=\"40\"\n              height=\"40\"\n              fill=\"none\"\n              stroke=\"currentColor\"\n              strokeWidth=\"3\"\n              strokeLinecap=\"square\"\n              aria-hidden\n            >\n              <path d=\"M16 6v20M6 16h20\" />\n            </svg>\n          )}\n          <span data-slot=\"empty-code\" className=\"kl-code text-inherit\">\n            {code ?? CODE[kind]}\n          </span>\n        </div>\n        <div data-slot=\"empty-content\" className={content}>\n          <H\n            data-slot=\"empty-title\"\n            className=\"m-0 text-(length:--kl-text-title)/[1.25] font-(--kl-weight-strong) wrap-anywhere\"\n          >\n            {title}\n          </H>\n          {description ? (\n            <div\n              data-slot=\"empty-description\"\n              className=\"m-0 max-w-[52ch] leading-[1.45] wrap-anywhere text-kl-ink-2 [&>:is(p,ul)]:m-0\"\n            >\n              {description}\n            </div>\n          ) : null}\n        </div>\n        {actionNodes ? (\n          <div data-slot=\"empty-actions\" className={actions}>\n            {actionNodes}\n          </div>\n        ) : null}\n      </>\n    ),\n  };\n  const defaults = { role: live ? (kind === \"error\" ? \"alert\" : \"status\") : undefined };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(defaults, props, own) });\n}\n\nexport { Empty, type EmptyKind, type EmptyProps };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/empty.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-empty": {
-        "container": "kl-empty / inline-size",
-        "display": "grid",
-        "grid-template-columns": "auto minmax(0, 1fr) auto",
-        "align-items": "stretch",
-        "min-height": "200px",
-        "min-width": "0",
-        "background-color": "var(--kl-cell)",
-        "color": "var(--kl-ink)"
-      },
-      ".kl-empty[data-kl-layout=\"cell\"]": {
-        "min-height": "0"
-      },
-      ".kl-empty-n": {
-        "display": "grid",
-        "place-items": "center",
-        "align-content": "center",
-        "gap": "8px",
-        "min-width": "168px",
-        "padding": "24px 16px",
-        "border-inline-end": "var(--kl-k1) solid var(--kl-line)",
-        "font-weight": "var(--kl-weight-strong)",
-        "font-size": "72px",
-        "line-height": "1",
-        "font-variant-numeric": "tabular-nums",
-        "padding-inline-start": "calc(16px + var(--kl-c, 0px) * 0.35)"
-      },
-      "[data-kl-density=\"compact\"] .kl-empty-n, .kl-empty[data-kl-density=\"compact\"] .kl-empty-n": {
-        "min-width": "128px",
-        "font-size": "56px",
-        "padding": "16px 12px"
-      },
-      ".kl-empty-n .kl-code": {
-        "color": "inherit",
-        "font-size": "11px"
-      },
-      ".kl-empty[data-kind=\"error\"] .kl-empty-n": {
-        "background-color": "var(--kl-red)",
-        "color": "var(--kl-on-red)"
-      },
-      ".kl-empty[data-kind=\"error\"]:not([data-kl-layout=\"cell\"])": {
-        "border-color": "var(--kl-red)",
-        "--kl-cut-line": "var(--kl-red)"
-      },
-      ".kl-empty[data-kind=\"start\"] .kl-empty-n": {
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-empty-t": {
-        "display": "grid",
-        "align-content": "center",
-        "gap": "6px",
-        "padding": "24px",
-        "min-width": "0"
-      },
-      ".kl-empty-title": {
-        "margin": "0",
-        "font-size": "20px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.25",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-empty-desc": {
-        "margin": "0",
-        "color": "var(--kl-ink-2)",
-        "max-width": "52ch",
-        "line-height": "1.45",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-empty-desc > :is(p, ul)": {
-        "margin": "0"
-      },
-      ".kl-empty-a": {
-        "display": "flex",
-        "flex-direction": "column",
-        "justify-content": "center",
-        "gap": "8px",
-        "padding": "24px",
-        "border-inline-start": "var(--kl-k1) solid var(--kl-line-soft)"
-      },
-      "@container kl-empty (max-width: 520px)": {
-        ".kl-empty-n": {
-          "grid-column": "1 / -1",
-          "grid-auto-flow": "column",
-          "justify-content": "start",
-          "align-items": "baseline",
-          "gap": "12px",
-          "min-width": "0",
-          "padding-block": "12px",
-          "border-inline-end": "0",
-          "border-block-end": "var(--kl-k1) solid var(--kl-line)",
-          "font-size": "40px"
-        },
-        ".kl-empty-t": {
-          "grid-column": "1 / -1",
-          "padding": "16px var(--kl-inset)"
-        },
-        ".kl-empty-a": {
-          "grid-column": "1 / -1",
-          "flex-direction": "row",
-          "flex-wrap": "wrap",
-          "justify-content": "start",
-          "padding": "0 var(--kl-inset) 16px",
-          "border-inline-start": "0"
-        }
-      },
-      "@media (forced-colors: active)": {
-        ".kl-empty[data-kind=\"error\"] .kl-empty-n": {
-          "forced-color-adjust": "none",
-          "background": "Mark",
-          "color": "MarkText"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

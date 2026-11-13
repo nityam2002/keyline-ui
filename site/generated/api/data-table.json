@@ -1,0 +1,188 @@
+{
+  "name": "data-table",
+  "title": "Data Table",
+  "description": "TanStack Table driving the Keyline table parts: useDataTable (sorting, multi-sort, filters, a search, paging, row selection, column visibility; each slice controlled or not) and DataTable, DataTableBulkBar, DataTablePagination and DataTableSearch. Selecting a row re-renders that row alone.",
+  "whenToUse": "Use it when rows need sorting, filtering, paging and selection worked out for you, on TanStack Table. For a table whose data and state you manage yourself use Table.",
+  "parts": [
+    {
+      "name": "DataTable",
+      "description": "The rows of a TanStack table as Keyline table parts: sort headers with aria-sort and the sort order, an index column of selection checkboxes (Shift extends a range), rows that expand into a detail, and the loading, error and empty rows. Put it in a TableScroll.",
+      "props": [
+        {
+          "name": "bodyProps",
+          "type": "PartProps<\"tbody\", Record<string, never>>",
+          "default": "",
+          "required": false,
+          "description": "Props for the body (a `ref` for useRowMotion)."
+        },
+        {
+          "name": "caption",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The table's name, read before its rows (a TableCaption)."
+        },
+        {
+          "name": "empty",
+          "type": "{ title: ReactNode; body?: ReactNode; action?: ReactNode; count?: ReactNode; }",
+          "default": "",
+          "required": false,
+          "description": "What shows when no row passes the filters (an Empty spanning the grid)."
+        },
+        {
+          "name": "error",
+          "type": "{ title: ReactNode; body?: ReactNode; action?: ReactNode; count?: ReactNode; }",
+          "default": "",
+          "required": false,
+          "description": "Data failed to load: an error row (announced) in place of the rows."
+        },
+        {
+          "name": "expandLabel",
+          "type": "(row: DataTableRowInstance<TData>, expanded: boolean) => string",
+          "default": "detailLabel",
+          "required": false,
+          "description": "The expand toggle's name for a row. Default: \"Show details\" / \"Hide details\"."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "While data loads: a page of loading rows in place of the rows (mark the frame `aria-busy`)."
+        },
+        {
+          "name": "renderDetail",
+          "type": "(row: DataTableRowInstance<TData>) => ReactNode",
+          "default": "",
+          "required": false,
+          "description": "A row's detail, shown under it while it is expanded (the `expanded` slice). Adds an expand column; the row's index cell spans its detail. Keep the function stable: a new one re-renders every row."
+        },
+        {
+          "name": "rowCode",
+          "type": "(row: DataTableRowInstance<TData>, index: number) => ReactNode",
+          "default": "",
+          "required": false,
+          "description": "The index column's code for a row: its place across pages (\"01\") by default; null prints none."
+        },
+        {
+          "name": "rowLabel",
+          "type": "(row: DataTableRowInstance<TData>) => string",
+          "default": "",
+          "required": false,
+          "description": "The selection checkbox's name for a row (\"Select SH-20481\"). Default: \"Select row\" and its code."
+        },
+        {
+          "name": "rowProps",
+          "type": "(row: DataTableRowInstance<TData>) => Omit<TableRowProps, \"selected\" | \"expanded\">",
+          "default": "",
+          "required": false,
+          "description": "Props for a row's TableRow (an onClick, a data attribute). Keep the function stable: a new one re-renders every row."
+        },
+        {
+          "name": "selectAllLabel",
+          "type": "string",
+          "default": "\"Select this page\"",
+          "required": false,
+          "description": "The select-all checkbox's name."
+        },
+        {
+          "name": "table",
+          "type": "Omit<Table<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData>, \"store\"> & { readonly store: ReadonlyStore<TableState_ColumnFiltering & TableState_ColumnVisibility & TableState_GlobalFiltering & TableState_RowExpanding & TableState_RowPagination & TableState_RowSelection & TableState_RowSorting>; Subscribe: { <TSourceValue>(props: { source: SubscribeSource<TSourceValue>; selector?: undefined; children: ReactNode | ((state: TSourceValue) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSourceValue, TSubSelected>(props: { source: SubscribeSource<TSourceValue>; selector: (state: TSourceValue) => TSubSelected; children: ReactNode | ((state: TSubSelected) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSubSelected>(props: Omit<SubscribePropsWithStore<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TSubSelected>, \"source\">): ReactNode | Promise<ReactNode>; }; FlexRender: <TValue extends CellData = unknown>(props: FlexRenderProps<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData, TValue>) => ReactNode; readonly state: Readonly<any>; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DataTableBulkBar",
+      "description": "The bulk bar over a Data Table's selection: the count (announced politely), the scope, the actions. It re-renders on its own when the selection changes.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | ((count: number) => ReactNode)",
+          "default": "",
+          "required": false,
+          "description": "the actions; a function of the selected count (to disable them at 0)"
+        },
+        {
+          "name": "scope",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | ((count: number) => ReactNode)",
+          "default": "",
+          "required": false,
+          "description": "what the selection covers; a function of the selected count"
+        },
+        {
+          "name": "table",
+          "type": "Omit<Table<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData>, \"store\"> & { readonly store: ReadonlyStore<TableState_ColumnFiltering & TableState_ColumnVisibility & TableState_GlobalFiltering & TableState_RowExpanding & TableState_RowPagination & TableState_RowSelection & TableState_RowSorting>; Subscribe: { <TSourceValue>(props: { source: SubscribeSource<TSourceValue>; selector?: undefined; children: ReactNode | ((state: TSourceValue) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSourceValue, TSubSelected>(props: { source: SubscribeSource<TSourceValue>; selector: (state: TSourceValue) => TSubSelected; children: ReactNode | ((state: TSubSelected) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSubSelected>(props: Omit<SubscribePropsWithStore<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TSubSelected>, \"source\">): ReactNode | Promise<ReactNode>; }; FlexRender: <TValue extends CellData = unknown>(props: FlexRenderProps<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData, TValue>) => ReactNode; readonly state: Readonly<any>; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DataTablePagination",
+      "description": "The pager over a Data Table: the range of rows shown, the page, previous and next.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "fills the cell between the range and the buttons (a ToastDock)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "while data loads the range shows \"–\" and the buttons are off"
+        },
+        {
+          "name": "noun",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "what the rows are (\"shipments\")"
+        },
+        {
+          "name": "table",
+          "type": "Omit<Table<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData>, \"store\"> & { readonly store: ReadonlyStore<TableState_ColumnFiltering & TableState_ColumnVisibility & TableState_GlobalFiltering & TableState_RowExpanding & TableState_RowPagination & TableState_RowSelection & TableState_RowSorting>; Subscribe: { <TSourceValue>(props: { source: SubscribeSource<TSourceValue>; selector?: undefined; children: ReactNode | ((state: TSourceValue) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSourceValue, TSubSelected>(props: { source: SubscribeSource<TSourceValue>; selector: (state: TSourceValue) => TSubSelected; children: ReactNode | ((state: TSubSelected) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSubSelected>(props: Omit<SubscribePropsWithStore<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TSubSelected>, \"source\">): ReactNode | Promise<ReactNode>; }; FlexRender: <TValue extends CellData = unknown>(props: FlexRenderProps<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData, TValue>) => ReactNode; readonly state: Readonly<any>; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DataTableSearch",
+      "description": "The toolbar's search box, bound to the table's global filter (every column's text).",
+      "props": [
+        {
+          "name": "table",
+          "type": "Omit<Table<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData>, \"store\"> & { readonly store: ReadonlyStore<TableState_ColumnFiltering & TableState_ColumnVisibility & TableState_GlobalFiltering & TableState_RowExpanding & TableState_RowPagination & TableState_RowSelection & TableState_RowSorting>; Subscribe: { <TSourceValue>(props: { source: SubscribeSource<TSourceValue>; selector?: undefined; children: ReactNode | ((state: TSourceValue) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSourceValue, TSubSelected>(props: { source: SubscribeSource<TSourceValue>; selector: (state: TSourceValue) => TSubSelected; children: ReactNode | ((state: TSubSelected) => ReactNode); }): ReactNode | Promise<ReactNode>; <TSubSelected>(props: Omit<SubscribePropsWithStore<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TSubSelected>, \"source\">): ReactNode | Promise<ReactNode>; }; FlexRender: <TValue extends CellData = unknown>(props: FlexRenderProps<{ rowSortingFeature: TableFeature; sortedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; sortFns: { alphanumeric: CreatedSortFn<any, any>; basic: CreatedSortFn<any, any>; datetime: CreatedSortFn<any, any>; text: CreatedSortFn<any, any>; }; columnFilteringFeature: TableFeature; globalFilteringFeature: TableFeature; filteredRowModel: (table: Table<any, any>) => () => RowModel<any, any>; filterFns: { keyline: CreatedFilterFn<any, any>; search: CreatedFilterFn<any, any>; }; rowPaginationFeature: TableFeature; paginatedRowModel: (table: Table<any, any>) => () => RowModel<any, any>; rowSelectionFeature: TableFeature; rowExpandingFeature: TableFeature; columnVisibilityFeature: TableFeature; }, TData, TValue>) => ReactNode; readonly state: Readonly<any>; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "data-table-orders",
+      "title": "Data Table: orders data table",
+      "file": "data-table-orders.tsx"
+    }
+  ]
+}

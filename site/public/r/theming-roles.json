@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theming-roles",
+  "title": "Theming: role cards",
+  "description": "An example of Theming: role cards.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/theming-roles.tsx",
+      "content": "\"use client\";\n\n// A component of your own, built only from Keyline's role utilities: no colour is written down, so the same\n// markup is right in a light region and a dark one, and under any palette you configure.\nconst STOCK = [\n  { sku: \"20LB-LTR\", label: \"20 lb letter\", cases: 412, floor: 150 },\n  { sku: \"24LB-LGL\", label: \"24 lb legal\", cases: 96, floor: 120 },\n  { sku: \"CARD-110\", label: \"110 lb cardstock\", cases: 38, floor: 40 },\n];\n\nfunction ReorderCard() {\n  const low = STOCK.filter((s) => s.cases < s.floor).length;\n  return (\n    <section\n      aria-label=\"Warehouse stock\"\n      className=\"min-w-0 flex-1 border-3 border-kl-line bg-kl-cell font-kl text-kl-ink\"\n      data-testid=\"role-card\"\n    >\n      <header className=\"flex items-baseline justify-between gap-3 border-b border-kl-seam px-kl-inset py-2.5\">\n        <h3 className=\"m-0 text-[15px] font-kl-strong\">Warehouse stock</h3>\n        <span className=\"font-kl-mono text-[12px] text-kl-ink-3\">SCR-01</span>\n      </header>\n      <ul className=\"m-0 list-none p-0\">\n        {STOCK.map((s) => {\n          const short = s.cases < s.floor;\n          return (\n            <li\n              key={s.sku}\n              className=\"flex items-center gap-3 border-b border-kl-line-soft px-kl-inset py-2 last:border-b-0\"\n            >\n              <span className=\"min-w-0 flex-1 text-[14px]\">{s.label}</span>\n              <span className={`font-kl-mono text-[13px] tabular-nums ${short ? \"text-kl-red-text\" : \"text-kl-ink-2\"}`}>\n                {s.cases} cases\n              </span>\n            </li>\n          );\n        })}\n      </ul>\n      <footer className=\"flex items-center gap-2 bg-kl-inverse px-kl-inset py-2 text-[13px] text-kl-on-inverse\">\n        <span className=\"kl-count text-[20px]\">{low}</span> below the reorder floor\n      </footer>\n    </section>\n  );\n}\n\nexport function RoleCards() {\n  return (\n    <div className=\"flex w-full flex-wrap gap-kl-gutter\">\n      <div className=\"light flex min-w-[240px] flex-1 bg-kl-paper p-3\">\n        <ReorderCard />\n      </div>\n      <div className=\"dark flex min-w-[240px] flex-1 bg-kl-paper p-3\">\n        <ReorderCard />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/theming-roles.tsx"
+    }
+  ],
+  "categories": [
+    "guide"
+  ],
+  "type": "registry:block"
+}

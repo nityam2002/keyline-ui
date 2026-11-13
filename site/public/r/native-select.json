@@ -4,7 +4,7 @@
   "title": "Native select",
   "description": "The platform's own select in a Keyline field frame: the caret cell drawn over its end, the OS list in the page's scheme, options or groups, a Field participant (name, required, validate, Form errors).",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
@@ -14,86 +14,10 @@
   "files": [
     {
       "path": "src/registry/keyline/ui/native-select.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\"\n\nimport { cn } from \"@/lib/utils\"\nimport { FieldMessages, type FieldParticipantProps } from \"./field\"\n\ntype NativeSelectOption = { value: string; label: string; disabled?: boolean }\ntype NativeSelectGroup = { group: string; options: NativeSelectOption[] }\n\ntype NativeSelectProps = Omit<React.ComponentProps<\"select\">, \"multiple\" | \"size\" | \"children\"> &\n  FieldParticipantProps & {\n    label: React.ReactNode\n    /** Options (or labelled groups of options). Or pass <option>/<optgroup> children instead. */\n    options?: (NativeSelectOption | NativeSelectGroup)[]\n    children?: React.ReactNode\n    /** An empty first option. Not selectable again once a value is chosen when `required`. */\n    placeholder?: string\n    /** control: its own frame. cell: a cell of an enclosing frame (label visually hidden). */\n    layout?: \"control\" | \"cell\"\n  }\n\nconst optionEl = (o: NativeSelectOption) => (\n  <option key={o.value} value={o.value} disabled={o.disabled}>\n    {o.label}\n  </option>\n)\n\n/**\n * NativeSelect: the platform's own <select> in a Keyline field frame. For long forms on touch\n * devices, autofill (country, region), and anywhere the OS picker is the better list; Select is the\n * styled listbox for everything else. A Field participant (name, required, validate, Form errors).\n *\n *   ┌─────────────────────────────┬────┐\n *   │ Rotterdam ECT Delta         │ ⌄  │   one frame: the select fills it, the caret cell is drawn\n *   └─────────────────────────────┴────┘   over its end (clicks reach the select)\n *\n * The open list is the operating system's: it follows the page's light or dark scheme, not the theme.\n * Single choice only: a multiple select is a CheckboxGroup or Multiselect here.\n */\nfunction NativeSelect({ label, options, children, placeholder, layout = \"control\", description, error, invalid, validate, validationMode, orientation, className, name, disabled, required, ...props }: NativeSelectProps) {\n  // with a placeholder and no value, start on it: a disabled first option is otherwise skipped by the browser\n  const start = placeholder != null && props.value === undefined && props.defaultValue === undefined ? { defaultValue: \"\" } : null\n  return (\n    <FieldPrimitive.Root\n      data-slot=\"native-select\"\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={name}\n      invalid={invalid}\n      disabled={disabled}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field kl-nsel\", className)}\n    >\n      <FieldPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>{label}</FieldPrimitive.Label>\n      <div data-kl-layout={layout} className=\"kl-ctl kl-cells kl-field-frame kl-edge kl-nsel-frame\">\n        <span className=\"kl-slot kl-field-bang\" aria-hidden>\n          <span>\n            <span>!</span>\n          </span>\n        </span>\n        <FieldPrimitive.Control render={<select />} required={required} className=\"kl-nsel-select kl-edge-part\" {...start} {...(props as object)}>\n          {placeholder != null ? (\n            <option value=\"\" disabled={required}>\n              {placeholder}\n            </option>\n          ) : null}\n          {options\n            ? options.map((o) =>\n                \"group\" in o ? (\n                  <optgroup key={o.group} label={o.group}>\n                    {o.options.map(optionEl)}\n                  </optgroup>\n                ) : (\n                  optionEl(o)\n                ),\n              )\n            : children}\n        </FieldPrimitive.Control>\n        <span className=\"kl-nsel-caret\" aria-hidden>\n          <svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.75\" strokeLinecap=\"square\">\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </div>\n      <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n    </FieldPrimitive.Root>\n  )\n}\n\nexport { NativeSelect, type NativeSelectProps, type NativeSelectOption, type NativeSelectGroup }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { Field as FieldPrimitive } from \"@base-ui/react/field\";\n\nimport { cn } from \"@/lib/utils\";\nimport { FieldMessages, type FieldParticipantProps } from \"./field\";\n\ntype NativeSelectOption = { value: string; label: string; disabled?: boolean };\ntype NativeSelectGroup = { group: string; options: NativeSelectOption[] };\n\ntype NativeSelectProps = Omit<React.ComponentProps<\"select\">, \"multiple\" | \"size\" | \"children\"> &\n  FieldParticipantProps & {\n    label: React.ReactNode;\n    /** Options (or labelled groups of options). Or pass <option>/<optgroup> children instead. */\n    options?: (NativeSelectOption | NativeSelectGroup)[];\n    children?: React.ReactNode;\n    /** An empty first option. Not selectable again once a value is chosen when `required`. */\n    placeholder?: string;\n    /** control: its own frame. cell: a cell of an enclosing frame (label visually hidden). */\n    layout?: \"control\" | \"cell\";\n  };\n\nconst optionEl = (o: NativeSelectOption) => (\n  <option key={o.value} value={o.value} disabled={o.disabled}>\n    {o.label}\n  </option>\n);\n\n/**\n * NativeSelect: the platform's own <select> in a Keyline field frame. For long forms on touch\n * devices, autofill (country, region), and anywhere the OS picker is the better list; Select is the\n * styled listbox for everything else. A Field participant (name, required, validate, Form errors).\n *\n *   ┌─────────────────────────────┬────┐\n *   │ Rotterdam ECT Delta         │ ⌄  │   one frame: the select fills it, the caret cell is drawn\n *   └─────────────────────────────┴────┘   over its end (clicks reach the select)\n *\n * The open list is the operating system's: it follows the page's light or dark scheme, not the theme.\n * Single choice only: a multiple select is a CheckboxGroup or Multiselect here.\n */\nfunction NativeSelect({\n  label,\n  options,\n  children,\n  placeholder,\n  layout = \"control\",\n  description,\n  error,\n  invalid,\n  validate,\n  validationMode,\n  orientation,\n  className,\n  name,\n  disabled,\n  required,\n  ...props\n}: NativeSelectProps) {\n  // with a placeholder and no value, start on it: a disabled first option is otherwise skipped by the browser\n  const start =\n    placeholder != null && props.value === undefined && props.defaultValue === undefined ? { defaultValue: \"\" } : null;\n  return (\n    <FieldPrimitive.Root\n      data-slot=\"native-select\"\n      data-kl-layout={layout}\n      data-kl-orientation={orientation}\n      name={name}\n      invalid={invalid}\n      disabled={disabled}\n      validate={validate}\n      validationMode={validationMode}\n      className={cn(\"kl-field\", className)}\n    >\n      <FieldPrimitive.Label className={cn(\"kl-field-label\", layout === \"cell\" && \"kl-sr\")}>\n        {label}\n      </FieldPrimitive.Label>\n      <div\n        data-kl-layout={layout}\n        data-slot=\"native-select-frame\"\n        className=\"kl-ctl kl-cells kl-field-frame kl-edge relative cursor-pointer in-data-disabled:cursor-not-allowed\"\n      >\n        <span className=\"kl-slot kl-field-bang\" aria-hidden>\n          <span>\n            <span>!</span>\n          </span>\n        </span>\n        <FieldPrimitive.Control\n          render={<select />}\n          required={required}\n          className={cn(\n            \"kl-edge-part m-0 w-0 min-w-0 flex-1 cursor-[inherit] appearance-none bg-transparent py-0 outline-0\",\n            // the caret cell is drawn over the select's end: the text stops before it\n            \"ps-(--kl-inset) pe-[calc(36px+var(--kl-inset))] text-ellipsis whitespace-nowrap text-inherit\",\n            \"font-(family-name:--kl-font) text-(length:--kl-text-lead)\",\n            // the OS list follows the scheme of the scope it opens from: the nearest .dark, or where style queries\n            // exist, the nearest theme scope (--kl-dark)\n            \"[color-scheme:light] in-[.dark]:[color-scheme:dark]\",\n            \"[@container_style(--kl-dark:_0)]:[color-scheme:light] [@container_style(--kl-dark:_1)]:[color-scheme:dark]\",\n            // the placeholder option reads as a placeholder; the options in the list keep the ink\n            \"has-[>option[value='']:checked]:text-kl-ink-3 [&_option]:text-kl-ink\",\n            \"data-disabled:text-kl-dis\",\n          )}\n          {...start}\n          {...(props as object)}\n          data-slot=\"native-select-control\"\n        >\n          {placeholder != null ? (\n            <option value=\"\" disabled={required}>\n              {placeholder}\n            </option>\n          ) : null}\n          {options\n            ? options.map((o) =>\n                \"group\" in o ? (\n                  <optgroup key={o.group} label={o.group}>\n                    {o.options.map(optionEl)}\n                  </optgroup>\n                ) : (\n                  optionEl(o)\n                ),\n              )\n            : children}\n        </FieldPrimitive.Control>\n        {/* the caret cell: over the select's end, out of pointer events so a press anywhere in the frame opens the\n            list */}\n        <span\n          data-slot=\"native-select-icon\"\n          className=\"pointer-events-none absolute inset-y-0 end-0 z-1 box-border grid w-9 place-items-center text-kl-ink in-data-disabled:text-kl-dis\"\n          aria-hidden\n        >\n          <svg\n            viewBox=\"0 0 16 16\"\n            width=\"16\"\n            height=\"16\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"1.75\"\n            strokeLinecap=\"square\"\n          >\n            <path d=\"m4 6 4 4 4-4\" />\n          </svg>\n        </span>\n      </div>\n      <FieldMessages description={description} error={error} invalid={invalid} layout={layout} />\n    </FieldPrimitive.Root>\n  );\n}\n\nexport { NativeSelect, type NativeSelectProps, type NativeSelectOption, type NativeSelectGroup };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/native-select.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-nsel-frame": {
-        "position": "relative",
-        "cursor": "pointer"
-      },
-      ".kl-nsel-select": {
-        "flex": "1",
-        "min-width": "0",
-        "width": "0",
-        "margin": "0",
-        "border": "0",
-        "border-radius": "0",
-        "outline": "0",
-        "appearance": "none",
-        "padding-block": "0",
-        "padding-inline": "var(--kl-inset) calc(36px + var(--kl-inset))",
-        "background": "transparent",
-        "color": "inherit",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "font-size": "15px",
-        "text-overflow": "ellipsis",
-        "white-space": "nowrap",
-        "cursor": "inherit",
-        "color-scheme": "light"
-      },
-      ".dark .kl-nsel-select": {
-        "color-scheme": "dark"
-      },
-      "@container style(--kl-dark: 1)": {
-        ".kl-nsel-select": {
-          "color-scheme": "dark"
-        }
-      },
-      "@container style(--kl-dark: 0)": {
-        ".kl-nsel-select": {
-          "color-scheme": "light"
-        }
-      },
-      ".kl-nsel-select:has(> option[value=\"\"]:checked)": {
-        "color": "var(--kl-ink-3)"
-      },
-      ".kl-nsel-select option": {
-        "color": "var(--kl-ink)"
-      },
-      ".kl-nsel-caret": {
-        "position": "absolute",
-        "inset-block": "0",
-        "inset-inline-end": "0",
-        "z-index": "1",
-        "display": "grid",
-        "place-items": "center",
-        "width": "36px",
-        "box-sizing": "border-box",
-        "pointer-events": "none",
-        "color": "var(--kl-ink)"
-      },
-      ".kl-field[data-disabled] .kl-nsel-select": {
-        "color": "var(--kl-dis)",
-        "cursor": "not-allowed"
-      },
-      ".kl-field[data-disabled] .kl-nsel-caret": {
-        "color": "var(--kl-dis)"
-      },
-      ".kl-field[data-disabled] .kl-nsel-frame": {
-        "cursor": "not-allowed"
-      },
-      ".kl-nsel-frame > .kl-field-bang + .kl-nsel-select": {
-        "border-inline-start-width": "0"
-      },
-      ".kl-nsel.kl-field[data-invalid] .kl-nsel-frame > .kl-field-bang + .kl-nsel-select": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-red)"
-      }
-    }
-  },
   "type": "registry:ui"
 }

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-invoices",
+  "title": "Checkbox: print invoices",
+  "description": "An example of Checkbox: print invoices.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/checkbox",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/checkbox-invoices.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Checkbox } from \"../ui/checkbox\";\n\nconst INVOICES = [\n  { id: \"INV-2201\", client: \"Blue Cross of Pennsylvania\", amount: \"$3,420.00\" },\n  { id: \"INV-2204\", client: \"Lackawanna County\", amount: \"$812.50\" },\n  { id: \"INV-2207\", client: \"Scranton Business Park\", amount: \"$1,284.00\" },\n];\n\nexport function PrintInvoices() {\n  const [picked, setPicked] = useState<string[]>([]);\n  const [printed, setPrinted] = useState<string | null>(null);\n\n  return (\n    <div className=\"grid max-w-[520px] gap-3\">\n      <ul className=\"m-0 grid list-none gap-2 p-0 text-[14px]\" aria-label=\"Unpaid invoices\">\n        {INVOICES.map((inv) => (\n          <li key={inv.id} className=\"grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-x-3\">\n            <Checkbox\n              aria-label={`Print ${inv.id}`}\n              checked={picked.includes(inv.id)}\n              onCheckedChange={(on) => setPicked(on ? [...picked, inv.id] : picked.filter((p) => p !== inv.id))}\n            />\n            <span className=\"font-kl-mono whitespace-nowrap\">{inv.id}</span>\n            <span className=\"truncate\">{inv.client}</span>\n            <span className=\"text-kl-ink-2 tabular-nums\">{inv.amount}</span>\n          </li>\n        ))}\n      </ul>\n      <div className=\"flex flex-wrap items-center gap-3\">\n        <Button\n          disabled={!picked.length}\n          onClick={() => {\n            setPrinted(`Sent ${picked.length} to the printer by the kitchen.`);\n            setPicked([]);\n          }}\n        >\n          {picked.length ? `Print ${picked.length} ${picked.length === 1 ? \"invoice\" : \"invoices\"}` : \"Print invoices\"}\n        </Button>\n        <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n          {printed}\n        </p>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/checkbox-invoices.tsx"
+    }
+  ],
+  "categories": [
+    "checkbox"
+  ],
+  "type": "registry:block"
+}

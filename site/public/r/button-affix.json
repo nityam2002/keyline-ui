@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-affix",
+  "title": "Button: warehouse queue",
+  "description": "An example of Button: warehouse queue.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/button-affix.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button, ButtonAffix } from \"../ui/button\";\n\nexport function WarehouseQueue() {\n  const [slips, setSlips] = useState(4);\n  const [printed, setPrinted] = useState(0);\n\n  const print = () => {\n    setPrinted((p) => p + slips);\n    setSlips(0);\n  };\n\n  return (\n    <div className=\"grid gap-4\">\n      <div className=\"flex flex-wrap gap-3\">\n        <Button disabled={slips === 0} onClick={print}>\n          Print packing slips\n          <ButtonAffix>{slips}</ButtonAffix>\n        </Button>\n        <Button size=\"compact\" onClick={() => setSlips((s) => s + 1)}>\n          New order in\n        </Button>\n      </div>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {slips === 0\n          ? `All caught up. ${printed} slips sent to Darryl’s printer.`\n          : `${slips} slips waiting in the warehouse queue.`}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/button-affix.tsx"
+    }
+  ],
+  "categories": [
+    "button"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,386 @@
+{
+  "name": "date-range",
+  "title": "Date range picker",
+  "description": "Range calendar on react-day-picker (pinned) styled as a Keyline grid: a flooded range with ink ends, row-break notches, hover and keyboard preview, hatched unavailable days, month and year dropdowns, min/max, presets and a day count.",
+  "whenToUse": "Use it to choose a first and a last day, such as a booking or a report period. For a single day use Date picker.",
+  "parts": [
+    {
+      "name": "CalendarGlyph",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DateRangeAffix",
+      "description": "The calendar glyph's cell at the trigger's start (hidden from assistive tech). Children replace the glyph.",
+      "props": []
+    },
+    {
+      "name": "DateRangeCaption",
+      "description": "The footer's caption: the range in words, or what the consumer's `caption` says.",
+      "props": []
+    },
+    {
+      "name": "DateRangeCount",
+      "description": "The day count at the trigger's end: the number, then its unit in the Code voice.",
+      "props": []
+    },
+    {
+      "name": "DateRangeFooter",
+      "description": "The row under the calendar: the total, then the caption.",
+      "props": []
+    },
+    {
+      "name": "DateRangePicker",
+      "description": "Trigger field + docked calendar panel with presets and a day count, built from the parts above.",
+      "props": [
+        {
+          "name": "caption",
+          "type": "(r: DateRange | null) => ReactNode",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isDateUnavailable",
+          "type": "Unavailable",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (e.g. a toolbar); the label is visually hidden."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "max",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "min",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": "Earliest and latest choosable day. Navigation stops at their months; days outside are disabled."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(r: DateRange) => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "presets",
+          "type": "{ label: string; range: () => DateRange; }[]",
+          "default": "[]",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "today",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "DateRange",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DateRangePopup",
+      "description": "The calendar's surface: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. It docks to the trigger and carries the configuration (density, motion, theme, dir) of the place it is written. Focus lands on the grid's day.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "The frame the popup docks to: `cell` when the trigger has `layout=\"cell\"`."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<PopoverPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Popover.Portal."
+        }
+      ]
+    },
+    {
+      "name": "DateRangePreset",
+      "description": "One quick choice: a key cell (its label travels under a press).",
+      "props": []
+    },
+    {
+      "name": "DateRangePresets",
+      "description": "A row of quick choices under the calendar.",
+      "props": []
+    },
+    {
+      "name": "DateRangeTotal",
+      "description": "The footer's count of days: a Count (`kl-count`) over its unit in the Code voice.",
+      "props": []
+    },
+    {
+      "name": "DateRangeTrigger",
+      "description": "The trigger: a field frame of cells (pass the affix, value and count). `layout=\"cell\"`: a cell of an enclosing frame.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DateRangeValue",
+      "description": "The value cell: the chosen range, or the placeholder.",
+      "props": [
+        {
+          "name": "placeholder",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Shown, in the placeholder's ink, while there are no children."
+        }
+      ]
+    },
+    {
+      "name": "RangeCalendar",
+      "description": "Keyline range calendar on react-day-picker (the grid, keyboard, focus and month navigation are the library's). The committed range FLOODS yellow, endpoints flood ink. Where the range breaks across week rows, the cut cells carry a notch pointing in reading direction (\"continues\"). Unavailable days are hatched, disabled and skipped by the arrow keys. A press or Enter sets the start, then the end; moving after the start (pointer or keys) previews the range; Escape drops the pending start.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isDateUnavailable",
+          "type": "Unavailable",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "\"en-GB\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "max",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "min",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": "Earliest and latest choosable day. Navigation stops at their months; days outside are disabled."
+        },
+        {
+          "name": "onEscape",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": "Called when the user presses Escape with no pending start (lets a popover close)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(r: DateRange) => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "today",
+          "type": "Date",
+          "default": "sod(new Date())",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "DateRange",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "number",
+          "default": "1",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-cont-next",
+      "values": []
+    },
+    {
+      "name": "data-cont-prev",
+      "values": []
+    },
+    {
+      "name": "data-end",
+      "values": []
+    },
+    {
+      "name": "data-in-range",
+      "values": []
+    },
+    {
+      "name": "data-kl-flood",
+      "values": [
+        "manual"
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": [
+        "cell"
+      ]
+    },
+    {
+      "name": "data-kl-on",
+      "values": []
+    },
+    {
+      "name": "data-pending",
+      "values": []
+    },
+    {
+      "name": "data-preview",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "calendar-dropdown",
+        "date-range",
+        "date-range-placeholder",
+        "date-range-popup",
+        "date-range-trigger",
+        "range-calendar",
+        "select"
+      ]
+    },
+    {
+      "name": "data-today",
+      "values": []
+    },
+    {
+      "name": "data-unavailable",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-day",
+      "values": [
+        "34px",
+        "44px"
+      ]
+    },
+    {
+      "name": "--kl-dock-w",
+      "values": [
+        "9rem",
+        "calc(7*var(--kl-day)+2*var(--kl-k2))"
+      ]
+    },
+    {
+      "name": "--kl-fc",
+      "values": [
+        "color-mix(in oklab,var(--kl-yellow) 45%,var(--kl-cell))"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "date-range-vacation",
+      "title": "Date range picker: vacation request",
+      "file": "date-range-vacation.tsx"
+    }
+  ]
+}

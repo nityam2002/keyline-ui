@@ -35,7 +35,7 @@ single keyline, and every state change happens inside a cell.
 - **Your code.** Like any shadcn registry, Keyline copies each component's source into your project, so it is
   yours to read and change. There is no runtime package to keep up with.
 - **Accessible foundations.** Interactive parts are built on Base UI primitives, which handle keyboard, focus and
-  ARIA; Keyline's browser tests check them in Chrome and WebKit.
+  ARIA; Keyline's browser tests check them in Chrome, Firefox and WebKit.
 - **Lives beside shadcn.** Components install under `components/keyline/`, next to shadcn's `components/ui/`, and
   their styles only touch Keyline's own classes. An opt-in theme brings stock shadcn components into the same
   look when you want it.
@@ -61,12 +61,12 @@ export function Save() {
 }
 ```
 
-Each component arrives with the Keyline components, packages and fonts it needs. Its CSS (the `--kl-*` tokens and
-its own `kl-` rules) is merged into the stylesheet named in your `components.json`; those rules only style
-Keyline's classes, so your existing components, tokens and `body` look the same.
+Each component arrives with the Keyline components, packages and fonts it needs. It is styled with Tailwind
+utilities in its source and adds no CSS of its own; the theme's CSS (the `--kl-*` tokens and the shared
+construction rules) is merged into the stylesheet named in your `components.json`. Those rules only style
+Keyline's names, so your existing components, tokens and `body` look the same.
 
-The [installation guide](https://keyline-ui.dev/docs/installation) (also in [docs/usage.md](docs/usage.md#install))
-covers new and existing projects, requirements, updating and removing.
+The [installation guide](https://keyline-ui.dev/docs/installation) covers new and existing projects, requirements, updating and removing.
 
 ## Components
 
@@ -95,17 +95,17 @@ reaches your project only when you add a component again with `--overwrite`.
 
 ## Develop Keyline
 
-Node.js 24 (see `.nvmrc`):
+Node.js 24 (see `.nvmrc`) and pnpm (the version is pinned in `package.json`; `corepack enable` provides it):
 
 ```sh
-npm ci
-npm run dev          # demo app on :5291: every component, the playground (#/playground), a records workflow (#/app)
-npm run site:dev     # documentation site on :5293: examples, install commands and props for each component
-npm run check        # types, unit and browser tests, the registry build
+pnpm install
+pnpm dev             # demo app on :5291: every component, the playground (#/playground), a records workflow (#/app)
+pnpm site:dev        # documentation site on :5293: examples, install commands and props for each component
+pnpm check           # types, lint, format, unit and browser tests, the registry build
 ```
 
 ```text
-src/registry/   the components as they ship (src/registry/manifest.mjs lists the items)
+src/registry/   the components as they ship, each with a <name>.meta.ts describing its item
 src/demo/       the demo app the browser tests run against
 src/lib/        cn(), standing in for a consumer's shadcn setup
 site/           the documentation site; site/public/r/ is the built registry it serves
@@ -119,7 +119,9 @@ docs/           usage, design rules and the release procedure
 ## Documentation
 
 - [keyline-ui.dev](https://keyline-ui.dev): installation and one page per component.
-- [docs/usage.md](docs/usage.md): installing, configuring, modes, colour roles, composition rules, known limits.
+- The site's guides: [installation](https://keyline-ui.dev/docs/installation), [theming](https://keyline-ui.dev/docs/theming),
+  [modes](https://keyline-ui.dev/docs/modes), [configuration](https://keyline-ui.dev/docs/configuration) and
+  [composition](https://keyline-ui.dev/docs/composition) (colour roles, composition rules, known limits).
 - [docs/design.md](docs/design.md): the design model, and the rules a new component follows.
 
 ## Contributing

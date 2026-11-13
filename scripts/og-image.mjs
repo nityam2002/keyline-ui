@@ -4,28 +4,29 @@
 // real fonts. Run it again when the headline, the mark or the land changes:
 //
 //   node scripts/og-image.mjs
-import { chromium } from "playwright"
-import { readFileSync, writeFileSync } from "node:fs"
-import { land, isIndex, VIEW, TENTHS } from "../site/lib/contours.ts"
+import { chromium } from "playwright";
+import { readFileSync, writeFileSync } from "node:fs";
+import { land, isIndex, VIEW, TENTHS } from "../site/lib/contours.ts";
 
-const ROOT = new URL("..", import.meta.url)
+const ROOT = new URL("..", import.meta.url);
 // inlined: a page set with setContent is about:blank, which may not load file: URLs
-const font = (pkg, file) => `data:font/woff2;base64,${readFileSync(new URL(`node_modules/@fontsource-variable/${pkg}/files/${file}`, ROOT)).toString("base64")}`
-const OUT = new URL("site/public/og.png", ROOT)
+const font = (pkg, file) =>
+  `data:font/woff2;base64,${readFileSync(new URL(`node_modules/@fontsource-variable/${pkg}/files/${file}`, ROOT)).toString("base64")}`;
+const OUT = new URL("site/public/og.png", ROOT);
 
-const HEADLINE = "Controls that fit together."
-const LINE = "React components for dense interfaces, on Base UI, installed from a shadcn registry."
+const HEADLINE = "Controls that fit together.";
+const LINE = "React components for dense interfaces, on Base UI, installed from a shadcn registry.";
 
 // the light theme's resolved colours (site/app/icon.svg and --kl-paper / --kl-line-soft in keyline.css)
-const C = { paper: "#f0f0f3", ink: "#14151a", ink2: "#4a4c55", soft: "#c4c5cc", cobalt: "#1d4ed8" }
+const C = { paper: "#f0f0f3", ink: "#14151a", ink2: "#4a4c55", soft: "#c4c5cc", cobalt: "#1d4ed8" };
 
-const { rings, keyline } = land()
+const { rings, keyline } = land();
 const svg = `<svg viewBox="${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}" preserveAspectRatio="xMidYMid slice">
   <g transform="scale(${1 / TENTHS})" fill="none">
     ${rings.map((r) => `<path d="${r.d}" stroke="${isIndex(r.level) ? "rgba(29,78,216,.3)" : C.soft}" stroke-width="${isIndex(r.level) ? 1.25 : 1}" vector-effect="non-scaling-stroke"/>`).join("")}
     <path d="${keyline}" stroke="rgba(29,78,216,.55)" stroke-width="3" vector-effect="non-scaling-stroke"/>
   </g>
-</svg>`
+</svg>`;
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face { font-family: Atkinson; src: url(${font("atkinson-hyperlegible-next", "atkinson-hyperlegible-next-latin-wght-normal.woff2")}); font-weight: 200 800; }
@@ -46,12 +47,12 @@ h1 { position: relative; font-size: 92px; line-height: 1; font-weight: 800; lett
 <div class="top"><svg width="44" height="44" viewBox="0 0 22 22" shape-rendering="crispEdges"><rect x="0" y="0" width="14" height="14" fill="${C.cobalt}"/><path d="M3 3h19v19H3zM6 6v13h13V6z" fill-rule="evenodd" fill="${C.ink}"/></svg><span class="mark">Keyline UI</span></div>
 <div><h1>${HEADLINE}</h1><p class="line">${LINE}</p></div>
 <div class="foot"><span>React 19 · TypeScript · Tailwind CSS 4</span><span>MIT licence · pre-release</span></div>
-</div></body></html>`
+</div></body></html>`;
 
-const browser = await chromium.launch({ channel: "chrome" })
-const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 })
-await page.setContent(html, { waitUntil: "load" })
-await page.evaluate(() => document.fonts.ready)
-writeFileSync(OUT, await page.screenshot({ type: "png" }))
-await browser.close()
-console.log(`wrote ${OUT.pathname}`)
+const browser = await chromium.launch({ channel: "chrome" });
+const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+await page.setContent(html, { waitUntil: "load" });
+await page.evaluate(() => document.fonts.ready);
+writeFileSync(OUT, await page.screenshot({ type: "png" }));
+await browser.close();
+console.log(`wrote ${OUT.pathname}`);

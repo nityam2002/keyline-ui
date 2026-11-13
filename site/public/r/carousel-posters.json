@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carousel-posters",
+  "title": "Carousel: employee of the month",
+  "description": "An example of Carousel: employee of the month.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/carousel",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/carousel-posters.tsx",
+      "content": "\"use client\";\n\nimport {\n  Carousel,\n  CarouselBar,\n  CarouselContent,\n  CarouselItem,\n  CarouselNext,\n  CarouselPosition,\n  CarouselPrevious,\n} from \"../ui/carousel\";\n\nconst POSTERS = [\n  { month: \"January\", who: \"Stanley Hudson\", why: \"Closed the Hammermill account without leaving his chair.\" },\n  { month: \"February\", who: \"Phyllis Vance\", why: \"Most repeat clients in the branch, eleven months running.\" },\n  { month: \"March\", who: \"Dwight Schrute\", why: \"1,680 reams. He'd like you to know it was 1,680.\" },\n  { month: \"April\", who: \"Jim Halpert\", why: \"Won back Blue Cross of Pennsylvania.\" },\n  { month: \"May\", who: \"Darryl Philbin\", why: \"Not one late delivery, through three snowstorms.\" },\n];\n\nexport function EmployeeOfTheMonth() {\n  return (\n    <Carousel aria-label=\"Employee of the month\">\n      <CarouselContent>\n        {POSTERS.map((p) => (\n          <CarouselItem key={p.month} basis=\"min(100%, 280px)\">\n            <div className=\"grid min-h-[180px] content-between gap-6 p-5\">\n              <span className=\"font-kl-mono text-[13px] text-kl-ink-2\">{p.month}</span>\n              <span className=\"grid gap-2\">\n                <span className=\"text-[22px] leading-tight font-semibold\">{p.who}</span>\n                <span className=\"text-[14px] text-kl-ink-2\">{p.why}</span>\n              </span>\n            </div>\n          </CarouselItem>\n        ))}\n      </CarouselContent>\n      <CarouselBar>\n        <CarouselPrevious />\n        <CarouselPosition />\n        <CarouselNext />\n      </CarouselBar>\n    </Carousel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/carousel-posters.tsx"
+    }
+  ],
+  "categories": [
+    "carousel"
+  ],
+  "type": "registry:block"
+}

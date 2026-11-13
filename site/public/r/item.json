@@ -4,152 +4,20 @@
   "title": "Item",
   "description": "List rows on shared keylines: media cell, content, meta and action cells; render-prop rows for links and buttons.",
   "dependencies": [
-    "@base-ui/react"
+    "@base-ui/react@1.9.0"
   ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/item.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\"\nimport { useRender } from \"@base-ui/react/use-render\"\n\nimport { cn } from \"@/lib/utils\"\n\n/** Whether an Item sits in an ItemList: only there is it a list item. */\nconst InList = React.createContext(false)\n\n/**\n * A list of rows on shared keylines: settings, members, files, integrations. As a standalone region it is\n * a 3px frame; with layout=\"cell\" it is the body of an enclosing frame (a Panel body with `flush`).\n */\nfunction ItemList({ className, layout = \"control\", ...props }: React.ComponentProps<\"div\"> & { layout?: \"control\" | \"cell\" }) {\n  return (\n    <InList.Provider value={true}>\n      <div role=\"list\" data-slot=\"item-list\" data-kl-layout={layout} className={cn(\"kl-frame kl-rows kl-item-list\", className)} {...props} />\n    </InList.Provider>\n  )\n}\n\ntype ItemProps = useRender.ComponentProps<\"div\"> & {\n  /** Marks the row as the current location (master–detail): its leading cell floods with the commit signal. */\n  current?: boolean\n}\n\n/**\n * One row: media/code cell · content · meta · actions. Pass `render={<a href=\"…\" />}` or\n * `render={<button />}` to make the whole row the interactive element; props, refs and handlers merge\n * through Base UI's useRender, as in every Base UI part.\n */\nfunction Item({ render, className, current, ...props }: ItemProps) {\n  const interactive = !!render\n  const inList = React.useContext(InList)\n  const row = useRender({\n    defaultTagName: \"div\",\n    render,\n    props: {\n      role: inList && !interactive ? \"listitem\" : undefined,\n      \"data-slot\": \"item\",\n      \"data-current\": current ? \"\" : undefined,\n      \"aria-current\": current && interactive ? \"page\" : undefined,\n      \"data-interactive\": interactive ? \"\" : undefined,\n      className: cn(\"kl-item\", interactive && \"kl-key\", className),\n      ...props,\n    },\n  })\n  // a button or link keeps its own role, so in a list it sits inside a list item: a list holds only list items\n  return inList && interactive ? (\n    <div role=\"listitem\" data-slot=\"item-row\" className=\"kl-item-row\">\n      {row}\n    </div>\n  ) : (\n    row\n  )\n}\n\n/** Leading cell: a 16px icon, an initial, or a code of up to four mono characters (ERP, DHL). Square and\n *  fixed, so the content seam lines up down the list; floods when the row is current. Longer values\n *  (times, IDs) belong in ItemMeta or the description, never here. */\nfunction ItemMedia({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"item-media\" className={cn(\"kl-item-media\", className)} {...props} />\n}\n\nfunction ItemContent({ title, description, className, children, ...props }: Omit<React.ComponentProps<\"span\">, \"title\"> & { title: React.ReactNode; description?: React.ReactNode }) {\n  return (\n    <span data-slot=\"item-content\" className={cn(\"kl-item-content\", className)} {...props}>\n      <span className=\"kl-item-title\">{title}</span>\n      {description ? <span className=\"kl-item-desc\">{description}</span> : null}\n      {children}\n    </span>\n  )\n}\n\n/** Trailing value in the Code voice (a size, a date, a count). Tabular, right-aligned. */\nfunction ItemMeta({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"item-meta\" className={cn(\"kl-item-meta kl-code\", className)} {...props} />\n}\n\n/** Trailing controls. Cells (Button layout=\"cell\") share the row's keylines; a Switch or Badge sits centred. */\nfunction ItemActions({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"item-actions\" className={cn(\"kl-cells kl-item-actions\", className)} {...props} />\n}\n\nexport { ItemList, Item, ItemMedia, ItemContent, ItemMeta, ItemActions }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\n/** Whether an Item sits in an ItemList: only there is it a list item. */\nconst InList = React.createContext(false);\n\ntype ItemListLayout = \"control\" | \"cell\";\ntype ItemListState = { layout: ItemListLayout };\n\n/* The list is the rows' size container. The cut's corner room is shared by every row: the first row clears the cut,\n   and the rows below keep the same media width so the content seam runs straight down the list (a nested list\n   has no corner of its own, so no room). As a cell, the foundation drops the frame's border, cut and fill. */\nconst list = cn(\n  \"kl-frame kl-rows @container min-w-0\",\n  \"[--kl-c-room:calc(var(--kl-c,0px)*0.35)] in-data-[slot=item-list]:[--kl-c-room:0px]\",\n);\n\ntype ItemListProps = PartProps<\"div\", ItemListState> & { layout?: ItemListLayout };\n\n/**\n * A list of rows on shared keylines: settings, members, files, integrations. As a standalone region it is\n * a 3px frame; with layout=\"cell\" it is the body of an enclosing frame (a Panel body with `flush`).\n */\nfunction ItemList({ layout = \"control\", render, className, style, ...props }: ItemListProps): React.ReactElement {\n  const state: ItemListState = { layout };\n  const own = {\n    ...dataAttrs({ \"kl-layout\": layout }),\n    \"data-slot\": \"item-list\",\n    className: resolveClassName(list, className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  const el = useRender({\n    defaultTagName: \"div\",\n    render,\n    state,\n    props: mergeProps<\"div\">({ role: \"list\" }, props, own),\n  });\n  return <InList.Provider value={true}>{el}</InList.Provider>;\n}\n\n/*\n * One row: media · content · meta · actions, on a grid; without a media cell the content takes the first column and\n * the corner room. The row sets its parts' positions by their slots (one attribute more than the part's own\n * classes), so they win in any order. At 420px of list width and under, the meta moves under the title, in the\n * content column, instead of being dropped; the media and actions cells span both lines (column -4 is the content\n * column with or without a media cell).\n */\nconst item = cn(\n  \"group/item grid min-h-[calc(var(--kl-row)+12px)] w-full grid-cols-[auto_minmax(0,1fr)_auto_auto] items-stretch\",\n  \"bg-kl-cell text-start font-(family-name:--kl-font) text-kl-ink no-underline\",\n  \"not-has-[>[data-slot=item-media]]:grid-cols-[minmax(0,1fr)_auto_auto]\",\n  \"not-has-[>[data-slot=item-media]]:*:data-[slot=item-content]:ps-[calc(var(--kl-inset)+var(--kl-c-room,0px))]\",\n  \"data-current:*:data-[slot=item-media]:bg-kl-cobalt data-current:*:data-[slot=item-media]:text-kl-on-cobalt\",\n  \"data-current:*:data-[slot=item-media]:duration-(--kl-t-flood)\",\n  \"data-interactive:cursor-pointer hover:data-interactive:bg-kl-tint active:data-interactive:bg-kl-press\",\n  \"focus-visible:data-interactive:outline-offset-(--kl-ring-in)\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:grid-rows-[auto_auto]\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:row-[1/span_2]\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:col-[-4/-3]\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:row-1\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:pb-0.5\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:col-[-4/-3]\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:row-2\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:self-start\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:text-start\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:px-(--kl-inset)\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:pt-0\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:pb-2\",\n  \"[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:not-has-[>[data-slot=item-media]]:*:data-[slot=item-meta]:ps-[calc(var(--kl-inset)+var(--kl-c-room,0px))]\",\n);\n\ntype ItemState = { current: boolean; interactive: boolean };\n\ntype ItemProps = PartProps<\"div\", ItemState> & {\n  /** Marks the row as the current location (master–detail): its leading cell floods with the commit signal. */\n  current?: boolean;\n};\n\n/**\n * One row: media/code cell · content · meta · actions. Pass `render={<a href=\"…\" />}` or\n * `render={<button />}` to make the whole row the interactive element; props, refs and handlers merge\n * through Base UI's useRender, as in every Base UI part.\n */\nfunction Item({ render, className, style, current = false, ...props }: ItemProps): React.ReactElement {\n  const interactive = !!render;\n  const inList = React.useContext(InList);\n  const state: ItemState = { current, interactive };\n  const own = {\n    \"data-slot\": \"item\",\n    \"data-current\": current ? \"\" : undefined,\n    \"data-interactive\": interactive ? \"\" : undefined,\n    className: resolveClassName(cn(item, interactive && \"kl-key\"), className)(state),\n    style: resolveStyle(undefined, style)(state),\n  };\n  const defaults = {\n    role: inList && !interactive ? \"listitem\" : undefined,\n    \"aria-current\": current && interactive ? (\"page\" as const) : undefined,\n  };\n  const row = useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(defaults, props, own) });\n  // a button or link keeps its own role, so in a list it sits inside a list item: a list holds only list items\n  return inList && interactive ? (\n    <div role=\"listitem\" data-slot=\"item-row\" className=\"block min-w-0\">\n      {row}\n    </div>\n  ) : (\n    row\n  );\n}\n\ntype ItemPartState = Record<string, never>;\nconst PART_STATE: ItemPartState = {};\n\n/* the media font shorthand it replaces also reset numerals and style, so they are set back here */\nconst media = cn(\n  \"grid w-[calc(var(--kl-row)+4px+var(--kl-c-room,0px))] place-items-center ps-[var(--kl-c-room,0px)]\",\n  \"border-e-(length:--kl-k1) border-e-kl-seam text-kl-ink-2\",\n  \"font-(family-name:--kl-font-mono) text-(length:--kl-text-label)/none font-(--kl-weight-strong) not-italic normal-nums\",\n  \"transition-[background-color,color] duration-(--kl-t-unflood) ease-linear [&_svg]:size-4\",\n);\n\n/** Leading cell: a 16px icon, an initial, or a code of up to four mono characters (ERP, DHL). Square and\n *  fixed, so the content seam lines up down the list; floods when the row is current. Longer values\n *  (times, IDs) belong in ItemMeta or the description, never here. */\nfunction ItemMedia({ render, className, style, ...props }: PartProps<\"span\", ItemPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"item-media\",\n    className: resolveClassName(media, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: PART_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\ntype ItemContentProps = Omit<PartProps<\"span\", ItemPartState>, \"title\"> & {\n  title: React.ReactNode;\n  description?: React.ReactNode;\n};\n\n/** The row's words: its title, an optional description, and any children under them. */\nfunction ItemContent({\n  title,\n  description,\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: ItemContentProps): React.ReactElement {\n  const own = {\n    \"data-slot\": \"item-content\",\n    className: resolveClassName(\"grid min-w-0 content-center gap-0.5 px-(--kl-inset) py-2\", className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n    children: (\n      <>\n        <span data-slot=\"item-title\" className=\"leading-[1.3] font-(--kl-weight-strong) wrap-anywhere\">\n          {title}\n        </span>\n        {description ? (\n          <span\n            data-slot=\"item-description\"\n            className=\"text-(length:--kl-text-label)/[1.35] wrap-anywhere text-kl-ink-2\"\n          >\n            {description}\n          </span>\n        ) : null}\n        {children}\n      </>\n    ),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: PART_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\n/** Trailing value in the Code voice (a size, a date, a count). Tabular, right-aligned. */\nfunction ItemMeta({ render, className, style, ...props }: PartProps<\"span\", ItemPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"item-meta\",\n    className: resolveClassName(\"kl-code self-center px-(--kl-inset) text-end\", className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: PART_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\n/* a control that is not a cell (a Switch, a Badge) sits centred, an inset from the seams; the first cell draws the\n   seam to the content */\nconst actionsClass = cn(\n  \"kl-cells items-stretch empty:hidden\",\n  \"*:not-data-[kl-layout=cell]:mx-(--kl-inset) *:not-data-[kl-layout=cell]:self-center\",\n  \"*:first:data-[kl-layout=cell]:border-s-(length:--kl-k1) *:first:data-[kl-layout=cell]:border-s-kl-seam\",\n);\n\n/** Trailing controls. Cells (Button layout=\"cell\") share the row's keylines; a Switch or Badge sits centred. */\nfunction ItemActions({ render, className, style, ...props }: PartProps<\"span\", ItemPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"item-actions\",\n    className: resolveClassName(actionsClass, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: PART_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\nexport {\n  ItemList,\n  Item,\n  ItemMedia,\n  ItemContent,\n  ItemMeta,\n  ItemActions,\n  type ItemListProps,\n  type ItemProps,\n  type ItemContentProps,\n};\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/item.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-item-list": {
-        "min-width": "0",
-        "container-type": "inline-size",
-        "--kl-c-room": "calc(var(--kl-c, 0px) * 0.35)"
-      },
-      ".kl-item-list[data-kl-layout=\"cell\"]": {
-        "--kl-bw": "0px",
-        "--kl-cut-size": "0px",
-        "background-color": "transparent"
-      },
-      ".kl-item-list .kl-item-list": {
-        "--kl-c-room": "0px"
-      },
-      ".kl-item-row": {
-        "display": "block",
-        "min-width": "0"
-      },
-      ".kl-item": {
-        "display": "grid",
-        "grid-template-columns": "auto minmax(0, 1fr) auto auto",
-        "align-items": "stretch",
-        "min-height": "calc(var(--kl-row) + 12px)",
-        "background-color": "var(--kl-cell)",
-        "color": "var(--kl-ink)",
-        "text-decoration": "none",
-        "text-align": "start",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "border": "0",
-        "margin": "0",
-        "padding": "0",
-        "width": "100%"
-      },
-      ".kl-item:not(:has(> .kl-item-media))": {
-        "grid-template-columns": "minmax(0, 1fr) auto auto"
-      },
-      ".kl-item[data-interactive]": {
-        "cursor": "pointer"
-      },
-      ".kl-item[data-interactive]:hover": {
-        "background-color": "var(--kl-tint)"
-      },
-      ".kl-item[data-interactive]:active": {
-        "background-color": "var(--kl-press)"
-      },
-      ".kl-item[data-interactive]:focus-visible": {
-        "outline-offset": "var(--kl-ring-in)"
-      },
-      ".kl-item-media": {
-        "display": "grid",
-        "place-items": "center",
-        "width": "calc(var(--kl-row) + 4px + var(--kl-c-room, 0px))",
-        "padding-inline-start": "var(--kl-c-room, 0px)",
-        "border-inline-end": "var(--kl-k1) solid var(--kl-seam)",
-        "font": "var(--kl-weight-strong) 13px/1 var(--kl-font-mono)",
-        "color": "var(--kl-ink-2)",
-        "transition": "background-color var(--kl-t-unflood) linear, color var(--kl-t-unflood) linear"
-      },
-      ".kl-item-media svg": {
-        "width": "16px",
-        "height": "16px"
-      },
-      ".kl-item[data-current] > .kl-item-media": {
-        "background-color": "var(--kl-cobalt)",
-        "color": "var(--kl-on-cobalt)",
-        "transition-duration": "var(--kl-t-flood)"
-      },
-      ".kl-item-content": {
-        "display": "grid",
-        "align-content": "center",
-        "gap": "2px",
-        "padding": "8px var(--kl-inset)",
-        "min-width": "0"
-      },
-      ".kl-item:not(:has(> .kl-item-media)) .kl-item-content": {
-        "padding-inline-start": "calc(var(--kl-inset) + var(--kl-c-room, 0px))"
-      },
-      ".kl-item-title": {
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "1.3",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-item-desc": {
-        "font-size": "13px",
-        "color": "var(--kl-ink-2)",
-        "line-height": "1.35",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-item-meta": {
-        "align-self": "center",
-        "padding-inline": "var(--kl-inset)",
-        "text-align": "end"
-      },
-      ".kl-item-actions": {
-        "align-items": "stretch"
-      },
-      ".kl-item-actions:empty": {
-        "display": "none"
-      },
-      ".kl-item-actions > :not([data-kl-layout=\"cell\"])": {
-        "align-self": "center",
-        "margin-inline": "var(--kl-inset)"
-      },
-      ".kl-item-actions > [data-kl-layout=\"cell\"]:first-child": {
-        "border-inline-start": "var(--kl-k1) solid var(--kl-seam)"
-      },
-      "@container (max-width: 420px)": {
-        ".kl-item:has(> .kl-item-meta)": {
-          "grid-template-rows": "auto auto"
-        },
-        ".kl-item:has(> .kl-item-meta) > *": {
-          "grid-row": "1 / span 2"
-        },
-        ".kl-item:has(> .kl-item-meta) > .kl-item-content": {
-          "grid-row": "1",
-          "grid-column": "-4 / -3",
-          "padding-block-end": "2px"
-        },
-        ".kl-item > .kl-item-meta": {
-          "grid-row": "2",
-          "grid-column": "-4 / -3",
-          "align-self": "start",
-          "text-align": "start",
-          "padding": "0 var(--kl-inset) 8px"
-        },
-        ".kl-item:not(:has(> .kl-item-media)) > .kl-item-meta": {
-          "padding-inline-start": "calc(var(--kl-inset) + var(--kl-c-room, 0px))"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

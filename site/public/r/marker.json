@@ -3,81 +3,22 @@
   "name": "marker",
   "title": "Marker",
   "description": "A step in a conversation or activity timeline in the Code voice: a glyph cell and words, a separator between seams, or a keyline under the words; pending runs the pending segment and is a polite status.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
+    "@keyline-ui/keyline-render",
     "utils"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/marker.tsx",
-      "content": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\n/**\n * A step in a conversation or activity timeline: \"Searched the web\", \"Assigned to DHL Freight\",\n * \"Yesterday\". Not a message: it sits between messages in the Code voice.\n *\n * - default: a glyph cell (MarkerIcon) then the words.\n * - `variant=\"separator\"`: the words between two seams (a day or \"New messages\" divider).\n * - `variant=\"border\"`: a keyline under the words (the head of a run of steps).\n * - `pending`: work in progress (\"Thinking…\"): the pending segment runs under the words, never a spinner, and\n *   the marker becomes a polite status so the change is announced. Drop `pending` when the step is done.\n */\nfunction Marker({ className, variant = \"default\", pending, children, ...props }: React.ComponentProps<\"div\"> & { variant?: \"default\" | \"separator\" | \"border\"; pending?: boolean }) {\n  return (\n    <div\n      data-slot=\"marker\"\n      data-variant={variant}\n      data-pending={pending || undefined}\n      role={variant === \"separator\" ? \"separator\" : pending ? \"status\" : undefined}\n      aria-busy={pending || undefined}\n      className={cn(\"kl-marker\", className)}\n      {...props}\n    >\n      {children}\n      {pending ? <span className=\"kl-pending kl-marker-run\" aria-hidden /> : null}\n    </div>\n  )\n}\n\n/** A 16px glyph cell (authored SVG or a Status glyph), hidden from assistive tech. */\nfunction MarkerIcon({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"marker-icon\" aria-hidden className={cn(\"kl-marker-ic\", className)} {...props} />\n}\n\nfunction MarkerContent({ className, ...props }: React.ComponentProps<\"span\">) {\n  return <span data-slot=\"marker-content\" className={cn(\"kl-marker-t\", className)} {...props} />\n}\n\nexport { Marker, MarkerIcon, MarkerContent }\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\nimport { dataAttrs, resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\ntype MarkerVariant = \"default\" | \"separator\" | \"border\";\n\nconst markerVariants = cva(\n  [\n    \"group/marker relative flex min-h-6 min-w-0 items-center gap-2.5\",\n    \"font-(family-name:--kl-font-mono) text-(length:--kl-text-meta)/[1.35] text-kl-ink-2\",\n  ],\n  {\n    variants: {\n      variant: {\n        default: \"\",\n        // a seam either side of the words: each pseudo-element is a flexible run of keyline\n        separator: [\n          \"before:min-w-3 before:flex-[1_1_0] before:border-t-(length:--kl-k1) before:border-t-kl-line-soft before:content-['']\",\n          \"after:min-w-3 after:flex-[1_1_0] after:border-t-(length:--kl-k1) after:border-t-kl-line-soft after:content-['']\",\n          \"**:data-[slot=marker-content]:max-w-[70%] **:data-[slot=marker-content]:flex-none\",\n          \"**:data-[slot=marker-content]:text-center\",\n        ],\n        border: \"border-b-(length:--kl-k1) border-b-kl-line pb-2\",\n      },\n      // the pending segment runs along the marker's bottom edge, under the words\n      pending: { true: \"pb-1\", false: \"\" },\n    },\n    defaultVariants: { variant: \"default\", pending: false },\n  },\n);\n\n/* the running segment starts under the words: past the glyph cell and its gap when there is one */\nconst run = cn(\"kl-pending start-[34px] [--kl-bw:2px]\", \"group-not-has-data-[slot=marker-icon]/marker:start-0\");\n\ntype MarkerState = { variant: MarkerVariant; pending: boolean };\n\ntype MarkerProps = PartProps<\"div\", MarkerState> & {\n  variant?: MarkerVariant;\n  /** Work in progress: the pending segment runs under the words and the marker is a polite status. */\n  pending?: boolean;\n};\n\n/**\n * A step in a conversation or activity timeline: \"Searched the web\", \"Assigned to DHL Freight\",\n * \"Yesterday\". Not a message: it sits between messages in the Code voice.\n *\n * - default: a glyph cell (MarkerIcon) then the words.\n * - `variant=\"separator\"`: the words between two seams (a day or \"New messages\" divider).\n * - `variant=\"border\"`: a keyline under the words (the head of a run of steps).\n * - `pending`: work in progress (\"Thinking…\"): the pending segment runs under the words, never a spinner, and\n *   the marker becomes a polite status so the change is announced. Drop `pending` when the step is done.\n */\nfunction Marker({\n  variant = \"default\",\n  pending = false,\n  render,\n  className,\n  style,\n  children,\n  ...props\n}: MarkerProps): React.ReactElement {\n  const state: MarkerState = { variant, pending };\n  const own = {\n    ...dataAttrs({ variant, pending: pending ? \"\" : undefined }),\n    \"data-slot\": \"marker\",\n    className: resolveClassName(cn(markerVariants({ variant, pending })), className)(state),\n    style: resolveStyle(undefined, style)(state),\n    children: (\n      <>\n        {children}\n        {pending ? <span className={run} data-slot=\"marker-run\" aria-hidden /> : null}\n      </>\n    ),\n  };\n  const defaults = {\n    role: variant === \"separator\" ? \"separator\" : pending ? \"status\" : undefined,\n    \"aria-busy\": pending || undefined,\n  };\n  return useRender({ defaultTagName: \"div\", render, state, props: mergeProps<\"div\">(defaults, props, own) });\n}\n\ntype MarkerPartState = Record<string, never>;\nconst PART_STATE: MarkerPartState = {};\n\nconst icon = cn(\n  \"grid size-6 flex-none place-items-center border-(length:--kl-k1) border-kl-line-soft text-kl-ink\",\n  \"[&_svg]:block [&_svg]:size-3.5\",\n);\n\n/** A 16px glyph cell (authored SVG or a Status glyph), hidden from assistive tech. */\nfunction MarkerIcon({ render, className, style, ...props }: PartProps<\"span\", MarkerPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"marker-icon\",\n    className: resolveClassName(icon, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({\n    defaultTagName: \"span\",\n    render,\n    state: PART_STATE,\n    props: mergeProps<\"span\">({ \"aria-hidden\": true }, props, own),\n  });\n}\n\nconst content = \"min-w-0 wrap-anywhere [&_a]:text-inherit [&_a]:underline-offset-[3px]\";\n\n/** The words of the step. */\nfunction MarkerContent({ render, className, style, ...props }: PartProps<\"span\", MarkerPartState>): React.ReactElement {\n  const own = {\n    \"data-slot\": \"marker-content\",\n    className: resolveClassName(content, className)(PART_STATE),\n    style: resolveStyle(undefined, style)(PART_STATE),\n  };\n  return useRender({ defaultTagName: \"span\", render, state: PART_STATE, props: mergeProps<\"span\">(props, own) });\n}\n\nexport { Marker, MarkerIcon, MarkerContent, type MarkerProps, type MarkerVariant };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/marker.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-marker": {
-        "position": "relative",
-        "display": "flex",
-        "align-items": "center",
-        "gap": "10px",
-        "min-width": "0",
-        "min-height": "24px",
-        "font-family": "var(--kl-font-mono)",
-        "font-size": "12px",
-        "line-height": "1.35",
-        "color": "var(--kl-ink-2)"
-      },
-      ".kl-marker-ic": {
-        "flex": "none",
-        "display": "grid",
-        "place-items": "center",
-        "width": "24px",
-        "height": "24px",
-        "border": "var(--kl-k1) solid var(--kl-line-soft)",
-        "color": "var(--kl-ink)"
-      },
-      ".kl-marker-ic svg": {
-        "display": "block",
-        "width": "14px",
-        "height": "14px"
-      },
-      ".kl-marker-t": {
-        "min-width": "0",
-        "overflow-wrap": "anywhere"
-      },
-      ".kl-marker-t a": {
-        "color": "inherit",
-        "text-underline-offset": "3px"
-      },
-      ".kl-marker[data-variant=\"separator\"]::before, .kl-marker[data-variant=\"separator\"]::after": {
-        "content": "\"\"",
-        "flex": "1 1 0",
-        "min-width": "12px",
-        "border-block-start": "var(--kl-k1) solid var(--kl-line-soft)"
-      },
-      ".kl-marker[data-variant=\"separator\"] .kl-marker-t": {
-        "flex": "none",
-        "max-width": "70%",
-        "text-align": "center"
-      },
-      ".kl-marker[data-variant=\"border\"]": {
-        "padding-block-end": "8px",
-        "border-block-end": "var(--kl-k1) solid var(--kl-line)"
-      },
-      ".kl-marker[data-pending]": {
-        "padding-block-end": "4px"
-      },
-      ".kl-marker-run": {
-        "--kl-bw": "2px",
-        "inset-inline-start": "34px"
-      },
-      ".kl-marker:not(:has(.kl-marker-ic)) .kl-marker-run": {
-        "inset-inline-start": "0"
-      }
-    }
-  },
   "type": "registry:ui"
 }

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select-assign",
+  "title": "Select: assign lead",
+  "description": "An example of Select: assign lead.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/select"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/select-assign.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Select, type SelectOption } from \"../ui/select\";\n\nconst PEOPLE = [\n  { value: \"dwight\", label: \"Dwight Schrute\", description: \"41 open accounts\", code: \"DS\", group: \"Sales\" },\n  { value: \"jim\", label: \"Jim Halpert\", description: \"33 open accounts\", code: \"JH\", group: \"Sales\" },\n  { value: \"phyllis\", label: \"Phyllis Vance\", description: \"28 open accounts\", code: \"PV\", group: \"Sales\" },\n  {\n    value: \"stanley\",\n    label: \"Stanley Hudson\",\n    description: \"On a crossword until 3\",\n    code: \"SH\",\n    group: \"Sales\",\n    disabled: true,\n  },\n  { value: \"michael\", label: \"Michael Scott\", description: \"Regional Manager\", code: \"MS\", group: \"Management\" },\n] satisfies SelectOption[];\n\nexport function AssignLead() {\n  const [rep, setRep] = useState<string | null>(null);\n  const who = PEOPLE.find((p) => p.value === rep);\n\n  return (\n    <div className=\"grid max-w-[360px] gap-3\">\n      <Select\n        label=\"Assign the Lackawanna County lead to\"\n        placeholder=\"Choose a rep\"\n        options={PEOPLE}\n        value={rep}\n        onValueChange={setRep}\n      />\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {who\n          ? `${who.label.split(\" \")[0]} has the lead. The county wants a call by Friday.`\n          : \"Unassigned since Monday.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/select-assign.tsx"
+    }
+  ],
+  "categories": [
+    "select"
+  ],
+  "type": "registry:block"
+}

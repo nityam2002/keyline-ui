@@ -1,0 +1,72 @@
+{
+  "name": "marker",
+  "title": "Marker",
+  "description": "A step in a conversation or activity timeline in the Code voice: a glyph cell and words, a separator between seams, or a keyline under the words; pending runs the pending segment and is a polite status.",
+  "whenToUse": "Use it for a step in an activity timeline, a divider between days or messages, or work still in progress. For a state label use Status.",
+  "parts": [
+    {
+      "name": "Marker",
+      "description": "A step in a conversation or activity timeline: \"Searched the web\", \"Assigned to DHL Freight\", \"Yesterday\". Not a message: it sits between messages in the Code voice. - default: a glyph cell (MarkerIcon) then the words. - `variant=\"separator\"`: the words between two seams (a day or \"New messages\" divider). - `variant=\"border\"`: a keyline under the words (the head of a run of steps). - `pending`: work in progress (\"Thinking…\"): the pending segment runs under the words, never a spinner, and the marker becomes a polite status so the change is announced. Drop `pending` when the step is done.",
+      "props": [
+        {
+          "name": "pending",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Work in progress: the pending segment runs under the words and the marker is a polite status."
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"border\" | \"separator\"",
+          "default": "\"default\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MarkerContent",
+      "description": "The words of the step.",
+      "props": []
+    },
+    {
+      "name": "MarkerIcon",
+      "description": "A 16px glyph cell (authored SVG or a Status glyph), hidden from assistive tech.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-pending",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "marker",
+        "marker-content",
+        "marker-icon",
+        "marker-run"
+      ]
+    },
+    {
+      "name": "data-variant",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bw",
+      "values": [
+        "2px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "marker-activity",
+      "title": "Marker: order activity",
+      "file": "marker-activity.tsx"
+    }
+  ]
+}

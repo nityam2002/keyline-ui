@@ -2,46 +2,37 @@ import * as React from "react";
 import * as ui from "../demo-ui";
 import { Avatar } from "@/registry/keyline/ui/avatar";
 import { Button } from "@/registry/keyline/ui/button";
-import { Segmented,SegmentedItem } from "@/registry/keyline/ui/segmented";
+import { Segmented, SegmentedItem } from "@/registry/keyline/ui/segmented";
+import { Field, FieldFrame, FieldControl, FieldLabel } from "@/registry/keyline/ui/field";
 import {
-Field,
-FieldFrame,
-FieldInput,
-FieldLabel,
-} from "@/registry/keyline/ui/field";
-import {
-Message,
-MessageAvatar,
-MessageContent,
-MessageFooter,
-MessageGroup,
-MessageHeader,
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageGroup,
+  MessageHeader,
 } from "@/registry/keyline/ui/message";
+import { Bubble, BubbleContent, BubbleReactions } from "@/registry/keyline/ui/bubble";
 import {
-Bubble,
-BubbleContent,
-BubbleReactions,
-} from "@/registry/keyline/ui/bubble";
-import {
-MessageScroller,
-MessageScrollerButton,
-MessageScrollerContent,
-MessageScrollerItem,
-MessageScrollerProvider,
-MessageScrollerSeparator,
-MessageScrollerViewport,
-useMessageScroller,
+  MessageScroller,
+  MessageScrollerButton,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerProvider,
+  MessageScrollerSeparator,
+  MessageScrollerViewport,
+  useMessageScroller,
 } from "@/registry/keyline/ui/message-scroller";
 import {
-Attachment,
-AttachmentAction,
-AttachmentActions,
-AttachmentContent,
-AttachmentDescription,
-AttachmentGlyph,
-AttachmentMedia,
-AttachmentTitle,
-AttachmentTrigger,
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGlyph,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
 } from "@/registry/keyline/ui/attachment";
 
 /* ------------------------------------------------------------------ *
@@ -77,12 +68,37 @@ const PEOPLE = {
   clerk: { name: "Ines Duarte", role: "Dock 4" },
   driver: { name: "Tomasz Wolak", role: "TR-4492" },
 };
-const done = (id: string, name: string, size: string, kind: ChatFile["kind"]): ChatFile => ({ id, name, size, kind, state: "done" });
+const done = (id: string, name: string, size: string, kind: ChatFile["kind"]): ChatFile => ({
+  id,
+  name,
+  size,
+  kind,
+  state: "done",
+});
 /* m4 to m8 are the original conversation; the rest completes it. */
 const SEED: Msg[] = [
-  { id: "m1", day: "TODAY", who: "driver", at: "13:58", text: "At the gate for dock 4. Seal on the rear door reads 448 210." },
-  { id: "m2", who: "clerk", at: "14:01", text: "The manifest says 448 201. Can you send a photo of the seal?", status: "read", readAt: "14:02" },
-  { id: "m3", who: "driver", at: "14:03", text: "Here it is.", files: [done("f3", "seal-rear-door.jpg", "2.4 MB", "image")] },
+  {
+    id: "m1",
+    day: "TODAY",
+    who: "driver",
+    at: "13:58",
+    text: "At the gate for dock 4. Seal on the rear door reads 448 210.",
+  },
+  {
+    id: "m2",
+    who: "clerk",
+    at: "14:01",
+    text: "The manifest says 448 201. Can you send a photo of the seal?",
+    status: "read",
+    readAt: "14:02",
+  },
+  {
+    id: "m3",
+    who: "driver",
+    at: "14:03",
+    text: "Here it is.",
+    files: [done("f3", "seal-rear-door.jpg", "2.4 MB", "image")],
+  },
   {
     id: "m4",
     who: "driver",
@@ -91,16 +107,29 @@ const SEED: Msg[] = [
     files: [done("f4", "CMR-2026-11-09-TR4492-signed.pdf", "480 KB", "file")],
     react: "1",
   },
-  { id: "m5", who: "clerk", at: "14:06", text: "Thanks. The shipper made a typo; I've raised it with them. Please wait in bay 2 until they confirm.", status: "read", readAt: "14:06" },
-  { id: "m6", who: "clerk", at: "14:07", text: "Bay 2 has power for the reefer.", status: "failed", failReason: "Not sent: no signal." },
+  {
+    id: "m5",
+    who: "clerk",
+    at: "14:06",
+    text: "Thanks. The shipper made a typo; I've raised it with them. Please wait in bay 2 until they confirm.",
+    status: "read",
+    readAt: "14:06",
+  },
+  {
+    id: "m6",
+    who: "clerk",
+    at: "14:07",
+    text: "Bay 2 has power for the reefer.",
+    status: "failed",
+    failReason: "Not sent: no signal.",
+  },
   { id: "m7", who: "driver", at: "14:09", text: "Moving to bay 2 now." },
   { id: "m8", who: "driver", at: "14:12", text: "Parked. Reefer plugged in, set to 4 °C." },
   {
     id: "m9",
     who: "driver",
     at: "14:13",
-    text:
-      "It has held 4 °C since Poznań, but the door alarm tripped twice on the A2 near Świecko, both times for under a minute. If the shipper asks, the unit log is here:\nhttps://telematics.example.com/units/TR-4492/reefer/log?from=2026-11-09T05:00&to=2026-11-09T14:12&format=csv",
+    text: "It has held 4 °C since Poznań, but the door alarm tripped twice on the A2 near Świecko, both times for under a minute. If the shipper asks, the unit log is here:\nhttps://telematics.example.com/units/TR-4492/reefer/log?from=2026-11-09T05:00&to=2026-11-09T14:12&format=csv",
   },
   {
     id: "m10",
@@ -123,7 +152,15 @@ const SEED: Msg[] = [
   },
 ];
 const EARLIER: Msg[] = [
-  { id: "e1", day: "YESTERDAY", who: "clerk", at: "17:40", text: "Your slot tomorrow is 14:00 at dock 4. Gate code 7316.", status: "read", readAt: "17:41" },
+  {
+    id: "e1",
+    day: "YESTERDAY",
+    who: "clerk",
+    at: "17:40",
+    text: "Your slot tomorrow is 14:00 at dock 4. Gate code 7316.",
+    status: "read",
+    readAt: "17:41",
+  },
   { id: "e2", who: "driver", at: "17:42", text: "Understood. I'll be there from 13:45." },
 ];
 const REPLIES = [
@@ -134,9 +171,11 @@ const REPLIES = [
   "Copy that, reversing now.",
 ];
 const minutes = (t: string) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+/** A run is never empty: it starts with the message that opened it. */
+type MsgRun = [Msg, ...Msg[]];
 /** A run: consecutive messages from one sender, each within 5 minutes of the one before. */
 function toRuns(msgs: Msg[]) {
-  const runs: Msg[][] = [];
+  const runs: MsgRun[] = [];
   for (const m of msgs) {
     const run = runs.at(-1);
     const prev = run?.at(-1);
@@ -194,9 +233,13 @@ function ChatFileCell({ f, on }: { f: ChatFile; on?: FileActions }) {
 function Receipt({ m }: { m: Msg }) {
   if (m.files?.some((f) => f.state === "error")) return null;
   const busy = m.status === "sending" || m.files?.some((f) => f.state !== "done");
-  return <MessageFooter data-testid="receipt">{busy ? "Sending…" : m.status === "sent" ? "Sent" : `Read ${m.readAt}`}</MessageFooter>;
+  return (
+    <MessageFooter data-testid="receipt">
+      {busy ? "Sending…" : m.status === "sent" ? "Sent" : `Read ${m.readAt}`}
+    </MessageFooter>
+  );
 }
-function Run({ run, retry, file }: { run: Msg[]; retry?: (id: string) => void; file?: (mid: string) => FileActions }) {
+function Run({ run, retry, file }: { run: MsgRun; retry?: (id: string) => void; file?: (mid: string) => FileActions }) {
   const own = run[0].who === "clerk";
   const p = PEOPLE[run[0].who];
   // each run says how its last delivered message stands; a message that failed says so under itself
@@ -225,7 +268,9 @@ function Run({ run, retry, file }: { run: Msg[]; retry?: (id: string) => void; f
                   <Linkified text={m.text} />
                 </BubbleContent>
               ) : null}
-              {m.files?.map((f) => <ChatFileCell key={f.id} f={f} on={file?.(m.id)} />)}
+              {m.files?.map((f) => (
+                <ChatFileCell key={f.id} f={f} on={file?.(m.id)} />
+              ))}
               {m.react ? (
                 <BubbleReactions>
                   <button type="button" aria-pressed="true" aria-label="Thumbs up, 1, you reacted">
@@ -266,7 +311,10 @@ function ConversationLog() {
   const [width, setWidth] = React.useState("wide");
   // after the reader sends, the log goes to the end once the new row is in
   React.useEffect(() => {
-    if (sent.current) ((sent.current = false), scrollToEnd());
+    if (sent.current) {
+      sent.current = false;
+      scrollToEnd();
+    }
   }, [msgs, scrollToEnd]);
 
   /* a fake network: every timer is cleared when the specimen unmounts */
@@ -310,7 +358,12 @@ function ConversationLog() {
       if (!f || f.state !== "uploading") return; // cancelled
       pct = Math.min(100, pct + 9);
       if (failAt != null && pct >= failAt) {
-        patchFile(mid, fid, (x) => ({ ...x, state: "error", progress: failAt, reason: `Connection lost at ${failAt}%. Retry resumes from there.` }));
+        patchFile(mid, fid, (x) => ({
+          ...x,
+          state: "error",
+          progress: failAt,
+          reason: `Connection lost at ${failAt}%. Retry resumes from there.`,
+        }));
         return;
       }
       if (pct >= 100) {
@@ -331,7 +384,14 @@ function ConversationLog() {
     const mid = id("u");
     const fid = id("f");
     const file: ChatFile = fail
-      ? { id: fid, name: "pallet-damage-bay2-all-sides-and-the-torn-wrap.jpg", size: "6.8 MB", kind: "image", state: "uploading", progress: 0 }
+      ? {
+          id: fid,
+          name: "pallet-damage-bay2-all-sides-and-the-torn-wrap.jpg",
+          size: "6.8 MB",
+          kind: "image",
+          state: "uploading",
+          progress: 0,
+        }
       : { id: fid, name: "pallet-damage-bay2.jpg", size: "3.1 MB", kind: "image", state: "uploading", progress: 0 };
     sent.current = true;
     add({ id: mid, who: "clerk", at: now(), files: [file], status: "sending" });
@@ -366,7 +426,13 @@ function ConversationLog() {
   return (
     <div className={ui.stack}>
       <div className="flex flex-wrap items-center gap-kl-gutter">
-        <Segmented size="compact" aria-label="Panel width" value={width} onValueChange={setWidth} data-testid="ms-width">
+        <Segmented
+          size="compact"
+          aria-label="Panel width"
+          value={width}
+          onValueChange={setWidth}
+          data-testid="ms-width"
+        >
           <SegmentedItem value="wide">Wide</SegmentedItem>
           <SegmentedItem value="narrow">Narrow panel</SegmentedItem>
         </Segmented>
@@ -397,7 +463,12 @@ function ConversationLog() {
           <Field style={{ flex: 1 }}>
             <FieldLabel className="sr-only">Message</FieldLabel>
             <FieldFrame>
-              <FieldInput value={draft} onValueChange={(v) => setDraft(String(v))} placeholder="Write to Tomasz" data-testid="ms-input" />
+              <FieldControl
+                value={draft}
+                onValueChange={(v) => setDraft(String(v))}
+                placeholder="Write to Tomasz"
+                data-testid="ms-input"
+              />
             </FieldFrame>
           </Field>
           <Button type="submit" variant="primary" data-testid="ms-send">
@@ -412,7 +483,11 @@ function ConversationLog() {
         <Button size="compact" onClick={() => incoming(3)} data-testid="ms-three">
           Receive three
         </Button>
-        <Button size="compact" onClick={() => setMsgs((ms) => (ms[0].id === "e1" ? ms : [...EARLIER, ...ms]))} data-testid="ms-earlier">
+        <Button
+          size="compact"
+          onClick={() => setMsgs((ms) => (ms[0]?.id === "e1" ? ms : [...EARLIER, ...ms]))}
+          data-testid="ms-earlier"
+        >
           Load earlier
         </Button>
         <Button size="compact" onClick={() => attach(false)} data-testid="ms-attach">
@@ -442,11 +517,17 @@ function BubbleCases() {
             <BubbleContent>Ok.</BubbleContent>
           </Bubble>
           <Bubble>
-            <BubbleContent>{"Two pallets on the left are double-stacked.\nThe top one is the light one, so unload it first."}</BubbleContent>
+            <BubbleContent>
+              {"Two pallets on the left are double-stacked.\nThe top one is the light one, so unload it first."}
+            </BubbleContent>
           </Bubble>
           <Bubble>
             <BubbleContent>
-              <a href="https://example.com/track/TR4492/stops/dock-4/arrival-photos/2026-11-09" target="_blank" rel="noreferrer">
+              <a
+                href="https://example.com/track/TR4492/stops/dock-4/arrival-photos/2026-11-09"
+                target="_blank"
+                rel="noreferrer"
+              >
                 https://example.com/track/TR4492/stops/dock-4/arrival-photos/2026-11-09
               </a>
             </BubbleContent>
@@ -465,7 +546,16 @@ function BubbleCases() {
           <Bubble tone="tint">
             <BubbleContent>Both signed. The scan is still going.</BubbleContent>
             <ChatFileCell f={done("c3", "POD-TR4492.pdf", "210 KB", "file")} />
-            <ChatFileCell f={{ id: "c4", name: "seal-log-scan.pdf", size: "4.2 MB", kind: "file", state: "processing", progress: 100 }} />
+            <ChatFileCell
+              f={{
+                id: "c4",
+                name: "seal-log-scan.pdf",
+                size: "4.2 MB",
+                kind: "file",
+                state: "processing",
+                progress: 100,
+              }}
+            />
           </Bubble>
           <MessageFooter>Sent</MessageFooter>
         </MessageContent>
@@ -515,7 +605,10 @@ export function ChatSpecimen() {
               <AttachmentDescription>3.1 MB</AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
-              <AttachmentAction aria-label="Cancel pallet-damage-bay2.jpg" onClick={() => setPct((p) => Math.min(100, p + 20))}>
+              <AttachmentAction
+                aria-label="Cancel pallet-damage-bay2.jpg"
+                onClick={() => setPct((p) => Math.min(100, p + 20))}
+              >
                 <AttachmentGlyph name="close" />
               </AttachmentAction>
             </AttachmentActions>
@@ -575,7 +668,9 @@ export function ChatSpecimen() {
         </div>
       </div>
       <div className={ui.group} dir="rtl" data-testid="chat-rtl">
-        <h3 className={ui.cap}>RTL: your run at the inline end (left); each run still hangs from its text's leading edge</h3>
+        <h3 className={ui.cap}>
+          RTL: your run at the inline end (left); each run still hangs from its text's leading edge
+        </h3>
         <div style={{ maxWidth: 480 }}>
           <MessageGroup>
             <Message>

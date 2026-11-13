@@ -1,0 +1,86 @@
+{
+  "name": "toggle",
+  "title": "Toggle",
+  "description": "One on/off button (Base UI Toggle, aria-pressed): pressed floods yellow and fills the lamp; icon toggles show a floor keyline. Control or cell, alone or as a cell of a field frame. ToggleGroup composes its cells.",
+  "whenToUse": "Use it for a button that stays pressed, such as Bold or Pin. For a setting in a form use Switch or Checkbox; for a command use Button.",
+  "parts": [
+    {
+      "name": "Toggle",
+      "description": "Toggle: one on/off button on Base UI Toggle (`aria-pressed`). Pressed FLOODS yellow from the press point (the working set) and fills the lamp, so the state has a shape as well as a colour; the label never changes with the state. Controlled (`pressed` + `onPressedChange`) or uncontrolled (`defaultPressed`). For several related toggles use ToggleGroup; for one of many use Segmented.",
+      "props": [
+        {
+          "name": "count",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Icon only: a square cell; pass `aria-label`. Pressed shows a floor keyline instead of the lamp."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own frame. cell: a cell of an enclosing frame (a panel header, a field frame)."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-icon",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "toggle",
+        "toggle-count",
+        "toggle-label",
+        "toggle-lamp"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-dis-line)"
+      ]
+    },
+    {
+      "name": "--kl-fc",
+      "values": [
+        "var(--kl-press)"
+      ]
+    },
+    {
+      "name": "--kl-fg",
+      "values": [
+        "var(--kl-dis)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "toggle-icon",
+      "title": "Toggle: pin client",
+      "file": "toggle-icon.tsx"
+    },
+    {
+      "name": "toggle-receipts",
+      "title": "Toggle: expense filter",
+      "file": "toggle-receipts.tsx"
+    }
+  ]
+}

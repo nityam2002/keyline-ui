@@ -1,0 +1,220 @@
+{
+  "name": "dialog",
+  "title": "Dialog",
+  "description": "Dialog (header, scrolling body, footer cells) and AlertDialog (an attention cell; focus lands on the safe action): region-framed modals on Base UI. Also installable as @keyline-ui/alert-dialog.",
+  "whenToUse": "Use it for a task the page must wait for, such as confirming a removal or filling a short form. For detail opened from a list use Sheet; for a quick edit beside a control use Popover.",
+  "parts": [
+    {
+      "name": "AlertDialogContent",
+      "description": "The usual confirmation, built from the parts: an attention cell (! or ?) beside the question, optional detail, and two answers on the bottom keyline. Focus lands on the safe answer.",
+      "props": [
+        {
+          "name": "cancelLabel",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "The safe action receives initial focus."
+        },
+        {
+          "name": "confirmLabel",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<DialogPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Dialog.Portal."
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "type": "\"primary\" | \"destructive\"",
+          "default": "\"destructive\"",
+          "required": false,
+          "description": "The signal of the question: red attention for a destructive action, cobalt for a commitment."
+        }
+      ]
+    },
+    {
+      "name": "AlertDialogPopup",
+      "description": "The confirmation frame: Base UI's Portal, Backdrop and Popup in one part. A narrower region of rows.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<DialogPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Dialog.Portal."
+        },
+        {
+          "name": "tone",
+          "type": "\"primary\" | \"destructive\"",
+          "default": "\"destructive\"",
+          "required": false,
+          "description": "The signal of the question: red attention for a destructive action, cobalt for a commitment."
+        }
+      ]
+    },
+    {
+      "name": "AlertDialogTrigger",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DialogBackdrop",
+      "description": "The scrim behind a modal surface. It fades in with the surface and leaves with it, not after it.",
+      "props": []
+    },
+    {
+      "name": "DialogBody",
+      "description": "The dialog's scrolling body: a Keyline Scroll Area. `className` and `style` reach the scroll area itself; `contentClassName` lays out the content (a grid with a 16px gap by default). Fields and groups go here, standalone (2px).",
+      "props": [
+        {
+          "name": "className",
+          "type": "string | ((state: PartState) => string | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties | ((state: PartState) => CSSProperties | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DialogClose",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DialogDescription",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DialogFooter",
+      "description": "Footer: a row of cells (use Button layout=\"cell\") sharing the dialog's bottom keyline.",
+      "props": []
+    },
+    {
+      "name": "DialogHeader",
+      "description": "Header cell row of a dialog: title, description, optional close. Reserves the cut's room.",
+      "props": []
+    },
+    {
+      "name": "DialogPopup",
+      "description": "The dialog: Base UI's Portal, Backdrop and Popup in one part. A region frame over a scrim, with a header, a body that scrolls and a footer of cells. It carries the configuration (cut, density, motion, theme, dir) of the place it is written, not of <body>.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<DialogPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Dialog.Portal."
+        }
+      ]
+    },
+    {
+      "name": "DialogTitle",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "DialogTrigger",
+      "description": "The element that opens the dialog. Rendered as another part (`render={<Button />}`), the element is that part's and carries its data-slot.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "alert-dialog-body",
+        "alert-dialog-cancel",
+        "alert-dialog-confirm",
+        "alert-dialog-footer",
+        "alert-dialog-header",
+        "alert-dialog-popup",
+        "alert-dialog-signal",
+        "alert-dialog-trigger",
+        "dialog-backdrop",
+        "dialog-body",
+        "dialog-close",
+        "dialog-description",
+        "dialog-footer",
+        "dialog-header",
+        "dialog-popup",
+        "dialog-title",
+        "dialog-trigger"
+      ]
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cell",
+      "values": [
+        "var(--kl-raised)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "dialog-new-client",
+      "title": "Dialog: new client",
+      "file": "dialog-new-client.tsx"
+    }
+  ]
+}

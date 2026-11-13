@@ -1,0 +1,25 @@
+import type { KeylineItem } from "../../item";
+
+export default {
+  name: "date-range",
+  type: "registry:ui",
+  title: "Date range picker",
+  description:
+    "Range calendar on react-day-picker (pinned) styled as a Keyline grid: a flooded range with ink ends, row-break notches, hover and keyboard preview, hatched unavailable days, month and year dropdowns, min/max, presets and a day count.",
+  whenToUse:
+    "Use it to choose a first and a last day, such as a booking or a report period. For a single day use Date picker.",
+  files: [{ path: "src/registry/keyline/ui/date-range.tsx", type: "registry:ui" }],
+  dependencies: ["@base-ui/react", "react-day-picker"],
+  registryDependencies: [
+    "@keyline-ui/keyline",
+    "utils",
+    "@keyline-ui/keyline-scope",
+    "@keyline-ui/keyline-render",
+    "@keyline-ui/keyline-motion",
+    "@keyline-ui/select",
+    "@keyline-ui/calendar",
+  ],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+} satisfies KeylineItem;

@@ -1,5 +1,5 @@
-import { land, isIndex, VIEW, TENTHS } from "@site/lib/contours"
-import { Backdrop } from "@site/components/backdrop"
+import { land, isIndex, VIEW, TENTHS } from "@site/lib/contours";
+import { Backdrop } from "@site/components/backdrop";
 
 /** The sheet's land: contours and the keyline, one level of the same field. Decorative, behind the heading and the
  * specimen. The keypoint is not drawn here: it belongs to the control that owns the state (the plates own their state).
@@ -7,13 +7,24 @@ import { Backdrop } from "@site/components/backdrop"
  * This is the resting drawing, server-rendered and complete on its own (and all that reduced motion ever shows).
  * Backdrop reads these same paths back and moves them with the living terrain (terrain.ts). */
 export function Land() {
-  const { rings, keyline } = land()
+  const { rings, keyline } = land();
   return (
     <Backdrop>
-      <svg className="s-land" viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <svg
+        className="s-land"
+        viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`}
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+        focusable="false"
+      >
         <g transform={`scale(${1 / TENTHS})`}>
           {rings.map((r, i) => (
-            <path key={i} className={isIndex(r.level) ? "s-contour s-index" : "s-contour"} d={r.d} data-level={r.level} />
+            <path
+              key={i}
+              className={isIndex(r.level) ? "s-contour s-index" : "s-contour"}
+              d={r.d}
+              data-level={r.level}
+            />
           ))}
           <path className="s-keyline" d={keyline} />
         </g>
@@ -26,7 +37,7 @@ export function Land() {
         )}
       </svg>
     </Backdrop>
-  )
+  );
 }
 
 /** Crop marks: the frame's edges carried outside it, as on a printed sheet. */
@@ -40,7 +51,7 @@ export function CropMarks() {
         </span>
       ))}
     </span>
-  )
+  );
 }
 
 /** The mark (Trap): a cobalt plate slipped out of register, held by an exact ink keyline. The frame absorbs
@@ -50,9 +61,17 @@ export function CropMarks() {
  * (site.css: Slip on the home sheet, Absorb when a plate turns). */
 export function Mark() {
   return (
-    <svg className="s-mark-glyph" viewBox="0 0 22 22" width="22" height="22" shapeRendering="crispEdges" aria-hidden="true" focusable="false">
+    <svg
+      className="s-mark-glyph"
+      viewBox="0 0 22 22"
+      width="22"
+      height="22"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+      focusable="false"
+    >
       <rect className="s-mark-plate" x="0" y="0" width="14" height="14" />
       <path className="s-mark-frame" d="M3 3h19v19H3zM6 6v13h13V6z" fillRule="evenodd" />
     </svg>
-  )
+  );
 }

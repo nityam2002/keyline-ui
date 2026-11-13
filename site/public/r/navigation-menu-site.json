@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navigation-menu-site",
+  "title": "Navigation menu: paper site nav",
+  "description": "An example of Navigation menu: paper site nav.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/navigation-menu"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/navigation-menu-site.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport {\n  NavigationMenu,\n  NavigationMenuCard,\n  NavigationMenuContent,\n  NavigationMenuGrid,\n  NavigationMenuItem,\n  NavigationMenuLink,\n  NavigationMenuList,\n  NavigationMenuTrigger,\n} from \"../ui/navigation-menu\";\n\nexport function PaperSiteNav() {\n  const [went, setWent] = useState<string | null>(null);\n  // the example stays on this page: each link says where it would go instead of leaving\n  const go = (href: string) => (e: React.MouseEvent) => {\n    e.preventDefault();\n    setWent(href);\n  };\n\n  return (\n    <div className=\"grid min-h-[300px] content-start gap-4\">\n      <NavigationMenu aria-label=\"Dunder Mifflin Paper\">\n        <NavigationMenuList>\n          <NavigationMenuItem value=\"products\">\n            <NavigationMenuTrigger>Products</NavigationMenuTrigger>\n            <NavigationMenuContent>\n              <NavigationMenuGrid>\n                <NavigationMenuCard\n                  href=\"/products/copy\"\n                  onClick={go(\"/products/copy\")}\n                  title=\"Copy paper\"\n                  code=\"CPY\"\n                  description=\"Letter and legal, 20 to 32 lb, by the ream or case.\"\n                />\n                <NavigationMenuCard\n                  href=\"/products/cardstock\"\n                  onClick={go(\"/products/cardstock\")}\n                  title=\"Cardstock\"\n                  code=\"CRD\"\n                  description=\"65 to 110 lb, white and colours.\"\n                />\n                <NavigationMenuCard\n                  href=\"/products/envelopes\"\n                  onClick={go(\"/products/envelopes\")}\n                  title=\"Envelopes\"\n                  code=\"ENV\"\n                  description=\"#10, catalog and security tint.\"\n                />\n                <NavigationMenuCard\n                  href=\"/products/labels\"\n                  onClick={go(\"/products/labels\")}\n                  title=\"Labels\"\n                  code=\"LBL\"\n                  description=\"Shipping and file labels, laser and inkjet.\"\n                />\n              </NavigationMenuGrid>\n            </NavigationMenuContent>\n          </NavigationMenuItem>\n          <NavigationMenuItem value=\"branches\">\n            <NavigationMenuTrigger>Branches</NavigationMenuTrigger>\n            <NavigationMenuContent>\n              <NavigationMenuGrid>\n                <NavigationMenuCard\n                  href=\"/branches/scranton\"\n                  onClick={go(\"/branches/scranton\")}\n                  title=\"Scranton\"\n                  code=\"SCR\"\n                  description=\"1725 Slough Avenue, Scranton, PA.\"\n                  active\n                />\n                <NavigationMenuCard\n                  href=\"/branches/nashua\"\n                  onClick={go(\"/branches/nashua\")}\n                  title=\"Nashua\"\n                  code=\"NSH\"\n                  description=\"Nashua, NH.\"\n                />\n                <NavigationMenuCard\n                  href=\"/branches/utica\"\n                  onClick={go(\"/branches/utica\")}\n                  title=\"Utica\"\n                  code=\"UTC\"\n                  description=\"Utica, NY.\"\n                />\n              </NavigationMenuGrid>\n            </NavigationMenuContent>\n          </NavigationMenuItem>\n          <NavigationMenuItem>\n            <NavigationMenuLink href=\"/pricing\" onClick={go(\"/pricing\")}>\n              Pricing\n            </NavigationMenuLink>\n          </NavigationMenuItem>\n          <NavigationMenuItem>\n            <NavigationMenuLink href=\"/contact\" onClick={go(\"/contact\")}>\n              Contact\n            </NavigationMenuLink>\n          </NavigationMenuItem>\n        </NavigationMenuList>\n      </NavigationMenu>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {went ? `Would open ${went}.` : \"You are on the Scranton branch page.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/navigation-menu-site.tsx"
+    }
+  ],
+  "categories": [
+    "navigation-menu"
+  ],
+  "type": "registry:block"
+}

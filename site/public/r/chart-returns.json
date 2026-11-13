@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-returns",
+  "title": "Chart: returns by client",
+  "description": "An example of Chart: returns by client.",
+  "dependencies": [
+    "recharts@3.10.1"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/chart",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/chart-returns.tsx",
+      "content": "\"use client\";\n\nimport { Bar, BarChart, CartesianGrid, XAxis, YAxis } from \"recharts\";\nimport {\n  ChartContainer,\n  ChartFigure,\n  ChartLegend,\n  ChartLegendContent,\n  ChartTooltip,\n  ChartTooltipContent,\n  type ChartConfig,\n} from \"../ui/chart\";\n\nconst CASES = [\n  { client: \"Lackawanna Co.\", kept: 412, returned: 8 },\n  { client: \"Blue Cross\", kept: 365, returned: 41 },\n  { client: \"Harper Collins\", kept: 298, returned: 12 },\n  { client: \"Business Park\", kept: 241, returned: 4 },\n];\n\n// returns are the figure that needs someone, so they take the alert colour\nconst config = {\n  kept: { label: \"Kept\", unit: \"cases\" },\n  returned: { label: \"Returned\", unit: \"cases\", color: \"var(--kl-data-alert)\" },\n} satisfies ChartConfig;\n\nexport function ReturnsByClient() {\n  return (\n    <ChartFigure\n      title=\"Cases delivered this quarter\"\n      description=\"Returns in the alert colour; Blue Cross sent back the watermarked batch\"\n      data={CASES}\n      config={config}\n      labelKey=\"client\"\n      labelHeader=\"Client\"\n    >\n      {/* data-kl-stack splits the stacked segments with a gap */}\n      <ChartContainer config={config} className=\"aspect-auto h-[220px]\" data-kl-stack=\"\">\n        <BarChart data={CASES} layout=\"vertical\" margin={{ top: 0, right: 8, bottom: 0, left: 0 }} barCategoryGap=\"28%\">\n          <CartesianGrid horizontal={false} />\n          <XAxis type=\"number\" tickLine={false} />\n          <YAxis type=\"category\" dataKey=\"client\" tickLine={false} axisLine={false} width={104} />\n          <ChartTooltip content={<ChartTooltipContent />} />\n          <ChartLegend content={<ChartLegendContent />} />\n          <Bar dataKey=\"kept\" stackId=\"cases\" fill=\"var(--color-kept)\" />\n          <Bar dataKey=\"returned\" stackId=\"cases\" fill=\"var(--color-returned)\" />\n        </BarChart>\n      </ChartContainer>\n    </ChartFigure>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/chart-returns.tsx"
+    }
+  ],
+  "categories": [
+    "chart"
+  ],
+  "type": "registry:block"
+}

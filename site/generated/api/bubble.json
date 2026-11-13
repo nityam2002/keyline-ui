@@ -1,0 +1,91 @@
+{
+  "name": "bubble",
+  "title": "Bubble",
+  "description": "One message as a control-weight frame (2px, no radius) holding cells: the text, then files (Attachment layout=\"cell\"). Consecutive bubbles attach on a 1px seam. Tone by role: plain (theirs), tint (yours), attention (not sent: the attention frame and an inserted ! cell). pending runs the Signal segment on the bottom keyline while it sends. Reactions sit on the bottom keyline.",
+  "whenToUse": "Use it for one chat message with its files and reactions. To group a sender's consecutive messages use Message; for the scrolling log use Message scroller.",
+  "parts": [
+    {
+      "name": "Bubble",
+      "description": "",
+      "props": [
+        {
+          "name": "pending",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "Sending: the pending segment runs along the bottom keyline (a static hatch under reduced motion)."
+        },
+        {
+          "name": "tone",
+          "type": "\"attention\" | \"plain\" | \"tint\"",
+          "default": "\"plain\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "BubbleContent",
+      "description": "The text cell. Render it as a button or link (`render`) when the message itself acts (open a thread).",
+      "props": []
+    },
+    {
+      "name": "BubbleGroup",
+      "description": "A column of bubbles outside a Message (a Message's content is already one).",
+      "props": []
+    },
+    {
+      "name": "BubbleReactions",
+      "description": "Reactions on the bubble's bottom keyline: a row of small cells (\"👍 2\"). Buttons inside are fine.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-pending",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "bubble",
+        "bubble-bang",
+        "bubble-content",
+        "bubble-group",
+        "bubble-reactions",
+        "bubble-text"
+      ]
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bubble-x",
+      "values": [
+        "var(--kl-msg-x,var(--kl-inset))"
+      ]
+    },
+    {
+      "name": "--kl-bw",
+      "values": [
+        "3px"
+      ]
+    },
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "0px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "bubble-reactions",
+      "title": "Bubble: party announcement",
+      "file": "bubble-reactions.tsx"
+    }
+  ]
+}

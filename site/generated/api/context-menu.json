@@ -1,0 +1,49 @@
+{
+  "name": "context-menu",
+  "title": "Context menu",
+  "description": "Menu opened on an object (right-click, long-press, Menu key): Menu's rows and submenus; marks the object while open.",
+  "whenToUse": "Use it for commands on an object opened by right-click, long-press or Shift+F10. For a menu opened from a visible trigger use Menu.",
+  "parts": [
+    {
+      "name": "ContextMenuPopup",
+      "description": "The menu: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted (Base UI places it at the pointer). Not docked to an owner: control weight on every side and a minimum width of its own. The surface is Menu's (MenuSurface), so it carries `data-slot=\"menu-popup\"`.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<MenuPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's ContextMenu.Portal."
+        }
+      ]
+    },
+    {
+      "name": "ContextMenuTrigger",
+      "description": "The area the menu opens on. Rendered as another part (`render={<Item />}`), the element is that part's and carries its data-slot; the mark while open is added to it.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "context-menu-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "context-menu-clients",
+      "title": "Context menu: client list",
+      "file": "context-menu-clients.tsx"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb-drive",
+  "title": "Breadcrumb: drive folder",
+  "description": "An example of Breadcrumb: drive folder.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/breadcrumb",
+    "@keyline-ui/button",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/breadcrumb-drive.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Breadcrumb } from \"../ui/breadcrumb\";\nimport { Button } from \"../ui/button\";\n\nconst PATH = [\"Shared drive\", \"Scranton\", \"Sales\", \"Clients\", \"Lackawanna County\", \"Q4 orders\"];\nconst FILES: Record<string, string[]> = {\n  \"Shared drive\": [\"Scranton\", \"Stamford (archived)\", \"Corporate\"],\n  Scranton: [\"Sales\", \"Accounting\", \"Warehouse\", \"Party Planning Committee\"],\n  Sales: [\"Clients\", \"Price lists\", \"Leads\"],\n  Clients: [\"Blue Cross of Pennsylvania\", \"Harper Collins\", \"Lackawanna County\"],\n  \"Lackawanna County\": [\"Q3 orders\", \"Q4 orders\", \"Contract 2026.pdf\"],\n  \"Q4 orders\": [\"DM-4107.pdf\", \"DM-4126.pdf\"],\n};\n\nexport function DriveFolder() {\n  const [depth, setDepth] = useState(PATH.length);\n  const here = PATH[depth - 1] ?? \"Shared drive\";\n\n  return (\n    <div className=\"grid gap-4\">\n      <Breadcrumb\n        items={PATH.slice(0, depth).map((label, i) => ({\n          label,\n          // a link whose click opens the folder in place; a <button> here breaks in the folded menu\n          render: (\n            <a href={`?folder=${encodeURIComponent(label)}`} onClick={(e) => (e.preventDefault(), setDepth(i + 1))} />\n          ),\n        }))}\n      />\n      <ul aria-label={`In ${here}`} className=\"m-0 grid min-h-8 list-none items-center gap-2 p-0 text-[14px]\">\n        {(FILES[here] ?? []).map((f) => {\n          const next = PATH[depth];\n          return (\n            <li key={f}>\n              {f === next ? (\n                <Button size=\"compact\" variant=\"quiet\" onClick={() => setDepth(depth + 1)}>\n                  {f}\n                </Button>\n              ) : (\n                f\n              )}\n            </li>\n          );\n        })}\n      </ul>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/breadcrumb-drive.tsx"
+    }
+  ],
+  "categories": [
+    "breadcrumb"
+  ],
+  "type": "registry:block"
+}

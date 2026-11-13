@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type * as React from "react";
 
 /**
  * Demo shell only. Keyboard focus that lands at the edge of a scroll area is scrolled into view with the
@@ -7,9 +7,9 @@ import type * as React from "react"
  * and wheel, trackpad and keyboard scrolling stay entirely native.
  */
 export function revealFocus(e: React.FocusEvent<HTMLElement>) {
-  const t = e.target
+  const t = e.target;
   // the scroll area's own viewport (the root's focusable child, where this handler sits) is the region being
   // read, not something inside it
-  if (t.parentElement === e.currentTarget || !t.matches(":focus-visible")) return
-  t.scrollIntoView({ block: "nearest", inline: "nearest" })
+  if (t.parentElement === e.currentTarget || !t.matches(":focus-visible")) return;
+  t.scrollIntoView({ block: "nearest", inline: "nearest" });
 }

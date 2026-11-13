@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-group-zoom",
+  "title": "Button group: report zoom",
+  "description": "An example of Button group: report zoom.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/button-group",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/button-group-zoom.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { ButtonGroup, ButtonGroupSeparator, ButtonGroupText } from \"../ui/button-group\";\n\nexport function ReportZoom() {\n  const [zoom, setZoom] = useState(100);\n\n  return (\n    <div className=\"grid gap-4\">\n      <ButtonGroup aria-label=\"Zoom the quarterly sales report\" className=\"justify-self-start\">\n        <Button\n          layout=\"cell\"\n          size=\"icon\"\n          aria-label=\"Zoom out\"\n          disabled={zoom <= 50}\n          onClick={() => setZoom(zoom - 25)}\n        >\n          −\n        </Button>\n        <ButtonGroupText className=\"min-w-[7ch] justify-center tabular-nums\">\n          <bdi>{zoom}%</bdi>\n        </ButtonGroupText>\n        <Button\n          layout=\"cell\"\n          size=\"icon\"\n          aria-label=\"Zoom in\"\n          disabled={zoom >= 200}\n          onClick={() => setZoom(zoom + 25)}\n        >\n          +\n        </Button>\n        <ButtonGroupSeparator />\n        <Button layout=\"cell\" disabled={zoom === 100} onClick={() => setZoom(100)}>\n          Actual size\n        </Button>\n      </ButtonGroup>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        Q3 sales report, Scranton branch · shown at {zoom}%\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/button-group-zoom.tsx"
+    }
+  ],
+  "categories": [
+    "button-group"
+  ],
+  "type": "registry:block"
+}

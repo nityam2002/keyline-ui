@@ -1,0 +1,129 @@
+# Release: every push to main is deployed, checked where consumers fetch it, and tagged when the version lock moved.
+#
+#   deploy  The host (Vercel's Git integration) deploys main on its own; this job waits for that deploy to serve
+#           this commit's registry, then fails unless every file in site/public/r (registry.json, versions.json and
+#           every item) is served from the production origin exactly as committed. It never deploys anything itself.
+#   tag     When versions.lock.json differs from the last v* tag, and CI's `ci` check passed on this commit, it cuts
+#           an annotated tag v<commit date>-<short sha> recording the lock's blob, then checks the tag points at this
+#           commit and names this commit's lock.
+#
+# docs/releasing.md covers the whole release.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+# One release at a time, in push order; a run on main is never cancelled.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy and verify the hosted registry
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version-file: .nvmrc
+          # the script uses Node's standard library only, so nothing is installed and there is no store to cache
+          package-manager-cache: false
+
+      # Up to 20 minutes for the deploy to go live, re-checking every 15 seconds; a deploy that fails, or serves
+      # another commit's registry, ends red with the files that differ.
+      - name: Verify the hosted registry against this commit
+        run: node scripts/registry/verify-hosted.ts --wait 1200
+
+  tag:
+    name: Tag from the version lock
+    needs: deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    permissions:
+      contents: write # create the tag through the API
+      checks: read # wait for CI's `ci` check on this commit
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          # the last v* tag and the history back to it
+          fetch-depth: 0
+
+      - name: Did the version lock change since the last tag?
+        id: lock
+        run: |
+          last=$(git describe --tags --abbrev=0 --match 'v*' HEAD 2>/dev/null || true)
+          if [ -n "$last" ] && git diff --quiet "$last" HEAD -- versions.lock.json; then
+            echo "versions.lock.json is unchanged since $last; nothing to tag"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "versions.lock.json changed since ${last:-the start of history}"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.lock.outputs.changed == 'true'
+        uses: ./.github/actions/setup
+
+      # The lock must agree with the built registry this commit ships (and the deploy job showed is live).
+      - if: steps.lock.outputs.changed == 'true'
+        run: pnpm versions:check
+
+      - name: Wait for CI's ci check on this commit
+        if: steps.lock.outputs.changed == 'true'
+        run: |
+          for _ in $(seq 120); do
+            read -r status conclusion < <(gh api "repos/$REPO/commits/$SHA/check-runs?check_name=ci" \
+              --jq '[.check_runs[] | select(.app.slug == "github-actions")] | sort_by(.started_at) | last
+                    | if . == null then "missing none" else "\(.status) \(.conclusion // "none")" end')
+            if [ "$status" = completed ]; then
+              [ "$conclusion" = success ] && { echo "ci passed on $SHA"; exit 0; }
+              echo "::error::ci concluded '$conclusion' on $SHA; not tagging"; exit 1
+            fi
+            echo "ci is $status; waiting"
+            sleep 30
+          done
+          echo "::error::ci did not finish on $SHA within an hour"; exit 1
+
+      - name: Cut the tag
+        if: steps.lock.outputs.changed == 'true'
+        run: |
+          tag="v$(TZ=UTC git show -s --format=%cd --date=format-local:%Y-%m-%d "$SHA")-$(git rev-parse --short=7 "$SHA")"
+          lock=$(git rev-parse "$SHA:versions.lock.json")
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          echo "LOCK=$lock" >> "$GITHUB_ENV"
+          if existing=$(gh api "repos/$REPO/git/ref/tags/$tag" --jq .object.sha 2>/dev/null); then
+            echo "$tag already exists ($existing); checking it below"
+            exit 0
+          fi
+          object=$(gh api "repos/$REPO/git/tags" -f tag="$tag" -f object="$SHA" -f type=commit \
+            -f message="Keyline registry at $SHA"$'\n\n'"versions.lock.json $lock" --jq .sha)
+          gh api "repos/$REPO/git/refs" -f ref="refs/tags/$tag" -f sha="$object" --silent
+          echo "created $tag"
+
+      # The guard: the tag must point at this commit and record this commit's lock.
+      - name: Check the tag matches the lock
+        if: steps.lock.outputs.changed == 'true'
+        run: |
+          object=$(gh api "repos/$REPO/git/ref/tags/$TAG" --jq 'select(.object.type == "tag") | .object.sha')
+          [ -n "$object" ] || { echo "::error::$TAG is not an annotated tag"; exit 1; }
+          target=$(gh api "repos/$REPO/git/tags/$object" --jq .object.sha)
+          recorded=$(gh api "repos/$REPO/git/tags/$object" --jq '.message | capture("versions.lock.json (?<b>[0-9a-f]+)").b')
+          [ "$target" = "$SHA" ] || { echo "::error::$TAG points at $target, not $SHA"; exit 1; }
+          [ "$recorded" = "$LOCK" ] || { echo "::error::$TAG records lock $recorded, but $SHA has $LOCK"; exit 1; }
+          echo "$TAG -> $SHA, versions.lock.json $LOCK"

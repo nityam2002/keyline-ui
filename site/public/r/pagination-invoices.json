@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination-invoices",
+  "title": "Pagination: invoice archive",
+  "description": "An example of Pagination: invoice archive.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/pagination"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/pagination-invoices.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Pagination } from \"../ui/pagination\";\n\nconst CLIENTS = [\n  \"Lackawanna County\",\n  \"Blue Cross of Pennsylvania\",\n  \"Harper Collins\",\n  \"Scranton Business Park\",\n  \"Mount Airy Casino\",\n  \"Penn Paper Supply\",\n  \"Wilkes-Barre Library\",\n];\nconst PER = 4;\nconst TOTAL = 76;\n\n// a stand-in for the page your server returns\nconst invoices = (page: number) =>\n  Array.from({ length: Math.min(PER, TOTAL - (page - 1) * PER) }, (_, i) => {\n    const n = (page - 1) * PER + i;\n    return { id: `INV-${2207 - n}`, client: CLIENTS[(n * 3) % CLIENTS.length], amount: 180 + ((n * 437) % 9000) };\n  });\n\nexport function InvoiceArchive() {\n  const [page, setPage] = useState(1);\n\n  return (\n    <div className=\"grid gap-4\">\n      <ul aria-label={`Invoices, page ${page}`} className=\"m-0 grid list-none gap-2 p-0 text-[14px]\">\n        {invoices(page).map((inv) => (\n          <li key={inv.id} className=\"grid grid-cols-[auto_1fr_auto] gap-3\">\n            <span className=\"font-kl-mono text-[13px]\">{inv.id}</span>\n            <span className=\"min-w-0 truncate\">{inv.client}</span>\n            <span className=\"tabular-nums\">${inv.amount.toLocaleString(\"en-US\")}.00</span>\n          </li>\n        ))}\n      </ul>\n      <Pagination page={page} pageCount={Math.ceil(TOTAL / PER)} onPageChange={setPage} label=\"Invoice pages\" />\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/pagination-invoices.tsx"
+    }
+  ],
+  "categories": [
+    "pagination"
+  ],
+  "type": "registry:block"
+}

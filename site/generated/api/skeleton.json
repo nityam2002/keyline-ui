@@ -1,0 +1,92 @@
+{
+  "name": "skeleton",
+  "title": "Skeleton",
+  "description": "A placeholder for content on its way: the table's loading cell outside the table, in line, block, value and control shapes; a busy group that names what is loading.",
+  "whenToUse": "Use it as a placeholder the size of content still loading, so nothing moves when it lands. For a list with nothing in it use Empty; for task progress use Progress.",
+  "parts": [
+    {
+      "name": "Skeleton",
+      "description": "A placeholder for content that is on its way. It is the Table's loading cell outside the table: a keyline box on the tint, with a running segment while it waits. ┌──────────────────────────────┐ │░░░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░│ line (k1 soft keyline, tint fill, running segment) └──────────────────────────────┘ - Always aria-hidden. Wrap the loading region in SkeletonGroup, which marks it busy and says what is loading once; a page of skeletons never reads as a list of blanks. - Size it to the real content (lines of the same count, a control of the same frame) so nothing moves when the content lands. - Motion: the segment runs 1100ms linear, the same rhythm as the table. Reduced motion: no segment, the static box alone.",
+      "props": [
+        {
+          "name": "height",
+          "type": "Height<string | number>",
+          "default": "",
+          "required": false,
+          "description": "block only. Default 96px."
+        },
+        {
+          "name": "lines",
+          "type": "number",
+          "default": "1",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shape",
+          "type": "\"line\" | \"control\" | \"value\" | \"block\"",
+          "default": "\"line\"",
+          "required": false,
+          "description": "line: a run of text; `lines` stacks several, the last one shorter. block: an area (a chart, media, a paragraph you won't line out). value: a number in the count voice. control: the footprint of a control frame (the real control replaces it without moving anything)."
+        },
+        {
+          "name": "width",
+          "type": "Width<string | number>",
+          "default": "",
+          "required": false,
+          "description": "Any CSS length. Defaults: line 100%, value 4ch, control 100%, block 100%."
+        }
+      ]
+    },
+    {
+      "name": "SkeletonGroup",
+      "description": "The region that is loading. `aria-busy` while `busy`, and one polite status naming what is on its way (\"Loading carrier details\"); when it lands, the status clears and the content replaces the skeletons in place.",
+      "props": [
+        {
+          "name": "busy",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "What is loading, said once while busy (\"Loading carrier details\")."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-motion",
+      "values": [
+        "reduce"
+      ]
+    },
+    {
+      "name": "data-shape",
+      "values": [
+        "line"
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "skeleton",
+        "skeleton-group",
+        "skeleton-line"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "skeleton-client",
+      "title": "Skeleton: client card",
+      "file": "skeleton-client.tsx"
+    }
+  ]
+}

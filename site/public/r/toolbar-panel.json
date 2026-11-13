@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar-panel",
+  "title": "Toolbar: orders panel",
+  "description": "An example of Toolbar: orders panel.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/menu",
+    "@keyline-ui/panel",
+    "@keyline-ui/toolbar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toolbar-panel.tsx",
+      "content": "\"use client\";\n\nimport { Search } from \"lucide-react\";\nimport { useState } from \"react\";\nimport {\n  Toolbar,\n  ToolbarButton,\n  ToolbarInput,\n  ToolbarLink,\n  ToolbarMenuContent,\n  ToolbarMenuTrigger,\n  ToolbarSeparator,\n} from \"../ui/toolbar\";\nimport {\n  Menu,\n  MenuCheckboxItem,\n  MenuGroup,\n  MenuGroupLabel,\n  MenuRadioGroup,\n  MenuRadioItem,\n  MenuSeparator,\n} from \"../ui/menu\";\nimport { Panel, PanelBody } from \"../ui/panel\";\n\nconst LABELS = { client: \"Client\", rep: \"Sales rep\", branch: \"Branch\" };\n\nexport function OrdersPanel() {\n  const [columns, setColumns] = useState({ client: true, rep: true, branch: false });\n  const [rows, setRows] = useState(\"comfortable\");\n  const shown = (Object.keys(columns) as (keyof typeof columns)[])\n    .filter((key) => columns[key])\n    .map((key) => LABELS[key]);\n\n  return (\n    <Panel>\n      <Toolbar layout=\"cell\" overflow=\"menu\" aria-label=\"Orders\">\n        <ToolbarInput\n          label=\"Search orders\"\n          placeholder=\"Search orders\"\n          glyph={<Search size={16} aria-hidden=\"true\" />}\n        />\n        <Menu>\n          <ToolbarMenuTrigger>Columns</ToolbarMenuTrigger>\n          <ToolbarMenuContent>\n            <MenuGroup>\n              <MenuGroupLabel>Shown</MenuGroupLabel>\n              <MenuCheckboxItem checked={columns.client} onCheckedChange={(c) => setColumns({ ...columns, client: c })}>\n                Client\n              </MenuCheckboxItem>\n              <MenuCheckboxItem checked={columns.rep} onCheckedChange={(c) => setColumns({ ...columns, rep: c })}>\n                Sales rep\n              </MenuCheckboxItem>\n              <MenuCheckboxItem checked={columns.branch} onCheckedChange={(c) => setColumns({ ...columns, branch: c })}>\n                Branch\n              </MenuCheckboxItem>\n            </MenuGroup>\n            <MenuSeparator />\n            <MenuRadioGroup value={rows} onValueChange={setRows}>\n              <MenuGroupLabel>Rows</MenuGroupLabel>\n              <MenuRadioItem value=\"comfortable\">Comfortable</MenuRadioItem>\n              <MenuRadioItem value=\"compact\">Compact</MenuRadioItem>\n            </MenuRadioGroup>\n          </ToolbarMenuContent>\n        </Menu>\n        <ToolbarSeparator />\n        <ToolbarButton>Export</ToolbarButton>\n        <ToolbarLink href=\"#props\">Help</ToolbarLink>\n      </Toolbar>\n      <PanelBody>\n        <p role=\"status\">\n          Columns: {shown.join(\", \") || \"none\"} · rows {rows}\n        </p>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toolbar-panel.tsx"
+    }
+  ],
+  "categories": [
+    "toolbar"
+  ],
+  "type": "registry:block"
+}
