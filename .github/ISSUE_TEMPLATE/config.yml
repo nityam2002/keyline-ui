@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/nityam2002/keyline-ui/security/policy
+    about: Report it privately, never in a public issue.
+  - name: Installing and using Keyline
+    url: https://keyline-ui.dev/docs/installation
+    about: Installation, theming, modes and every component's API.

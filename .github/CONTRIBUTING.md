@@ -176,9 +176,41 @@ the entry's line starts with **Breaking:**, followed by the migration.
 - **A check stays as strict as it was.** Fix the code rather than loosen an assertion or a tolerance. A
   `test.skip` names the engine limitation that requires it.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every pull request, fork pull requests included, and on every push to main.
+Each check below is a job; a matrix job reports one check per engine. To fix one, run its commands locally.
+
+| Check | What it runs | When it fails |
+|---|---|---|
+| `Static (typecheck, lint, format, type tests)` | `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test:types` | Fix the error at its cause; `pnpm format` rewrites the formatting. |
+| `Unit (tests, versions, changelog)` | `pnpm test`, `pnpm versions:check`, `pnpm changelog:check` | Out-of-date registry: `pnpm registry:build` and commit. Version or changelog drift: bump the item, add its `changelog[]` entry, run `pnpm changelog`. |
+| `Parts (chromium)`, `(firefox)`, `(webkit)` | `pnpm test:parts --browser=<engine>` | Run `pnpm test:parts <name> --browser=<engine>`. |
+| `Page specs (chromium)`, `(firefox)`, `(webkit)` | `pnpm test:browser --project=<engine>` | Run `pnpm exec playwright test <name> --project=<engine>`; the run's report and traces are attached to the workflow run. |
+| `Page specs (timing)` | the `@timing` tests in Chrome then WebKit, one at a time | A settle time or frame count moved; find what made it slower. |
+| `CSS order` | `pnpm test:css-order` | A rule depends on another item's CSS coming first (design.md, rule 9). |
+| `Registry (build, diff, validate, verify)` | `pnpm registry:build` (must leave no diff), `pnpm exec shadcn registry validate`, `pnpm registry:verify` | Rebuild and commit `site/public/r/` and `registry.json`; fix the meta the message names. |
+| `Site and demo builds` | `pnpm build`, `pnpm site:build` | Run the same command. |
+| `Consumer installs` | `pnpm test:consumer` | Logs are attached to the workflow run; `pnpm test:consumer -- <check>` reruns one. |
+| `Visual parity (advisory)` | `pnpm test:visual --base <pull request base>` | Advisory, never required. Expected for a change meant to look different; for a refactor, the attached diff shows what moved. |
+| `ci` | nothing of its own | Fails when any check above (except the advisory one) failed, was cancelled or was skipped. |
+
+`ci` is the only required status check; the repository owner sets it in the branch rules for main. A skipped
+job fails it on purpose: no job has a path filter, so a skip means something is wrong.
+
+On a push to main, `.github/workflows/release.yml` verifies the deployed registry and tags the release
+([docs/releasing.md](../docs/releasing.md)). Dependency updates come from Renovate (`renovate.json`) weekly; Base
+UI and each wrapped library arrive in a pull request of their own.
+
+The workflows are hardened: no permissions by default and `contents: read` per job; every action pinned to a full
+commit SHA with its version in a comment; checkout never keeps the token; every job has a timeout; no
+`pull_request_target`. Keep all of that in a workflow change, and check it with
+[actionlint](https://github.com/rhysd/actionlint).
+
 ## Pull requests
 
 Keep each pull request to one change, and say what a reviewer should look at. Visible changes need before and
-after captures.
+after captures. Check the change against [REVIEW.md](../REVIEW.md) before opening it. A maintainer can ask for an
+agent review by commenting `@claude review` (`.github/workflows/review.yml`); it is never a required check.
 
 By contributing, you agree that your contributions are licensed under the [MIT License](../LICENSE).

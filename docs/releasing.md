@@ -2,7 +2,7 @@
 
 Keyline is published by deploying the documentation site: `site/public/r/` is served at `/r/{name}.json`, and that
 is what the shadcn CLI downloads when someone adds a Keyline component. There is no npm package. The hosted registry is always
-the latest deployed version, so deploy the site only from a release commit.
+the latest deployed version, and the host deploys main on every push, so everything merged to main is released.
 
 ## First release only
 
@@ -14,6 +14,10 @@ the site's install commands read it, and `pnpm test` fails unless every install 
 2. Point the domain at the site's host and serve the site over HTTPS at that origin (the CLI fetches
    `https://keyline-ui.dev/r/{name}.json`).
 3. Verify the domain in Google Search Console and submit `https://keyline-ui.dev/sitemap.xml`.
+4. In the repository's settings, add a branch rule (ruleset) for main that requires the status check `ci` and
+   nothing else; the jobs it gathers change, the check's name does not. Enable Renovate for the repository.
+5. For the opt-in agent review (`.github/workflows/review.yml`), add the `ANTHROPIC_API_KEY` repository secret
+   and install the Claude GitHub App. Without them the workflow fails only when a maintainer asks for a review.
 
 ## What a release is
 
@@ -37,31 +41,33 @@ release as a tombstone that points at its replacement, and its name is never reu
 
 ## Every deploy
 
-1. Rebuild and check, on a clean checkout:
+Before merging, the pull request must pass CI's `ci` check
+([CONTRIBUTING, "Continuous integration"](../.github/CONTRIBUTING.md#continuous-integration)), which includes the
+consumer installs, and every item whose shipped files changed must be bumped with a changelog entry.
 
-   ```sh
-   pnpm install --frozen-lockfile
-   pnpm registry:build      # site/public/r must not change; if it does, commit it
-   pnpm check
-   pnpm test:consumer
-   ```
+After the merge, `.github/workflows/release.yml` runs on the push to main:
 
-2. Merge to `main` and let CI pass; the release workflow cuts the tag.
-3. Deploy the site from that commit. Any Next.js host works: build with `pnpm site:build` and serve with
-   `pnpm site:start` (or the platform's equivalent for `next build site`). The site must serve `site/public`
-   at the root.
-   Build it with `KEYLINE_SITE_ENV=production` (Vercel's production deployments set `VERCEL_ENV` instead): only
-   that build may be indexed by search engines and lists its sitemap. Every other build sends `noindex`
-   (`site/lib/seo.ts`).
-4. Check the published registry, not the local one:
+1. **Deploy.** The host's Git integration deploys main (Vercel, building with `pnpm site:build`; the site must
+   serve `site/public` at the root). Production deployments set `VERCEL_ENV=production`, or
+   `KEYLINE_SITE_ENV=production` on another host: only that build may be indexed by search engines and lists its
+   sitemap. Every other build, previews included, sends `noindex` (`site/lib/seo.ts`).
+2. **Verify.** `node scripts/registry/verify-hosted.ts --wait 1200` fetches every file in `site/public/r` from
+   `https://keyline-ui.dev/r/` (the index, `versions.json` and every item) and fails unless each one equals the
+   commit's file. It re-checks for up to 20 minutes while the deploy goes live. A red run means production does
+   not serve what main holds: look at the host's deployment for that commit.
+3. **Tag.** When `versions.lock.json` differs from the last `v*` tag, and the `ci` check passed on the commit, the
+   workflow cuts an annotated tag `v<commit date>-<short sha>` whose message records the lock's blob, then checks
+   that the tag points at the commit and names its lock. Tags are never cut by hand.
 
-   ```sh
-   curl -fsS https://keyline-ui.dev/r/registry.json | head -c 200
-   curl -fsS https://keyline-ui.dev/r/versions.json | head -c 200
-   KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next.sh "$(mktemp -d)"
-   ```
+To check production by hand, or after redeploying on the host:
 
-   The second command is the Next.js consumer check, installing from the public site.
+```sh
+node scripts/registry/verify-hosted.ts
+KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next.sh "$(mktemp -d)"
+```
+
+The second command is the Next.js consumer check, installing from the public site. To rerun the whole workflow,
+use **Run workflow** on `release.yml` in the Actions tab, on main.
 
 ## Optional: the shadcn registry directory
 
