@@ -89,6 +89,8 @@ function Segmented({
         data-kl-stretch=""
         data-kl-layout={layout}
         {...dataAttrs({ size })}
+        // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items
+        tabIndex={-1}
         value={current}
         onValueChange={(v) => {
           setInner(v as string);

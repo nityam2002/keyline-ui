@@ -416,6 +416,8 @@ function Toolbar({
           data-kl-overflow={menuMode ? "menu" : undefined}
           orientation={orientation}
           onFocusCapture={refreshDir}
+          // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items
+          tabIndex={-1}
           className={resolveClassName(cn(rootVariants({ layout, orientation, overflow })), className)}
           {...props}
           data-slot="toolbar"

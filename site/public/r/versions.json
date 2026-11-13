@@ -1082,7 +1082,7 @@
   "menubar": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-22f4d1db06b62e54427b971220e2bfb96551047ec9500c3e2ca0a88afa2601b3",
+    "hash": "sha256-fd81f426972a6a896dc8833bbd544d81d053544fae39dd0043d83e291e11db2f",
     "changelog": [
       {
         "version": "1.0.0",
@@ -1598,7 +1598,7 @@
   "segmented": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-f9a6275afda8ab1d3f4dca8f3aaefbf479d1e0f0e7beacf5d81e1d8a69e839a2",
+    "hash": "sha256-c9e00488281097f9dd082ea122bab6126fae8c19b7c6fb06ef1872531ed6bb1b",
     "changelog": [
       {
         "version": "1.0.0",
@@ -1994,7 +1994,7 @@
   "tabs": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-1d5e482edf6644523895172bc8ce9763f2a31d51f38f3b82f50d3e35f8f8b99f",
+    "hash": "sha256-c7a0c70b222ec9b53f2a4f2703c95334944cdcd658914197990b63ea8b034565",
     "changelog": [
       {
         "version": "1.0.0",
@@ -2114,7 +2114,7 @@
   "toggle-group": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-1cdb7a656f7b0d4552253df130344c94e79a98806f62536d8f5d5254801923f6",
+    "hash": "sha256-48de061032f8a140fa31279c043a42bf29b68dc5351a3a59762513e198b34d61",
     "changelog": [
       {
         "version": "1.0.0",
@@ -2174,7 +2174,7 @@
   "toolbar": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-66e034064f13e7c51791a6ab727656d354da5c757f1016451576af61251a139c",
+    "hash": "sha256-93c41dc90a6057ca7858106ddb0dd8d01a0d935ea5d459dde9b922e51cac5ae6",
     "changelog": [
       {
         "version": "1.0.0",

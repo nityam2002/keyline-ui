@@ -42,9 +42,11 @@ const sample = (page, action) =>
 const sum = (s) => {
   const f = s.frames;
   const end = f[f.length - 1];
-  const settle = f.find((x, i) => f.slice(i).every((y) => Math.abs(y.l - end.l) < 0.5 && Math.abs(y.r - end.r) < 0.5));
+  const at = f.findIndex((x, i) => f.slice(i).every((y) => Math.abs(y.l - end.l) < 0.5 && Math.abs(y.r - end.r) < 0.5));
   return {
-    settleMs: settle?.t,
+    settleMs: f[at]?.t,
+    // frames are counted, not timed: the first sample is taken in the click's own task, before any frame runs
+    settleFrame: at,
     inside: f.every((x) => x.l >= -0.5 && x.r <= s.frameW + 0.5),
     lands: Math.abs(end.l - s.target.l) < 1.5 && Math.abs(end.r - s.target.r) < 1.5,
     sel: s.sel,
@@ -63,6 +65,7 @@ test("motion: stretch band, forward and reversal mid-flight", { tag: "@timing" }
   ok("forward: lands on the selected item", fwd.lands && fwd.sel === 3, fwd);
   ok("forward: never leaves the frame", fwd.inside, fwd);
   ok("forward: settles within 600ms", fwd.settleMs != null && fwd.settleMs < 600, fwd);
+  ok("forward: still moving after the first frame (the reduced-motion guard can fail)", fwd.settleFrame > 1, fwd);
   await p.locator(`${SEG} [data-kl-item]`).nth(1).click();
   await idle(p);
   const rev = sum(await sample(p, "reverse"));
@@ -81,5 +84,5 @@ test("motion: stretch band, reduced motion", { tag: "@timing" }, async ({ open, 
   });
   await idle(p);
   const red = sum(await sample(p, "fwd"));
-  ok("reduced motion: lands in the first frames, no stretch", red.lands && !red.stretched && red.settleMs <= 50, red);
+  ok("reduced motion: lands in the first frames, no stretch", red.lands && !red.stretched && red.settleFrame <= 1, red);
 });

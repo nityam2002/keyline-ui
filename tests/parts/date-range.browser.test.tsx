@@ -108,9 +108,11 @@ function Example(props: Partial<React.ComponentProps<typeof DateRangePicker>>) {
 }
 
 const q = (slot: string, root: ParentNode = document) => root.querySelector<HTMLElement>(`[data-slot="${slot}"]`)!;
+// by DayPicker's ISO date, not the accessible label: the label's wording comes from the engine's locale data
+// (WebKit on Linux reads the system's ICU), so it is not a stable handle across engines
 const day = (n: number) =>
-  [...document.querySelectorAll<HTMLButtonElement>("[role=gridcell] button")].find((b) =>
-    new RegExp(`^\\w+, ${n} November 2026`).test(b.getAttribute("aria-label") ?? ""),
+  document.querySelector<HTMLButtonElement>(
+    `[role=gridcell][data-day="2026-11-${String(n).padStart(2, "0")}"]:not([data-outside]) button`,
   )!;
 
 /** A colour as the engine computes it, resolved where `at` is (a popup's --kl-cell is the raised surface). */

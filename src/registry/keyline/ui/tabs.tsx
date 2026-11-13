@@ -97,6 +97,8 @@ function TabsList({
       data-kl-stretch=""
       data-kl-layout={layout}
       activateOnFocus={activateOnFocus}
+      // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items
+      tabIndex={-1}
       className={resolveClassName(cn(listVariants({ layout })), className)}
       {...props}
       data-slot="tabs-list"

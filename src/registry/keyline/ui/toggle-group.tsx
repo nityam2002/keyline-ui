@@ -33,6 +33,8 @@ function ToggleGroup({
       ref={setRef}
       data-kl-layout={layout}
       multiple={multiple}
+      // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items
+      tabIndex={-1}
       className={resolveClassName(
         cn(
           "kl-ctl kl-cells inline-flex min-h-(--kl-ctl) max-w-full overflow-x-auto",

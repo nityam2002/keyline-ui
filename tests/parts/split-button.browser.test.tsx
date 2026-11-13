@@ -61,10 +61,12 @@ describeConformance("split-button", {
 });
 
 function Example({ variant }: { variant?: "primary" | "secondary" }) {
-  // the popup portals into the page's landmark (a page's own concern; axe's region rule expects it)
+  // the popup portals into the page's landmark (a page's own concern; axe's region rule expects it). The fields
+  // stack so the frame starts a padded line: inline after a field, how far it sits from the 414px viewport's edge
+  // depends on the engine's field width, and a menu that meets the edge is shifted off its dock by collision
   const [main, setMain] = React.useState<HTMLElement | null>(null);
   return (
-    <main ref={setMain}>
+    <main ref={setMain} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", padding: 40 }}>
       <input aria-label="Before" />
       <SplitButton variant={variant}>
         <SplitButtonAction>Book pickup</SplitButtonAction>

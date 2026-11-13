@@ -51,6 +51,8 @@ function Menubar({
       <MenubarPrimitive
         ref={setRef}
         data-kl-layout={layout}
+        // one Tab stop: Firefox makes an overflowing scroller a Tab stop of its own, even around focusable items
+        tabIndex={-1}
         className={resolveClassName(bar, className)}
         {...props}
         data-slot="menubar"
