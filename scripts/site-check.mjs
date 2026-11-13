@@ -2707,7 +2707,7 @@ for (const [width, reduce] of run("conversation")
   // Message scroller: sending lands at the end; scrolled up, a reply is counted on the jump cell, which goes to it
   demo = await docs(p, "message-scroller");
   d = demo(0);
-  const log = box(d).locator(".kl-ms-vp");
+  const log = box(d).locator("[data-slot=message-scroller-viewport]");
   const atEnd = () => log.evaluate((e) => e.scrollHeight - e.clientHeight - e.scrollTop <= 4);
   await box(d).getByRole("textbox", { name: "Message" }).fill("Thanks, Darryl.");
   await box(d).getByRole("button", { name: "Send" }).click();

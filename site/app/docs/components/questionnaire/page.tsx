@@ -21,7 +21,9 @@ const IMPORT = `import {
   QuestionnaireActions,
   QuestionnaireChoice,
   QuestionnaireChoices,
+  QuestionnaireDescription,
   QuestionnaireError,
+  QuestionnaireInput,
   QuestionnaireItem,
   QuestionnaireNext,
   QuestionnairePrevious,
@@ -45,6 +47,28 @@ const USAGE = `<Questionnaire items={STEPS} shortcuts="letters" onSubmit={submit
     <QuestionnaireSkip />
     <QuestionnaireNext />
     <QuestionnaireSubmit>Send answers</QuestionnaireSubmit>
+  </QuestionnaireActions>
+</Questionnaire>`;
+
+const PARTS = `<Questionnaire items={STEPS} onSubmit={submit} aria-label="Meredith's birthday">
+  <QuestionnaireProgress />
+  <QuestionnaireItem name="guests">
+    <QuestionnaireTitle>Who's bringing a dish?</QuestionnaireTitle>
+    <QuestionnaireDescription>Skip if nobody has said yet.</QuestionnaireDescription>
+    <QuestionnaireChoices>
+      <QuestionnaireChoice value="kevin" description="Chili">Kevin</QuestionnaireChoice>
+    </QuestionnaireChoices>
+  </QuestionnaireItem>
+  <QuestionnaireItem name="email" required>
+    <QuestionnaireTitle>Where should Angela reply?</QuestionnaireTitle>
+    <QuestionnaireInput type="email" />
+    <QuestionnaireError>Enter an email address to continue.</QuestionnaireError>
+  </QuestionnaireItem>
+  <QuestionnaireActions>
+    <QuestionnairePrevious />
+    <QuestionnaireSkip />
+    <QuestionnaireNext />
+    <QuestionnaireSubmit />
   </QuestionnaireActions>
 </Questionnaire>`;
 
@@ -117,7 +141,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "parts", label: "Parts" },
+      { id: "props", label: "Props" },
+    ],
+  },
 ];
 
 export default function QuestionnairePage() {
@@ -145,11 +175,30 @@ export default function QuestionnairePage() {
       <CodeBlock code={IMPORT} lang="tsx" copyLabel="import" />
       <CodeBlock code={USAGE} lang="tsx" copyLabel="usage" />
 
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as @shadcn/react names them: <code>Questionnaire</code> (the form),{" "}
+        <code>QuestionnaireProgress</code>, <code>QuestionnaireItem</code> (one step, a fieldset),{" "}
+        <code>QuestionnaireTitle</code>, <code>QuestionnaireDescription</code>, <code>QuestionnaireChoices</code>,{" "}
+        <code>QuestionnaireChoice</code>, <code>QuestionnaireInput</code>, <code>QuestionnaireError</code> and the
+        buttons <code>QuestionnairePrevious</code> (Back), <code>QuestionnaireSkip</code>,{" "}
+        <code>QuestionnaireNext</code> and <code>QuestionnaireSubmit</code>. Keyline adds{" "}
+        <code>QuestionnaireActions</code>, the row that holds the buttons. The library&apos;s parts take its own props
+        and a string <code>className</code>; <code>QuestionnaireActions</code> also takes <code>render</code> and a
+        function <code>className</code> or <code>style</code>.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Questionnaire props" props={PROPS} />
       <p className="s-small">
         Built on <a href="https://github.com/shadcn-ui/ui">@shadcn/react</a>&apos;s Questionnaire, drawn with
-        Keyline&apos;s radio rows, checkboxes, field frame, Progress and Button cells.
+        Keyline&apos;s radio rows, checkboxes, field frame, Progress and Button cells. Each part carries a{" "}
+        <code>data-slot</code> named after it (<code>questionnaire</code>, <code>questionnaire-progress</code> with its
+        count in <code>questionnaire-count</code>, <code>questionnaire-item</code>, <code>questionnaire-heading</code>,{" "}
+        <code>questionnaire-choices</code>, <code>questionnaire-choice</code> with its native input in{" "}
+        <code>questionnaire-choice-input</code>, <code>questionnaire-field</code>, <code>questionnaire-error</code>,{" "}
+        <code>questionnaire-actions</code>, …). A step that fails validation has <code>data-invalid</code>.
       </p>
     </DocPage>
   );

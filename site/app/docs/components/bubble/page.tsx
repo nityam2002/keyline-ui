@@ -16,12 +16,25 @@ export const metadata = componentMetadata(
   "bubble",
 );
 
-const IMPORT = `import { Bubble, BubbleContent, BubbleReactions } from "@/components/keyline/ui/bubble"`;
+const IMPORT = `import { Bubble, BubbleContent, BubbleGroup, BubbleReactions } from "@/components/keyline/ui/bubble"`;
 
 const USAGE = `<Bubble tone="tint" pending={sending}>
   <BubbleContent>I'll put two cases on Thursday's truck.</BubbleContent>
   <BubbleReactions>…</BubbleReactions>
 </Bubble>`;
+
+const PARTS = `<BubbleGroup>
+  <Bubble tone="plain">
+    <BubbleContent>Bay 2 has power for the reefer.</BubbleContent>
+  </Bubble>
+  <Bubble tone="plain">
+    <BubbleContent render={<button type="button" onClick={openThread} />}>3 replies</BubbleContent>
+    <Attachment … />
+    <BubbleReactions>
+      <button type="button" aria-pressed="true" aria-label="Thumbs up, 2, you reacted">…</button>
+    </BubbleReactions>
+  </Bubble>
+</BubbleGroup>`;
 
 const PROPS: Prop[] = [
   {
@@ -72,7 +85,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "parts", label: "Parts" },
+      { id: "props", label: "Props" },
+    ],
+  },
 ];
 
 export default function BubblePage() {
@@ -100,11 +119,25 @@ export default function BubblePage() {
       <CodeBlock code={IMPORT} lang="tsx" copyLabel="import" />
       <CodeBlock code={USAGE} lang="tsx" copyLabel="usage" />
 
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Bubble</code> is the frame; <code>BubbleContent</code> its text cell, with the ! cell before it when the
+        tone is <code>attention</code>; <code>BubbleReactions</code> the row on its bottom keyline. Attachment cells go
+        between the text and the reactions and take a seam between them. <code>BubbleGroup</code> stacks bubbles on
+        shared edges; Message&apos;s <code>MessageContent</code> does the same for a sender&apos;s run.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Bubble props" props={PROPS} />
       <p className="s-small">
         Text takes its direction from its first strong letter (<code>dir=&quot;auto&quot;</code>), so a message in
         Hebrew reads right to left in an English conversation. The Message page shows a failed bubble and its Retry.
+        Every part takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function
+        of its state. The bubble carries <code>data-slot=&quot;bubble&quot;</code>, <code>data-tone</code> and{" "}
+        <code>data-pending</code>; the others <code>data-slot</code> <code>bubble-group</code>,{" "}
+        <code>bubble-content</code> (its text in <code>bubble-text</code>, the ! cell <code>bubble-bang</code>) and{" "}
+        <code>bubble-reactions</code>.
       </p>
     </DocPage>
   );

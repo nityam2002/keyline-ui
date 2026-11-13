@@ -33,11 +33,11 @@ test("chat layout: each run's reading edge, the avatar, attached bubbles, compac
     rtl,
   );
   const geom = await frame.evaluate((f) => {
-    const run = [...f.querySelectorAll('.kl-msg[data-align="start"]')].find(
-      (m) => m.querySelectorAll(".kl-bubble").length > 2,
+    const run = [...f.querySelectorAll('[data-slot=message][data-align="start"]')].find(
+      (m) => m.querySelectorAll("[data-slot=bubble]").length > 2,
     );
-    const av = run.querySelector(".kl-msg-av").getBoundingClientRect();
-    const bubbles = [...run.querySelectorAll(".kl-bubble")].map((x) => x.getBoundingClientRect());
+    const av = run.querySelector("[data-slot=message-avatar]").getBoundingClientRect();
+    const bubbles = [...run.querySelectorAll("[data-slot=bubble]")].map((x) => x.getBoundingClientRect());
     return {
       avTop: av.top,
       firstTop: bubbles[0].top,
@@ -55,9 +55,9 @@ test("chat layout: each run's reading edge, the avatar, attached bubbles, compac
     geom.joins,
   );
   const hug = await frame.evaluate((f) => {
-    const content = f.querySelector(".kl-ms-content");
+    const content = f.querySelector("[data-slot=message-scroller-content]");
     const right = content.getBoundingClientRect().right - parseFloat(getComputedStyle(content).paddingRight);
-    return [...f.querySelectorAll('.kl-msg[data-align="end"] .kl-bubble')].map((x) =>
+    return [...f.querySelectorAll('[data-slot=message][data-align="end"] [data-slot=bubble]')].map((x) =>
       Math.round(right - x.getBoundingClientRect().right),
     );
   });
@@ -68,15 +68,17 @@ test("chat layout: each run's reading edge, the avatar, attached bubbles, compac
   );
   const w = await p
     .getByTestId("bubble-cases")
-    .evaluate((g) => [...g.querySelectorAll(".kl-bubble")].map((x) => Math.round(x.getBoundingClientRect().width)));
+    .evaluate((g) =>
+      [...g.querySelectorAll("[data-slot=bubble]")].map((x) => Math.round(x.getBoundingClientRect().width)),
+    );
   ok(
     "layout: a short reply stays compact; a long link wraps inside the column",
     w[0] < 80 && w[2] <= Math.round(Math.max(...w)),
     w,
   );
   const lk = await p.getByTestId("bubble-cases").evaluate((g) => {
-    const a = g.querySelector(".kl-bubble-t a");
-    const bb = a.closest(".kl-bubble").getBoundingClientRect();
+    const a = g.querySelector("[data-slot=bubble-text] a");
+    const bb = a.closest("[data-slot=bubble]").getBoundingClientRect();
     return a.getBoundingClientRect().right <= bb.right;
   });
   ok("layout: a long link never runs past its bubble", lk);
@@ -88,8 +90,8 @@ test("chat layout: bubble tones, the failed message, text direction, reactions a
   const { frame } = await chat(p);
   const tint = await rgb(p, "var(--kl-tint)");
   // The frame is the bubble itself; text and files are its cells
-  const own = frame.locator(".kl-bubble[data-tone=tint]").first();
-  const theirs = frame.locator(".kl-bubble[data-tone=plain]").first();
+  const own = frame.locator("[data-slot=bubble][data-tone=tint]").first();
+  const theirs = frame.locator("[data-slot=bubble][data-tone=plain]").first();
   ok(
     "chat: your bubbles are tint, theirs the cell surface; both 2px frames without radius",
     (await own.evaluate((b) => getComputedStyle(b).backgroundColor)) === tint &&
@@ -97,25 +99,26 @@ test("chat layout: bubble tones, the failed message, text direction, reactions a
         [getComputedStyle(b).borderTopWidth, getComputedStyle(b).borderBottomRightRadius].join(" "),
       )) === "2px 0px",
   );
-  const att = frame.locator(".kl-bubble[data-tone=attention]");
+  const att = frame.locator("[data-slot=bubble][data-tone=attention]");
   ok(
     "chat: a message that was not sent: attention frame with a ! cell and the reason beside it",
     (await att.evaluate((b) => getComputedStyle(b).borderTopColor)) === (await rgb(p, "var(--kl-red)")) &&
-      (await att.locator(".kl-bubble-bang").evaluate((b) => b.getBoundingClientRect().width)) >= 27 &&
+      (await att.locator("[data-slot=bubble-bang]").evaluate((b) => b.getBoundingClientRect().width)) >= 27 &&
       /Not sent: no signal/.test(await att.locator("xpath=..").innerText()),
   );
   ok(
     "chat: bubble text takes its own direction",
-    (await own.locator(".kl-bubble-t").first().getAttribute("dir")) === "auto",
+    (await own.locator("[data-slot=bubble-text]").first().getAttribute("dir")) === "auto",
   );
   ok(
     "chat: reactions are a pressed toggle with a full name",
-    (await frame.locator(".kl-bubble-rx button").getAttribute("aria-label")) === "Thumbs up, 1, you reacted",
+    (await frame.locator("[data-slot=bubble-reactions] button").getAttribute("aria-label")) ===
+      "Thumbs up, 1, you reacted",
   );
   const rtl = p.getByTestId("chat-rtl");
   const [them, me] = [
-    await rtl.locator(".kl-msg").nth(0).locator(".kl-bubble").first().boundingBox(),
-    await rtl.locator(".kl-msg").nth(1).locator(".kl-bubble").first().boundingBox(),
+    await rtl.locator("[data-slot=message]").nth(0).locator("[data-slot=bubble]").first().boundingBox(),
+    await rtl.locator("[data-slot=message]").nth(1).locator("[data-slot=bubble]").first().boundingBox(),
   ];
   ok(
     "chat RTL: their run at the right (start), yours at the left (end)",
@@ -135,15 +138,17 @@ test("chat layout: the narrow panel (340px) keeps everything inside and the read
   );
   await p.waitForFunction(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(true)))));
   const nar = await frame.evaluate((f) => {
-    const vp = f.querySelector(".kl-ms-vp");
-    const c = f.querySelector(".kl-ms-content").getBoundingClientRect();
-    const over = [...f.querySelectorAll(".kl-bubble, .kl-msg-h, .kl-msg-f")].filter(
+    const vp = f.querySelector("[data-slot=message-scroller-viewport]");
+    const c = f.querySelector("[data-slot=message-scroller-content]").getBoundingClientRect();
+    const over = [
+      ...f.querySelectorAll("[data-slot=bubble], [data-slot=message-header], [data-slot=message-footer]"),
+    ].filter(
       (x) => x.getBoundingClientRect().right > c.right + 0.5 || x.getBoundingClientRect().left < c.left - 0.5,
     ).length;
     return {
       sideways: vp.scrollWidth - vp.clientWidth,
       over,
-      av: f.querySelector(".kl-msg-av [data-slot=avatar]").getBoundingClientRect().width,
+      av: f.querySelector("[data-slot=message-avatar] [data-slot=avatar]").getBoundingClientRect().width,
       w: Math.round(f.getBoundingClientRect().width),
     };
   });

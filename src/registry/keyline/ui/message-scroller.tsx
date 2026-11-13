@@ -9,8 +9,12 @@ import {
 } from "@shadcn/react/message-scroller";
 import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
+
 import { cn } from "@/lib/utils";
 import { tokenMs } from "../lib/keyline-motion";
+import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
 import { ScrollAreaBars, ScrollAreaRoot, ScrollAreaViewport, type ScrollbarVisibility } from "./scroll-area";
 
 /* A conversation log that keeps to the newest message, on @shadcn/react's MessageScroller (as the reference):
@@ -29,6 +33,54 @@ import { ScrollAreaBars, ScrollAreaRoot, ScrollAreaViewport, type ScrollbarVisib
    frame's edge whose thumb reveals while the reader scrolls or points at the edge, then fades. The viewport and
    content are the primitive's own elements, rendered as the Scroll Area's parts, so neither library is re-implemented. */
 
+/* ------------------------------------------------------------------ *
+ * CLASSES
+ * ------------------------------------------------------------------ */
+
+const VP = '[data-slot="message-scroller-viewport"]';
+
+const frame = "kl-frame relative flex min-h-0 min-w-0 flex-col";
+
+/* The log scrolls in Keyline's Scroll Area (scroll-area.tsx draws the bar, its reveal and the focus ring above it).
+   A log nearly always overflows, so the bar's room is kept from the first message: the first message that overflows
+   does not narrow the conversation. overflow-anchor: none: the reader's place is held by one rule in every engine
+   (MessageScrollerContent), not by Chrome's own anchoring on top of it. */
+const viewport =
+  "pe-(--kl-sb) overflow-x-hidden! overscroll-contain [overflow-anchor:none] data-pending-scroll:invisible";
+
+/* runs sit one gutter-and-a-half apart; inside a run, bubbles share keylines. The log is a size container (kl-log),
+   so a narrow panel narrows the messages, not the window. */
+const content = cn(
+  "@container/kl-log flex min-h-full flex-col gap-[calc(var(--kl-gutter)+8px)]",
+  "px-[calc(var(--kl-inset)+4px)] pt-[calc(var(--kl-inset)+4px)] pb-[calc(var(--kl-inset)+8px)]",
+);
+
+const item = "min-w-0 flex-none";
+
+const separator = cn(
+  "flex items-center gap-2.5 text-kl-ink-2",
+  "[[data-slot=message-scroller-item]>&]:mb-[calc(var(--kl-gutter)+8px)]",
+  "before:flex-[1_1_0] before:border-t-(length:--kl-k1) before:border-kl-line-soft before:content-['']",
+  "after:flex-[1_1_0] after:border-t-(length:--kl-k1) after:border-kl-line-soft after:content-['']",
+);
+
+/* THE JUMP CELL sits over the frame's bottom (or top) keyline, centred: the label, then a count cell that is inserted
+   (0 → its width) while messages wait below. It folds out when there is nothing that way. */
+const jump = cn(
+  "kl-ctl kl-key group/jump absolute start-1/2 z-2 inline-flex h-8 cursor-pointer items-stretch",
+  "-translate-x-1/2 bg-kl-raised text-kl-ink kl-rtl:translate-x-1/2",
+  "font-(family-name:--kl-font) text-[13px] font-(--kl-weight-strong)",
+  "[transition:opacity_var(--kl-t-unfold)_linear]",
+  "data-[direction=end]:bottom-3 data-[direction=start]:top-3",
+  "data-[active=false]:pointer-events-none data-[active=false]:invisible data-[active=false]:opacity-0",
+  "data-[active=false]:[transition:opacity_var(--kl-t-fold)_linear,visibility_0s_var(--kl-t-fold)]",
+);
+const jumpLabel = "inline-flex items-center gap-1.5 ps-2.5 pe-3 group-hover/jump:bg-kl-tint";
+const jumpCount = cn(
+  "grid place-items-center border-s-(length:--kl-k1) border-kl-seam px-2.5 whitespace-nowrap",
+  "bg-kl-inverse font-(family-name:--kl-font-mono) text-[11px]/none font-medium text-kl-on-inverse not-italic tabular-nums",
+);
+
 const UNITS = '[data-slot="bubble"], [data-slot="message-header"], [role="separator"]';
 const reduced = (el: Element) =>
   matchMedia("(prefers-reduced-motion: reduce)").matches || !!el.closest('[data-kl-motion="reduce"]');
@@ -41,7 +93,7 @@ function MessageScrollerProvider({ autoScroll = true, ...props }: React.Componen
 
 /** The frame. Give it a height (or put it in a flex column): the viewport scrolls inside. */
 function MessageScroller({ className, ...props }: React.ComponentProps<typeof Primitive.Root>) {
-  return <Primitive.Root data-slot="message-scroller" className={cn("kl-frame kl-ms", className)} {...props} />;
+  return <Primitive.Root data-slot="message-scroller" className={cn(frame, className)} {...props} />;
 }
 
 /** The scrolling region; `aria-label` names it (default "Messages"). `scrollbarVisibility` as on ScrollArea. */
@@ -56,12 +108,12 @@ function MessageScrollerViewport({
     <ScrollAreaRoot
       data-slot="message-scroller-scroll"
       scrollbarVisibility={scrollbarVisibility}
-      className="kl-ms-scroll"
+      className="flex-auto"
       // Pressing the bar is the reader taking over, as a wheel is: the log stops following the newest message (so a
       // message arriving under a held thumb does not move the content beneath it), and a jump in flight stops where it
       // is. The primitive reads intent from the viewport's wheel, so the press tells it that way, with no distance.
       onPointerDownCapture={(e) => {
-        const vp = e.currentTarget.querySelector<HTMLElement>(".kl-ms-vp");
+        const vp = e.currentTarget.querySelector<HTMLElement>(VP);
         if (e.button !== 0 || !vp || !(e.target as Element).closest?.('[data-slot="scroll-area-scrollbar"]')) return;
         if (vp.scrollHeight - vp.clientHeight - vp.scrollTop <= 2) {
           const bubbles = vp.querySelectorAll('[data-slot="bubble"]');
@@ -82,7 +134,7 @@ function MessageScrollerViewport({
       <ScrollAreaViewport
         {...(props as React.ComponentProps<typeof ScrollAreaViewport>)}
         data-slot="message-scroller-viewport"
-        className={cn("kl-ms-vp", className)}
+        className={cn(viewport, className)}
         // the log stays a tab stop even before it overflows, as the primitive makes it
         tabIndex={tabIndex ?? 0}
         render={(p) => <Primitive.Viewport {...(p as React.ComponentProps<typeof Primitive.Viewport>)} />}
@@ -143,7 +195,30 @@ function MessageScrollerContent({ className, ref, ...props }: React.ComponentPro
       atEnd = vp.scrollHeight - vp.clientHeight - vp.scrollTop <= 2;
       anchor = atEnd ? null : readingAnchor(content, vp.getBoundingClientRect().top);
     };
+    /* THE READER LEAVES THE END by the scroll itself, not by the order of its events. The primitive stops following
+       the end on the reader's wheel, touch or key, and on a scroll up, except in the 180ms after it scrolled to the
+       end itself, when it takes a scroll up for its own. WebKit can scroll for a wheel before it dispatches the wheel
+       event, so a fast wheel just after a message arrived was taken for the log's own scroll: the log kept following
+       (Latest hidden), and its next follow put the reader back at the end. The primitive never scrolls up while it
+       follows, so a scroll up that leaves the end while it still follows is the reader's. This listener runs after
+       the primitive's (React's listener was added when the element was created): if the primitive still follows
+       (data-scrollable, written as it handles the scroll, says nothing waits below) though the reader is away from
+       the end, it gets the reader's intent and then the scroll again, so it shows Latest. The intent goes as a
+       touchmove, which only the primitive reads: Base UI's scroll area takes a wheel for user input and would reveal
+       the thumb for a scroll it did not see the reader make (focus moving to a control above, say). */
+    let lastTop = vp.scrollTop;
+    const leave = () => {
+      const top = vp.scrollTop;
+      const up = top < lastTop - 0.5;
+      lastTop = top;
+      // 8px: the primitive's default edge threshold; nearer the end than that, it follows on its own terms
+      if (!up || vp.scrollHeight - vp.clientHeight - top <= 8) return;
+      if ((vp.getAttribute("data-scrollable") ?? "").split(" ").includes("end")) return;
+      vp.dispatchEvent(new Event("touchmove", { bubbles: true }));
+      vp.dispatchEvent(new Event("scroll"));
+    };
     const onScroll = () => {
+      leave();
       if (!frame) frame = requestAnimationFrame(record);
     };
     vp.addEventListener("scroll", onScroll, { passive: true });
@@ -202,7 +277,7 @@ function MessageScrollerContent({ className, ref, ...props }: React.ComponentPro
       {...(props as React.ComponentProps<typeof ScrollAreaPrimitive.Content>)}
       ref={setRef}
       data-slot="message-scroller-content"
-      className={cn("kl-ms-content", className)}
+      className={cn(content, className)}
       // Base UI marks its wrapper presentational; the log keeps its own role ("log" unless the reader names another)
       render={({ role: _presentation, ...p }) => (
         <Primitive.Content {...(p as React.ComponentProps<typeof Primitive.Content>)} role={props.role} />
@@ -214,16 +289,30 @@ function MessageScrollerContent({ className, ref, ...props }: React.ComponentPro
 /** One entry of the log: one sender's run (a Message), a separator, or a notice. `messageId` lets you scroll to
  *  it; `scrollAnchor` lands the first view on it. */
 function MessageScrollerItem({ className, ...props }: React.ComponentProps<typeof Primitive.Item>) {
-  return <Primitive.Item data-slot="message-scroller-item" className={cn("kl-ms-item", className)} {...props} />;
+  return <Primitive.Item data-slot="message-scroller-item" className={cn(item, className)} {...props} />;
 }
 
 /** A day or "New messages" divider: a seam with its words in the Code voice. */
-function MessageScrollerSeparator({ className, children, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div role="separator" data-slot="message-scroller-separator" className={cn("kl-ms-sep", className)} {...props}>
-      <span className="kl-code">{children}</span>
-    </div>
-  );
+function MessageScrollerSeparator({
+  render,
+  className,
+  style,
+  children,
+  ...props
+}: PartProps<"div", Record<string, never>>): React.ReactElement {
+  const state = {};
+  return useRender({
+    defaultTagName: "div",
+    render,
+    state,
+    props: mergeProps<"div">(props, {
+      role: "separator",
+      className: resolveClassName(separator, className)(state),
+      style: resolveStyle(undefined, style)(state),
+      children: <span className="kl-code">{children}</span>,
+      "data-slot": "message-scroller-separator",
+    } as React.ComponentProps<"div">),
+  });
 }
 
 /** The newest message when the reader pressed the bar while at the end (for the count; cleared at release). */
@@ -233,8 +322,8 @@ const seenAtPress = new WeakMap<Element, Element>();
 function useUnseen(button: React.RefObject<HTMLElement | null>, active: boolean) {
   const [n, setN] = React.useState(0);
   React.useEffect(() => {
-    const vp = button.current?.closest(".kl-ms")?.querySelector<HTMLElement>(".kl-ms-vp");
-    const content = vp?.querySelector<HTMLElement>(".kl-ms-content");
+    const vp = button.current?.closest('[data-slot="message-scroller"]')?.querySelector<HTMLElement>(VP);
+    const content = vp?.querySelector<HTMLElement>('[data-slot="message-scroller-content"]');
     if (!active || !vp || !content) {
       setN(0);
       return;
@@ -310,7 +399,7 @@ function MessageScrollerButton({
           ? `${typeof label === "string" ? label : direction === "end" ? "Latest" : "Earliest"}, ${unseen} new ${unseen === 1 ? "message" : "messages"}`
           : undefined
       }
-      className={cn("kl-ctl kl-key kl-ms-jump", className)}
+      className={cn(jump, className)}
       onPointerDown={(e) => {
         read(e);
         onPointerDown?.(e);
@@ -321,7 +410,7 @@ function MessageScrollerButton({
       }}
       onClick={(e) => {
         onClick?.(e);
-        const vp = e.currentTarget.closest(".kl-ms")?.querySelector<HTMLElement>(".kl-ms-vp");
+        const vp = e.currentTarget.closest('[data-slot="message-scroller"]')?.querySelector<HTMLElement>(VP);
         // The jump and the bar are one response. Base UI shows the thumb for the reader's own scrolling only,
         // so while the jump they asked for travels, the bar shows it travelling, and fades with the usual idle after it lands.
         const area = vp?.closest<HTMLElement>('[data-slot="message-scroller-scroll"]');
@@ -368,7 +457,7 @@ function MessageScrollerButton({
       }}
       {...props}
     >
-      <span className="kl-ms-jump-label">
+      <span data-slot="message-scroller-button-label" className={jumpLabel}>
         <svg
           viewBox="0 0 16 16"
           width="16"
@@ -383,9 +472,14 @@ function MessageScrollerButton({
         </svg>
         <span>{label}</span>
       </span>
-      <span className="kl-slot kl-ms-jump-n" data-open={unseen ? "" : undefined} aria-hidden>
-        <span>
-          <span>{unseen ? `${unseen} new` : ""}</span>
+      <span
+        data-slot="message-scroller-button-count"
+        className="kl-slot"
+        data-open={unseen ? "" : undefined}
+        aria-hidden
+      >
+        <span className="flex">
+          <span className={jumpCount}>{unseen ? `${unseen} new` : ""}</span>
         </span>
       </span>
     </Primitive.Button>

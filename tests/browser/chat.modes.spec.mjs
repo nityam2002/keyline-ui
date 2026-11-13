@@ -16,13 +16,13 @@ test("chat: reduced motion — no unfolds, a static pending segment, the tick ke
     ready: "[data-testid=ms-frame]",
   });
   const { frame, geo, toTop } = await chat(p);
-  const n = await frame.locator(".kl-bubble").count();
+  const n = await frame.locator("[data-slot=bubble]").count();
   await p.getByTestId("ms-input").fill("Still here.");
   await p.keyboard.press("Enter");
-  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] .kl-bubble").length > n, n, 2000);
-  const nb = frame.locator(".kl-bubble").last();
+  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=bubble]").length > n, n, 2000);
+  const nb = frame.locator("[data-slot=bubble]").last();
   const st = await nb.evaluate((x) => ({
-    anims: [x, x.closest(".kl-msg")].flatMap((e) => e.getAnimations()).length,
+    anims: [x, x.closest("[data-slot=message]")].flatMap((e) => e.getAnimations()).length,
     pend: getComputedStyle(x.querySelector(".kl-pending"), "::before").animationName,
   }));
   ok(
@@ -34,13 +34,13 @@ test("chat: reduced motion — no unfolds, a static pending segment, the tick ke
     "reduced: the receipt still says Sending…",
     (await frame.getByTestId("receipt").last().innerText()) === "Sending…",
   );
-  const m = await frame.locator(".kl-msg").count();
+  const m = await frame.locator("[data-slot=message]").count();
   await p.getByTestId("ms-incoming").click();
-  await until(p, (m) => document.querySelectorAll("[data-testid=ms-frame] .kl-msg").length > m, m, 2000);
+  await until(p, (m) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=message]").length > m, m, 2000);
   ok(
     "reduced: an arrival has no animation",
     (await frame
-      .locator(".kl-msg")
+      .locator("[data-slot=message]")
       .last()
       .evaluate(
         (m) =>
@@ -65,8 +65,12 @@ test("chat: reduced motion — no unfolds, a static pending segment, the tick ke
     mk,
   );
   await toTop();
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true");
-  await frame.locator(".kl-ms-jump").click();
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true",
+  );
+  await frame.locator("[data-slot=message-scroller-button]").click();
   await p.waitForTimeout(80); // timing: "at once" — landed 80ms after the click
   ok("reduced: the jump lands at once", (await geo()).gap <= 2, await geo());
   ok("reduced: no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs]);
@@ -88,13 +92,15 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
     e,
   );
   const side = await frame.evaluate((f) => {
-    const c = f.querySelector(".kl-ms-content").getBoundingClientRect();
-    const end = f.querySelector('.kl-msg[data-align="end"] .kl-bubble').getBoundingClientRect();
-    const start = f.querySelector('.kl-msg[data-align="start"] .kl-bubble').getBoundingClientRect();
+    const c = f.querySelector("[data-slot=message-scroller-content]").getBoundingClientRect();
+    const end = f.querySelector('[data-slot=message][data-align="end"] [data-slot=bubble]').getBoundingClientRect();
+    const start = f.querySelector('[data-slot=message][data-align="start"] [data-slot=bubble]').getBoundingClientRect();
     return {
       yoursLeft: end.left - c.left,
       theirsRight: c.right - start.right,
-      sideways: f.querySelector(".kl-ms-vp").scrollWidth - f.querySelector(".kl-ms-vp").clientWidth,
+      sideways:
+        f.querySelector("[data-slot=message-scroller-viewport]").scrollWidth -
+        f.querySelector("[data-slot=message-scroller-viewport]").clientWidth,
     };
   });
   ok(
@@ -115,12 +121,12 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
     det,
   );
   const foot = await frame
-    .locator('.kl-msg-f[data-tone="attention"] bdi')
+    .locator('[data-slot=message-footer][data-tone="attention"] bdi')
     .first()
     .evaluate((x) => x.textContent);
   ok("RTL page: a failure reason keeps its punctuation in place (isolated)", foot === "Not sent: no signal.", foot);
   const seam = await frame
-    .locator(".kl-bubble")
+    .locator("[data-slot=bubble]")
     .first()
     .evaluate((x) => getComputedStyle(x).borderTopColor);
   ok(
@@ -129,10 +135,14 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
     seam,
   );
   await toTop();
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true");
-  await frame.locator(".kl-ms-jump").tap();
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true",
+  );
+  await frame.locator("[data-slot=message-scroller-button]").tap();
   await until(p, () => {
-    const v = document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+    const v = document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
     return v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
   });
   await scrollStill(vp);

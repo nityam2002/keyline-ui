@@ -148,9 +148,9 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
     () =>
       document
         .querySelector(
-          '[data-testid="ms-frame"] [data-slot=attachment]:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child [data-slot=attachment]',
+          '[data-testid="ms-frame"] [data-slot=attachment]:last-of-type, [data-testid="ms-frame"] [data-slot=bubble]:last-child [data-slot=attachment]',
         )
-        ?.closest(".kl-msg") &&
+        ?.closest("[data-slot=message]") &&
       [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
         "processing",
     null,
@@ -248,8 +248,8 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   );
   ok(
     "failed upload: no receipt claims it was sent",
-    (await frame.locator(".kl-msg").last().getByTestId("receipt").count()) === 0 ||
-      !/Sent|Read/.test(await frame.locator(".kl-msg").last().getByTestId("receipt").last().innerText()),
+    (await frame.locator("[data-slot=message]").last().getByTestId("receipt").count()) === 0 ||
+      !/Sent|Read/.test(await frame.locator("[data-slot=message]").last().getByTestId("receipt").last().innerText()),
   );
   const retryBtn = ff.getByRole("button", { name: /^Retry/ });
   await retryBtn.focus();

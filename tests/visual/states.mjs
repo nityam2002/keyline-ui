@@ -347,6 +347,38 @@ export const STATES = {
       ],
     },
     { name: "focus-composer", do: [["focus", "data-testid=ms-input"]] },
+    // bubble: the focus ring on a link in a message's text
+    { name: "focus-link", do: [["focus", "data-testid=bubble-cases >> role=link >> nth=0"]] },
+    // message footer: the Retry button under a message that was not sent
+    { name: "focus-retry", do: [["focus", `data-testid=ms-frame >> ${role("button", "Retry")}`]] },
+    { name: "hover-retry", do: [["hover", `data-testid=ms-frame >> ${role("button", "Retry")}`]] },
+    // a narrow log (the kl-log container): a smaller face, more of the row for the words
+    { name: "narrow-panel", do: [["click", `data-testid=ms-width >> ${role("radio", "Narrow panel")}`]] },
+    {
+      name: "narrow-panel-scrolled",
+      do: [
+        ["click", `data-testid=ms-width >> ${role("radio", "Narrow panel")}`],
+        ["wheel", "data-testid=ms-frame >> [data-slot=message-scroller-viewport]", -400],
+        ["wait", "data-testid=ms-frame >> [data-slot=message-scroller-button][data-active=true]"],
+      ],
+    },
+    // message scroller: the jump cell under the pointer and under keyboard focus
+    {
+      name: "scrolled-up-hover-jump",
+      do: [
+        ["wheel", "data-testid=ms-frame >> [data-slot=message-scroller-viewport]", -2000],
+        ["wait", "data-testid=ms-frame >> [data-slot=message-scroller-button][data-active=true]"],
+        ["hover", "data-testid=ms-frame >> [data-slot=message-scroller-button]"],
+      ],
+    },
+    {
+      name: "scrolled-up-focus-jump",
+      do: [
+        ["wheel", "data-testid=ms-frame >> [data-slot=message-scroller-viewport]", -2000],
+        ["wait", "data-testid=ms-frame >> [data-slot=message-scroller-button][data-active=true]"],
+        ["focus", "data-testid=ms-frame >> [data-slot=message-scroller-button]"],
+      ],
+    },
   ],
   questionnaire: [
     { name: "hover-choice", do: [["hover", "#questionnaire >> [data-slot=questionnaire-choice] >> nth=1"]] },
@@ -358,6 +390,40 @@ export const STATES = {
         ["wait", "#questionnaire >> [data-slot=questionnaire-error]"],
       ],
     },
+    // a chosen row under the ink band
+    { name: "choice-selected", do: [["click", "#questionnaire >> [data-slot=questionnaire-choice] >> nth=1"]] },
+    // by keyboard: Space chooses, Enter goes on, and the next step's heading takes focus (its ring)
+    {
+      name: "focus-title",
+      do: [
+        ["focus", "#questionnaire >> [data-slot=questionnaire-choice] input >> nth=0"],
+        ["press", "Space"],
+        ["press", "Enter"],
+        ["wait", "#questionnaire >> [data-slot=questionnaire-choice] >> text=Rotterdam"],
+      ],
+    },
+    // the multiple-choice step: checkbox rows, one checked, another under the pointer; Back shows
+    {
+      name: "multiple-hover",
+      do: [
+        ["click", "#questionnaire >> [data-slot=questionnaire-choice] >> nth=0"],
+        ["click", `#questionnaire >> ${role("button", "Next")}`],
+        ["click", `#questionnaire >> [data-slot=questionnaire-choice]:has-text("Rotterdam")`],
+        ["hover", `#questionnaire >> [data-slot=questionnaire-choice]:has-text("Antwerp")`],
+      ],
+    },
+    // the free-text step, invalid: the field frame turns red with its ! cell, and the error
+    {
+      name: "input-error",
+      do: [
+        ["click", "#questionnaire >> [data-slot=questionnaire-choice] >> nth=0"],
+        ["click", `#questionnaire >> ${role("button", "Next")}`],
+        ["click", `#questionnaire >> ${role("button", "Skip")}`],
+        ["click", `#questionnaire >> ${role("button", "Next")}`],
+        ["wait", "#questionnaire >> [data-slot=questionnaire-error] >> text=Enter an email"],
+      ],
+    },
+    { name: "focus-next", do: [["focus", `#questionnaire >> ${role("button", "Next")}`]] },
   ],
   table: [
     { name: "hover-row", do: [["hover", "#table >> tbody tr >> nth=2"]] },

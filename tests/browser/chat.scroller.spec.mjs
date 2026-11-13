@@ -10,7 +10,7 @@ const noErrors = (ok, p) =>
   ok("no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs]);
 const atEnd = (p) =>
   until(p, () => {
-    const v = document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+    const v = document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
     return v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
   });
 
@@ -28,7 +28,7 @@ test("chat: the log is a named region, opens on the newest, and follows a new me
       (await frame.locator("[role=log]").count()) === 1,
   );
   ok("chat: opens on the newest message", (await geo()).gap <= 2, await geo());
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   ok(
     "chat: no Latest cell while at the end (hidden, out of the tab order)",
     (await jump.getAttribute("data-active")) === "false" &&
@@ -50,14 +50,15 @@ test("chat: the log is a named region, opens on the newest, and follows a new me
 test("chat: scrolled up, Latest appears, a new message holds the place, Latest returns", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame, vp, geo, toTop } = await chat(p);
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   // scroll up like a reader (wheel): setting scrollTop by script is, rightly, not treated as the reader's intent.
   await toTop();
   await until(
     p,
     () =>
-      document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true" &&
-      getComputedStyle(document.querySelector("[data-testid=ms-frame] .kl-ms-jump")).visibility === "visible",
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true" &&
+      getComputedStyle(document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]"))
+        .visibility === "visible",
   );
   ok(
     "chat: scrolled up, the Latest cell appears on the bottom keyline",
@@ -65,9 +66,9 @@ test("chat: scrolled up, Latest appears, a new message holds the place, Latest r
       (await jump.evaluate((j) => getComputedStyle(j).visibility)) === "visible",
   );
   const top0 = (await geo()).top;
-  const n0 = await frame.locator(".kl-bubble").count();
+  const n0 = await frame.locator("[data-slot=bubble]").count();
   await p.getByTestId("ms-incoming").click();
-  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] .kl-bubble").length > n, n0);
+  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=bubble]").length > n, n0);
   await scrollStill(vp);
   ok("chat: a new message while scrolled up holds the reader's place", Math.abs((await geo()).top - top0) <= 2, [
     top0,
@@ -99,10 +100,11 @@ test("chat: a reply while following unfolds as a new run; three in a row join it
   await p.getByTestId("ms-incoming").click();
   await until(
     p,
-    () => [...document.querySelectorAll("[data-testid=ms-frame] .kl-msg")].at(-1)?.dataset.align === "start",
+    () =>
+      [...document.querySelectorAll("[data-testid=ms-frame] [data-slot=message]")].at(-1)?.dataset.align === "start",
   );
   const arrived = await frame
-    .locator(".kl-msg")
+    .locator("[data-slot=message]")
     .last()
     .evaluate((m) => ({ align: m.dataset.align, anims: m.getAnimations().length }));
   ok(
@@ -117,15 +119,17 @@ test("chat: a reply while following unfolds as a new run; three in a row join it
   await until(
     p,
     () =>
-      [...document.querySelectorAll("[data-testid=ms-frame] .kl-msg")].at(-1)?.querySelectorAll(".kl-bubble").length ===
-      4,
+      [...document.querySelectorAll("[data-testid=ms-frame] [data-slot=message]")]
+        .at(-1)
+        ?.querySelectorAll("[data-slot=bubble]").length === 4,
   );
   await idle(p).catch(() => {});
   await atEnd(p);
   await scrollStill(vp);
   ok(
     "arrival: three in a row join one run, each attached, the log at the end",
-    (await geo()).gap <= 2 && (await frame.locator(".kl-msg").last().locator(".kl-bubble").count()) === 4,
+    (await geo()).gap <= 2 &&
+      (await frame.locator("[data-slot=message]").last().locator("[data-slot=bubble]").count()) === 4,
     await geo(),
   );
   noErrors(ok, p);
@@ -145,9 +149,9 @@ test("chat: reading — three replies arrive below, the line holds and Latest co
       return { id: u.dataset.msg ?? u.innerText.slice(0, 20), top: u.getBoundingClientRect().top };
     });
   const a0 = await anchorTop();
-  const n0 = await frame.locator(".kl-bubble").count();
+  const n0 = await frame.locator("[data-slot=bubble]").count();
   await p.getByTestId("ms-three").click();
-  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] .kl-bubble").length === n + 3, n0);
+  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=bubble]").length === n + 3, n0);
   await idle(p).catch(() => {});
   await scrollStill(vp);
   const a1 = await vp.evaluate(
@@ -158,7 +162,7 @@ test("chat: reading — three replies arrive below, the line holds and Latest co
     a0.id,
   );
   ok("reading: three replies arrive below; the line being read does not move", Math.abs(a1 - a0.top) <= 1, [a0, a1]);
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   ok(
     "reading: the Latest cell counts them ('3 new') and says so in its name",
     /3 new/.test(await jump.innerText()) && (await jump.getAttribute("aria-label")) === "Latest, 3 new messages",
@@ -176,7 +180,10 @@ test("chat: history — earlier messages and growth above the reader keep the li
   await p.getByTestId("ms-earlier").click();
   await frame.locator('[data-msg="e1"]').waitFor({ state: "attached" });
   const prependAnims = await frame.evaluate((f) =>
-    [...f.querySelectorAll(".kl-msg, .kl-bubble")].reduce((n, x) => n + x.getAnimations().length, 0),
+    [...f.querySelectorAll("[data-slot=message], [data-slot=bubble]")].reduce(
+      (n, x) => n + x.getAnimations().length,
+      0,
+    ),
   );
   await scrollStill(vp);
   const y1 = (await m1.boundingBox()).y;
@@ -216,9 +223,13 @@ test("chat: history — earlier messages and growth above the reader keep the li
 test("chat: the jump — bounded from the oldest message, folds at the end", { tag: "@timing" }, async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame, geo, toTop } = await chat(p);
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   await toTop();
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true");
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true",
+  );
   const t0 = Date.now();
   await jump.click();
   let landed = 0;
@@ -234,7 +245,11 @@ test("chat: the jump — bounded from the oldest message, folds at the end", { t
     landed > 0 && landed <= 1000,
     landed,
   );
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "false");
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "false",
+  );
   ok(
     "jump: at the end the count is gone and the cell folds",
     (await jump.getAttribute("data-active")) === "false" && (await jump.getAttribute("aria-label")) === null,
@@ -245,10 +260,14 @@ test("chat: the jump — bounded from the oldest message, folds at the end", { t
 test("chat: the jump — a wheel during it stops it where the reader took over", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame, geo, toTop } = await chat(p);
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   const box = await frame.boundingBox();
   await toTop();
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true");
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true",
+  );
   await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await jump.click();
   await p.waitForTimeout(40); // timing: the wheel must arrive while the jump is in flight
@@ -269,17 +288,25 @@ test("chat: the jump — a wheel during it stops it where the reader took over",
 test("chat: the jump by keyboard lands on the newest and focuses the log", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame, vp, geo, toTop } = await chat(p);
-  const jump = frame.locator(".kl-ms-jump");
+  const jump = frame.locator("[data-slot=message-scroller-button]");
   await toTop();
-  await until(p, () => document.querySelector("[data-testid=ms-frame] .kl-ms-jump")?.dataset.active === "true");
+  await until(
+    p,
+    () =>
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-button]")?.dataset.active === "true",
+  );
   await jump.focus();
   await p.keyboard.press("Enter");
   await atEnd(p);
   await scrollStill(vp);
   const kb = [
     await geo(),
-    await p.evaluate(() => document.activeElement?.className || document.activeElement?.tagName),
+    await p.evaluate(() => document.activeElement?.getAttribute("data-slot") || document.activeElement?.tagName),
   ];
-  ok("jump by keyboard: lands on the newest and puts focus on the log", kb[0].gap <= 2 && /kl-ms-vp/.test(kb[1]), kb);
+  ok(
+    "jump by keyboard: lands on the newest and puts focus on the log",
+    kb[0].gap <= 2 && kb[1] === "message-scroller-viewport",
+    kb,
+  );
   noErrors(ok, p);
 });

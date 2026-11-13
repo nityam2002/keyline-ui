@@ -22,6 +22,7 @@ const IMPORT = `import {
   MessageScrollerContent,
   MessageScrollerItem,
   MessageScrollerProvider,
+  MessageScrollerSeparator,
   MessageScrollerViewport,
   useMessageScroller,
 } from "@/components/keyline/ui/message-scroller"`;
@@ -30,6 +31,20 @@ const USAGE = `<MessageScrollerProvider>
   <MessageScroller className="h-[380px]">
     <MessageScrollerViewport aria-label="Conversation with Darryl Philbin">
       <MessageScrollerContent>
+        <MessageScrollerItem messageId="m1"><Message>…</Message></MessageScrollerItem>
+      </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton />
+  </MessageScroller>
+</MessageScrollerProvider>`;
+
+const PARTS = `<MessageScrollerProvider>
+  <MessageScroller className="h-[380px]">
+    <MessageScrollerViewport aria-label="Conversation with Darryl Philbin">
+      <MessageScrollerContent>
+        <MessageScrollerItem>
+          <MessageScrollerSeparator>TODAY</MessageScrollerSeparator>
+        </MessageScrollerItem>
         <MessageScrollerItem messageId="m1"><Message>…</Message></MessageScrollerItem>
       </MessageScrollerContent>
     </MessageScrollerViewport>
@@ -100,7 +115,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "parts", label: "Parts" },
+      { id: "props", label: "Props" },
+    ],
+  },
 ];
 
 export default function MessageScrollerPage() {
@@ -128,12 +149,30 @@ export default function MessageScrollerPage() {
       <CodeBlock code={IMPORT} lang="tsx" copyLabel="import" />
       <CodeBlock code={USAGE} lang="tsx" copyLabel="usage" />
 
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as @shadcn/react names them: <code>MessageScrollerProvider</code> holds the state,{" "}
+        <code>MessageScroller</code> is the frame, <code>MessageScrollerViewport</code> the log that scrolls,{" "}
+        <code>MessageScrollerContent</code> the column of <code>MessageScrollerItem</code>s, and{" "}
+        <code>MessageScrollerButton</code> the jump cell. Keyline adds <code>MessageScrollerSeparator</code>, a day or
+        &ldquo;New messages&rdquo; divider (<code>role=&quot;separator&quot;</code>) that goes in an item of its own.
+        The library&apos;s parts take its own props and a string <code>className</code>;{" "}
+        <code>MessageScrollerSeparator</code> also takes <code>render</code> and a function <code>className</code> or{" "}
+        <code>style</code>.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Message scroller props" props={PROPS} />
       <p className="s-small">
         Scroll up in the example, then press Darryl replies: the jump cell counts what arrived. Built on{" "}
         <a href="https://github.com/shadcn-ui/ui">@shadcn/react</a>&apos;s MessageScroller, scrolling in Keyline&apos;s
-        Scroll Area.
+        Scroll Area. Each part carries a <code>data-slot</code> named after it (<code>message-scroller</code>,{" "}
+        <code>message-scroller-viewport</code>, <code>message-scroller-content</code>,{" "}
+        <code>message-scroller-item</code>, <code>message-scroller-separator</code>,{" "}
+        <code>message-scroller-button</code>, its words in <code>message-scroller-button-label</code> and the count in{" "}
+        <code>message-scroller-button-count</code>). The jump cell has <code>data-active=&quot;true&quot;</code> while
+        it shows.
       </p>
     </DocPage>
   );

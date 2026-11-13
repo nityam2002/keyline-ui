@@ -3,7 +3,11 @@
 import * as React from "react";
 import { Questionnaire as Q } from "@shadcn/react/questionnaire";
 
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
+
 import { cn } from "@/lib/utils";
+import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
 import { useStretch } from "../lib/keyline-motion";
 import { Button } from "./button";
 import { checkboxStyles, choiceStyles } from "./checkbox";
@@ -31,6 +35,58 @@ import { radioStyles } from "./radio-group";
  *   └───────────────────────────────────────────────┘
  */
 
+/* ------------------------------------------------------------------ *
+ * CLASSES
+ * ------------------------------------------------------------------ */
+
+const root = "kl-frame kl-rows min-w-0";
+
+/* the padding is physical, as the stylesheet had it: the cut's room is on the left in both directions */
+const progress = "grid gap-1.5 pt-3 pr-(--kl-inset) pb-3.5 pl-[calc(var(--kl-inset)+var(--kl-c-room,0px))]";
+const count = "text-[13px] font-(--kl-weight-strong) tabular-nums";
+
+/* the step: inactive steps keep their answers but are hidden (and inert) by the library. No border here: the frame's
+   rows draw the seam above each step (one edge, one owner). */
+const item = cn(
+  "group/questionnaire-item min-w-0 outline-none",
+  "[&:not([hidden])]:grid [&:not([hidden])]:gap-3 [&:not([hidden])]:px-(--kl-inset) [&:not([hidden])]:pt-[18px] [&:not([hidden])]:pb-5",
+);
+const legend = "float-start w-full [&+*]:clear-both";
+const title = cn(
+  "flex scroll-my-(--kl-gutter) flex-wrap items-baseline gap-x-3 gap-y-1",
+  "text-[17px]/[1.3] font-(--kl-weight-display) text-pretty",
+  "focus:outline-none focus-visible:outline-(length:--kl-ring) focus-visible:outline-offset-4 focus-visible:outline-kl-focus focus-visible:outline-solid",
+);
+const optional = "kl-code text-[12px] font-normal text-kl-ink-2";
+
+/* an invalid step: the choice frame turns red, as a field's does */
+const choices = cn(
+  "group/questionnaire-choices",
+  "group-data-invalid/questionnaire-item:border-kl-red group-data-invalid/questionnaire-item:[--kl-cut-line:var(--kl-red)]",
+  "forced-colors:group-data-invalid/questionnaire-item:border-[CanvasText]",
+);
+/* the native input covers the row (the library's), so its focus marks the row; checkbox rows tint under the pointer
+   even when checked */
+const choice = cn(
+  "relative",
+  "has-[>[data-slot=questionnaire-choice-input]:focus-visible]:outline-(length:--kl-ring)",
+  "has-[>[data-slot=questionnaire-choice-input]:focus-visible]:outline-offset-(--kl-ring-in)",
+  "has-[>[data-slot=questionnaire-choice-input]:focus-visible]:outline-kl-focus",
+  "has-[>[data-slot=questionnaire-choice-input]:focus-visible]:outline-solid",
+  "group-data-multiple/questionnaire-choices:not-data-disabled:hover:bg-kl-tint",
+);
+const choiceInput = "absolute inset-0 z-1 m-0 size-full cursor-[inherit] opacity-0";
+/* the shortcut cell is a radio meta cell, centred and narrower */
+const choiceKey = "justify-center px-0 font-normal [--kl-radio-meta:40px] [&[hidden]]:hidden";
+
+/* action cells: Back at the start, Skip and Next at the end; hidden ones take no room */
+const actions = cn(
+  "kl-cells justify-end [&>[hidden]]:hidden",
+  "[&>[data-slot=button][data-kl-layout=cell]]:min-w-24 [&>[data-slot=button][data-kl-layout=cell]]:flex-none",
+  "[&>[data-slot=button][data-kl-layout=cell]]:[--kl-button-px:32px]",
+);
+const previous = "me-auto border-e-(length:--kl-k1) border-e-kl-line";
+
 type ItemCtx = { headingId: string; required: boolean; multiple: boolean };
 const ItemContext = React.createContext<ItemCtx>({ headingId: "", required: false, multiple: false });
 
@@ -43,7 +99,7 @@ function Questionnaire({ className, onFocus, ...props }: React.ComponentProps<ty
   return (
     <Q.Root
       data-slot="questionnaire"
-      className={cn("kl-frame kl-rows kl-q", className)}
+      className={cn(root, className)}
       onFocus={(e) => {
         onFocus?.(e);
         // the library focuses the new step's fieldset; Keyline moves on to its heading, so the question is what
@@ -68,8 +124,8 @@ function QuestionnaireProgress({
   return (
     <Q.Progress
       render={(_props, s) => (
-        <div data-slot="questionnaire-progress" className={cn("kl-q-progress", className)}>
-          <span className="kl-q-count">
+        <div data-slot="questionnaire-progress" className={cn(progress, className)}>
+          <span data-slot="questionnaire-count" className={count}>
             <bdi>{label(s.current, s.total)}</bdi>
           </span>
           <Progress
@@ -100,7 +156,7 @@ function QuestionnaireItem({
         data-slot="questionnaire-item"
         required={required}
         multiple={multiple}
-        className={cn("kl-q-item", className)}
+        className={cn(item, className)}
         {...props}
       >
         {children}
@@ -127,17 +183,21 @@ function QuestionnaireTitle({
   const { headingId, required } = React.useContext(ItemContext);
   const H = `h${level}` as "h2";
   return (
-    <Q.Title className="kl-q-legend">
-      <H id={headingId} tabIndex={-1} data-slot="questionnaire-heading" className={cn("kl-q-title", className)}>
+    <Q.Title data-slot="questionnaire-legend" className={legend}>
+      <H id={headingId} tabIndex={-1} data-slot="questionnaire-heading" className={cn(title, className)}>
         {children}
-        {!required && optionalText ? <span className="kl-code kl-q-opt">{optionalText}</span> : null}
+        {!required && optionalText ? (
+          <span data-slot="questionnaire-optional" className={optional}>
+            {optionalText}
+          </span>
+        ) : null}
       </H>
     </Q.Title>
   );
 }
 
 function QuestionnaireDescription({ className, ...props }: React.ComponentProps<typeof Q.Description>) {
-  return <Q.Description className={cn(fieldStyles.description, "kl-q-desc", className)} {...props} />;
+  return <Q.Description className={cn(fieldStyles.description, className)} {...props} />;
 }
 
 /**
@@ -167,7 +227,7 @@ function QuestionnaireChoices({ className, children, ...props }: React.Component
       data-slot="questionnaire-choices"
       data-kl-stretch=""
       data-multiple={multiple || undefined}
-      className={cn(radioStyles.group, "kl-q-choices", className)}
+      className={cn(radioStyles.group, choices, className)}
       {...props}
     >
       <span data-kl-band="" className={radioStyles.band} aria-hidden hidden />
@@ -187,11 +247,11 @@ function QuestionnaireChoice({
     <Q.Choice
       data-slot="questionnaire-choice"
       data-kl-item=""
-      className={cn(radioStyles.row, "kl-q-choice", className)}
+      className={cn(radioStyles.row, choice, className)}
       {...props}
       render={(rp, s) => (
         <label {...rp}>
-          <Q.ChoiceInput className="kl-q-input" />
+          <Q.ChoiceInput data-slot="questionnaire-choice-input" className={choiceInput} />
           <span data-slot="questionnaire-choice-box" className={choiceStyles.box} aria-hidden>
             {s.type === "radio" ? (
               <span
@@ -219,7 +279,7 @@ function QuestionnaireChoice({
             )}
           </span>
           <Q.ChoiceLabel data-slot="questionnaire-choice-text" className={choiceStyles.text}>
-            <span data-slot="questionnaire-choice-label" className={choiceStyles.label}>
+            <span data-slot="questionnaire-choice-label" className={cn(choiceStyles.label, "wrap-anywhere")}>
               {children}
             </span>
             {description ? (
@@ -230,7 +290,7 @@ function QuestionnaireChoice({
           </Q.ChoiceLabel>
           <Q.ChoiceShortcut
             data-slot="questionnaire-choice-key"
-            className={cn("kl-code", radioStyles.meta, "kl-q-key")}
+            className={cn("kl-code", radioStyles.meta, choiceKey)}
           />
         </label>
       )}
@@ -250,7 +310,8 @@ function QuestionnaireInput({ className, ...props }: React.ComponentProps<typeof
       {...props}
       render={(ip, s) => (
         <div
-          className="kl-field kl-q-field"
+          data-slot="questionnaire-field"
+          className="kl-field"
           data-invalid={s.invalid ? "" : undefined}
           data-disabled={s.disabled ? "" : undefined}
         >
@@ -268,7 +329,7 @@ function QuestionnaireError({ className, ...props }: React.ComponentProps<typeof
   return (
     <Q.Error
       data-slot="questionnaire-error"
-      className={cn(fieldStyles.error, "kl-q-error", className)}
+      className={cn(fieldStyles.error, "[&[hidden]]:hidden", className)}
       {...props}
       render={(ep) => (
         <p {...ep}>
@@ -281,8 +342,23 @@ function QuestionnaireError({ className, ...props }: React.ComponentProps<typeof
 }
 
 /** The action row: Back at the start; Skip and Next (or Submit on the last step) at the end. */
-function QuestionnaireActions({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="questionnaire-actions" className={cn("kl-cells kl-q-actions", className)} {...props} />;
+function QuestionnaireActions({
+  render,
+  className,
+  style,
+  ...props
+}: PartProps<"div", Record<string, never>>): React.ReactElement {
+  const state = {};
+  return useRender({
+    defaultTagName: "div",
+    render,
+    state,
+    props: mergeProps<"div">(props, {
+      className: resolveClassName(actions, className)(state),
+      style: resolveStyle(undefined, style)(state),
+      "data-slot": "questionnaire-actions",
+    } as React.ComponentProps<"div">),
+  });
 }
 
 type NavProps<T extends React.ElementType> = Omit<React.ComponentProps<T>, "render"> &
@@ -291,7 +367,7 @@ type NavProps<T extends React.ElementType> = Omit<React.ComponentProps<T>, "rend
 function QuestionnairePrevious({ className, children, signal, ...props }: NavProps<typeof Q.Previous>) {
   return (
     <Q.Previous
-      className={cn("kl-q-prev", className)}
+      className={cn(previous, className)}
       render={<Button layout="cell" variant="quiet" signal={signal} />}
       {...props}
     >
@@ -301,22 +377,14 @@ function QuestionnairePrevious({ className, children, signal, ...props }: NavPro
 }
 function QuestionnaireSkip({ className, children, signal, ...props }: NavProps<typeof Q.Skip>) {
   return (
-    <Q.Skip
-      className={cn("kl-q-skip", className)}
-      render={<Button layout="cell" variant="quiet" signal={signal} />}
-      {...props}
-    >
+    <Q.Skip className={className} render={<Button layout="cell" variant="quiet" signal={signal} />} {...props}>
       {children ?? "Skip"}
     </Q.Skip>
   );
 }
 function QuestionnaireNext({ className, children, signal, ...props }: NavProps<typeof Q.Next>) {
   return (
-    <Q.Next
-      className={cn("kl-q-next", className)}
-      render={<Button layout="cell" variant="primary" signal={signal} />}
-      {...props}
-    >
+    <Q.Next className={className} render={<Button layout="cell" variant="primary" signal={signal} />} {...props}>
       {children ?? "Next"}
     </Q.Next>
   );
@@ -324,11 +392,7 @@ function QuestionnaireNext({ className, children, signal, ...props }: NavProps<t
 /** Submits the form on the last step. `signal` shows the submission: pending, done, failed (Button's signals). */
 function QuestionnaireSubmit({ className, children, signal, ...props }: NavProps<typeof Q.Submit>) {
   return (
-    <Q.Submit
-      className={cn("kl-q-next", className)}
-      render={<Button layout="cell" variant="primary" signal={signal} />}
-      {...props}
-    >
+    <Q.Submit className={className} render={<Button layout="cell" variant="primary" signal={signal} />} {...props}>
       {children ?? "Submit"}
     </Q.Submit>
   );

@@ -4,13 +4,13 @@
 export async function chat(p) {
   const frame = p.getByTestId("ms-frame");
   await frame.scrollIntoViewIfNeeded();
-  const vp = frame.locator(".kl-ms-vp");
+  const vp = frame.locator("[data-slot=message-scroller-viewport]");
   await vp.waitFor();
   // the log opens on the newest message: wait until it is there and the frame has stopped moving
   await p
     .waitForFunction(
       () => {
-        const v = document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+        const v = document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
         return v && v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
       },
       null,
@@ -69,7 +69,7 @@ export const until = (p, fn, arg, timeout = 5000) =>
 export const edges = (root) =>
   root.evaluate((r) => {
     const out = [];
-    for (const m of r.querySelectorAll(".kl-msg")) {
+    for (const m of r.querySelectorAll("[data-slot=message]")) {
       const rtl = getComputedStyle(m).direction === "rtl";
       const mine = m.dataset.align === "end";
       const left = rtl === mine;
@@ -79,11 +79,11 @@ export const edges = (root) =>
         return left ? b.left + parseFloat(cs.paddingLeft) : b.right - parseFloat(cs.paddingRight);
       };
       const xs = [];
-      const h = m.querySelector(".kl-msg-h");
+      const h = m.querySelector("[data-slot=message-header]");
       if (h) xs.push(["header", start(h)]);
-      for (const t of m.querySelectorAll(".kl-bubble:not([data-tone=attention]) .kl-bubble-t"))
+      for (const t of m.querySelectorAll("[data-slot=bubble]:not([data-tone=attention]) [data-slot=bubble-text]"))
         xs.push(["text", start(t)]);
-      for (const f of m.querySelectorAll(".kl-msg-f")) xs.push(["footer", start(f)]);
+      for (const f of m.querySelectorAll("[data-slot=message-footer]")) xs.push(["footer", start(f)]);
       // a 16px glyph's ink starts 3px into its box
       if (!mine)
         for (const g of m.querySelectorAll(

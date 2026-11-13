@@ -3,154 +3,21 @@
   "name": "message",
   "title": "Message",
   "description": "A sender's run in a conversation, on one reading edge: the header (name, time), every bubble's text, the file glyphs and the receipt start on the same line. Consecutive bubbles stack on shared keylines; the avatar sits in the gutter level with the first bubble. align=\"end\" is the reader's own run, at the end of the log, mirrored with the writing direction.",
-  "dependencies": [],
+  "dependencies": [
+    "@base-ui/react@1.9.0"
+  ],
   "registryDependencies": [
     "@keyline-ui/keyline",
-    "utils"
+    "utils",
+    "@keyline-ui/keyline-render"
   ],
   "files": [
     {
       "path": "src/registry/keyline/ui/message.tsx",
-      "content": "import * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\n\n/* A message is one sender's run in the conversation: consecutive messages from the same person, close in time.\n   A run hangs from its own side of the log as one stack (the bubbles share keylines):\n   - align=\"start\": the other party, at the start of the log, with an avatar in the gutter, level with the\n     first bubble's top keyline. The header, every bubble and the receipt line up on the start edge;\n   - align=\"end\": the reader's own run, at the end of the log (the left in RTL). It needs no avatar. Every\n     bubble is flush to the end edge, and the header and receipt sit over the bubbles' end text inset.\n   Put every consecutive message of the run in one Message: Header, then Bubbles (attachments go inside the\n   bubble), then a Footer for the delivery state of the bubble right above it. */\n\nfunction MessageGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"message-group\" className={cn(\"kl-msg-group\", className)} {...props} />;\n}\n\nfunction Message({\n  className,\n  align = \"start\",\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  /** start: the other party. end: the reader's own messages. */ align?: \"start\" | \"end\";\n}) {\n  return <div data-slot=\"message\" data-align={align} className={cn(\"kl-msg\", className)} {...props} />;\n}\n\n/** The avatar gutter. Put a size=\"md\" Avatar in it (decorative when the header prints the name). The reader's own run leaves it out. */\nfunction MessageAvatar({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"message-avatar\" className={cn(\"kl-msg-av\", className)} {...props} />;\n}\n\n/** The run's column: header, bubbles, footers. It is as wide as its widest bubble, and everything in it hangs from the run's outer edge (start for theirs, end for yours). */\nfunction MessageContent({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"message-content\" className={cn(\"kl-msg-body\", className)} {...props} />;\n}\n\n/** Sender and time, over the bubbles' text inset on the run's outer edge: the name in the UI voice, the time in the Code voice (pass a <time>). */\nfunction MessageHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return <div data-slot=\"message-header\" className={cn(\"kl-msg-h\", className)} {...props} />;\n}\n\n/** Delivery state of the bubble right above it (\"Sent\", \"Read 14:22\", \"Not sent: no signal.\" + a Retry button), on the run's outer edge, in the Code voice. */\nfunction MessageFooter({\n  className,\n  tone,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  /** attention: the bubble above was not sent (the reason, then a Retry button). */ tone?: \"attention\";\n}) {\n  return (\n    <div\n      data-slot=\"message-footer\"\n      data-tone={tone}\n      aria-live=\"polite\"\n      className={cn(\"kl-msg-f\", className)}\n      {...props}\n    />\n  );\n}\n\nexport { MessageGroup, Message, MessageAvatar, MessageContent, MessageHeader, MessageFooter };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\n\nimport { cn } from \"@/lib/utils\";\nimport { resolveClassName, resolveStyle, type PartProps } from \"../lib/keyline-render\";\n\n/* A message is one sender's run in the conversation: consecutive messages from the same person, close in time.\n   A run hangs from its own side of the log as one stack (the bubbles share keylines):\n   - align=\"start\": the other party, at the start of the log, with an avatar in the gutter, level with the\n     first bubble's top keyline. The header, every bubble and the receipt line up on the start edge;\n   - align=\"end\": the reader's own run, at the end of the log (the left in RTL). It needs no avatar. Every\n     bubble is flush to the end edge, and the header and receipt sit over the bubbles' end text inset.\n   Put every consecutive message of the run in one Message: Header, then Bubbles (attachments go inside the\n   bubble), then a Footer for the delivery state of the bubble right above it.\n\n   Each run hangs from its own side of the log. --kl-msg-x is the text inset; the header and footer sit one frame\n   border plus that inset in from the run's outer edge: the start edge for theirs (where a bubble's text begins),\n   the end edge for yours (bubbles flush to the end, the header and receipt over their end inset). A narrow log (the\n   kl-log container, MessageScrollerContent) gets a smaller face and a little more of the row for the words. */\n\ntype Align = \"start\" | \"end\";\n\n/* ------------------------------------------------------------------ *\n * CLASSES\n * ------------------------------------------------------------------ */\n\nconst group = \"kl-type flex min-w-0 flex-col gap-[calc(var(--kl-gutter)+8px)]\";\n\nconst root = cn(\n  \"kl-type group/message flex w-full min-w-0 gap-(--kl-gutter) data-[align=end]:flex-row-reverse\",\n  \"[--kl-msg-av:32px] [--kl-msg-gap:6px] [--kl-msg-head:18px] [--kl-msg-x:var(--kl-inset)]\",\n  \"[@container_kl-log_(max-width:420px)]:[--kl-msg-av:24px]\",\n  \"[@container_kl-log_(max-width:420px)]:[--kl-msg-x:max(8px,var(--kl-inset)_-_2px)]\",\n);\n\n/** the gutter: level with the first bubble's top keyline, so the face and the first frame read as one row. It sizes\n *  its avatar (one attribute more specific than the avatar's own size classes). */\nconst avatar = cn(\n  \"flex w-(--kl-msg-av) flex-none self-start empty:h-0\",\n  \"[[data-slot=message]:has(>[data-slot=message-content]>[data-slot=message-header]:first-child)>&]:mt-[calc(var(--kl-msg-head)+var(--kl-msg-gap))]\",\n  \"*:data-[slot=avatar]:[--kl-av:var(--kl-msg-av)]\",\n  \"[@container_kl-log_(max-width:420px)]:*:data-[slot=avatar]:[--kl-av-fs:10px]\",\n);\n\n/** the column: as wide as its widest bubble, never wider than most of the row, so each side keeps its side */\nconst content = cn(\n  \"flex min-w-0 flex-[0_1_auto] flex-col items-start *:max-w-full group-data-[align=end]/message:items-end\",\n  \"max-w-[min(100%_-_var(--kl-msg-av)_-_var(--kl-gutter),36rem)]\",\n  \"[[data-slot=message]:not(:has(>[data-slot=message-avatar]))>&]:max-w-[min(82%,36rem)]\",\n  \"[@container_kl-log_(max-width:420px)]:[[data-slot=message]:not(:has(>[data-slot=message-avatar]))>&]:max-w-[88%]\",\n);\n\nconst edge = cn(\n  \"min-w-0 ps-[calc(var(--kl-k2)+var(--kl-msg-x))]\",\n  \"group-data-[align=end]/message:justify-end group-data-[align=end]/message:ps-0\",\n  \"group-data-[align=end]/message:pe-[calc(var(--kl-k2)+var(--kl-msg-x))]\",\n);\n\n/** the name in the UI voice; the time (and any code) in the Code voice, never squeezed */\nconst header = cn(\n  edge,\n  \"mb-(--kl-msg-gap) flex h-(--kl-msg-head) items-baseline gap-2 whitespace-nowrap\",\n  \"text-[13px]/[var(--kl-msg-head)] font-(--kl-weight-strong)\",\n  \"[&>:not(time,.kl-code)]:min-w-0 [&>:not(time,.kl-code)]:overflow-hidden [&>:not(time,.kl-code)]:text-ellipsis\",\n  \"[&_:is(time,.kl-code)]:flex-none [&_:is(time,.kl-code)]:font-(family-name:--kl-font-mono)\",\n  \"[&_:is(time,.kl-code)]:text-[11px]/none [&_:is(time,.kl-code)]:font-medium [&_:is(time,.kl-code)]:not-italic\",\n  \"[&_:is(time,.kl-code)]:text-kl-ink-2 [&_:is(time,.kl-code)]:tabular-nums\",\n);\n\n/** the receipt belongs to the bubble right above it */\nconst footer = cn(\n  edge,\n  \"mt-(--kl-msg-gap) flex flex-wrap items-baseline gap-x-2\",\n  \"font-(family-name:--kl-font-mono) text-[11px]/[16px] font-medium text-kl-ink-2 not-italic tabular-nums\",\n  \"data-[tone=attention]:text-kl-red-text\",\n  \"[&+:not([data-slot=message-footer])]:mt-[calc(var(--kl-msg-gap)*2)]\",\n  \"[&>button]:cursor-pointer [&>button]:font-(family-name:--kl-font) [&>button]:text-[12px]\",\n  \"[&>button]:font-(--kl-weight-strong) [&>button]:text-kl-cobalt-text\",\n  \"[&>button]:underline [&>button]:underline-offset-2\",\n  \"[&>button]:focus-visible:outline-(length:--kl-ring) [&>button]:focus-visible:outline-offset-2\",\n  \"[&>button]:focus-visible:outline-kl-focus [&>button]:focus-visible:outline-solid\",\n  \"[&>button:active>*]:translate-y-px\",\n);\n\n/* ------------------------------------------------------------------ *\n * PARTS\n * ------------------------------------------------------------------ */\n\ntype MessageState = { align: Align };\ntype MessagePartState = Record<string, never>;\ntype MessageFooterState = { tone: \"attention\" | undefined };\nconst PART_STATE: MessagePartState = {};\n\nfunction part<State extends object>(\n  slot: string,\n  base: string,\n  state: State,\n  { render, className, style, ...props }: PartProps<\"div\", State>,\n  own: React.ComponentProps<\"div\"> & Record<`data-${string}`, unknown> = {},\n) {\n  return {\n    defaultTagName: \"div\" as const,\n    render,\n    state,\n    props: mergeProps<\"div\">(props, {\n      ...own,\n      className: resolveClassName(base, className)(state),\n      style: resolveStyle(undefined, style)(state),\n      \"data-slot\": slot,\n    } as React.ComponentProps<\"div\">),\n  };\n}\n\n/** Runs one after another, one gutter and a half apart (a log's content is already one). */\nfunction MessageGroup(props: PartProps<\"div\", MessagePartState>): React.ReactElement {\n  return useRender(part(\"message-group\", group, PART_STATE, props));\n}\n\ntype MessageProps = PartProps<\"div\", MessageState> & {\n  /** start: the other party. end: the reader's own messages. */\n  align?: Align;\n};\n\nfunction Message({ align = \"start\", ...props }: MessageProps): React.ReactElement {\n  return useRender(part(\"message\", root, { align }, props, { \"data-align\": align }));\n}\n\n/** The avatar gutter. Put a size=\"md\" Avatar in it (decorative when the header prints the name). The reader's own run leaves it out. */\nfunction MessageAvatar(props: PartProps<\"div\", MessagePartState>): React.ReactElement {\n  return useRender(part(\"message-avatar\", avatar, PART_STATE, props));\n}\n\n/** The run's column: header, bubbles, footers. It is as wide as its widest bubble, and everything in it hangs from the run's outer edge (start for theirs, end for yours). */\nfunction MessageContent(props: PartProps<\"div\", MessagePartState>): React.ReactElement {\n  return useRender(part(\"message-content\", content, PART_STATE, props));\n}\n\n/** Sender and time, over the bubbles' text inset on the run's outer edge: the name in the UI voice, the time in the Code voice (pass a <time>). */\nfunction MessageHeader(props: PartProps<\"div\", MessagePartState>): React.ReactElement {\n  return useRender(part(\"message-header\", header, PART_STATE, props));\n}\n\ntype MessageFooterProps = PartProps<\"div\", MessageFooterState> & {\n  /** attention: the bubble above was not sent (the reason, then a Retry button). */\n  tone?: \"attention\";\n};\n\n/** Delivery state of the bubble right above it (\"Sent\", \"Read 14:22\", \"Not sent: no signal.\" + a Retry button), on the run's outer edge, in the Code voice. */\nfunction MessageFooter({ tone, ...props }: MessageFooterProps): React.ReactElement {\n  return useRender(part(\"message-footer\", footer, { tone }, props, { \"data-tone\": tone, \"aria-live\": \"polite\" }));\n}\n\nexport { MessageGroup, Message, MessageAvatar, MessageContent, MessageHeader, MessageFooter };\nexport type { MessageProps, MessageFooterProps, MessageState };\n",
       "type": "registry:ui",
       "target": "components/keyline/ui/message.tsx"
     }
   ],
-  "css": {
-    "@layer components": {
-      ".kl-msg-group": {
-        "display": "flex",
-        "flex-direction": "column",
-        "gap": "calc(var(--kl-gutter) + 8px)",
-        "min-width": "0"
-      },
-      ".kl-msg": {
-        "--kl-msg-x": "var(--kl-inset)",
-        "--kl-msg-av": "32px",
-        "--kl-msg-head": "18px",
-        "--kl-msg-gap": "6px",
-        "display": "flex",
-        "gap": "var(--kl-gutter)",
-        "width": "100%",
-        "min-width": "0"
-      },
-      ".kl-msg[data-align=\"end\"]": {
-        "flex-direction": "row-reverse"
-      },
-      ".kl-msg-av": {
-        "flex": "none",
-        "display": "flex",
-        "width": "var(--kl-msg-av)",
-        "align-self": "flex-start"
-      },
-      ".kl-msg:has(> .kl-msg-body > .kl-msg-h:first-child) > .kl-msg-av": {
-        "margin-block-start": "calc(var(--kl-msg-head) + var(--kl-msg-gap))"
-      },
-      ".kl-msg-av:empty": {
-        "height": "0"
-      },
-      ".kl-msg-body": {
-        "flex": "0 1 auto",
-        "display": "flex",
-        "flex-direction": "column",
-        "align-items": "flex-start",
-        "min-width": "0",
-        "max-width": "min(100% - var(--kl-msg-av) - var(--kl-gutter), 36rem)"
-      },
-      ".kl-msg:not(:has(> .kl-msg-av)) > .kl-msg-body": {
-        "max-width": "min(82%, 36rem)"
-      },
-      ".kl-msg-body > *": {
-        "max-width": "100%"
-      },
-      ".kl-msg[data-align=\"end\"] > .kl-msg-body": {
-        "align-items": "flex-end"
-      },
-      ".kl-msg-h, .kl-msg-f": {
-        "padding-inline-start": "calc(var(--kl-k2) + var(--kl-msg-x))",
-        "min-width": "0"
-      },
-      ".kl-msg[data-align=\"end\"] :is(.kl-msg-h, .kl-msg-f)": {
-        "padding-inline": "0 calc(var(--kl-k2) + var(--kl-msg-x))",
-        "justify-content": "flex-end"
-      },
-      ".kl-msg-h": {
-        "display": "flex",
-        "align-items": "baseline",
-        "gap": "8px",
-        "block-size": "var(--kl-msg-head)",
-        "margin-block-end": "var(--kl-msg-gap)",
-        "font-size": "13px",
-        "font-weight": "var(--kl-weight-strong)",
-        "line-height": "var(--kl-msg-head)",
-        "white-space": "nowrap"
-      },
-      ".kl-msg-h > :not(time, .kl-code)": {
-        "min-width": "0",
-        "overflow": "hidden",
-        "text-overflow": "ellipsis"
-      },
-      ".kl-msg-h :is(time, .kl-code)": {
-        "flex": "none",
-        "font": "500 11px/1 var(--kl-font-mono)",
-        "color": "var(--kl-ink-2)",
-        "font-variant-numeric": "tabular-nums"
-      },
-      ".kl-msg-f": {
-        "display": "flex",
-        "flex-wrap": "wrap",
-        "align-items": "baseline",
-        "column-gap": "8px",
-        "margin-block-start": "var(--kl-msg-gap)",
-        "font": "500 11px/16px var(--kl-font-mono)",
-        "color": "var(--kl-ink-2)",
-        "font-variant-numeric": "tabular-nums"
-      },
-      ".kl-msg-f + :not(.kl-msg-f)": {
-        "margin-block-start": "calc(var(--kl-msg-gap) * 2)"
-      },
-      ".kl-msg-f > button": {
-        "all": "unset",
-        "box-sizing": "border-box",
-        "font": "inherit",
-        "font-family": "var(--kl-font)",
-        "font-size": "12px",
-        "font-weight": "var(--kl-weight-strong)",
-        "color": "var(--kl-cobalt-text)",
-        "text-decoration": "underline",
-        "text-underline-offset": "2px",
-        "cursor": "pointer"
-      },
-      ".kl-msg-f > button:focus-visible": {
-        "outline": "var(--kl-ring) solid var(--kl-focus)",
-        "outline-offset": "2px"
-      },
-      ".kl-msg-f > button:active > *": {
-        "translate": "0 1px"
-      },
-      ".kl-msg-f[data-tone=\"attention\"]": {
-        "color": "var(--kl-red-text)"
-      },
-      "@container kl-log (max-width: 420px)": {
-        ".kl-msg": {
-          "--kl-msg-av": "24px",
-          "--kl-msg-x": "max(8px, var(--kl-inset) - 2px)"
-        },
-        ".kl-msg:not(:has(> .kl-msg-av)) > .kl-msg-body": {
-          "max-width": "88%"
-        }
-      }
-    },
-    "@layer utilities": {
-      ".kl-msg-av > [data-slot=\"avatar\"]": {
-        "--kl-av": "var(--kl-msg-av)"
-      },
-      "@container kl-log (max-width: 420px)": {
-        ".kl-msg-av > [data-slot=\"avatar\"]": {
-          "--kl-av-fs": "10px"
-        }
-      }
-    }
-  },
   "type": "registry:ui"
 }

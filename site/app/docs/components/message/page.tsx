@@ -16,7 +16,14 @@ export const metadata = componentMetadata(
   "message",
 );
 
-const IMPORT = `import { Message, MessageAvatar, MessageContent, MessageFooter, MessageHeader } from "@/components/keyline/ui/message"`;
+const IMPORT = `import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageGroup,
+  MessageHeader,
+} from "@/components/keyline/ui/message"`;
 
 const USAGE = `<Message align="start">
   <MessageAvatar><Avatar name="Jim Halpert" decorative /></MessageAvatar>
@@ -25,6 +32,25 @@ const USAGE = `<Message align="start">
     <Bubble><BubbleContent>…</BubbleContent></Bubble>
   </MessageContent>
 </Message>`;
+
+const PARTS = `<MessageGroup>
+  <Message align="start">
+    <MessageAvatar><Avatar name="Jim Halpert" decorative /></MessageAvatar>
+    <MessageContent>
+      <MessageHeader><span>Jim Halpert</span><time>10:42</time></MessageHeader>
+      <Bubble><BubbleContent>…</BubbleContent></Bubble>
+    </MessageContent>
+  </Message>
+  <Message align="end">
+    <MessageContent>
+      <Bubble tone="attention"><BubbleContent>…</BubbleContent></Bubble>
+      <MessageFooter tone="attention">
+        <bdi>Not sent: no signal.</bdi>
+        <button type="button" onClick={retry}>Retry</button>
+      </MessageFooter>
+    </MessageContent>
+  </Message>
+</MessageGroup>`;
 
 const PROPS: Prop[] = [
   {
@@ -78,7 +104,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "parts", label: "Parts" },
+      { id: "props", label: "Props" },
+    ],
+  },
 ];
 
 export default function MessagePage() {
@@ -107,11 +139,24 @@ export default function MessagePage() {
       <CodeBlock code={IMPORT} lang="tsx" copyLabel="import" />
       <CodeBlock code={USAGE} lang="tsx" copyLabel="usage" />
 
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Message</code> is one sender&apos;s run; <code>MessageAvatar</code> holds its Avatar and{" "}
+        <code>MessageContent</code> its header, bubbles and footer. <code>MessageHeader</code> names the sender and the
+        time; <code>MessageFooter</code> says how the bubble above it stands, and a screen reader hears a change to it (
+        <code>aria-live=&quot;polite&quot;</code>). <code>MessageGroup</code> spaces runs apart in a conversation.
+      </p>
+      <CodeBlock code={PARTS} lang="tsx" copyLabel="parts" />
+
       <h2 id="props">Props</h2>
       <PropsReference label="Message props" props={PROPS} />
       <p className="s-small">
         Put every consecutive message of a run in one Message: the header, then the bubbles, then at most one footer.
-        Files go inside a bubble as Attachment cells.
+        Files go inside a bubble as Attachment cells. Every part takes <code>render</code>, and a <code>className</code>{" "}
+        or <code>style</code> that may be a function of its state. The run carries{" "}
+        <code>data-slot=&quot;message&quot;</code> and <code>data-align</code>; the others <code>data-slot</code>{" "}
+        <code>message-group</code>, <code>message-avatar</code>, <code>message-content</code>,{" "}
+        <code>message-header</code> and <code>message-footer</code> (with <code>data-tone</code>).
       </p>
     </DocPage>
   );

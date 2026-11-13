@@ -1,6 +1,6 @@
 // Install-order independence. The shadcn CLI appends each item's CSS in the order items were added, so no
 // component may depend on its file coming after another's. This builds the app twice — as written, and with the
-// component imports in src/demo/globals.css reversed (in the build only; the source file is never touched) — captures
+// component and block imports in src/demo/globals.css reversed (in the build only; the source file is never touched) — captures
 // the computed styles of every Keyline element on the specimen and the playground preview in both, and diffs.
 //   pnpm test:css-order            (no dev server needed)
 import { chromium } from "playwright";
@@ -38,7 +38,9 @@ const PROPS = [
 
 export const reverseUiImports = (css) => {
   const lines = css.split("\n");
-  const ui = lines.map((l, i) => (/@import "\.\.\/registry\/keyline\/ui\//.test(l) ? i : -1)).filter((i) => i >= 0);
+  const ui = lines
+    .map((l, i) => (/@import "\.\.\/registry\/keyline\/(ui|blocks)\//.test(l) ? i : -1))
+    .filter((i) => i >= 0);
   const reversed = ui.map((i) => lines[i]).reverse();
   ui.forEach((i, k) => (lines[i] = reversed[k]));
   return { css: lines.join("\n"), count: ui.length };

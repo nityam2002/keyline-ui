@@ -20,7 +20,7 @@ test("chat: the composer appends your message at the end, on your side", async (
     ),
   );
   await until(p, () => {
-    const v = document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+    const v = document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
     return v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
   });
   await scrollStill(vp);
@@ -29,7 +29,7 @@ test("chat: the composer appends your message at the end, on your side", async (
     "chat: sending appends your message at the end, on your side",
     (await geo()).gap <= 2 &&
       /On my way to bay 2\./.test(await last.innerText()) &&
-      (await last.locator(".kl-msg").getAttribute("data-align")) === "end",
+      (await last.locator("[data-slot=message]").getAttribute("data-align")) === "end",
     await geo(),
   );
   noErrors(ok, p);
@@ -47,15 +47,15 @@ test("chat: send — pending, Sending…, the unfold, Sent, Read; then rapid sen
       return o.apply(this, a);
     };
   });
-  const n = await frame.locator(".kl-bubble").count();
+  const n = await frame.locator("[data-slot=bubble]").count();
   await p.getByTestId("ms-input").fill("Ok.");
   await p.keyboard.press("Enter");
-  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] .kl-bubble").length > n, n, 2000);
-  const newest = frame.locator(".kl-bubble").last();
+  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=bubble]").length > n, n, 2000);
+  const newest = frame.locator("[data-slot=bubble]").last();
   const receipt = frame.getByTestId("receipt").last();
   ok(
     "send: your message is in at once, on your side, with the pending segment on its bottom keyline",
-    (await newest.locator(".kl-bubble-t").innerText()) === "Ok." &&
+    (await newest.locator("[data-slot=bubble-text]").innerText()) === "Ok." &&
       (await newest.getAttribute("data-pending")) === "" &&
       (await newest.locator(".kl-pending").count()) === 1 &&
       (await newest.getAttribute("aria-busy")) === "true",
@@ -92,42 +92,47 @@ test("chat: send — pending, Sending…, the unfold, Sent, Read; then rapid sen
   ok(
     "send: read: the receipt says Read with the time, still right under it",
     /^Read 14:\d\d$/.test(await receipt.innerText()) &&
-      (await receipt.evaluate((r) => r.previousElementSibling?.classList.contains("kl-bubble"))),
+      (await receipt.evaluate((r) => r.previousElementSibling?.getAttribute("data-slot") === "bubble")),
   );
   ok(
     "send: one receipt per run, under its last delivered message",
-    (await frame.locator(".kl-msg").last().getByTestId("receipt").count()) === 1,
+    (await frame.locator("[data-slot=message]").last().getByTestId("receipt").count()) === 1,
   );
 
   // rapid sending
-  const n0 = await frame.locator(".kl-bubble").count();
+  const n0 = await frame.locator("[data-slot=bubble]").count();
   for (let i = 1; i <= 6; i++) {
     await p.getByTestId("ms-input").fill(`Rapid ${i}`);
     await p.keyboard.press("Enter");
   }
-  await until(p, (n) => document.querySelectorAll("[data-testid=ms-frame] .kl-bubble").length === n + 6, n0, 2000);
+  await until(
+    p,
+    (n) => document.querySelectorAll("[data-testid=ms-frame] [data-slot=bubble]").length === n + 6,
+    n0,
+    2000,
+  );
   await until(
     p,
     () => {
-      const v = document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+      const v = document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
       return v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
     },
     null,
     2000,
   );
   const texts = await frame
-    .locator(".kl-bubble")
-    .evaluateAll((bs) => bs.slice(-6).map((x) => x.querySelector(".kl-bubble-t").innerText));
+    .locator("[data-slot=bubble]")
+    .evaluateAll((bs) => bs.slice(-6).map((x) => x.querySelector("[data-slot=bubble-text]").innerText));
   ok(
     "rapid send: six messages in order, all in, the log at the end",
-    (await frame.locator(".kl-bubble").count()) === n0 + 6 &&
+    (await frame.locator("[data-slot=bubble]").count()) === n0 + 6 &&
       texts.join() === "Rapid 1,Rapid 2,Rapid 3,Rapid 4,Rapid 5,Rapid 6" &&
       (await geo()).gap <= 2,
     [texts, await geo()],
   );
   ok(
     "rapid send: the newest is still pending while the controls stay usable",
-    (await frame.locator(".kl-bubble").last().getAttribute("data-pending")) === "" &&
+    (await frame.locator("[data-slot=bubble]").last().getAttribute("data-pending")) === "" &&
       (await p.getByTestId("ms-input").isEditable()),
   );
   await until(
@@ -151,7 +156,7 @@ test("chat: send — pending, Sending…, the unfold, Sent, Read; then rapid sen
 test("chat: retrying a message that was not sent", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame } = await chat(p);
-  const failed = frame.locator('.kl-bubble[data-tone="attention"]');
+  const failed = frame.locator('[data-slot=bubble][data-tone="attention"]');
   await failed.scrollIntoViewIfNeeded();
   await frame.getByRole("button", { name: "Retry", exact: true }).click();
   await until(

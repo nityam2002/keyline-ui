@@ -14,12 +14,12 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   const q = await form(p);
   const step = () => q.locator('[data-slot="questionnaire-item"]:not([hidden])');
   const heading = async () => (await step().locator('[data-slot="questionnaire-heading"]').textContent())?.trim();
-  const errShown = () => step().evaluate((f) => !!f.querySelector(".kl-q-error:not([hidden])"));
+  const errShown = () => step().evaluate((f) => !!f.querySelector("[data-slot=questionnaire-error]:not([hidden])"));
   // Next with nothing chosen: blocked, the error shows on this step and describes it
   await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(errShown);
   const e1 = await step().evaluate((f) => {
-    const err = f.querySelector(".kl-q-error:not([hidden])");
+    const err = f.querySelector("[data-slot=questionnaire-error]:not([hidden])");
     return {
       err: !!err,
       role: err?.getAttribute("role"),
@@ -43,7 +43,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
     step().evaluate(
       (f) =>
         f.querySelector("[data-kl-covered]")?.textContent?.includes("Rail") &&
-        !f.querySelector(".kl-q-error:not([hidden])"),
+        !f.querySelector("[data-slot=questionnaire-error]:not([hidden])"),
     ),
   );
   await idle(p);
@@ -51,7 +51,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   ok("questionnaire: the chosen row is under the ink band (data-kl-covered)", covered?.includes("Rail"), covered);
   ok(
     "questionnaire: the error clears once answered",
-    (await step().locator(".kl-q-error:not([hidden])").count()) === 0,
+    (await step().locator("[data-slot=questionnaire-error]:not([hidden])").count()) === 0,
   );
   // Next: focus moves to the new step's heading
   await q.getByRole("button", { name: "Next", exact: true }).click();
@@ -64,12 +64,14 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   );
   ok(
     "questionnaire: an optional step says so and offers Skip",
-    (await step().locator(".kl-q-opt").count()) === 1 &&
+    (await step().locator("[data-slot=questionnaire-optional]").count()) === 1 &&
       (await q.getByRole("button", { name: "Skip", exact: true }).isVisible()),
   );
   ok(
     "questionnaire: question 1's error is not on question 2",
-    (await q.locator('[data-slot="questionnaire-item"]:not([hidden]) .kl-q-error:not([hidden])').count()) === 0,
+    (await q
+      .locator('[data-slot="questionnaire-item"]:not([hidden]) [data-slot=questionnaire-error]:not([hidden])')
+      .count()) === 0,
   );
   // multiple choice, then Back and Next keep every answer
   await step().locator('[data-slot="questionnaire-choice"]', { hasText: "Rotterdam" }).click();
@@ -101,7 +103,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   await q.getByRole("button", { name: "Next", exact: true }).click();
   await until(errShown);
   const e3 = await step().evaluate((f) => ({
-    err: f.querySelector(".kl-q-error:not([hidden])")?.textContent?.trim(),
+    err: f.querySelector("[data-slot=questionnaire-error]:not([hidden])")?.textContent?.trim(),
     ai: f.querySelector("input")?.getAttribute("aria-invalid"),
     bang: getComputedStyle(f.querySelector(".kl-field-bang")).gridTemplateColumns,
     name:
@@ -126,7 +128,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
   await q.getByRole("button", { name: "Send request" }).click();
   await until(errShown);
   const e4 = await step()
-    .locator(".kl-q-error:not([hidden])")
+    .locator("[data-slot=questionnaire-error]:not([hidden])")
     .textContent({ timeout: 1000 })
     .catch(() => null);
   ok("questionnaire: Submit on an empty optional last step asks for a note or Skip", e4?.includes("Skip to send"), e4);
@@ -144,7 +146,7 @@ test("questionnaire: a whole flow, failure and retry", async ({ open, ok }) => {
     q.evaluate((f) => ({
       alert: f.querySelector('[data-slot="notice"][role="alert"]')?.textContent,
       signal: f
-        .querySelector('.kl-q-actions [data-slot="button"][data-variant="primary"]:not([hidden])')
+        .querySelector('[data-slot=questionnaire-actions] [data-slot="button"][data-variant="primary"]:not([hidden])')
         ?.getAttribute("data-signal"),
     }));
   await until(async () => {
@@ -223,8 +225,8 @@ test("questionnaire: rtl and dark", async ({ open, ok }) => {
     ...(await q.evaluate((f) => {
       const r = (s) => f.querySelector(s).getBoundingClientRect();
       return {
-        box: r(".kl-q-item:not([hidden]) [data-slot=questionnaire-choice-box]").left,
-        label: r(".kl-q-item:not([hidden]) [data-slot=questionnaire-choice-text]").left,
+        box: r("[data-slot=questionnaire-item]:not([hidden]) [data-slot=questionnaire-choice-box]").left,
+        label: r("[data-slot=questionnaire-item]:not([hidden]) [data-slot=questionnaire-choice-text]").left,
       };
     })),
     // the nav buttons are Buttons (their slot): found by role and name
@@ -238,7 +240,7 @@ test("questionnaire: rtl and dark", async ({ open, ok }) => {
   );
   const dark = await q.evaluate((f) => {
     const a = getComputedStyle(f).backgroundColor;
-    const c = getComputedStyle(f.querySelector(".kl-q-title")).color;
+    const c = getComputedStyle(f.querySelector("[data-slot=questionnaire-heading]")).color;
     return { a, c };
   });
   ok(
@@ -257,8 +259,10 @@ test("questionnaire: reduced motion lands the band at once", async ({ open, ok }
   await row.click();
   await p.waitForTimeout(40); // timing: "at once" — the band must already be on the row 40 ms after the click
   const land = await q.evaluate((f) => {
-    const b = f.querySelector(".kl-q-item:not([hidden]) [data-kl-band]").getBoundingClientRect();
-    const r = f.querySelector(".kl-q-item:not([hidden]) [data-kl-item][data-checked]").getBoundingClientRect();
+    const b = f.querySelector("[data-slot=questionnaire-item]:not([hidden]) [data-kl-band]").getBoundingClientRect();
+    const r = f
+      .querySelector("[data-slot=questionnaire-item]:not([hidden]) [data-kl-item][data-checked]")
+      .getBoundingClientRect();
     return Math.abs(b.top - r.top);
   });
   ok("reduced motion: the band lands on the chosen row at once", land < 1.5, land);
@@ -272,11 +276,14 @@ test("questionnaire: forced colours", async ({ open, ok, eng }) => {
     .locator('[data-slot="questionnaire-item"]:not([hidden])')
     .locator('[data-slot="questionnaire-choice"]', { hasText: "Road" })
     .click();
-  await until(() => q.evaluate((f) => !!f.querySelector(".kl-q-item:not([hidden]) [data-kl-covered]")));
+  await until(() =>
+    q.evaluate((f) => !!f.querySelector("[data-slot=questionnaire-item]:not([hidden]) [data-kl-covered]")),
+  );
   await idle(p);
   const fc = await q.evaluate((f) => ({
-    band: getComputedStyle(f.querySelector(".kl-q-item:not([hidden]) [data-kl-band]")).backgroundColor,
-    row: getComputedStyle(f.querySelector(".kl-q-item:not([hidden]) [data-kl-covered]")).color,
+    band: getComputedStyle(f.querySelector("[data-slot=questionnaire-item]:not([hidden]) [data-kl-band]"))
+      .backgroundColor,
+    row: getComputedStyle(f.querySelector("[data-slot=questionnaire-item]:not([hidden]) [data-kl-covered]")).color,
   }));
   ok(
     "forced colours: the chosen row is Highlight with HighlightText",

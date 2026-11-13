@@ -26,7 +26,7 @@ async function setup(p) {
   await until(p, () => {
     const v =
       document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]") ??
-      document.querySelector("[data-testid=ms-frame] .kl-ms-vp");
+      document.querySelector("[data-testid=ms-frame] [data-slot=message-scroller-viewport]");
     return v && v.scrollHeight - v.clientHeight - v.scrollTop <= 2;
   });
   await barUntil(sc, (ops, root) => !!root.dataset.klReveal && ops.vertical === 0, 3000);
