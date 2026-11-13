@@ -47,7 +47,7 @@ consumer installs, and every item whose shipped files changed must be bumped wit
 
 After the merge, `.github/workflows/release.yml` runs on the push to main:
 
-1. **Deploy.** The host's Git integration deploys main (Vercel, building with `pnpm site:build`; the site must
+1. **Deploy.** The host's Git integration deploys main (Vercel, installing with pnpm as `vercel.json` says and building with `pnpm site:build`; the site must
    serve `site/public` at the root). Production deployments set `VERCEL_ENV=production`, or
    `KEYLINE_SITE_ENV=production` on another host: only that build may be indexed by search engines and lists its
    sitemap. Every other build, previews included, sends `noindex` (`site/lib/seo.ts`).
