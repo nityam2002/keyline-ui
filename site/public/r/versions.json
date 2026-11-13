@@ -1007,6 +1007,18 @@
       }
     ]
   },
+  "keyline-skill": {
+    "version": "1.0.0",
+    "updated": "2026-11-13",
+    "hash": "sha256-33aa7f060f9aef21a7a16bd1691b8de54fbd057cf57edf665228073df874ffe9",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-13",
+        "note": "First release: the 1.0.0 baseline."
+      }
+    ]
+  },
   "marker": {
     "version": "1.0.0",
     "updated": "2026-11-13",
