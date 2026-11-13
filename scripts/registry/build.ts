@@ -306,7 +306,7 @@ export async function buildRegistry(): Promise<Built> {
   // a package the repo pins exactly (no ^ or ~) is pinned for consumers too, so they get the version tested here
   const pinned = (p: string) => (/^\d+\.\d+\.\d+$/.test(pkgDeps[p] ?? "") ? `${p}@${pkgDeps[p]}` : p);
 
-  const indexItems = metas.map(({ metaFile, cssFile, theme, requires: _requires, ...item }) => {
+  const indexItems = metas.map(({ metaFile, cssFile, theme, requires: _requires, whenToUse: _whenToUse, ...item }) => {
     sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
     sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
     if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);

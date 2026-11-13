@@ -1,0 +1,280 @@
+{
+  "name": "otp-field",
+  "title": "OTP field",
+  "description": "A one-time code in one field frame (Base UI OTP Field): a cell per character on shared seams, groups split by a join cell, paste and SMS autofill, a Field participant; verification signals pending, done and failed in the frame.",
+  "whenToUse": "Use it to enter a one-time code, one cell per character, with a checking state and an error. For other short text use Field.",
+  "parts": [
+    {
+      "name": "OtpField",
+      "description": "A one-time code in one field frame (Base UI OTP Field inside a Base UI Field), built from the parts above: every character is a cell on a shared seam, groups are split by a join cell, and the whole code is one Tab stop's worth of typing. A code reads left to right in every script, so the slots stay in that order in RTL; the ! cell and the message follow the page. A Form collects it by `name`; `validate`, `required` and the Form's `errors` reach it like any Field.",
+      "props": [
+        {
+          "name": "autoSubmit",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Submit the owning form as soon as the code is complete."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "groups",
+          "type": "number[]",
+          "default": "",
+          "required": false,
+          "description": "Split the slots into groups, e.g. [3, 3] for \"123 456\". Must add up to `length`; otherwise one group."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "id of the first slot (Base UI derives `{id}-2`, `{id}-3`… for the rest)."
+        },
+        {
+          "name": "inputMode",
+          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\"",
+          "default": "",
+          "required": false,
+          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "Visible label (visually hidden with layout=\"cell\"); it names the first slot, and the rest say \"Character n of N\"."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (label visually hidden)."
+        },
+        {
+          "name": "length",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": "Number of characters."
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Mask the characters (a PIN)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Form name; the submitted value is the code (possibly incomplete)."
+        },
+        {
+          "name": "normalizeValue",
+          "type": "(value: string) => string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string, eventDetails: OTPFieldRootChangeEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with the code and Base UI's event details (the reason, the event)."
+        },
+        {
+          "name": "onValueComplete",
+          "type": "(value: string, eventDetails: OTPFieldRootCompleteEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Fired once every slot holds a character (and when a complete code is pasted again). Verify here."
+        },
+        {
+          "name": "onValueInvalid",
+          "type": "(value: string, eventDetails: OTPFieldRootInvalidEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "signal",
+          "type": "\"idle\" | \"done\" | \"pending\" | \"failed\"",
+          "default": "\"idle\"",
+          "required": false,
+          "description": "The verification of a complete code, shown in the frame (Button's signals): pending: a segment runs along the bottom keyline and the slots are read-only (aria-busy); done: a ✓ cell is inserted at the end; failed: the frame turns red, the ! cell is inserted at the start and, if focus was in the field, the caret returns to the first slot with the code still visible. Pair failed with `error` (\"That code has expired. Send a new one.\")."
+        },
+        {
+          "name": "signalText",
+          "type": "{ pending?: string | undefined; done?: string | undefined; }",
+          "default": "",
+          "required": false,
+          "description": "Announced politely while pending and when done. Default \"Checking the code…\" and \"Code verified.\""
+        },
+        {
+          "name": "slotLabel",
+          "type": "(n: number, total: number) => string",
+          "default": "(n, total) => `Character ${n} of ${total}`",
+          "required": false,
+          "description": "Accessible name of slot n (from 2). Default (n, total) => `Character ${n} of ${total}`."
+        },
+        {
+          "name": "validationType",
+          "type": "OTPValidationType",
+          "default": "",
+          "required": false,
+          "description": "numeric (default) · alpha · alphanumeric (recovery and invite codes) · none."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "OtpFieldFrame",
+      "description": "The field frame: the attention cell (inserted at its start, open while the field is invalid), then its children (the OtpFieldRoot, and any signal cells). `units` is the code's width in slots (a join counts half), which sizes every slot. `layout=\"cell\"`: the frame is a cell of an enclosing frame and the code takes the cell's width.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "units",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "OtpFieldInput",
+      "description": "One character's cell. Base UI derives each slot's id from the root's `id` (`{id}-2`, `{id}-3`…).",
+      "props": []
+    },
+    {
+      "name": "OtpFieldRoot",
+      "description": "Base UI's OTPField.Root: the row of slots, always left to right. Typing advances, Backspace goes back, arrows move, paste and SMS autofill (`one-time-code`) fill every slot. `onValueChange` gets Base UI's event details last.",
+      "props": []
+    },
+    {
+      "name": "OtpFieldSeparator",
+      "description": "The join between groups: a drawn dash in its own narrow cell, no seam of its own (the slot after it draws one).",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-signal",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "otp-field",
+        "otp-field-done",
+        "otp-field-frame",
+        "otp-field-input",
+        "otp-field-root",
+        "otp-field-separator"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bw",
+      "values": [
+        "3px"
+      ]
+    },
+    {
+      "name": "--kl-otp-floor",
+      "values": [
+        "26px"
+      ]
+    },
+    {
+      "name": "--kl-otp-fs",
+      "values": [
+        "18px",
+        "22px"
+      ]
+    },
+    {
+      "name": "--kl-otp-u",
+      "values": [
+        "units"
+      ]
+    },
+    {
+      "name": "--kl-otp-w",
+      "values": [
+        "34px",
+        "44px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "otp-sign-in",
+      "title": "OTP field: sign in code",
+      "file": "otp-sign-in.tsx"
+    }
+  ]
+}

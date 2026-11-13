@@ -1,0 +1,293 @@
+{
+  "name": "chart",
+  "title": "Chart",
+  "description": "Charts on recharts, as the reference: series colours by role from the data tokens (focal, comparison, rest, mark, alert) as --color-<key>; solid hairline grid, Code-voice ticks, square marks and keys, an inverse tooltip with tabular figures. ChartFigure adds a title and a Chart / Table switch over the same rows. RTL axes and reduced motion are applied for you.",
+  "whenToUse": "Use it to plot numbers with Recharts in Keyline's construction, with a Table view of the same rows. For one headline figure use Stat; for progress of a task use Progress.",
+  "parts": [
+    {
+      "name": "ChartContainer",
+      "description": "The plot area. Sized by CSS (default aspect 16/9; set a height or aspect-ratio with className or style). Name it: `aria-label`, or `aria-labelledby` pointing at a visible title (ChartFigure does this).",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+          "default": "",
+          "required": true,
+          "description": "A recharts chart (BarChart, LineChart, AreaChart …)."
+        },
+        {
+          "name": "config",
+          "type": "{ [x: string]: { label?: ReactNode; color?: string | undefined; unit?: string | undefined; }; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(v: number) => string",
+          "default": "",
+          "required": false,
+          "description": "Formats values in the tooltip and table. Default: the locale's grouping, at most two decimals."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ChartFigure",
+      "description": "A titled chart with a Chart / Table switch. The table carries the same rows, so every value is readable without the plot (screen readers, forced colours, print, copying figures).",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode & ReactElement<ChartContainerProps, string | JSXElementConstructor<any>>",
+          "default": "",
+          "required": true,
+          "description": "The plot (a ChartContainer); it is named by the title."
+        },
+        {
+          "name": "config",
+          "type": "{ [x: string]: { label?: ReactNode; color?: string | undefined; unit?: string | undefined; }; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "data",
+          "type": "readonly Record<string, unknown>[]",
+          "default": "",
+          "required": true,
+          "description": "The rows behind the chart, for the Table view."
+        },
+        {
+          "name": "defaultView",
+          "type": "\"table\" | \"chart\"",
+          "default": "\"chart\"",
+          "required": false,
+          "description": "Starting view."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(v: number) => string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "labelHeader",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "labelKey",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ChartLegendContent",
+      "description": "Square keys with the series names, in config order. Recharts passes `payload`; without it, the config is the legend.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "payload",
+          "type": "readonly { dataKey?: unknown; value?: unknown; }[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ChartTable",
+      "description": "The same rows as a table: a category column, then one column per series, figures right-aligned.",
+      "props": [
+        {
+          "name": "caption",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "config",
+          "type": "{ [x: string]: { label?: ReactNode; color?: string | undefined; unit?: string | undefined; }; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "data",
+          "type": "readonly Record<string, unknown>[]",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(v: number) => string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "labelHeader",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Header of the category column."
+        },
+        {
+          "name": "labelKey",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "The row field that names each category (the x axis)."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ChartTooltipContent",
+      "description": "The tooltip body: the category in the Code voice, then one row per series (key, name, figure).",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "labelFormatter",
+          "type": "(label: ReactNode, payload: readonly TooltipItem[]) => ReactNode",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "nameKey",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "For one-series-per-row data (pie): the row field that names the item."
+        },
+        {
+          "name": "payload",
+          "type": "readonly TooltipItem[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-motion",
+      "values": [
+        "reduce"
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "chart",
+        "chart-figure",
+        "chart-figure-caption",
+        "chart-figure-description",
+        "chart-figure-title",
+        "chart-key",
+        "chart-legend",
+        "chart-legend-item",
+        "chart-table",
+        "chart-tooltip",
+        "chart-tooltip-item",
+        "chart-tooltip-label",
+        "chart-tooltip-name",
+        "chart-tooltip-value"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "chart-returns",
+      "title": "Chart: returns by client",
+      "file": "chart-returns.tsx"
+    },
+    {
+      "name": "chart-sales",
+      "title": "Chart: sales by rep",
+      "file": "chart-sales.tsx"
+    },
+    {
+      "name": "chart-target",
+      "title": "Chart: weekly target",
+      "file": "chart-target.tsx"
+    }
+  ]
+}

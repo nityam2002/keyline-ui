@@ -1,0 +1,68 @@
+{
+  "name": "collapsible",
+  "title": "Collapsible",
+  "description": "One unframed disclosure: a caret box whose keyline runs down the panel as a spine; the panel unfolds.",
+  "whenToUse": "Use it to hide less common settings or detail behind one disclosure. For several stacked sections use Accordion.",
+  "parts": [
+    {
+      "name": "CollapsiblePanel",
+      "description": "The panel (Base UI Collapsible.Panel). It unfolds; its content sits inside the clip, on the spine.",
+      "props": [
+        {
+          "name": "contentClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Classes for the content inside the panel's clip (its layout: `grid gap-4`)."
+        }
+      ]
+    },
+    {
+      "name": "CollapsibleRoot",
+      "description": "One disclosure, unframed, for a form or a panel body (\"Advanced options\", \"Show 12 more\"). ⊟ Advanced options the trigger: a square caret box and the label │ panel content the box's keyline runs down the panel's start edge, │ so the panel reads as the trigger's continuation The panel UNFOLDS from the trigger (160ms, folds in 120ms; instant under reduced motion). The spine is the same idea as the table detail's merged index cell: continuity drawn by a keyline, not a connector. Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.",
+      "props": []
+    },
+    {
+      "name": "CollapsibleTrigger",
+      "description": "The trigger (Base UI Collapsible.Trigger): the caret box, the label and the meta.",
+      "props": [
+        {
+          "name": "meta",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing text in the Code voice: a count of what is hidden (\"12\"), a short status."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "collapsible",
+        "collapsible-box",
+        "collapsible-content",
+        "collapsible-label",
+        "collapsible-meta",
+        "collapsible-panel",
+        "collapsible-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-coll-box",
+      "values": [
+        "18px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "collapsible-options",
+      "title": "Collapsible: delivery options",
+      "file": "collapsible-options.tsx"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ export default {
   type: "registry:ui",
   title: "Segmented control",
   description: "Exclusive choice in one frame; the ink band stretches between cells.",
+  whenToUse:
+    "Use it for one choice of a few short options on one line, such as a view mode. For choices that need a description use Radio group; for switching panels use Tabs.",
   files: [{ path: "src/registry/keyline/ui/segmented.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: [

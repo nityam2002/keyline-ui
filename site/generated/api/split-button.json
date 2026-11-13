@@ -1,0 +1,89 @@
+{
+  "name": "split-button",
+  "title": "Split button",
+  "description": "One control frame, two cells: the action and its menu. The menu docks to the frame.",
+  "whenToUse": "Use it when one action is usual and a few alternatives belong with it. For unrelated commands use Menu or Button group.",
+  "parts": [
+    {
+      "name": "SplitButton",
+      "description": "The frame: a group of the action cell and the menu's caret cell.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "cell: a cell of an enclosing frame (e.g. a bulk bar)."
+        },
+        {
+          "name": "variant",
+          "type": "\"secondary\" | \"primary\"",
+          "default": "\"secondary\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SplitButtonAction",
+      "description": "The action cell: Base UI's Button.",
+      "props": []
+    },
+    {
+      "name": "SplitButtonPopup",
+      "description": "The menu's popup: MenuPopup docked to the whole frame, taking the frame's weight on the shared edge.",
+      "props": []
+    },
+    {
+      "name": "SplitButtonTrigger",
+      "description": "The caret cell that opens the menu: Base UI's Menu.Trigger. Its children replace the caret.",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element. The caret shows no text: say what the menu holds (\"More booking options\")."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "split-button",
+        "split-button-action",
+        "split-button-trigger"
+      ]
+    },
+    {
+      "name": "data-variant",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-cobalt)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "split-button-delivery",
+      "title": "Split button: book delivery",
+      "file": "split-button-delivery.tsx"
+    },
+    {
+      "name": "split-button-export",
+      "title": "Split button: export report",
+      "file": "split-button-export.tsx"
+    }
+  ]
+}

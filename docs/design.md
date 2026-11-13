@@ -1,7 +1,8 @@
 # Keyline design model
 
 This is the model every Keyline component follows, and the rules a new component must meet. Consumer-facing
-setup is in [usage.md](usage.md); per-component APIs are on the documentation site (`npm run site:dev`).
+setup and per-component APIs are on the documentation site (`pnpm site:dev`; installation, theming, modes,
+configuration and composition guides).
 
 ## The idea
 

@@ -1,0 +1,50 @@
+{
+  "name": "resizable",
+  "title": "Resizable",
+  "description": "Panels that share a seam you can move, on react-resizable-panels v4: the 1px seam is the handle, thickening to 3px ink on hover or drag and drawn in the focus colour on keyboard focus; an optional grip cell. Keys, collapse, reset, touch targets and persistence are the library's.",
+  "whenToUse": "Use it for panes that share a seam the reader can move or collapse. Put it in a Panel or an App shell column; for a fixed layout use App shell alone.",
+  "parts": [
+    {
+      "name": "ResizableHandle",
+      "description": "",
+      "props": [
+        {
+          "name": "withHandle",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ResizablePanel",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "ResizablePanelGroup",
+      "description": "Resizable (on react-resizable-panels v4 since the round-20 review): panels that share a seam you can move. The library owns the behaviour: the separator's ARIA (value, bounds, controls), arrows, Home/End, Enter to collapse, double-click to reset, pointer and touch hit targets, layout persistence (`useDefaultLayout`) and the imperative API (`groupRef`, `panelRef`: collapse, expand, resize). Keyline only draws it. ┌────────────┃──────────────────┐ │ Manifests ┃ MSCU 1234567 │ the seam is the shared keyline (C1, C3): one 1px line, no gap. │ ▐▌ │ hover or drag thickens it to 3px ink; keyboard focus draws it in │ ┃ │ the focus colour; the grip cell (withHandle) sits on the seam. └────────────┃──────────────────┘ - Sizes follow the library: numbers are pixels, strings are percentages (\"30%\" or \"30\"). - Name each separator (`aria-label`) after the panel it resizes. - Dragging needs a pointer alternative (WCAG 2.5.7): double-click resets the layout; for collapse, give the page a button that calls `panelRef.current.collapse()` / `.expand()`. - No frame of its own: put it in a Panel body, a shell column or any frame.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "resizable",
+        "resizable-grip",
+        "resizable-handle",
+        "resizable-panel"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "resizable-calls",
+      "title": "Resizable: call log",
+      "file": "resizable-calls.tsx"
+    }
+  ]
+}

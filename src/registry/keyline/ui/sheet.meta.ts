@@ -6,6 +6,8 @@ export default {
   title: "Sheet",
   description:
     "A region docked to a viewport edge (end, start, bottom): Base UI Dialog behaviour, unfolds from its edge, cut on the inner corner.",
+  whenToUse:
+    "Use it for the detail of one thing opened from a list, docked to an edge at full height. For a short blocking task use Dialog; for a non-blocking side panel use Inspector.",
   files: [{ path: "src/registry/keyline/ui/sheet.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: [

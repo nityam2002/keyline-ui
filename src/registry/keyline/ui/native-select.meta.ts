@@ -6,6 +6,8 @@ export default {
   title: "Native select",
   description:
     "The platform's own select in a Keyline field frame: the caret cell drawn over its end, the OS list in the page's scheme, options or groups, a Field participant (name, required, validate, Form errors).",
+  whenToUse:
+    "Use it in long forms on phones and for fields the browser can autofill; the open list is the system's. For a styled list that docks to its field use Select.",
   files: [{ path: "src/registry/keyline/ui/native-select.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/field"],

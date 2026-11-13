@@ -8,7 +8,7 @@ the latest deployed version, so deploy the site only from a release commit.
 
 The site's origin is `https://keyline-ui.dev`, set as `"homepage"` in `package.json`. The registry catalog and
 the site's install commands read it, and `pnpm test` fails unless every install command in `README.md` and
-`docs/usage.md` uses it. If the origin ever changes, change all three together.
+`docs/releasing.md` uses it. If the origin ever changes, change them together.
 
 1. Add `"repository"` to `package.json` once the GitHub repository exists.
 2. Point the domain at the site's host and serve the site over HTTPS at that origin (the CLI fetches

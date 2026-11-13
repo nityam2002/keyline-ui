@@ -1,0 +1,581 @@
+{
+  "name": "table",
+  "title": "Table",
+  "description": "Presentational table parts on utilities: Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption, TableSortHeader, TableBulkBar and TablePager, each with render and a className that may be a function of its state, plus the frame's views, toolbar, index column, expanded detail, empty/error rows and pagination. No part holds state.",
+  "whenToUse": "Use it to compose a table frame from parts while you keep the data and its state. For sorting, filtering, paging and selection worked out for you use Data table.",
+  "parts": [
+    {
+      "name": "FilterToken",
+      "description": "A filter as a token: `field op value`, pressed to edit, with a remove cell. Inside a Toolbar it is a group of two toolbar items (one Tab stop for the row); elsewhere, two cells.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "field",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "onEdit",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onRemove",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "op",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Table",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "TableBody",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "TableBulkBar",
+      "description": "The bulk bar: the selected count (floods yellow while rows are selected), its scope, then the actions. Changes to it are announced politely.",
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": "how many rows are selected; 0 empties the bar (its count goes quiet)"
+        },
+        {
+          "name": "scope",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "what the selection covers (\"3 of 64 on this page\"), and the ways to widen or narrow it"
+        }
+      ]
+    },
+    {
+      "name": "TableCaption",
+      "description": "The table's caption: its name, read before its rows. Hide it with `className=\"kl-sr\"` when a heading already shows the name.",
+      "props": []
+    },
+    {
+      "name": "TableCell",
+      "description": "A body cell. To make it the row's header, render it as one: `render={<th scope=\"row\" />}`.",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\"",
+          "default": "",
+          "required": false,
+          "description": "\"end\" for figures: aligned to the end, with tabular numerals"
+        }
+      ]
+    },
+    {
+      "name": "TableDetail",
+      "description": "Expanded detail. UNFOLDS from the row's bottom keyline; the row never moves. The parent row's index cell spans this row (rowSpan=2 while `presence.mounted`), so object and detail share one index cell. The caller holds the presence: `const presence = useDetailPresence(open)`.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "colSpan",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "presence",
+          "type": "{ mounted: boolean; shown: boolean; }",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TableExpandCell",
+      "description": "The expand toggle column. `header` renders the column's header cell (labelled, empty); with neither, an empty cell keeps the column in a row that has no detail.",
+      "props": [
+        {
+          "name": "header",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TableFrame",
+      "description": "The table is one region frame. Views, toolbar, bulk bar, the grid and the pager are rows stacked inside it.",
+      "props": []
+    },
+    {
+      "name": "TableHead",
+      "description": "A header cell.",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\"",
+          "default": "",
+          "required": false,
+          "description": "\"end\" for a column of figures: the label aligns with the numbers' edge"
+        }
+      ]
+    },
+    {
+      "name": "TableHeader",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "TableIndexCell",
+      "description": "Index cell: selection checkbox + row code. Floods yellow from the press point when the row is selected.",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "header",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "onCheckedChange",
+          "type": "(checked: boolean, eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void",
+          "default": "",
+          "required": true,
+          "description": "the new value; `eventDetails` is Base UI's checkbox change details (its `event` carries Shift)"
+        },
+        {
+          "name": "rowSpan",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TableLoadingRows",
+      "description": "Rows standing in while data loads: hidden from assistive technology (the frame says it is busy).",
+      "props": [
+        {
+          "name": "cols",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "rows",
+          "type": "number",
+          "default": "8",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TablePager",
+      "description": "The pager row: cells for the range, the page and the page buttons.",
+      "props": []
+    },
+    {
+      "name": "TablePagination",
+      "description": "Range + previous / page / next as cells of the pager. `page` is 0-based. While data is not ready, pass `total={null}`: the range and page count show \"–\" and the buttons are disabled (no stale numbers).",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Fills the cell between the range and the buttons, e.g. <ToastDock />."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "noun",
+          "type": "string",
+          "default": "\"rows\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onPageChange",
+          "type": "(page: number) => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "pageSize",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TableRow",
+      "description": "",
+      "props": [
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "writes data-expanded: its detail row is open under it, so its cells end on a full keyline"
+        },
+        {
+          "name": "selected",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "writes data-selected: the row's cells take the selected fill"
+        }
+      ]
+    },
+    {
+      "name": "TableScroll",
+      "description": "The grid's scroller: a Keyline Scroll Area with both bars (wide tables scroll sideways inside their frame, never the page); the header cells stick to its viewport.",
+      "props": []
+    },
+    {
+      "name": "TableSearch",
+      "description": "A search field as a cell of the toolbar. `className`, `ref` and the input's props go to the input.",
+      "props": [
+        {
+          "name": "cellClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "classes for the cell around the input; `className` goes to the input"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "\"Search\"",
+          "required": false,
+          "description": "the field's name, read but not shown"
+        }
+      ]
+    },
+    {
+      "name": "TableSortHeader",
+      "description": "A sortable column header. The whole header cell is the button; aria-sort sits on the <th>. The direction is a shape (▲ ascending, ▼ descending, both open when unsorted), and the sorted column's header carries an ink band on its bottom keyline. End-aligned (numeric) columns put the mark before the label, so the label stays on the numbers' edge. Use nextSort/sortOf from the collection lib for the cycle (ascending → descending → none). Several columns: pass `priority` (1-based) and `levels`. Each sorted header prints its place; `onSort` gets `{ additive }`, true when Shift was held, for nextSortList. ARIA allows aria-sort on one header at a time, so only the first level carries it; every sorted header's button also says its place (\"sort 2 of 2, descending\") in text.",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "levels",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "with several sort levels: how many columns sort"
+        },
+        {
+          "name": "onSort",
+          "type": "(event: { additive: boolean; }) => void",
+          "default": "",
+          "required": true,
+          "description": "the header was pressed; `additive` is true when Shift was held (add the column as a further level)"
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "with several sort levels: this column's 1-based place"
+        },
+        {
+          "name": "sort",
+          "type": "SortDirection",
+          "default": "",
+          "required": true,
+          "description": "the column's direction, or null when it does not sort the table"
+        }
+      ]
+    },
+    {
+      "name": "TableState",
+      "description": "The table's empty or error row: an Empty (layout=\"cell\") spanning the grid. Errors are announced.",
+      "props": [
+        {
+          "name": "action",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "body",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "colSpan",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "count",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "kind",
+          "type": "\"error\" | \"empty\"",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TableToolbar",
+      "description": "The filter row: search and pickers (Multiselect, DateRangePicker) side by side as cells. It is a named group, not a Toolbar, on purpose: a combobox and a picker own their arrow keys (to move in the text, to open and walk the list), so they cannot be items of a one-Tab-stop toolbar. Rows of plain commands and toggles are: the views row's end, the status row and the bulk bar's actions take a cell Toolbar, and a FilterToken inside a Toolbar becomes a pair of toolbar items.",
+      "props": []
+    },
+    {
+      "name": "TableViews",
+      "description": "The table's view tabs (built on Tabs, so keyboard and aria come from Base UI), then an end slot.",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "default": "\"Views\"",
+          "required": false,
+          "description": "the tab list's name"
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "views",
+          "type": "View[]",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-align",
+      "values": [
+        "end"
+      ]
+    },
+    {
+      "name": "data-dir",
+      "values": []
+    },
+    {
+      "name": "data-empty",
+      "values": []
+    },
+    {
+      "name": "data-expanded",
+      "values": []
+    },
+    {
+      "name": "data-kl-level",
+      "values": []
+    },
+    {
+      "name": "data-kl-on",
+      "values": []
+    },
+    {
+      "name": "data-kl-token",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-token-x",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-selected",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "filter-token",
+        "table-bulk-count",
+        "table-bulk-scope",
+        "table-detail",
+        "table-expand-cell",
+        "table-index-cell",
+        "table-loading-bar",
+        "table-loading-row",
+        "table-range",
+        "table-scroll",
+        "table-search",
+        "table-sort-button",
+        "table-sort-label",
+        "table-sort-level",
+        "table-sort-mark",
+        "table-state",
+        "table-views-end"
+      ]
+    },
+    {
+      "name": "data-sort",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "table-lines",
+      "title": "Table: order lines",
+      "file": "table-lines.tsx"
+    },
+    {
+      "name": "table-loading",
+      "title": "Table: invoice table",
+      "file": "table-loading.tsx"
+    },
+    {
+      "name": "table-orders",
+      "title": "Table: open orders",
+      "file": "table-orders.tsx"
+    }
+  ]
+}

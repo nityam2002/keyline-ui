@@ -1,0 +1,234 @@
+{
+  "name": "menu",
+  "title": "Menu",
+  "description": "Docked menu with code cells, shortcut cells, ink cursor, destructive rows, checkbox and radio items, and submenus.",
+  "whenToUse": "Use it for a list of commands opened from a trigger, with submenus and checkbox or radio rows. For choosing a form value use Select; for commands on an object use Context menu.",
+  "parts": [
+    {
+      "name": "MenuCheckboxItem",
+      "description": "",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MenuGroup",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "MenuGroupLabel",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "MenuItem",
+      "description": "",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Index code shown in the leading cell; only when a key or a reference uses it."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"destructive\"",
+          "default": "\"default\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MenuPopup",
+      "description": "The menu: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. A docked surface: its shared edge sits on the owner's keyline, it unfolds from that edge, it has no cut. In a submenu it docks beside its row instead: its start border on the parent's end border, its first row level with the trigger row. It carries the configuration (cut, density, motion, theme, dir) of the place it is written, not of <body>.",
+      "props": [
+        {
+          "name": "attachWeight",
+          "type": "2 | 3 | 1",
+          "default": "2",
+          "required": false,
+          "description": "Keyline weight of the owner's shared edge: 2 for a standalone control, 1 for a cell."
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<MenuPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Menu.Portal."
+        }
+      ]
+    },
+    {
+      "name": "MenuRadioGroup",
+      "description": "One exclusive choice among MenuRadioItems; controlled (value, onValueChange) or uncontrolled (defaultValue).",
+      "props": []
+    },
+    {
+      "name": "MenuRadioItem",
+      "description": "",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MenuSeparator",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "MenuSubmenuRoot",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "MenuSubmenuTrigger",
+      "description": "",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MenuSurface",
+      "description": "The menu's surface: Base UI's Menu.Popup with Keyline's look, without a portal or a positioner. MenuPopup uses it; so do menus positioned their own way (a context menu at the pointer, a menubar or toolbar menu docked to its row). Give it the rows below.",
+      "props": [
+        {
+          "name": "attachWeight",
+          "type": "2 | 3 | 1",
+          "default": "2",
+          "required": false,
+          "description": "Keyline weight of the owner's shared edge: 2 for a standalone control, 1 for a cell."
+        }
+      ]
+    },
+    {
+      "name": "MenuTrigger",
+      "description": "The element that opens the menu. Rendered as another part (`render={<Button />}`), the element is that part's and carries its data-slot (each part sets its own after the props it is given).",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": []
+    },
+    {
+      "name": "data-kl-dock-probe",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-menu-row",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "menu-checkbox-item",
+        "menu-group",
+        "menu-group-label",
+        "menu-item",
+        "menu-item-box",
+        "menu-item-code",
+        "menu-item-indicator",
+        "menu-item-label",
+        "menu-item-shortcut",
+        "menu-popup",
+        "menu-radio-group",
+        "menu-radio-item",
+        "menu-separator",
+        "menu-submenu-trigger",
+        "menu-trigger"
+      ]
+    },
+    {
+      "name": "data-variant",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-attach",
+      "values": [
+        "`${attachWeight"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "menu-notifications",
+      "title": "Menu: notification menu",
+      "file": "menu-notifications.tsx"
+    },
+    {
+      "name": "menu-order-actions",
+      "title": "Menu: order actions",
+      "file": "menu-order-actions.tsx"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "name": "multiselect",
+  "title": "Multiselect",
+  "description": "Searchable async multiselect, a preset over Combobox's parts with Base UI's multiple: chips are cells in the field frame, the list docks to it.",
+  "whenToUse": "Use it to search and pick several values as tokens in a field. For one value use Combobox or Select; for a few fixed choices use Checkbox group.",
+  "parts": [
+    {
+      "name": "Multiselect",
+      "description": "Searchable async multiselect. Chips are yellow cells in the field frame; the list docks to the frame. Selected options stay listed while new matches stream in; requests are aborted when superseded. Escape closes the list; on a closed field it clears only typed text, never the chips (Base UI would clear them all): a chip's remove cell, Backspace and Clear remove.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the list's portal renders (defaults to <body>)."
+        },
+        {
+          "name": "defaultValue",
+          "type": "MultiselectOption[]",
+          "default": "[]",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (e.g. a toolbar); the label is visually hidden."
+        },
+        {
+          "name": "loadOptions",
+          "type": "(query: string, signal: AbortSignal) => Promise<MultiselectOption[]>",
+          "default": "",
+          "required": true,
+          "description": "Async source. Called on open (query \"\") and on every input change; earlier requests are aborted."
+        },
+        {
+          "name": "noun",
+          "type": "[singular: string, plural: string]",
+          "default": "[\"item\", \"items\"]",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: MultiselectOption[], eventDetails: ChangeEventDetails) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with the chosen options and Base UI's event details (the reason, the event)."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "\"Search…\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "MultiselectOption[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "multiselect",
+        "multiselect-count",
+        "multiselect-foot",
+        "multiselect-head"
+      ]
+    },
+    {
+      "name": "data-zero",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "multiselect-memo",
+      "title": "Multiselect: memo recipients",
+      "file": "multiselect-memo.tsx"
+    }
+  ]
+}

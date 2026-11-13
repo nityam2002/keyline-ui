@@ -6,6 +6,8 @@ export default {
   title: "Table",
   description:
     "Presentational table parts on utilities: Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption, TableSortHeader, TableBulkBar and TablePager, each with render and a className that may be a function of its state, plus the frame's views, toolbar, index column, expanded detail, empty/error rows and pagination. No part holds state.",
+  whenToUse:
+    "Use it to compose a table frame from parts while you keep the data and its state. For sorting, filtering, paging and selection worked out for you use Data table.",
   files: [{ path: "src/registry/keyline/ui/table.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: [

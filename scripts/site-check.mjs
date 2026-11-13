@@ -714,7 +714,25 @@ for (const width of run("docs") ? [1440, 390] : []) {
     // the page's own index: Keyline Nav in the aside; the band follows the section being read
     const toc = p.getByRole("navigation", { name: "On this page" });
     ok(await toc.isVisible(), `${tag}: page index is visible`);
-    ok((await toc.getByRole("link").count()) === 7, `${tag}: page index lists 7 sections (Parts included)`);
+    // the generated page's sections: Setup (with When to use), the page's examples, and the generated Reference
+    const tocLinks = (await toc.getByRole("link").allTextContents()).map((t) => t.trim());
+    const wantToc = [
+      "When to use",
+      "Installation",
+      "Usage",
+      "In a panel",
+      "Vertical",
+      "Scroll",
+      "Props",
+      "Parts API",
+      "Data attributes",
+      "CSS variables",
+      "Parts",
+    ];
+    ok(
+      tocLinks.join("|") === wantToc.join("|"),
+      `${tag}: page index lists the ${wantToc.length} generated sections (${tocLinks.join(", ")})`,
+    );
     await toc.getByRole("link", { name: "In a panel" }).click();
     await p.waitForTimeout(400);
     ok(
@@ -922,7 +940,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
   });
   ok(Math.abs(cy - by) <= 1.5, `${tag}: Copy is level with the one line (${cy.toFixed(1)} / ${by.toFixed(1)})`);
 
-  const src = fs.readFileSync(new URL("../site/examples/toolbar-editor.tsx", import.meta.url), "utf8");
+  const src = fs.readFileSync(new URL("../src/registry/keyline/examples/toolbar-editor.tsx", import.meta.url), "utf8");
   await d0.getByRole("tab", { name: "Code" }).click();
   ok(
     (await d0.getByText("Install them together").count()) === 0,
@@ -963,7 +981,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
     ok((await d.getByRole("toolbar").count()) === 1, `${tag}: ${file} renders its toolbar`);
     await d.getByRole("tab", { name: "Code" }).click();
     await p.getByRole("button", { name: `Copy ${label}` }).click();
-    const want = fs.readFileSync(new URL(`../site/examples/${file}`, import.meta.url), "utf8");
+    const want = fs.readFileSync(new URL(`../src/registry/keyline/examples/${file}`, import.meta.url), "utf8");
     ok((await p.evaluate(() => navigator.clipboard.readText())) === want, `${tag}: ${file} copy equals its source`);
   }
   ok(p.errors.length === 0, `${tag}: no console errors${p.errors.length ? ": " + p.errors.join(" | ") : ""}`);
@@ -1099,7 +1117,7 @@ const statusOf = (d) => d.getByRole("status").first().textContent();
 const copyMatches = async (p, d, file, label) => {
   await d.getByRole("tab", { name: "Code" }).click();
   await d.getByRole("button", { name: `Copy ${label}` }).click();
-  const want = fs.readFileSync(new URL(`../site/examples/${file}`, import.meta.url), "utf8");
+  const want = fs.readFileSync(new URL(`../src/registry/keyline/examples/${file}`, import.meta.url), "utf8");
   ok(
     (await p.evaluate(() => navigator.clipboard.readText())) === want,
     `${file}: copy equals the source the preview renders`,

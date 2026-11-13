@@ -1,0 +1,383 @@
+{
+  "name": "toolbar",
+  "title": "Toolbar",
+  "description": "A row of commands that is one Tab stop (Base UI Toolbar): item cells on shared seams, groups on a 2px keyline, toggles that flood, an exclusive group whose ink band stretches, menus docked to the frame, a text input cell; horizontal or vertical.",
+  "whenToUse": "Use it for a row of commands that is one Tab stop and folds secondary controls into a More menu when narrow. For a few buttons that each take a Tab stop use Button group.",
+  "parts": [
+    {
+      "name": "Toolbar",
+      "description": "A row of commands that is ONE Tab stop (Base UI Toolbar): arrow keys move between items and wrap at the ends (`loopFocus`, default true). Home and End are left to the focused item, as Base UI 1.9 does (the APG lists them as optional for toolbars), so a text input cell keeps them. Every item is a cell of one frame. ┌──────┬──────┲━━━━┳━━━━┳━━━━┱─────────────────┬──────────┬────┐ │ Undo │ Redo ┃ B │ I │ U ┃ │ Insert ▾ │ ⋯ │ └──────┴──────┺━━━━┻━━━━┻━━━━┹─────────────────┴──────────┴────┘ items share 1px seams · a group meets its neighbours on a 2px keyline · a spacer is an empty cell - Give it `aria-label` (or `aria-labelledby`): a toolbar is a named landmark of controls. - Groups (ToolbarGroup, ToolbarToggleGroup) are units: their outer edges are control weight (2px), so a group reads as one control inside the row without a gap (C1). ToolbarSeparator draws the same 2px keyline between ungrouped items and is announced as a separator. - Disabled items stay focusable (Base UI's default), so a keyboard user still finds them and hears why. - Narrow: a horizontal toolbar scrolls inside its frame and fades the edge where items are hidden (scroll edges); focus scrolls the focused item into view. With overflow=\"menu\" the items that don't fit move into a \"More\" menu instead (the primary item and text inputs never move), in either orientation. Items are found by their data-slot, so an item wrapped in a Tooltip, or rendered by a component of yours, moves like any other; a folded item stays mounted (hidden), so its state stays. - Arrow keys follow the DOM `dir` (an RTL subtree reverses Left/Right), not only a DirectionProvider.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control (default): its own 2px frame and the cut. cell: a row of an enclosing frame (a panel's top cell, a shell header)."
+        },
+        {
+          "name": "overflow",
+          "type": "\"menu\" | \"scroll\"",
+          "default": "\"scroll\"",
+          "required": false,
+          "description": "What a toolbar does when its items don't fit. scroll (default): it scrolls inside its frame and fades the hidden edge. menu: items that don't fit leave, last first, and a \"More\" item takes their place; its menu holds them as rows (a button is an item, a toggle a checkbox item, an exclusive group radio items, a menu a submenu), with their state. A ToolbarGroup gives up its items one at a time (they appear under its label); `keepTogether` makes it leave whole. Horizontal, the toolbar then spans its line; vertical (a palette), it takes the height its container gives it and More sits at its foot, opening to the side."
+        },
+        {
+          "name": "overflowLabel",
+          "type": "string",
+          "default": "\"More\"",
+          "required": false,
+          "description": "Accessible name of the overflow item (\"More\"); its menu says how many items it holds."
+        },
+        {
+          "name": "overflowTrigger",
+          "type": "\"label\" | \"icon\"",
+          "default": "\"icon\"",
+          "required": false,
+          "description": "icon (default): the overflow item is a square ⋯ cell named by overflowLabel. label: it shows overflowLabel as text with a caret, for a row whose items may all move into it."
+        }
+      ]
+    },
+    {
+      "name": "ToolbarButton",
+      "description": "A command cell (Base UI Toolbar.Button). Contents travel 1px on press (Key); the cell never floods: an action holds no state.",
+      "props": [
+        {
+          "name": "affix",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A trailing cell inside the item: a count or a shortcut (mono when it is a <kbd> or a code)."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Square cell for a glyph-only item. Give it aria-label; pair with a Tooltip for sighted users."
+        },
+        {
+          "name": "overflowLabel",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The item's name as a row of the overflow menu, when its text is not enough (a glyph item uses aria-label)."
+        },
+        {
+          "name": "primary",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "The one primary action of the row: the cobalt cell (commit signal). At most one per toolbar. It never moves into the overflow menu."
+        },
+        {
+          "name": "signal",
+          "type": "\"idle\" | \"done\" | \"pending\" | \"failed\"",
+          "default": "",
+          "required": false,
+          "description": "Button's signal: pending runs a segment along the bottom keyline (busy, still focusable); done inserts a ✓ cell; failed a ! cell at the start."
+        }
+      ]
+    },
+    {
+      "name": "ToolbarGroup",
+      "description": "Items that belong together, drawn as one control (2px outer edges). With overflow=\"menu\" its items move into More one at a time, from the end, and appear there under the group's label; `keepTogether` moves the group only as a whole (an alignment set, a pair that means nothing apart).",
+      "props": [
+        {
+          "name": "keepTogether",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ToolbarInput",
+      "description": "A text input cell (Base UI Toolbar.Input). Arrow keys move the caret; they leave the input for the neighbouring item only at the text's ends. Its edge is the cell's (`kl-edge`, a 2px band on the keylines), as the table search's is. `label` names it for assistive technology; `glyph` leads it.",
+      "props": [
+        {
+          "name": "cellClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Classes for the cell (the label element that holds the glyph and the input). `className`, `style` and `render` are the input's (Base UI Toolbar.Input), as for every part."
+        },
+        {
+          "name": "glyph",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A glyph leading the cell."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Names the input for assistive technology."
+        }
+      ]
+    },
+    {
+      "name": "ToolbarLink",
+      "description": "A link cell (Base UI Toolbar.Link): navigation, not a command. Underlined like a quiet button.",
+      "props": [
+        {
+          "name": "overflowLabel",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ToolbarMenuContent",
+      "description": "The menu of a ToolbarMenuTrigger. Menu's surface and rows (MenuItem, MenuCheckboxItem, MenuRadioItem, submenus from ./menu); its top border lies on the toolbar's bottom keyline at the toolbar's weight (2px framed, 1px as a cell), so trigger and menu read as one shape. No cut. Carries the configuration of the place it is written (cut, theme, density, motion, dir) into the portal.",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\" | \"start\"",
+          "default": "\"start\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ToolbarMenuTrigger",
+      "description": "A menu title in the row: Base UI Menu.Trigger rendered as a toolbar item, with a caret cell. Open, it is the inverse cell; its menu docks to the toolbar's keyline under it (ToolbarMenuContent). The toolbar's own Menu root is Base UI's: <ToolbarMenu><ToolbarMenuTrigger>…</ToolbarMenuTrigger><ToolbarMenuContent>…",
+      "props": [
+        {
+          "name": "affix",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A trailing cell before the caret: a count (\"7/7\") or a shortcut."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "overflowLabel",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "primary",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "The row's one commit action opens a menu (Assign ▾): the cobalt cell. It never moves into the overflow menu."
+        },
+        {
+          "name": "signal",
+          "type": "\"idle\" | \"done\" | \"pending\" | \"failed\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ToolbarSeparator",
+      "description": "A 2px keyline between items, announced as a separator. Not needed between groups (they draw their own).",
+      "props": []
+    },
+    {
+      "name": "ToolbarSpacer",
+      "description": "An empty cell that takes the free space, pushing what follows to the end. Not focusable, not announced.",
+      "props": []
+    },
+    {
+      "name": "ToolbarToggle",
+      "description": "A toggle cell: Base UI Toggle rendered as a toolbar item, so it joins the row's arrow-key order. On its own or in a multiple ToolbarToggleGroup it is independent state: it floods yellow from the press point and carries a lamp (as ToggleGroup's cells do). In an exclusive group (multiple={false}) it is a choice among options: no lamp, and the group's ink band stretches to it (as Segmented's does).",
+      "props": [
+        {
+          "name": "affix",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Whether the component should ignore user interaction."
+        },
+        {
+          "name": "icon",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "overflowLabel",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The toggle's name as a checkbox row of the overflow menu, when its text is not enough."
+        }
+      ]
+    },
+    {
+      "name": "ToolbarToggleGroup",
+      "description": "Toggles that belong together (Base UI ToggleGroup inside the toolbar's focus order). `multiple` (default true): independent toggles, each floods. multiple={false}: an exclusive choice (alignment, view), the ink band stretches between cells, leading edge first, zero bounce.",
+      "props": [
+        {
+          "name": "defaultValue",
+          "type": "string[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string[], eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-count",
+      "values": []
+    },
+    {
+      "name": "data-kl-icon",
+      "values": []
+    },
+    {
+      "name": "data-kl-item",
+      "values": []
+    },
+    {
+      "name": "data-kl-keep-together",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-overflow",
+      "values": []
+    },
+    {
+      "name": "data-kl-primary",
+      "values": []
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": []
+    },
+    {
+      "name": "data-kl-tb-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-signal",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "toolbar",
+        "toolbar-affix",
+        "toolbar-band",
+        "toolbar-button",
+        "toolbar-caret",
+        "toolbar-done",
+        "toolbar-fail",
+        "toolbar-group",
+        "toolbar-input",
+        "toolbar-input-cell",
+        "toolbar-label",
+        "toolbar-lamp",
+        "toolbar-link",
+        "toolbar-menu-count",
+        "toolbar-more",
+        "toolbar-separator",
+        "toolbar-spacer",
+        "toolbar-toggle",
+        "toolbar-toggle-group"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bw",
+      "values": [
+        "3px"
+      ]
+    },
+    {
+      "name": "--kl-tb-h",
+      "values": [
+        "calc(var(--kl-ctl)-2*var(--kl-k2))",
+        "var(--kl-row)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "toolbar-editor",
+      "title": "Toolbar: memo editor",
+      "file": "toolbar-editor.tsx"
+    },
+    {
+      "name": "toolbar-panel",
+      "title": "Toolbar: orders panel",
+      "file": "toolbar-panel.tsx"
+    },
+    {
+      "name": "toolbar-scroll",
+      "title": "Toolbar: order commands",
+      "file": "toolbar-scroll.tsx"
+    },
+    {
+      "name": "toolbar-vertical",
+      "title": "Toolbar: floor plan tools",
+      "file": "toolbar-vertical.tsx"
+    }
+  ]
+}

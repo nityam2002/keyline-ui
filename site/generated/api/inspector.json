@@ -1,0 +1,128 @@
+{
+  "name": "inspector",
+  "title": "Inspector",
+  "description": "Non-modal contextual panel: header with the inspected object's code, key/value cells and a sticky action strip.",
+  "whenToUse": "Use it to show the chosen record of a list in a panel beside it, without blocking the page. For a modal task use Dialog; for detail docked to the page edge use Sheet.",
+  "parts": [
+    {
+      "name": "Inspector",
+      "description": "Non-modal contextual panel. Its header cites the inspected object's code (e.g. R3/12) so the object and its detail share an address; the action strip is sticky and part of the frame.",
+      "props": []
+    },
+    {
+      "name": "InspectorActions",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "InspectorBody",
+      "description": "The inspector's scrolling body: a Keyline Scroll Area (bar on the inline-end edge, native scrolling). `className` and `style` reach the scroll area itself; `contentClassName` lays out what it holds.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string | ((state: InspectorPartState) => string | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties | ((state: InspectorPartState) => CSSProperties | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InspectorFacts",
+      "description": "Key/value cells, two-up.",
+      "props": [
+        {
+          "name": "items",
+          "type": "{ label: string; value: ReactNode; }[]",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InspectorHeader",
+      "description": "",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "default": "\"Close inspector\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InspectorRow",
+      "description": "Two sections side by side.",
+      "props": []
+    },
+    {
+      "name": "InspectorSection",
+      "description": "A labelled cell of the body.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-slot",
+      "values": [
+        "inspector",
+        "inspector-actions",
+        "inspector-body",
+        "inspector-close",
+        "inspector-fact",
+        "inspector-facts",
+        "inspector-header",
+        "inspector-heading",
+        "inspector-row",
+        "inspector-section",
+        "inspector-title"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "inspector-order",
+      "title": "Inspector: order inspector",
+      "file": "inspector-order.tsx"
+    }
+  ]
+}

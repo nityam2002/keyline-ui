@@ -12,5 +12,13 @@
     "stylesheet": "./src/demo/globals.css",
     "functions": ["cn", "clsx", "cva"]
   },
-  "ignorePatterns": ["registry.json", "site/public/**", "site/.next/**", ".artifacts/**", "pnpm-lock.yaml", "**/*.md"]
+  "ignorePatterns": [
+    "registry.json",
+    "site/public/**",
+    "site/generated/**",
+    "site/.next/**",
+    ".artifacts/**",
+    "pnpm-lock.yaml",
+    "**/*.md"
+  ]
 }

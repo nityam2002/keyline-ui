@@ -1,0 +1,96 @@
+{
+  "name": "tabs",
+  "title": "Tabs",
+  "description": "Tabs with a cobalt location band that stretches; optional count voice; panels.",
+  "whenToUse": "Use it to switch between views of one place. For an app's sections use Nav; for a compact choice of a value use Segmented.",
+  "parts": [
+    {
+      "name": "TabsList",
+      "description": "The tab row (Base UI Tabs.List), with the band beneath its tabs.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own frame. cell: inside an enclosing frame (no own border, no cut)."
+        }
+      ]
+    },
+    {
+      "name": "TabsPanel",
+      "description": "A tab's panel (Base UI Tabs.Panel).",
+      "props": []
+    },
+    {
+      "name": "TabsRoot",
+      "description": "Tabs: location. Keyboard, roving focus, aria and panels come from Base UI Tabs; activation follows focus by default, as in a view switcher. Works with or without panels (e.g. table views).",
+      "props": []
+    },
+    {
+      "name": "TabsTab",
+      "description": "A tab (Base UI Tabs.Tab). `count` adds the count voice under the label.",
+      "props": [
+        {
+          "name": "count",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The count voice under the label (e.g. records in a view)."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-has-count",
+      "values": []
+    },
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "tabs",
+        "tabs-list",
+        "tabs-panel",
+        "tabs-tab",
+        "tabs-tab-count",
+        "tabs-tab-label"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "tabs-account",
+      "title": "Tabs: client account",
+      "file": "tabs-account.tsx"
+    },
+    {
+      "name": "tabs-views",
+      "title": "Tabs: call views",
+      "file": "tabs-views.tsx"
+    }
+  ]
+}

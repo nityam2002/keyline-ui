@@ -26,4 +26,6 @@ export type KeylineItem = Without<
      * build fails when those differ from what it derives plus these.
      */
     requires?: Dependencies;
+    /** When a consumer should reach for this item, one or two sentences; shown on its docs page. Not shipped: the build strips it. */
+    whenToUse?: string;
   };
