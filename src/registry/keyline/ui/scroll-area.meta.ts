@@ -10,4 +10,7 @@ export default {
   files: [{ path: "src/registry/keyline/ui/scroll-area.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: ["@keyline-ui/keyline", "utils", "@keyline-ui/keyline-render", "@keyline-ui/keyline-scope"],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;

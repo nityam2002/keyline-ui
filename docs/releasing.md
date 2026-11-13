@@ -15,10 +15,29 @@ the site's install commands read it, and `pnpm test` fails unless every install 
    `https://keyline-ui.dev/r/{name}.json`).
 3. Verify the domain in Google Search Console and submit `https://keyline-ui.dev/sitemap.xml`.
 
-## Every release
+## What a release is
 
-1. Set `"version"` in `package.json` and note user-visible changes in the release notes.
-2. Rebuild and check, on a clean checkout:
+Each item is versioned on its own (semver, in its `.meta.ts`), so a release is not a separate step. A release is:
+
+1. **A bump.** Every change to what an item installs raises that item's `version`; a breaking change raises its
+   major. `pnpm versions:check` fails on a shipped change without one (`scripts/registry/versions.ts`, against
+   `versions.lock.json`).
+2. **A changelog entry.** The bump's entry goes at the top of the item's `changelog[]`. A breaking one follows the
+   template in [CONTRIBUTING](../.github/CONTRIBUTING.md#versions-and-breaking-changes): what changed, the diff,
+   the diff for a locally modified copy and an agent prompt. `pnpm changelog` generates `CHANGELOG.md` and the
+   site's `/docs/changelog` from those entries, and `pnpm changelog:check` fails when they drift.
+3. **A merge.** Merging to `main` and deploying the site publishes it: the new item JSON and `/r/versions.json`,
+   which lists every item's version, file hash and history.
+
+Tags are cut by the release workflow from the merged versions; nobody tags by hand.
+
+Removing or renaming anything public (an export, a `data-slot`, a `data-*` attribute, a CSS custom property) fails
+`tests/registry/surface.test.ts` unless the item's new entry is breaking. A removed item stays for one more minor
+release as a tombstone that points at its replacement, and its name is never reused (see CONTRIBUTING).
+
+## Every deploy
+
+1. Rebuild and check, on a clean checkout:
 
    ```sh
    pnpm install --frozen-lockfile
@@ -27,17 +46,18 @@ the site's install commands read it, and `pnpm test` fails unless every install 
    pnpm test:consumer
    ```
 
-3. Commit, tag `v<version>`, push, and let CI pass.
-4. Deploy the site from that commit. Any Next.js host works: build with `pnpm site:build` and serve with
+2. Merge to `main` and let CI pass; the release workflow cuts the tag.
+3. Deploy the site from that commit. Any Next.js host works: build with `pnpm site:build` and serve with
    `pnpm site:start` (or the platform's equivalent for `next build site`). The site must serve `site/public`
    at the root.
    Build it with `KEYLINE_SITE_ENV=production` (Vercel's production deployments set `VERCEL_ENV` instead): only
    that build may be indexed by search engines and lists its sitemap. Every other build sends `noindex`
    (`site/lib/seo.ts`).
-5. Check the published registry, not the local one:
+4. Check the published registry, not the local one:
 
    ```sh
    curl -fsS https://keyline-ui.dev/r/registry.json | head -c 200
+   curl -fsS https://keyline-ui.dev/r/versions.json | head -c 200
    KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next.sh "$(mktemp -d)"
    ```
 

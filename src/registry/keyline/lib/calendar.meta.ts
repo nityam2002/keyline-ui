@@ -7,4 +7,7 @@ export default {
   description:
     "Pure range helpers: ordering, available-day count and locale-aware range formatting. The grid and keyboard are react-day-picker's.",
   files: [{ path: "src/registry/keyline/lib/calendar.ts", type: "registry:lib" }],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;

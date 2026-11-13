@@ -1,6 +1,6 @@
 // Builds the registry: site/public/r/{name}.json, what the shadcn CLI fetches, from the per-item metadata
 // (src/registry/keyline/**/<name>.meta.ts) and the source. The documentation site serves that folder at /r/{name}.json,
-// so deploying the site publishes the registry.
+// so deploying the site publishes the registry. Beside the items it writes r/versions.json (scripts/registry/versions.ts).
 //
 //   pnpm registry:build
 //
@@ -29,6 +29,7 @@ import { pathToFileURL } from "node:url";
 import { registryItemSchema } from "shadcn/schema";
 
 import type { KeylineItem } from "../../src/registry/item.ts";
+import { currentItems, publishedVersions, VERSIONS } from "./versions.ts";
 
 export const ROOT = new URL("../..", import.meta.url).pathname;
 export const OUTPUT = "site/public/r";
@@ -129,6 +130,9 @@ export async function loadMetas(): Promise<Meta[]> {
   const seen = new Set<string>();
   for (const m of metas) {
     if (seen.has(m.name)) fail(`two items are named ${m.name}`);
+    // site/public/r also serves the index and the versions; an item cannot take their file names
+    if (`${m.name}.json` === INDEX || `${m.name}.json` === VERSIONS)
+      fail(`${m.metaFile}: ${m.name} is a reserved name`);
     seen.add(m.name);
   }
   // code-point order, so the index does not depend on the file system
@@ -296,7 +300,8 @@ const ordered = (item: Record<string, unknown>) => {
   return Object.fromEntries(ITEM_KEYS.filter((k) => item[k] !== undefined).map((k) => [k, item[k]]));
 };
 
-export type Built = { index: string; items: Map<string, string> };
+/** `items` is what shadcn build writes (each item and the index); `versions` is r/versions.json beside them. */
+export type Built = { index: string; items: Map<string, string>; versions: string };
 
 export async function buildRegistry(): Promise<Built> {
   const metas = await loadMetas();
@@ -306,22 +311,30 @@ export async function buildRegistry(): Promise<Built> {
   // a package the repo pins exactly (no ^ or ~) is pinned for consumers too, so they get the version tested here
   const pinned = (p: string) => (/^\d+\.\d+\.\d+$/.test(pkgDeps[p] ?? "") ? `${p}@${pkgDeps[p]}` : p);
 
-  const indexItems = metas.map(({ metaFile, cssFile, theme, requires: _requires, ...item }) => {
-    sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
-    sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
-    if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);
-    return {
-      ...item,
-      dependencies: (item.dependencies ?? []).toSorted().map(pinned),
-      registryDependencies: item.registryDependencies ?? [],
-      // Keyline installs into its own folder, so it never collides with shadcn's components/ui/*
-      files: (item.files ?? []).map((f) => ({
-        ...f,
-        target: f.target ?? f.path.replace(/^src\/registry\/keyline\//, "components/keyline/"),
-      })),
-      ...(cssFile ? convert(cssFile, theme === true) : {}),
-    };
-  });
+  const indexItems = metas.map(
+    // the release fields are published in r/versions.json, not in the item
+    ({ metaFile, cssFile, theme, requires: _r, version: _v, updated: _u, changelog: _c, deprecated, ...item }) => {
+      sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
+      sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
+      if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);
+      // a tombstone says so wherever the CLI or a reader shows its description
+      if (deprecated !== undefined && !item.description?.startsWith(`Deprecated: use @keyline-ui/${deprecated}.`))
+        fail(
+          `${item.name} (${metaFile}): a tombstone's description starts "Deprecated: use @keyline-ui/${deprecated}."`,
+        );
+      return {
+        ...item,
+        dependencies: (item.dependencies ?? []).toSorted().map(pinned),
+        registryDependencies: item.registryDependencies ?? [],
+        // Keyline installs into its own folder, so it never collides with shadcn's components/ui/*
+        files: (item.files ?? []).map((f) => ({
+          ...f,
+          target: f.target ?? f.path.replace(/^src\/registry\/keyline\//, "components/keyline/"),
+        })),
+        ...(cssFile ? convert(cssFile, theme === true) : {}),
+      };
+    },
+  );
   registryItemSchema.array().parse(indexItems);
 
   const index = {
@@ -340,7 +353,7 @@ export async function buildRegistry(): Promise<Built> {
   const indexText = JSON.stringify(index, null, 2) + "\n";
   // shadcn build copies the index as it is
   items.set("registry.json", indexText);
-  return { index: indexText, items };
+  return { index: indexText, items, versions: publishedVersions(currentItems(metas, items)) };
 }
 
 /* ---------------------------------------------------------------- as a script */
@@ -366,6 +379,7 @@ async function main() {
   rmSync(ROOT + OUTPUT, { recursive: true, force: true });
   mkdirSync(ROOT + OUTPUT, { recursive: true });
   for (const f of written) writeFileSync(posix.join(ROOT, OUTPUT, f), built.items.get(f) ?? "", { flag: "w" });
+  writeFileSync(posix.join(ROOT, OUTPUT, VERSIONS), built.versions);
   rmSync(tmp, { recursive: true, force: true });
   console.log(`${OUTPUT}: ${built.items.size - 1} items, dependencies checked against the source, namespace ${NS}`);
 }

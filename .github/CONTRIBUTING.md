@@ -69,8 +69,15 @@ document those items.
 4. If the change affects what an item installs (its files, CSS, imports, or its meta), run
    `pnpm registry:build` and commit `site/public/r/` and `registry.json` with it. `pnpm test` and CI fail when
    they are out of date.
-5. Run `pnpm lint` and `pnpm format` (which rewrites files in place) as you go.
-6. Run `pnpm check` before opening a pull request. It takes about five minutes and runs, in order:
+5. **Every change to a shipped file bumps its item.** Anything an item installs is hashed into
+   `versions.lock.json`, and `pnpm versions:check` fails when that changes while the item's `version` does not.
+   In the item's `.meta.ts`: bump `version` (patch for a fix, minor for something new, major for a breaking
+   change), add the entry for it at the top of `changelog[]` and set `updated` to its date. Then run
+   `pnpm versions:lock`, `pnpm changelog` and `pnpm registry:build`, and commit `versions.lock.json`,
+   `CHANGELOG.md` and `site/lib/changelog.json` with the change. One bump covers every commit of a pull request.
+   See [Versions and breaking changes](#versions-and-breaking-changes).
+6. Run `pnpm lint` and `pnpm format` (which rewrites files in place) as you go.
+7. Run `pnpm check` before opening a pull request. It takes about five minutes and runs, in order:
    - `pnpm typecheck`: the source, the tests (`tsconfig.tests.json`), the scripts (`tsconfig.scripts.json`) and
      the site, under the strict compiler options in `tsconfig.json`. Fix an error at its cause; a `!` or a cast
      carries a comment saying why it is safe.
@@ -81,7 +88,7 @@ document those items.
    - `pnpm test`: unit tests, including the install commands in the docs, the built registry (that it equals a
      fresh build, and what every shipped item must and must not contain) and the lint guard.
    - `pnpm test:types`: compile-only type tests for the generic parts.
-   - `pnpm registry:build`, `pnpm registry:verify`, every part test (`pnpm test:parts`), every page spec (`pnpm test:browser`) and the
+   - `pnpm registry:build`, `pnpm registry:verify`, `pnpm versions:check`, `pnpm changelog:check`, every part test (`pnpm test:parts`), every page spec (`pnpm test:browser`) and the
      CSS-order check (`pnpm test:css-order`). Neither browser runner retries a failed test.
 
 Two slower checks run when they apply:
@@ -102,12 +109,57 @@ written. A new component is done when it has all of these:
 
 - source in `src/registry/keyline/ui/` (`ui/<name>.tsx`, no CSS file), following [docs/design.md](../docs/design.md)
   and the recipe
-- a `ui/<name>.meta.ts` beside it (copy a neighbour's), with `site/public/r/` rebuilt
+- a `ui/<name>.meta.ts` beside it (copy a neighbour's), at `version: "1.0.0"` with its first changelog entry, and
+  `site/public/r/`, `versions.lock.json`, the surface snapshot and the changelog regenerated
 - a specimen in `src/demo/specimens/`, wired into `src/demo/App.tsx`
 - a page and example in `site/`
 - a part test in `tests/parts/` running the conformance suite and axe over every exported part, with any failure it
   cannot fix yet recorded in `tests/parts/known-failures.ts`
 - page specs in `tests/browser/` covering behaviour, keyboard, focus and the accessibility tree in every engine
+
+## Versions and breaking changes
+
+Each item has its own semver `version` in its `.meta.ts`, with `updated` and `changelog[]` (newest first; typed by
+`src/registry/item.ts`). They are the one source for `CHANGELOG.md`, the site's `/docs/changelog` and
+`/r/versions.json`, so never edit those by hand.
+
+- `pnpm versions:check` (`scripts/registry/versions.ts`) hashes everything `shadcn add` installs from each item:
+  every file, its dependencies, and its `css`/`cssVars`. It fails when a hash changed without a bump, a version
+  went backwards, the newest changelog entry is not for `version`, a breaking entry ships without a major bump, or
+  `versions.lock.json` is out of date. `pnpm versions:lock` rewrites the lock, and refuses while any other
+  problem remains.
+- `tests/registry/surface.test.ts` records each item's exported names, `data-slot` values, `data-*` attributes and
+  CSS custom properties in `tests/registry/surface.snapshot.json`. Removing or renaming one fails unless the item's
+  version went up and a new entry is breaking. After adding to the surface, run `pnpm surface:update`.
+- **Removing an item:** never delete it outright, and never reuse a published name. Keep its meta as a tombstone
+  for one more minor release, with `deprecated: "<replacement>"`, a description that starts
+  `Deprecated: use @keyline-ui/<replacement>.`, a breaking changelog entry, and a file that re-exports from the
+  replacement (or a stub that throws an error naming it). Delete the tombstone in a later release;
+  `pnpm versions:lock` then records the name as retired, and no new item can take it.
+- **Unstable items** carry a `Preview` suffix on their export names (`OTPFieldPreview`) until they are promoted.
+
+A breaking entry is written for someone who already copied the item, and follows this template:
+
+```ts
+{
+  version: "2.0.0",
+  date: "2026-12-01",
+  // what changed, and why, in a sentence or two
+  note: "Kbd's `size` prop is gone: the key cell follows the density of its region.",
+  breaking: true,
+  migration: {
+    // before/after for a project that uses the item, against @/components/keyline/...
+    diff: `- <Kbd size="sm">K</Kbd>\n+ <Kbd>K</Kbd>`,
+    // the smallest change for someone who keeps a locally modified copy and will not re-add it
+    modified: `- export function Kbd({ size, ...props }: KbdProps) {\n+ export function Kbd(props: KbdProps) {`,
+    // steps an agent can follow: what to change, what not to touch, how to check the result (visually too)
+    prompt: "Update Keyline's Kbd to 2.0.0. 1. Re-add it: npx shadcn@latest add @keyline-ui/kbd. 2. ...",
+  },
+}
+```
+
+The re-add command (`npx shadcn@latest add @keyline-ui/<name>`) is generated. In `CHANGELOG.md` and on the site
+the entry's line starts with **Breaking:**, followed by the migration.
 
 ## Rules, and why
 

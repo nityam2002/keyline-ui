@@ -9,4 +9,7 @@ export default {
   files: [{ path: "src/registry/keyline/lib/keyline-render.ts", type: "registry:lib" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: ["utils"],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;

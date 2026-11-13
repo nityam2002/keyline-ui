@@ -1,0 +1,329 @@
+{
+  "items": {
+    "accordion": {
+      "version": "1.0.0",
+      "hash": "sha256-0b6279ef07f94fab10b9242ed660ec04f290c0ba3f2f32d9d9d4bebc21a6acba"
+    },
+    "alert-dialog": {
+      "version": "1.0.0",
+      "hash": "sha256-874d0225c928981ce922e2fb53516907cf9a30539586f1c4276d50e7f35bb62e"
+    },
+    "app-shell": {
+      "version": "1.0.0",
+      "hash": "sha256-0ce497deb7919599107beb0d76ef24db33f6859b79d72dfaf9fd276c2169e447"
+    },
+    "attachment": {
+      "version": "1.0.0",
+      "hash": "sha256-81430eab607375a172f0be949c97662210f0e9337b1c8f22fa63e81d58aad0f4"
+    },
+    "avatar": {
+      "version": "1.0.0",
+      "hash": "sha256-ae72962b1acb788028344d783a603adcb8b6b575653a6ab6ec0c72898c7c100c"
+    },
+    "breadcrumb": {
+      "version": "1.0.0",
+      "hash": "sha256-7f45ae018e11cc9eb6015da3913610aeebd7564f5055bdef9127e57771f21437"
+    },
+    "bubble": {
+      "version": "1.0.0",
+      "hash": "sha256-be9876ea440795ca6a585f39189548300716835f3e2affc55a7c876d5f813997"
+    },
+    "button": {
+      "version": "1.0.0",
+      "hash": "sha256-c233f6684594e8fc7ca843ac34f7627d31c47b74ef8ef86b9d4299bc78b56c01"
+    },
+    "button-group": {
+      "version": "1.0.0",
+      "hash": "sha256-d1cdd06f57987de6283a9bfff8ecd26c8cd6f06a95dc3f88391a5354c2da4cdb"
+    },
+    "calendar": {
+      "version": "1.0.0",
+      "hash": "sha256-75b048639fb3b1bb3ef6c119cda37ea66ccc38dc8ba2a63dc7445e24e8146487"
+    },
+    "carousel": {
+      "version": "1.0.0",
+      "hash": "sha256-06f7cd193f37019c368793bfbd44c13aae44f8574c0dbb548d4066f6fb445fa8"
+    },
+    "chart": {
+      "version": "1.0.0",
+      "hash": "sha256-7f13b278174603dad11968f29f3666e1ef42409a60a1040db2edfd2b591b63b8"
+    },
+    "checkbox": {
+      "version": "1.0.0",
+      "hash": "sha256-1b830feb3b34e342dfe04d84547f77b7d533f7fd25e77ef91ba541e3e7aaf152"
+    },
+    "checkbox-group": {
+      "version": "1.0.0",
+      "hash": "sha256-647d6fb2156c02329efbf8ae467cab77b8acecc897f3f79a1474ef3012bf07c4"
+    },
+    "collapsible": {
+      "version": "1.0.0",
+      "hash": "sha256-e3620990faf558d55c58de2dc860c764785947a320fb7eaa48a67b4a74d740ee"
+    },
+    "collection": {
+      "version": "1.0.0",
+      "hash": "sha256-3f59ba9a8b760c712320f52fd1ca493a2506fc41d82e04e7104bb5c816b1f5ab"
+    },
+    "combobox": {
+      "version": "1.0.0",
+      "hash": "sha256-8a7452ca78bcfc4e3997dd1b56e0f8ff8b41fc9ccc2e972de070ee2d040409fa"
+    },
+    "command": {
+      "version": "1.0.0",
+      "hash": "sha256-0ef101049cbedd07474118b0d9d9f4ec4b6cea0ea0088ccce3e2005501fb290d"
+    },
+    "context-menu": {
+      "version": "1.0.0",
+      "hash": "sha256-28ce26fe142bcdf5723fcb1932db571b433579074b01dd3c111438f8bdf96e2a"
+    },
+    "data-table": {
+      "version": "1.0.0",
+      "hash": "sha256-7597f322c062531cb4a169cd410f3fdbf04a0ec42cbcf336bee2c0d758cd0c7a"
+    },
+    "data-table-model": {
+      "version": "1.0.0",
+      "hash": "sha256-693b81562a17c929d6c0673b32cbdd34f77e0b3a523f490213720c5212b64355"
+    },
+    "date-picker": {
+      "version": "1.0.0",
+      "hash": "sha256-0105e771c5d6b19d01bbc1880d635c1c8a3d4e8a30e086a4a73963a872620c4f"
+    },
+    "date-range": {
+      "version": "1.0.0",
+      "hash": "sha256-85777929561e28b527c39b87d7df6241a398eb721913094ad9dff7594a5554cf"
+    },
+    "dialog": {
+      "version": "1.0.0",
+      "hash": "sha256-83b2b5a6127a1731404532ac0ed46422f5cec8dab403d4c5a5853f602885c785"
+    },
+    "direction": {
+      "version": "1.0.0",
+      "hash": "sha256-59cdf15b32658bc2e4528510ab0957d60dd34ffa3da7155e2aaf0ae144db068c"
+    },
+    "drawer": {
+      "version": "1.0.0",
+      "hash": "sha256-073fd86eed5fc2c8bfb7a1fc715248793857320482792efaf7d851efb5fc7711"
+    },
+    "empty": {
+      "version": "1.0.0",
+      "hash": "sha256-1e168805ba1c3f54588e7e5aeb1935082d5eab7580b26128b913df553638b3af"
+    },
+    "field": {
+      "version": "1.0.0",
+      "hash": "sha256-16e22caf1dba7cd36d1c65d79c7a12fa44f974d603522ffea7d93e159cf40303"
+    },
+    "hover-card": {
+      "version": "1.0.0",
+      "hash": "sha256-ac6c093ba4527d75b13d35a6ace7c8806b1976156eace51a653ab5ab4830d53e"
+    },
+    "inspector": {
+      "version": "1.0.0",
+      "hash": "sha256-dd3590ca6bf5c6904c94d4580144e6d0c4d185a1e145c4e17e2c626e65233e87"
+    },
+    "item": {
+      "version": "1.0.0",
+      "hash": "sha256-b0dc956d733e5453e9bb21554a2147c63bd99ee9252739ec89b6dda31d2dd28b"
+    },
+    "kbd": {
+      "version": "1.0.0",
+      "hash": "sha256-a4a881da3407fe5301eb06d2cd1e6f13ca92d0e70c7120beeda301d045265985"
+    },
+    "keyline": {
+      "version": "1.0.0",
+      "hash": "sha256-d70547ca24114450c4e400b1a015eea4fe8b5c35c68ded195d6ea1ad31dbddbb"
+    },
+    "keyline-config": {
+      "version": "1.0.0",
+      "hash": "sha256-b49f37bcb34742832c2a9aaa12b8bd27092c2477caa0596be5fc45e3cf4e95a4"
+    },
+    "keyline-motion": {
+      "version": "1.0.0",
+      "hash": "sha256-ef0f3f8a83c9836436621d2da6f117973c21045be643b20fb72b8345d80ee571"
+    },
+    "keyline-render": {
+      "version": "1.0.0",
+      "hash": "sha256-992cc04eb402588ee029696657b888acb28c0595e141bb6fadc8a9f7cdf56f9f"
+    },
+    "keyline-scope": {
+      "version": "1.0.0",
+      "hash": "sha256-756ffe6f17cd3054b1535b6817c021adbfef36167fda81760a2fc77db7e572c2"
+    },
+    "keyline-shadcn": {
+      "version": "1.0.0",
+      "hash": "sha256-bf2582b80c36741d310584e6cc560ac4d0766fb42800c2cc3cff52afffc6e809"
+    },
+    "marker": {
+      "version": "1.0.0",
+      "hash": "sha256-2a5ebbd222ab36eea84e49b6c0d54685d7b0f69dff3e49f065922717c9ed2361"
+    },
+    "menu": {
+      "version": "1.0.0",
+      "hash": "sha256-aa779c245ee6c42a407c49a4614ea5bbb7450b3724f1cdb4425f24d01637cb67"
+    },
+    "menubar": {
+      "version": "1.0.0",
+      "hash": "sha256-22f4d1db06b62e54427b971220e2bfb96551047ec9500c3e2ca0a88afa2601b3"
+    },
+    "message": {
+      "version": "1.0.0",
+      "hash": "sha256-8dc3c596abeb3ff864a7277ae3ee4ebe7894d979195a5a4d7e6749587bb0d5cd"
+    },
+    "message-scroller": {
+      "version": "1.0.0",
+      "hash": "sha256-71e9764b854420310f647966be95e975b733cf50d1712e484ccfa65295457679"
+    },
+    "multiselect": {
+      "version": "1.0.0",
+      "hash": "sha256-f781dedc6a8179bc1afa670feaae68401932b61c2e747996fc52c4b796bb64b4"
+    },
+    "native-select": {
+      "version": "1.0.0",
+      "hash": "sha256-f42ea71e15c845d78b2f69ec8908aa0765c9ad98d65bb73efe99a0d396332572"
+    },
+    "nav": {
+      "version": "1.0.0",
+      "hash": "sha256-461b50b87d0c85a2aad96bda8aa0c5637aeed0d88b9b86dc806feb3e1a933d59"
+    },
+    "navigation-menu": {
+      "version": "1.0.0",
+      "hash": "sha256-09184673e1bd29f6b40118a7ee5f4df6327ec6b0a530293c30d6f745f6cdb4eb"
+    },
+    "notice": {
+      "version": "1.0.0",
+      "hash": "sha256-8f29a07e016808f2c8c72f65d18f7a75c7c01ab1e329d9fb8b4b047e347ef1cc"
+    },
+    "number-field": {
+      "version": "1.0.0",
+      "hash": "sha256-5c53f55bd5c8ba6d1d445c0d7f7c82dfa741ac4032df80d34cd142f88ece1c19"
+    },
+    "options": {
+      "version": "1.0.0",
+      "hash": "sha256-a4776a524b4b2b588d3e83d4a53c5052dc5a25d52e9ed9bc9780c5453331c845"
+    },
+    "otp-field": {
+      "version": "1.0.0",
+      "hash": "sha256-f8567b9be1d9b955a559d92d40933e55af952cf26532688cf7cbb831bc6cefcf"
+    },
+    "pagination": {
+      "version": "1.0.0",
+      "hash": "sha256-740d7c8081157b28cb226b905a6060e00ad802fb09d8e90b54cfe32652b40df7"
+    },
+    "panel": {
+      "version": "1.0.0",
+      "hash": "sha256-22a4f5cd8e1380df2dfae59fb19a7d09705e1d3ead4e012874fd57dcf2f0f7e7"
+    },
+    "popover": {
+      "version": "1.0.0",
+      "hash": "sha256-adc74ca7365e695661e4fbd95c6f19cde60dd8b36fe9ce3c6251987aa050d2df"
+    },
+    "progress": {
+      "version": "1.0.0",
+      "hash": "sha256-1f84a79314faf7c2ddb50ee4514d06cf88629737f5c877415bc4413d52438675"
+    },
+    "questionnaire": {
+      "version": "1.0.0",
+      "hash": "sha256-8eb369ebb9ed71cf0a0437d3af551e11682d133cdf9f422cd25715eece577715"
+    },
+    "radio-group": {
+      "version": "1.0.0",
+      "hash": "sha256-01cd4c7d589daff9d209b44800875c3193996b216d5614405219a66492d3499f"
+    },
+    "resizable": {
+      "version": "1.0.0",
+      "hash": "sha256-7b8e167851556ba29690fb081cb36d74f94d46ab7b189a111567fb5e9640ab6d"
+    },
+    "scroll-area": {
+      "version": "1.0.0",
+      "hash": "sha256-db486ba55230d0b4440a36c1cecc6dd09a3908b452d93968e7799ff171285138"
+    },
+    "scroll-edges": {
+      "version": "1.0.0",
+      "hash": "sha256-de77c8cd16d719ed8b0f72510b49baaa9e23a94ef5b916ba108c8010d7b18880"
+    },
+    "segmented": {
+      "version": "1.0.0",
+      "hash": "sha256-f9a6275afda8ab1d3f4dca8f3aaefbf479d1e0f0e7beacf5d81e1d8a69e839a2"
+    },
+    "select": {
+      "version": "1.0.0",
+      "hash": "sha256-a02ade105a51db4df95d173055253782d1c594217135bdbbeaf95920cb40bae4"
+    },
+    "selection": {
+      "version": "1.0.0",
+      "hash": "sha256-c5bb35d55537c279bd53d79295acbf760738f21607a2a78a200169f0a7ef4f8b"
+    },
+    "sheet": {
+      "version": "1.0.0",
+      "hash": "sha256-f8629c79607114a5ecdb6b3f612c928b2476fa35a8f94fab1f6d716d2f9baf42"
+    },
+    "shipments-demo": {
+      "version": "1.0.0",
+      "hash": "sha256-beb71f79ee68af5ea07a1fbd31097af5dc244a16380f5f8e86d46cb465755a6c"
+    },
+    "sidebar": {
+      "version": "1.0.0",
+      "hash": "sha256-c298d81bedb14528a1673b7f18c8ec79c112b0ef69d9f2c8c1abaa613feed1fe"
+    },
+    "skeleton": {
+      "version": "1.0.0",
+      "hash": "sha256-11eb568f8b7ea88d5ce6d79472c6a7fe2e76c484773feff4ec074794c61d938d"
+    },
+    "slider": {
+      "version": "1.0.0",
+      "hash": "sha256-c1a68b2d643f9acd00e607ad50f4ff9a744351138ff3ba72f224770e035f84d0"
+    },
+    "split-button": {
+      "version": "1.0.0",
+      "hash": "sha256-5c9902e8f0e7d321f548dddc4002d5ebb0b89e495307275dd984df1682a0da46"
+    },
+    "stat": {
+      "version": "1.0.0",
+      "hash": "sha256-5d5c7c3d5cf63cee730c05275ecaa70d03adcb715164fcb05eb7f7da2494d0d4"
+    },
+    "status": {
+      "version": "1.0.0",
+      "hash": "sha256-c7b72c20b5789715fa1f0bc060607b27be41539715ca36d81c95611189e718a0"
+    },
+    "switch": {
+      "version": "1.0.0",
+      "hash": "sha256-6e7f11f3cf6225b584e14199d16df54fb9aa53a0035733664a034509e3114c2b"
+    },
+    "table": {
+      "version": "1.0.0",
+      "hash": "sha256-28f8568dc54c67a695f906f165f92210c31779c902b7122e647be0af9ec4507b"
+    },
+    "tabs": {
+      "version": "1.0.0",
+      "hash": "sha256-1d5e482edf6644523895172bc8ce9763f2a31d51f38f3b82f50d3e35f8f8b99f"
+    },
+    "time-field": {
+      "version": "1.0.0",
+      "hash": "sha256-041a61ed19b574b0931baa24df754853f93c071ccac8d2d8094682b46b8ebc6e"
+    },
+    "toast": {
+      "version": "1.0.0",
+      "hash": "sha256-4d9a1e74db45a752a2ef43030270cb7fa22178eabe66037fa3a776d99f6024ba"
+    },
+    "toggle": {
+      "version": "1.0.0",
+      "hash": "sha256-b3b92d365106d98bcb0f7af35e123095a0382a8d7a185ce5315a112b58c53524"
+    },
+    "toggle-group": {
+      "version": "1.0.0",
+      "hash": "sha256-1cdb7a656f7b0d4552253df130344c94e79a98806f62536d8f5d5254801923f6"
+    },
+    "toolbar": {
+      "version": "1.0.0",
+      "hash": "sha256-66e034064f13e7c51791a6ab727656d354da5c757f1016451576af61251a139c"
+    },
+    "toolbar-overflow": {
+      "version": "1.0.0",
+      "hash": "sha256-568118874e1058ce5f111272790ae8159a26e5af9d1a8c670f1ed7b77b0523c8"
+    },
+    "tooltip": {
+      "version": "1.0.0",
+      "hash": "sha256-54df584bed541289bcb3dce0dee875bd10bab2262a7885d0a32656d577319951"
+    }
+  },
+  "retired": {}
+}
