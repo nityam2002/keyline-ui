@@ -5,18 +5,7 @@ import { Button } from "@/components/keyline/ui/button";
 
 /** Copies `text`; the done signal (an inserted ✓ cell) confirms it, and a live region says so. */
 /** `after`: the next step, shown once the text is on the clipboard (it stays; it is the answer to "now what?"). */
-/** `cell`: Copy is the end cell of a one-line command (attached, on its own keyline), not a button over the code. */
-export function CopyButton({
-  text,
-  label,
-  after,
-  cell,
-}: {
-  text: string;
-  label: string;
-  after?: string;
-  cell?: boolean;
-}) {
+export function CopyButton({ text, label, after }: { text: string; label: string; after?: string }) {
   const [state, setState] = React.useState<"idle" | "done" | "failed">("idle");
   const [copied, setCopied] = React.useState(false);
   const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -34,24 +23,11 @@ export function CopyButton({
   };
   return (
     <>
-      {/* Copy floats over the code's top end; the hint is its sibling, not its child, so it is placed
+      {/* Copy floats over the code's top end (in an example's Code panel, every block's Copy keeps the inset the tall
+          source block needs for its scrollbar, so the panel's Copy buttons share one edge); the hint is its sibling, not its child, so it is placed
           against the whole code block (below it, from its start edge), not against this small box */}
-      <div
-        className={
-          cell
-            ? "flex border-s-(length:--kl-k1) border-s-kl-line-soft"
-            : "absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[tall]/code:end-3 rtl:bg-linear-to-l"
-        }
-      >
-        <Button
-          size="compact"
-          layout={cell ? "cell" : "control"}
-          // the label changes to Copied: the cell keeps one width so the command beside it never moves
-          className={cell ? "min-w-[5.5rem]" : undefined}
-          signal={state}
-          onClick={copy}
-          aria-label={`Copy ${label}`}
-        >
+      <div className="absolute end-0 inset-bs-2 z-[2] flex bg-linear-to-r from-transparent to-kl-cell to-[14px] ps-4 pe-2 group-data-[single]/code:inset-bs-[var(--s-cb-top,50%)] group-data-[single]/code:-translate-y-1/2 group-data-[tall]/code:end-3 in-[.s-demo-code]:end-3 rtl:bg-linear-to-l">
+        <Button size="compact" signal={state} onClick={copy} aria-label={`Copy ${label}`}>
           {state === "done" ? "Copied" : "Copy"}
         </Button>
         <span className="sr-only" role="status">

@@ -20,7 +20,6 @@ export function OriginFill({
   copyLabel,
   after,
   tall,
-  cell,
 }: {
   html: string;
   code: string;
@@ -30,7 +29,6 @@ export function OriginFill({
   copyLabel: string;
   after?: string;
   tall?: boolean;
-  cell?: boolean;
 }) {
   const origin = React.useSyncExternalStore(
     noop,
@@ -40,7 +38,7 @@ export function OriginFill({
   return (
     <>
       <CodeScroll html={html.replaceAll(sentinel, escape(origin ?? slot))} label={label} tall={tall} />
-      <CopyButton text={origin ? code.replaceAll(slot, origin) : code} label={copyLabel} after={after} cell={cell} />
+      <CopyButton text={origin ? code.replaceAll(slot, origin) : code} label={copyLabel} after={after} />
     </>
   );
 }

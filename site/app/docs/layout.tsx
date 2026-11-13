@@ -9,9 +9,11 @@ import { CropMarks } from "@site/components/land";
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="s-sheet s-docsheet">
+      {/* clipped away until it has keyboard focus, not moved off the top: iOS's rubber-band overscroll pulled a link
+          parked above the sheet into view */}
       <a
         href="#main"
-        className="absolute start-2 top-2 z-10 -translate-y-[200%] border-2 border-kl-line bg-kl-cell px-3.5 py-2.5 text-[14px] font-bold text-kl-ink no-underline focus-visible:translate-y-0"
+        className="absolute start-2 top-2 z-10 border-2 border-kl-line bg-kl-cell px-3.5 py-2.5 text-[14px] font-bold text-kl-ink no-underline [clip-path:inset(50%)] focus-visible:[clip-path:none]"
       >
         Skip to content
       </a>

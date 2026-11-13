@@ -39,8 +39,7 @@ export type Prop = {
 // Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes a
 // block: name and default on one line, the type under them, the description below. The block has no inner
 // keylines (the table's divider between cells would stop short of the block), only the seam between props.
-const CELL =
-  "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:[[data-slot=table-cell]+&]:border-s-0 max-[721px]:py-1";
+const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0! max-[721px]:py-1";
 const CODE = "bg-transparent p-0 font-kl-mono";
 
 /** Props set in Keyline's own Table: one row per prop, the code columns in the Code voice. */
