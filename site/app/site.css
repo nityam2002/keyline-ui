@@ -722,7 +722,8 @@
     position: sticky;
     z-index: 3;
     top: calc(var(--kl-shell-cols-top) - var(--kl-gutter));
-    height: var(--kl-gutter);
+    /* border-box: the gutter plus the keyline it ends in, so the keyline lands on the frame's own top border */
+    height: calc(var(--kl-gutter) + var(--kl-k3));
     background: var(--kl-shell-bg, var(--kl-paper));
     border-block-end: var(--kl-k3) solid var(--kl-line);
     margin: calc(-1 * var(--s-read-pt) - var(--kl-k3) - var(--kl-gutter)) calc(-1 * var(--s-read-px) - var(--kl-k3))
