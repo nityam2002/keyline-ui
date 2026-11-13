@@ -66,7 +66,7 @@
   /* a cell Toolbar as part of a row: the views row's end, the status row, the bulk actions.
      It stretches to the row's height and starts on the row's seam. */
   /* the tabs scroll before the toolbar gives up its last cell, so "More" always stays in the row */
-  .kl-tf-views-end:has(> .kl-tb) {
+  .kl-tf-views-end:has(> [data-slot="toolbar"]) {
     align-self: stretch;
     flex: 0 1 auto;
     min-width: calc(var(--kl-row) + var(--kl-k1));
@@ -74,32 +74,7 @@
     gap: 0;
     border-inline-start: var(--kl-k1) solid var(--kl-seam);
   }
-  /* a row of the frame (the status row): rows never grow (the cell toolbar's flex-grow is along the row) */
-  .kl-tf > .kl-tb.kl-tb {
-    flex: none;
-  }
-  .kl-tf-views-end > .kl-tb,
-  .kl-tf-bulk > .kl-tb {
-    align-self: stretch;
-    min-height: 0;
-  }
-  .kl-tf-bulk > .kl-tb.kl-tb {
-    flex-grow: 0;
-  }
-  /* the bulk toolbar ends on the frame's edge, which draws its last item's end: no closing filler (its seam
-     doubled the frame line), and the toolbar's measuring slack goes before its first item, not after the last */
-  .kl-tf-bulk > .kl-tb.kl-tb:last-child {
-    justify-content: flex-end;
-  }
-  .kl-tf-bulk > .kl-tb.kl-tb.kl-tb:last-child::after {
-    content: none;
-  }
-  .kl-tf-token-tb .kl-tb-label {
-    gap: 6px;
-  }
-  .kl-tf-token-tb .kl-tb-item:not(.kl-tf-token-x) {
-    font-weight: 400;
-  }
+  /* (the cell Toolbar's own size and its filler in these rows: the rules sit in @layer utilities, below) */
 
   /* toolbar */
   .kl-tf-tools {
@@ -587,11 +562,44 @@
     flex: none;
   }
   /* the tabs scroll before the toolbar gives up its last cell, so "More" always stays in the row */
-  .kl-tf-views:has(> .kl-tf-views-end > .kl-tb) > .kl-tf-tabs-root[data-slot="tabs"] {
+  .kl-tf-views:has(> .kl-tf-views-end > [data-slot="toolbar"]) > .kl-tf-tabs-root[data-slot="tabs"] {
     flex: 0 1 auto;
     min-width: 0;
   }
   .kl-tf-tabs.kl-tf-tabs > [data-orientation] {
     min-width: 112px;
+  }
+}
+
+/* Toolbar is written in utilities, and utilities beat @layer components: the rows' overrides of a cell Toolbar (its
+   flex, its height, its closing filler) and of a filter token's items sit in @layer utilities, keyed on attributes,
+   until Table is converted too. */
+@layer utilities {
+  /* a row of the frame (the status row): rows never grow (the cell toolbar's flex-grow is along the row) */
+  .kl-tf > [data-slot="toolbar"] {
+    flex: none;
+  }
+  .kl-tf-views-end > [data-slot="toolbar"],
+  .kl-tf-bulk > [data-slot="toolbar"] {
+    align-self: stretch;
+    min-height: 0;
+  }
+  .kl-tf-bulk > [data-slot="toolbar"] {
+    flex-grow: 0;
+  }
+  /* the bulk toolbar ends on the frame's edge, which draws its last item's end: no closing filler (its seam
+     doubled the frame line), and the toolbar's measuring slack goes before its first item, not after the last.
+     The filler's own rule is (0,4,0): this one is (0,5,0). */
+  .kl-tf-bulk > [data-slot="toolbar"]:last-child {
+    justify-content: flex-end;
+  }
+  .kl-tf-bulk > [data-slot="toolbar"][data-slot="toolbar"][data-slot="toolbar"]:last-child::after {
+    content: none;
+  }
+  .kl-tf-token-tb [data-slot="toolbar-label"] {
+    gap: 6px;
+  }
+  .kl-tf-token-tb [data-kl-tb-item]:not(.kl-tf-token-x) {
+    font-weight: 400;
   }
 }

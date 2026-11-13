@@ -92,7 +92,13 @@ const TOC: TocGroup[] = [
       { id: "scroll", label: "Scroll" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 /* A sheet in Keyline's AppShell: the component index beside the reading, the page's own index at its end. */
@@ -159,9 +165,33 @@ export default function ToolbarPage() {
       <h2 id="props">Props</h2>
       <PropsReference label="Toolbar props" props={PROPS} />
       <p className="s-small">
-        Items: <code>ToolbarButton</code>, <code>ToolbarToggle</code>, <code>ToolbarToggleGroup</code>,{" "}
-        <code>ToolbarSeparator</code>, <code>ToolbarMenu</code>, <code>ToolbarLink</code>, <code>ToolbarInput</code>.
         Built on <a href="https://base-ui.com/react/components/toolbar">Base UI Toolbar</a>.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        The parts are named as Base UI names them: <code>ToolbarRoot</code> (also exported as <code>Toolbar</code>),{" "}
+        <code>ToolbarButton</code>, <code>ToolbarLink</code>, <code>ToolbarInput</code>, <code>ToolbarGroup</code> and{" "}
+        <code>ToolbarSeparator</code>. Keyline adds <code>ToolbarToggle</code>, <code>ToolbarToggleGroup</code>,{" "}
+        <code>ToolbarSpacer</code>, and <code>ToolbarMenu</code> with <code>ToolbarMenuTrigger</code> and{" "}
+        <code>ToolbarMenuContent</code>. A <code>className</code> or <code>style</code> may be a function of the
+        part&apos;s state. <code>ToolbarInput</code> takes <code>className</code> for its cell and{" "}
+        <code>inputClassName</code> for the input.
+      </p>
+      <p>
+        With <code>overflow=&quot;menu&quot;</code>, items are found by what they render, not by how you write them: a{" "}
+        <code>ToolbarButton</code> inside a <code>Tooltip</code>, or a component of yours that renders a{" "}
+        <code>ToolbarGroup</code>, moves into More like any other item. An item in More stays mounted (hidden) in the
+        row, so its state is kept.
+      </p>
+      <p className="s-small">
+        Each part carries a <code>data-slot</code> named after it (<code>toolbar</code>, <code>toolbar-button</code>,{" "}
+        <code>toolbar-toggle</code>, <code>toolbar-toggle-group</code>, <code>toolbar-link</code>,{" "}
+        <code>toolbar-input-cell</code> and <code>toolbar-input</code>, <code>toolbar-group</code>,{" "}
+        <code>toolbar-separator</code>, <code>toolbar-spacer</code>, <code>toolbar-menu-trigger</code>; the More item is{" "}
+        <code>toolbar-more</code>; inside items, <code>toolbar-label</code> and <code>toolbar-affix</code>), and Base
+        UI&apos;s state attributes: <code>data-orientation</code>, <code>data-disabled</code>, <code>data-pressed</code>{" "}
+        on toggles, and <code>aria-expanded</code> on a menu trigger while its menu is open.
       </p>
     </DocPage>
   );

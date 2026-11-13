@@ -907,14 +907,20 @@
     > :is(
       .kl-slot,
       [data-slot="button-affix"],
-      .kl-tb-affix,
+      [data-slot="toolbar-affix"],
       .kl-radio-meta,
       [data-slot="accordion-caret"],
       [data-slot="item-media"]
     ) {
     translate: none;
   }
-  :is(.kl-slot > span > span, .kl-tb-affix, .kl-radio-meta, [data-slot="accordion-caret"], [data-slot="item-media"]) {
+  :is(
+    .kl-slot > span > span,
+    [data-slot="toolbar-affix"],
+    .kl-radio-meta,
+    [data-slot="accordion-caret"],
+    [data-slot="item-media"]
+  ) {
     box-sizing: border-box;
     padding-block-start: calc(2 * var(--kl-key-y, 0px));
   }

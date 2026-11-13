@@ -48,13 +48,13 @@ export const rowItems = (tb) =>
         const b = c.getBoundingClientRect();
         const name = (
           c.getAttribute("aria-label") ||
-          c.querySelector(".kl-tb-label")?.textContent ||
+          c.querySelector("[data-slot=toolbar-label]")?.textContent ||
           c.textContent ||
           ""
         ).trim();
         return {
           name,
-          more: c.classList.contains("kl-tb-overflow"),
+          more: c.getAttribute("data-slot") === "toolbar-more",
           inside: b.left >= r.left - 1 && b.right <= r.right + 1,
           l: Math.round(b.left),
           w: Math.round(b.width),
@@ -89,7 +89,7 @@ export const focusName14 = (p) =>
     const a = document.activeElement;
     return (
       a?.getAttribute("aria-label") ||
-      a?.querySelector(".kl-tb-label")?.textContent ||
+      a?.querySelector("[data-slot=toolbar-label]")?.textContent ||
       a?.textContent ||
       a?.tagName ||
       ""

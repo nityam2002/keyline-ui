@@ -4,9 +4,14 @@ import { test } from "./fixtures.mjs";
 test.use({ only: ["button", "table", "toolbar"] });
 
 test("disabled primary: the label is the disabled ink (toolbar, bulk bar)", async ({ open, ok }) => {
-  const p = await open({ route: "specimen", width: 1440, height: 900, ready: ".kl-tb-item[data-kl-primary]" });
+  const p = await open({
+    route: "specimen",
+    width: 1440,
+    height: 900,
+    ready: "[data-slot=toolbar-button][data-kl-primary]",
+  });
   const d = await p.evaluate(() => {
-    const tb = document.querySelector(".kl-tb-item[data-kl-primary]");
+    const tb = document.querySelector("[data-slot=toolbar-button][data-kl-primary]");
     if (!tb) return null;
     tb.setAttribute("data-disabled", "");
     const cs = getComputedStyle(tb);

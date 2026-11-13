@@ -7,8 +7,7 @@ export default {
   description:
     "A row of commands that is one Tab stop (Base UI Toolbar): item cells on shared seams, groups on a 2px keyline, toggles that flood, an exclusive group whose ink band stretches, menus docked to the frame, a text input cell; horizontal or vertical.",
   files: [{ path: "src/registry/keyline/ui/toolbar.tsx", type: "registry:ui" }],
-  cssFile: "src/registry/keyline/ui/toolbar.css",
-  dependencies: ["@base-ui/react"],
+  dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: [
     "@keyline-ui/keyline",
     "utils",
@@ -17,5 +16,6 @@ export default {
     "@keyline-ui/scroll-edges",
     "@keyline-ui/menu",
     "@keyline-ui/keyline-render",
+    "@keyline-ui/toolbar-overflow",
   ],
 } satisfies KeylineItem;

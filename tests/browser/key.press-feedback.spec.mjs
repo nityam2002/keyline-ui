@@ -101,7 +101,7 @@ test("key: a shipment ID answers the press", async ({ open, ok }) => {
 });
 
 const CELLS =
-  ".kl-slot[data-open] > span > span, [data-slot=button-affix], .kl-tb-affix, .kl-radio-meta, [data-slot=accordion-caret], [data-slot=item-media]";
+  ".kl-slot[data-open] > span > span, [data-slot=button-affix], [data-slot=toolbar-affix], .kl-radio-meta, [data-slot=accordion-caret], [data-slot=item-media]";
 async function cellsCheck(p, ok, sel, name) {
   const el = p.locator(sel).filter({ visible: true }).first();
   if (!(await el.count())) {
@@ -149,7 +149,7 @@ test("key cells: specimen families keep their cells on the frame", async ({ open
       "done primary button (✓ cell)",
     ],
     ['[data-slot="button"]:has([data-slot=button-affix])', "button with an affix"],
-    [".kl-tb-item:has(> .kl-tb-affix)", "toolbar item with an affix"],
+    ["[data-kl-tb-item]:has(> [data-slot=toolbar-affix])", "toolbar item with an affix"],
     ["[data-slot=radio-group-item]:has(> .kl-radio-meta):not([data-checked])", "radio row with a meta cell"],
     ["[data-slot=accordion-trigger]", "accordion trigger"],
   ];

@@ -19,7 +19,7 @@ const PART_STATE: PanelPartState = {};
  * cell) is a row of the frame: the body or row under it owns the keyline between them (one edge, one owner).
  * The rules over its children have no specificity (:where), so a child's own utilities win, as they did over the
  * panel's stylesheet (a Scroll Area given `flex-[1_1_auto]` takes the rest). A cell Toolbar and a cell field are left
- * out: their own stylesheet rules (.kl-tb, .kl-field: flex 1) beat the panel's, which a utility would now override.
+ * out: their own flex (the toolbar's flex-auto, .kl-field's flex 1) stands.
  */
 const panel = cn(
   "kl-frame flex min-h-0 min-w-0 flex-col",

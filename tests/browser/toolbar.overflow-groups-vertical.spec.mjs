@@ -13,13 +13,16 @@ const shown = (tb) =>
       .filter((x) => x.getBoundingClientRect().width > 0)
       .map((x) => x.getAttribute("aria-label") || x.textContent.trim()),
   );
+// the rendered items only: a folded item stays mounted, hidden (no box)
 const inside = (tb) =>
   tb.evaluate((t) => {
     const r = t.getBoundingClientRect();
-    return [...t.querySelectorAll("button")].every((b) => {
-      const q = b.getBoundingClientRect();
-      return q.left >= r.left - 0.5 && q.right <= r.right + 0.5 && q.top >= r.top - 0.5 && q.bottom <= r.bottom + 0.5;
-    });
+    return [...t.querySelectorAll("button")]
+      .filter((b) => !b.closest("[hidden]"))
+      .every((b) => {
+        const q = b.getBoundingClientRect();
+        return q.left >= r.left - 0.5 && q.right <= r.right + 0.5 && q.top >= r.top - 0.5 && q.bottom <= r.bottom + 0.5;
+      });
   });
 const menuRows = (p) =>
   p
@@ -46,7 +49,7 @@ test("toolbar groups: items leave one at a time, keepTogether, state through Mor
   const p = await open({ height: 1000, ready: READY });
   const g = p.getByTestId("specimen-groups");
   const tb = p.getByTestId("gs-tb");
-  const more = tb.locator(".kl-tb-overflow");
+  const more = tb.locator("[data-slot=toolbar-more]");
   // the width change re-measures through a ResizeObserver: read the row until it has the expected shape
   const setW = async (w, expect) => {
     await g.getByRole("radio", { name: w }).click();
@@ -70,7 +73,7 @@ test("toolbar groups: items leave one at a time, keepTogether, state through Mor
   );
   ok(
     "groups 270px: the part left in the row is still the named group, meeting Align and More on 2px keylines",
-    (await tb.locator("[data-slot=toolbar-group][aria-label=Format] button").count()) === 2 &&
+    (await tb.locator("[data-slot=toolbar-group][aria-label=Format] button:not([hidden])").count()) === 2 &&
       (await tb
         .locator("[data-slot=toolbar-group][aria-label=Format]")
         .evaluate((e) =>
@@ -246,7 +249,7 @@ test("toolbar vertical overflow: palette heights, More at the foot opens to the 
   );
   ok("vertical: a palette holding every tool puts no seam just inside its bottom edge", f2 === "0px,0px", f2);
   await rtl.scrollIntoViewIfNeeded();
-  await rtl.locator(".kl-tb-overflow").click();
+  await rtl.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   await idle(p);
   const rside = await p.evaluate(() => {

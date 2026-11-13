@@ -56,11 +56,11 @@ test("overflow: widths, the More menu's rows and state, growing back", async ({ 
   );
   ok(
     "overflow 560px: the More item is named and announces a menu",
-    (await tb.locator(".kl-tb-overflow").getAttribute("aria-label")) === "More" &&
-      (await tb.locator(".kl-tb-overflow").getAttribute("aria-haspopup")) === "menu",
+    (await tb.locator("[data-slot=toolbar-more]").getAttribute("aria-label")) === "More" &&
+      (await tb.locator("[data-slot=toolbar-more]").getAttribute("aria-haspopup")) === "menu",
     null,
   );
-  const seam = await tb.locator(".kl-tb-overflow").evaluate((e) => getComputedStyle(e).borderInlineStartWidth);
+  const seam = await tb.locator("[data-slot=toolbar-more]").evaluate((e) => getComputedStyle(e).borderInlineStartWidth);
   ok("overflow: the More cell meets its neighbour on a 1px seam", seam === "1px", seam);
 
   items = await setW(
@@ -92,7 +92,7 @@ test("overflow: widths, the More menu's rows and state, growing back", async ({ 
   );
 
   // keyboard: one stop, arrows reach More, the menu holds the hidden items as rows with state
-  await tb.locator(".kl-tb-overflow").focus();
+  await tb.locator("[data-slot=toolbar-more]").focus();
   await p.keyboard.press("ArrowRight");
   ok("overflow: arrow keys move from More to the primary", (await focusedName(p)) === "Publish", await focusedName(p));
   await p.keyboard.press("ArrowLeft");
@@ -167,7 +167,7 @@ test("overflow: widths, the More menu's rows and state, growing back", async ({ 
     /Insert checklist/.test(c1.log) && c1.menus === 0,
     c1.log,
   );
-  await tb.locator(".kl-tb-overflow").click();
+  await tb.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   await p
     .locator("[role=menu]")
@@ -181,13 +181,13 @@ test("overflow: widths, the More menu's rows and state, growing back", async ({ 
     .locator("[role=menu]")
     .waitFor({ state: "detached" })
     .catch(() => {});
-  await tb.locator(".kl-tb-overflow").click();
+  await tb.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   await idle(p);
   const dock = await p.evaluate(() => {
     const m = [...document.querySelectorAll("[role=menu]")].pop().getBoundingClientRect();
     const t = document.querySelector("[data-testid=ov-tb]").getBoundingClientRect();
-    const o = document.querySelector(".kl-tb-overflow").getBoundingClientRect();
+    const o = document.querySelector("[data-slot=toolbar-more]").getBoundingClientRect();
     return { top: m.top, tbB: t.bottom, mr: m.right, or: o.right };
   });
   ok(
@@ -219,16 +219,16 @@ test("overflow: widths, the More menu's rows and state, growing back", async ({ 
   );
   const bandOf = () =>
     tb.evaluate((t) => {
-      const bd = t.querySelector(".kl-tb-band");
+      const bd = t.querySelector("[data-slot=toolbar-band]");
       const btn = [...t.querySelectorAll("button")].find(
-        (x) => x.querySelector(".kl-tb-label")?.textContent.trim() === "Board",
+        (x) => x.querySelector("[data-slot=toolbar-label]")?.textContent.trim() === "Board",
       );
       const a = bd.getBoundingClientRect();
       const c = btn.getBoundingClientRect();
       return { hidden: bd.hidden, dl: Math.round(a.left - c.left), dw: Math.round(a.width - c.width) };
     });
   await idle(p);
-  await stableBox(tb.locator(".kl-tb-band"));
+  await stableBox(tb.locator("[data-slot=toolbar-band]"));
   const band = await poll(bandOf, (b) => !b.hidden && Math.abs(b.dl) <= 1 && Math.abs(b.dw) <= 2, 2000);
   ok(
     "overflow: the exclusive band sits on the chosen cell after the trip",
@@ -243,7 +243,7 @@ test("overflow: focus on an item that leaves the row moves to More", async ({ op
   // focus on an item that leaves the row moves to More
   await tb.getByRole("link", { name: "Help" }).focus();
   await sp.getByRole("radio", { name: "380px" }).click();
-  await tb.locator(".kl-tb-overflow").waitFor();
+  await tb.locator("[data-slot=toolbar-more]").waitFor();
   // the Segmented press took focus; put it back on a soon-hidden item and shrink with the keyboard-free API
   await sp.getByRole("radio", { name: "Fits" }).click();
   await tb.getByRole("link", { name: "Help" }).waitFor({ state: "visible" });
@@ -271,7 +271,7 @@ test("overflow (label): the panel's input shrinks to its minimum before commands
   const read = async () => ({
     items: await rowItems(pt),
     inputW: await pt
-      .locator(".kl-tb-input")
+      .locator("[data-slot=toolbar-input-cell]")
       .evaluate((e) => [e.getBoundingClientRect().width, parseFloat(getComputedStyle(e).minWidth)]),
     fit: await fits(pt),
   });
@@ -308,7 +308,10 @@ test("toolbar signals: pending, done, failed, idle; Publish runs pending then do
       .locator(cls)
       .evaluate((e) => [e.hasAttribute("data-open"), e.getBoundingClientRect().width]);
   // the ✓ and ! cells open with a width transition: read them once they have opened
-  const both = async () => ({ done: await slot("Saved", ".kl-tb-done"), failed: await slot("Retry", ".kl-tb-fail") });
+  const both = async () => ({
+    done: await slot("Saved", "[data-slot=toolbar-done]"),
+    failed: await slot("Retry", "[data-slot=toolbar-fail]"),
+  });
   await idle(p);
   const { done, failed } = await poll(
     both,
@@ -322,7 +325,7 @@ test("toolbar signals: pending, done, failed, idle; Publish runs pending then do
   );
   const idleW = await tb
     .getByRole("button", { name: "Publish" })
-    .locator(".kl-tb-done")
+    .locator("[data-slot=toolbar-done]")
     .evaluate((e) => e.getBoundingClientRect().width);
   ok("signal idle: closed slots take no width", idleW === 0, idleW);
   const pub = tb.getByRole("button", { name: "Publish" });
@@ -362,12 +365,12 @@ test("overflow RTL: More before the primary, menu end-aligned and RTL", async ({
     more && pub && more.l > pub.l && items.every((i) => i.inside),
     items,
   );
-  await tb.locator(".kl-tb-overflow").click();
+  await tb.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   await idle(p);
   const g = await p.evaluate(() => {
     const m = [...document.querySelectorAll("[role=menu]")].pop();
-    const o = document.querySelector(".kl-tb-overflow").getBoundingClientRect();
+    const o = document.querySelector("[data-slot=toolbar-more]").getBoundingClientRect();
     const r = m.getBoundingClientRect();
     return { dir: getComputedStyle(m).direction, ml: Math.round(r.left), ol: Math.round(o.left) };
   });
@@ -401,10 +404,10 @@ test("toolbar forced colours: band, primary, pressed outline, fades, signals, fo
   await tb.scrollIntoViewIfNeeded();
   await idle(p);
   const fc = await tb.evaluate((t) => {
-    const band = t.querySelector(".kl-tb-band");
+    const band = t.querySelector("[data-slot=toolbar-band]");
     const prim = t.querySelector("[data-kl-primary]");
     const wrap = [...t.querySelectorAll("button")].find(
-      (x) => x.querySelector(".kl-tb-label")?.textContent.trim() === "Wrap",
+      (x) => x.querySelector("[data-slot=toolbar-label]")?.textContent.trim() === "Wrap",
     );
     return {
       band: getComputedStyle(band).backgroundColor,
@@ -431,9 +434,11 @@ test("toolbar forced colours: band, primary, pressed outline, fades, signals, fo
   const sg = await p
     .getByTestId("ov-signals")
     .evaluate((t) =>
-      [...t.querySelectorAll(".kl-tb-done[data-open] > span > span, .kl-tb-fail[data-open] > span > span")].map(
-        (e) => getComputedStyle(e).backgroundColor,
-      ),
+      [
+        ...t.querySelectorAll(
+          "[data-slot=toolbar-done][data-open] > span > span, [data-slot=toolbar-fail][data-open] > span > span",
+        ),
+      ].map((e) => getComputedStyle(e).backgroundColor),
     );
   ok("forced colours: open ✓ and ! signal cells are Highlight", sg.length === 2 && sg.every((c) => c === HL), {
     sg,

@@ -198,6 +198,7 @@ const active = (p) =>
       text: a?.textContent?.trim() ?? "",
       label: a?.getAttribute("aria-label") ?? "",
       cls: a?.className ?? "",
+      slot: a?.getAttribute("data-slot") ?? "",
       tag: a?.tagName,
     };
   });
@@ -626,7 +627,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
   if (width >= 1080) ok(inRow === 1, `${tag}: at Standard, Comments fits in the row`);
   if (inRow) await cm().click();
   else {
-    await tb.locator(".kl-tb-overflow").click();
+    await tb.locator("[data-slot=toolbar-more]").click();
     await p.getByRole("menuitemcheckbox", { name: /Comments/ }).click();
     await p.keyboard.press("Escape");
   }
@@ -637,13 +638,13 @@ for (const width of run("docs") ? [1440, 390] : []) {
     (await tb.getByRole("button", { name: "Send memo" }).count()) === 1,
     `${tag}: the primary action stays in the row`,
   );
-  await tb.locator(".kl-tb-overflow").click();
+  await tb.locator("[data-slot=toolbar-more]").click();
   const item = p.getByRole("menuitemcheckbox", { name: /Comments/ });
   await item.waitFor();
   ok((await item.getAttribute("aria-checked")) === "false", `${tag}: Comments keeps its state (off) in More`);
   await p.keyboard.press("Escape");
   await p.waitForTimeout(100);
-  ok((await active(p)).cls.includes("kl-tb-overflow"), `${tag}: Escape returns focus to More`);
+  ok((await active(p)).slot === "toolbar-more", `${tag}: Escape returns focus to More`);
   // back to Standard: the room returns, so the items return to the row
   await d0.getByRole("radio", { name: /Standard/ }).click();
   await p.waitForTimeout(250);
@@ -705,7 +706,7 @@ for (const width of run("docs") ? [1440, 390] : []) {
     // the page's own index: Keyline Nav in the aside; the band follows the section being read
     const toc = p.getByRole("navigation", { name: "On this page" });
     ok(await toc.isVisible(), `${tag}: page index is visible`);
-    ok((await toc.getByRole("link").count()) === 6, `${tag}: page index lists 6 sections`);
+    ok((await toc.getByRole("link").count()) === 7, `${tag}: page index lists 7 sections (Parts included)`);
     await toc.getByRole("link", { name: "In a panel" }).click();
     await p.waitForTimeout(400);
     ok(

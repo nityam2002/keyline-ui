@@ -3,7 +3,7 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, lastMenu } from "./lib/probes-c.mjs";
 
-const READY = ".kl-shell-h .kl-tb";
+const READY = ".kl-shell-h [data-slot=toolbar]";
 const active = (p) =>
   p.evaluate(() => {
     const a = document.activeElement;
@@ -19,16 +19,16 @@ test("header 1440: Alerts, Export, Help; one Tab stop; Export toasts", async ({ 
   const tb = p.getByRole("toolbar", { name: "Page actions" });
   const namesOf = () =>
     tb
-      .locator(":scope > :not(.kl-tb-overflow)")
+      .locator(":scope > :not([data-slot=toolbar-more])")
       .evaluateAll((xs) =>
         xs
           .filter((x) => !/fixed|absolute/.test(getComputedStyle(x).position) && x.getBoundingClientRect().width > 0)
-          .map((x) => (x.querySelector(".kl-tb-label")?.textContent || x.textContent).trim()),
+          .map((x) => (x.querySelector("[data-slot=toolbar-label]")?.textContent || x.textContent).trim()),
       );
   const names = await poll(namesOf, (n) => n.length === 3 && /Alerts/.test(n[0]), 3000);
   ok(
     "1440: the header toolbar shows Alerts, Export and Help, with no More",
-    names.length === 3 && /Alerts/.test(names[0]) && (await tb.locator(".kl-tb-overflow").count()) === 0,
+    names.length === 3 && /Alerts/.test(names[0]) && (await tb.locator("[data-slot=toolbar-more]").count()) === 0,
     names,
   );
   const stops = await tb.evaluate((t) => [...t.querySelectorAll("button, a")].filter((x) => x.tabIndex === 0).length);
@@ -112,15 +112,15 @@ for (const w of [520, 390]) {
       });
     // the toolbar re-measures when its fonts land: read the header once it has settled into the overflow shape
     await poll(
-      () => tb.locator(".kl-tb-overflow").count(),
+      () => tb.locator("[data-slot=toolbar-more]").count(),
       (c) => c === 1,
       3000,
     );
     const geo = await poll(geoOf, (g) => g.fits && g.page && g.crumbs >= 100, 3000);
     ok(`${w}: the header fits (no overflow), the page does not scroll sideways`, geo.fits && geo.page, geo);
     ok(`${w}: the crumbs keep their room (≥ 100px) while actions move`, geo.crumbs >= 100, geo);
-    ok(`${w}: the actions show More`, (await tb.locator(".kl-tb-overflow").count()) === 1, null);
-    await tb.locator(".kl-tb-overflow").click();
+    ok(`${w}: the actions show More`, (await tb.locator("[data-slot=toolbar-more]").count()) === 1, null);
+    await tb.locator("[data-slot=toolbar-more]").click();
     await lastMenu(p);
     const rows = await p
       .locator("[role=menu]")

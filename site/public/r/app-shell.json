@@ -98,17 +98,13 @@
         "flex": "none",
         "align-items": "stretch"
       },
-      ".kl-shell-h:has(> .kl-shell-actions > .kl-tb) > .kl-shell-crumbs": {
+      ".kl-shell-h:has(> .kl-shell-actions > [data-slot=\"toolbar\"]) > .kl-shell-crumbs": {
         "flex": "1 1 0",
         "min-width": "min(14rem, 45%)"
       },
-      ".kl-shell-actions:has(> .kl-tb)": {
+      ".kl-shell-actions:has(> [data-slot=\"toolbar\"])": {
         "flex": "0 1 auto",
         "min-width": "calc(var(--kl-ctl) + 4px)"
-      },
-      ".kl-shell-actions > .kl-tb.kl-tb": {
-        "flex": "1 1 auto",
-        "min-width": "0"
       },
       ".kl-shell-nav": {
         "grid-area": "nav",
@@ -208,6 +204,10 @@
       }
     },
     "@layer utilities": {
+      ".kl-shell-actions > [data-slot=\"toolbar\"]": {
+        "flex": "1 1 auto",
+        "min-width": "0"
+      },
       ".kl-shell-crumbs [data-slot=\"breadcrumb-list\"]": {
         "flex": "1 1 auto",
         "min-height": "0"

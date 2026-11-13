@@ -536,12 +536,12 @@ for (const [eng, type, opts] of [
     "manifests: the views end and the bulk actions are toolbars, one Tab stop each",
     (await stops(mtools)) === 1 && (await stops(macts)) === 1,
   );
-  ok(eng, "manifests: wide, no More item", (await mf.locator(".kl-tb-overflow").count()) === 0);
+  ok(eng, "manifests: wide, no More item", (await mf.locator("[data-slot=toolbar-more]").count()) === 0);
   await mf.getByRole("checkbox", { name: "MF-31" }).click();
   await mf.getByRole("checkbox", { name: "MF-33" }).click();
   await p.getByRole("radio", { name: "Narrow" }).click();
   await p.waitForTimeout(350);
-  const more = macts.locator(".kl-tb-overflow");
+  const more = macts.locator("[data-slot=toolbar-more]");
   ok(
     eng,
     "manifests narrow: actions collapse into More; Seal (primary) stays in the row",
@@ -592,7 +592,7 @@ for (const [eng, type, opts] of [
   ok(
     eng,
     "manifests wide again: every action is back and More goes",
-    (await mf.locator(".kl-tb-overflow").count()) === 0 &&
+    (await mf.locator("[data-slot=toolbar-more]").count()) === 0 &&
       (await macts.getByRole("button", { name: "Print labels" }).isVisible()),
   );
   const mt = mf.getByRole("table", { name: "Manifest rows" });

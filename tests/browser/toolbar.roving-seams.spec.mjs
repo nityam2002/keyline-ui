@@ -143,16 +143,16 @@ test("toolbar: editor row — roving focus, seams, toggles, band, spacer, docked
   await centre.click();
   const bandOf = () =>
     tb.evaluate((t) => {
-      const b = t.querySelector(".kl-tb-band").getBoundingClientRect(),
+      const b = t.querySelector("[data-slot=toolbar-band]").getBoundingClientRect(),
         c = t.querySelector('[aria-label="Align centre"]').getBoundingClientRect();
       return {
         dx: Math.abs(b.x - c.x),
         dw: Math.abs(b.width - c.width),
-        hidden: t.querySelector(".kl-tb-band").hidden,
+        hidden: t.querySelector("[data-slot=toolbar-band]").hidden,
       };
     });
   await idle(p);
-  await stableBox(tb.locator(".kl-tb-band"));
+  await stableBox(tb.locator("[data-slot=toolbar-band]"));
   const band = await poll(bandOf, (b) => !b.hidden && b.dx < 2 && b.dw < 3, 2000);
   ok(
     "toolbar: exclusive choice moves the ink band onto the chosen cell",
@@ -176,7 +176,7 @@ test("toolbar: editor row — roving focus, seams, toggles, band, spacer, docked
 
   // spacer
   const sp = await tb
-    .locator(".kl-tb-spacer")
+    .locator("[data-slot=toolbar-spacer]")
     .evaluate((e) => ({ w: e.getBoundingClientRect().width, hidden: e.getAttribute("aria-hidden"), tab: e.tabIndex }));
   ok(
     "toolbar: the spacer is an inert empty cell that takes the free space",
@@ -224,7 +224,7 @@ test("toolbar cell: panel — separator, filler, input caret, docked menu", asyn
   const pt = p.getByTestId("tb-panel").getByRole("toolbar");
   await pt.scrollIntoViewIfNeeded();
   const pg = await pt.evaluate((t) => {
-    const sep = t.querySelector(".kl-tb-sep"),
+    const sep = t.querySelector("[data-slot=toolbar-separator]"),
       after = sep.nextElementSibling,
       body = t.nextElementSibling;
     return {
@@ -270,7 +270,7 @@ test("toolbar cell: panel — separator, filler, input caret, docked menu", asyn
     await focusedName(p),
   );
   const edgeOf = () =>
-    pt.locator(".kl-tb-input").evaluate((e) => {
+    pt.locator("[data-slot=toolbar-input-cell]").evaluate((e) => {
       e.querySelector("input").focus();
       return getComputedStyle(e, "::before").borderTopWidth;
     });
@@ -313,12 +313,12 @@ test("toolbar vertical: orientation, band along the column, group rule", async (
   await p.keyboard.press("Enter");
   const vbOf = () =>
     vt.evaluate((t) => {
-      const b = t.querySelector(".kl-tb-band").getBoundingClientRect(),
+      const b = t.querySelector("[data-slot=toolbar-band]").getBoundingClientRect(),
         c = t.querySelector('[aria-label="Pan"]').getBoundingClientRect();
       return { dy: Math.abs(b.y - c.y), dh: Math.abs(b.height - c.height) };
     });
   await idle(p);
-  await stableBox(vt.locator(".kl-tb-band"));
+  await stableBox(vt.locator("[data-slot=toolbar-band]"));
   const vb = await poll(vbOf, (v) => v.dy < 2 && v.dh < 3, 2000);
   ok("toolbar vertical: the band stretches along the column", vb.dy < 2 && vb.dh < 3, vb);
   const zin = await vt.getByRole("button", { name: "Zoom in" }).evaluate((e) => getComputedStyle(e).borderTopWidth);

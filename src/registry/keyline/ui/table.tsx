@@ -119,7 +119,7 @@ function FilterToken({
   if (inToolbar) {
     // in a Toolbar the token is a group of two items in the row's arrow-key order (one Tab stop)
     return (
-      <ToolbarGroup aria-label={`${field} filter`} className={cn("kl-tf-token kl-tf-token-tb", className)}>
+      <ToolbarGroup keepTogether aria-label={`${field} filter`} className={cn("kl-tf-token kl-tf-token-tb", className)}>
         <ToolbarButton onClick={onEdit} aria-label={editLabel}>
           <span className="kl-code">{field}</span>
           <i>{op}</i>

@@ -53,8 +53,10 @@ check app-shell app-shell AppShell ".kl-nav-ic"
 # its look is utilities in tabs.tsx (the build below checks they are generated)
 check tabs tabs Tabs ".kl-more-fade"
 check checkbox-group checkbox-group CheckboxGroup "file:src/components/keyline/ui/checkbox.tsx"
-# Table now composes toolbar (filter tokens in a toolbar), so its CSS must come with it
-check table table TableSortHeader ".kl-tb-item"
+# Table composes toolbar (filter tokens in a toolbar). Toolbar has no CSS of its own (its look is utilities in
+# toolbar.tsx); its overflow logic is lib/toolbar-overflow.ts, reached only through toolbar: both must arrive
+check table table TableSortHeader "file:src/components/keyline/ui/toolbar.tsx"
+check table table TableSortHeader "file:src/components/keyline/lib/toolbar-overflow.ts"
 # The date picker has no CSS of its own: its trigger and ! cell are the field's (theme). The calendar's look is utilities
 # in date-range.tsx and its dates come from lib/calendar.ts; no item added before it installs either, so both must
 # arrive with it (the build below checks the utilities are generated)

@@ -35,6 +35,15 @@ export const STATES = {
     { name: "hover-tooltip", do: [["hover", `#toolbar >> ${role("button", "Undo")}`]] },
     { name: "hover-pressed", do: [["hover", `#toolbar >> ${role("button", "Align start")}`]] },
     { name: "focus-input", do: [["focus", `#toolbar >> ${role("textbox", "Search records")}`]] },
+    { name: "hover-primary", do: [["hover", `#toolbar >> ${role("button", "Publish")}`]] },
+    { name: "hover-menu-trigger", do: [["hover", `#toolbar >> ${role("button", "Insert")}`]] },
+    { name: "hover-flooded", do: [["hover", `#toolbar >> ${role("button", "Comments 3")}`]] },
+    { name: "hover-disabled", do: [["hover", `#toolbar >> ${role("button", "Redo")}`]] },
+    { name: "hover-link", do: [["hover", `#toolbar >> ${role("link", "Help")}`]] },
+    { name: "focus-link", do: [["focus", `#toolbar >> ${role("link", "Help")}`]] },
+    { name: "focus-choice", do: [["focus", `#toolbar >> ${role("button", "Align start")}`]] },
+    { name: "focus-palette", do: [["focus", `#toolbar >> ${role("button", "Pan")}`]] },
+    { name: "narrow-scrolled", do: [["click", `#toolbar >> ${role("radio", "300px")}`]] },
     {
       name: "menu-open",
       do: [
@@ -60,6 +69,74 @@ export const STATES = {
       ],
       show: "role=menu",
     },
+    { name: "at-560", do: [["click", `#toolbar-overflow >> ${role("radio", "560px")}`]] },
+    { name: "at-380", do: [["click", `#toolbar-overflow >> ${role("radio", "380px")}`]] },
+    {
+      name: "more-open-380",
+      do: [
+        // chosen from the keyboard: a click would end :focus-visible for the next focus
+        ["focus", `#toolbar-overflow >> ${role("radio", "Fits")}`],
+        ["press", "ArrowDown"],
+        ["press", "ArrowDown"],
+        ["focus", `#toolbar-overflow >> role=button[name=/^More/] >> nth=0`],
+        ["press", "Enter"],
+        ["wait", "role=menu"],
+      ],
+      show: "role=menu",
+    },
+    {
+      name: "hover-more",
+      do: [
+        ["click", `#toolbar-overflow >> ${role("radio", "220px")}`],
+        ["hover", `#toolbar-overflow >> role=button[name=/^More/] >> nth=0`],
+      ],
+    },
+  ],
+  "toolbar-group-overflow": [
+    { name: "at-220", do: [["click", `#toolbar-group-overflow >> ${role("radio", "220px")}`]] },
+    {
+      name: "more-open-150",
+      do: [
+        ["focus", `#toolbar-group-overflow >> ${role("radio", "Fits")}`],
+        ["press", "ArrowDown"],
+        ["press", "ArrowDown"],
+        ["press", "ArrowDown"],
+        ["focus", `#toolbar-group-overflow >> role=button[name=/^More/] >> nth=0`],
+        ["press", "Enter"],
+        ["wait", "role=menu"],
+      ],
+      show: "role=menu",
+    },
+  ],
+  "toolbar-vertical-overflow": [
+    { name: "at-160", do: [["click", `#toolbar-vertical-overflow >> ${role("radio", "160px")}`]] },
+    {
+      name: "more-open-110",
+      do: [
+        ["focus", `#toolbar-vertical-overflow >> ${role("radio", "400px")}`],
+        ["press", "ArrowDown"],
+        ["press", "ArrowDown"],
+        ["focus", `#toolbar-vertical-overflow >> role=button[name=/^More/] >> nth=0`],
+        ["press", "Enter"],
+        ["wait", "role=menu"],
+      ],
+      show: "role=menu",
+    },
+  ],
+  // the shipments route: cell toolbars with overflow="menu" in the shell header, the views row, the status row and
+  // the bulk bar
+  app: [
+    {
+      name: "alerts-open",
+      do: [
+        ["focus", `${role("toolbar", "Page actions")} >> role=button[name=/^Alerts/]`],
+        ["press", "Enter"],
+        ["wait", "role=menu"],
+      ],
+      show: "role=menu",
+    },
+    { name: "hover-status", do: [["hover", `${role("toolbar", "Status filters")} >> role=button >> nth=1`]] },
+    { name: "focus-status", do: [["focus", `${role("toolbar", "Status filters")} >> role=button >> nth=0`]] },
   ],
   shell: [
     { name: "hover-nav", do: [["hover", `#shell >> ${MAIN} >> role=button[name=/^Carriers/]`]] },

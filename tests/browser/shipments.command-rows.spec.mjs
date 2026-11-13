@@ -117,7 +117,7 @@ test("block command rows: bulk actions — primary menu, signal, Cancel confirma
   const sel = async () => ({
     dis: await assign.getAttribute("aria-disabled"),
     affix: await assign
-      .locator(".kl-tb-affix")
+      .locator("[data-slot=toolbar-affix]")
       .textContent()
       .catch(() => null),
   });
@@ -176,7 +176,7 @@ test("block command rows: sort levels in the View menu, Shift + click on a heade
   const affOf = () =>
     view.evaluate((b) => [
       getComputedStyle(b).color,
-      getComputedStyle(b.querySelector(".kl-tb-affix .kl-code")).color,
+      getComputedStyle(b.querySelector("[data-slot=toolbar-affix] .kl-code")).color,
       b.hasAttribute("data-popup-open"),
     ]);
   const aff = await poll(affOf, (a) => a[2] && a[0] === a[1], 2000);
@@ -288,7 +288,7 @@ test("block 420: command rows overflow into More", async ({ open, ok }) => {
     sItems.some((i) => i.more && /More filters/.test(i.name)),
     sItems,
   );
-  await status.locator(".kl-tb-overflow").click();
+  await status.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   const rows = await menuRows(p);
   ok(
@@ -299,7 +299,7 @@ test("block 420: command rows overflow into More", async ({ open, ok }) => {
   const cnt = await p.evaluate(() => {
     const m = [...document.querySelectorAll("[role=menu]")].pop();
     return {
-      counts: m.querySelectorAll("[data-slot=menu-item-label] .kl-tb-menu-count").length,
+      counts: m.querySelectorAll("[data-slot=menu-item-label] [data-slot=toolbar-menu-count]").length,
       keys: m.querySelectorAll("kbd").length,
     };
   });
@@ -329,7 +329,7 @@ test("block 420: command rows overflow into More", async ({ open, ok }) => {
     .locator("[role=menu]")
     .waitFor({ state: "detached" })
     .catch(() => {});
-  await views.locator(".kl-tb-overflow").click();
+  await views.locator("[data-slot=toolbar-more]").click();
   await lastMenu(p);
   const vm = await menuRows(p);
   ok(

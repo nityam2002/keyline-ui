@@ -88,18 +88,15 @@
   /* a Toolbar as the actions: the crumbs give up room first, down to their minimum, then the
      toolbar moves its last items into More. The crumbs' basis is 0, so the toolbar keeps its natural width
      while there is room; it shrinks only once the crumbs are at their minimum. */
-  .kl-shell-h:has(> .kl-shell-actions > .kl-tb) > .kl-shell-crumbs {
+  .kl-shell-h:has(> .kl-shell-actions > [data-slot="toolbar"]) > .kl-shell-crumbs {
     flex: 1 1 0;
     min-width: min(14rem, 45%);
   }
-  .kl-shell-actions:has(> .kl-tb) {
+  .kl-shell-actions:has(> [data-slot="toolbar"]) {
     flex: 0 1 auto;
     min-width: calc(var(--kl-ctl) + 4px);
   }
-  .kl-shell-actions > .kl-tb.kl-tb {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
+  /* (the Toolbar's own flex there: the rule sits in @layer utilities, below) */
 
   /* sidebar: a region frame holding the Nav as a cell */
   /* The sidebar is a column, not a box: it reaches the viewport's bottom (height measured by AppShell from
@@ -243,6 +240,12 @@
    height sits in @layer utilities, keyed on its attributes, until AppShell is converted too. The crumbs' list fills
    the header frame's height rather than a row's. */
 @layer utilities {
+  /* Toolbar is written in utilities: as the header's actions it shrinks from its natural width (a framed toolbar is
+     w-max and doesn't flex), keyed on its slot until AppShell is converted too */
+  .kl-shell-actions > [data-slot="toolbar"] {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
   .kl-shell-crumbs [data-slot="breadcrumb-list"] {
     flex: 1 1 auto;
     min-height: 0;
