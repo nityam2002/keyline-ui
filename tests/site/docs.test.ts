@@ -13,6 +13,7 @@ import { search } from "../../site/lib/search.ts";
 import { sourceCodeJsonLd, stringifyJsonLd } from "../../site/lib/seo.ts";
 import { exampleSource } from "../../site/lib/source.ts";
 import { installCommand } from "../../site/lib/registry.ts";
+import changelog from "../../site/lib/changelog.json" with { type: "json" };
 
 // the entities the pages use (grep -o '&[a-z]*;' site/app/docs)
 const ENT: Record<string, string> = {
@@ -37,10 +38,20 @@ const flat = (s: string) =>
 /** The page's headings read straight from its source (what its default export renders, not code samples above
  *  it), independently of the converter. */
 function sourceHeadings(src: string): string[] {
-  return [...src.slice(src.indexOf("export default function")).matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/g)].map(
-    (m) => flat(m[2]!),
-  );
+  // a page renders its default export; a component content file (site/content/components) its `content` object
+  const from = src.includes("export default function") ? "export default function" : "export const content";
+  return [...src.slice(src.indexOf(from)).matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/g)].map((m) => flat(m[2]!));
 }
+
+/** Whether `want` appears in `have` in order (other items may come between). */
+const inOrder = (have: string[], want: string[]) => {
+  let i = 0;
+  for (const h of have) if (h === want[i]) i++;
+  return i === want.length;
+};
+
+/** The sections the generated component route adds around a content file's prose (app/docs/components/[name]). */
+const GENERATED_SECTIONS = ["Installation", "Usage", "Props"];
 
 test("every docs page has a Markdown twin that opens with the preamble and says what the page says", () => {
   assert.ok(DOC_PAGES.length > 60, `docs pages: ${DOC_PAGES.length}`);
@@ -48,7 +59,22 @@ test("every docs page has a Markdown twin that opens with the preamble and says 
     const src = fs.readFileSync(pageSourceFile(p.href), "utf8");
     const md = pageMarkdown(p.href);
     assert.ok(md.startsWith(PREAMBLE), `${p.href}: twin opens with the preamble`);
-    assert.deepEqual(markdownHeadings(md).map(flat), sourceHeadings(src), `${p.href}: same headings, same order`);
+    const headings = markdownHeadings(md).map(flat);
+    if (pageSourceFile(p.href).endsWith("page.tsx") && p.href !== "/docs/changelog")
+      assert.deepEqual(headings, sourceHeadings(src), `${p.href}: same headings, same order`);
+    else if (p.href !== "/docs/changelog") {
+      // a generated page: its title, the generated sections, and the content file's own headings, in order (the
+      // served HTML is compared heading for heading by scripts/site-check.mjs)
+      assert.ok(inOrder(headings, GENERATED_SECTIONS), `${p.href}: generated sections ${JSON.stringify(headings)}`);
+      assert.ok(inOrder(headings, sourceHeadings(src)), `${p.href}: the content file's headings, in order`);
+    } else
+      assert.ok(
+        inOrder(
+          headings,
+          sourceHeadings(src).filter((h) => !h.includes("{")),
+        ),
+        "changelog: its written headings",
+      );
     for (const [, item] of src.matchAll(/<InstallCommand item="([^"]+)"/g))
       assert.ok(md.includes(installCommand(item!)), `${p.href}: install command for ${item}`);
     // the prose is text, not HTML: no entity is left undecoded
@@ -62,9 +88,11 @@ test("every docs page has a Markdown twin that opens with the preamble and says 
     // every example the page shows is inlined as its real source
     for (const [, file] of src.matchAll(/["']([a-z0-9-]+\.tsx)["']/g))
       assert.ok(md.includes(exampleSource(file!).trim()), `${p.href}: source of ${file}`);
-    // every paragraph's opening words are in the twin
-    for (const [, para] of src.matchAll(/<p(?: className="[^"]*")?>\s*([A-Z][^<{]{24,}?)[<{\n]/g))
-      assert.ok(flat(md).includes(flat(para!).slice(0, 24)), `${p.href}: paragraph "${flat(para!).slice(0, 24)}"`);
+    // every paragraph's opening words are in the twin (the changelog's migration paragraphs show only for a
+    // breaking entry, so that page is checked against its data and the served HTML instead)
+    if (p.href !== "/docs/changelog")
+      for (const [, para] of src.matchAll(/<p(?: className="[^"]*")?>\s*([A-Z][^<{]{24,}?)[<{\n]/g))
+        assert.ok(flat(md).includes(flat(para!).slice(0, 24)), `${p.href}: paragraph "${flat(para!).slice(0, 24)}"`);
   }
 });
 
@@ -101,7 +129,8 @@ test("sitemap dates: a meta's `updated`, else git's last change", () => {
 
   for (const p of DOC_PAGES) {
     const meta = p.item ? metaFile(p.item) : undefined;
-    const expected = (meta && (metaUpdated(meta) ?? gitDate(meta))) ?? gitDate(pageSourceFile(p.href));
+    const release = p.href === "/docs/changelog" ? changelog.releases[0]?.date : undefined;
+    const expected = release ?? (meta && (metaUpdated(meta) ?? gitDate(meta))) ?? gitDate(pageSourceFile(p.href));
     assert.ok(expected, `${p.href}: has a date`);
     assert.equal(pageModified(p)?.toISOString(), new Date(expected!).toISOString(), `${p.href}: lastModified`);
   }

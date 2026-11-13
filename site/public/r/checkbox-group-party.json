@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-group-party",
+  "title": "Checkbox group: party supplies",
+  "description": "An example of Checkbox group: party supplies.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/checkbox-group",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/checkbox-group-party.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { CheckboxGroup } from \"../ui/checkbox-group\";\nimport { Form, FormActions } from \"../ui/field\";\n\nconst SUPPLIES = [\n  { value: \"cake\", label: \"Sheet cake\", meta: \"$38\" },\n  { value: \"balloons\", label: \"Balloons\", meta: \"$12\" },\n  { value: \"streamers\", label: \"Streamers\", description: \"Not red. Angela was clear.\", meta: \"$6\" },\n  { value: \"plates\", label: \"Plates and forks\", meta: \"$9\" },\n];\n\nexport function PartySupplies() {\n  const [sent, setSent] = useState<string | null>(null);\n\n  return (\n    <Form\n      className=\"max-w-[420px]\"\n      onFormSubmit={(v) => {\n        const n = (v[\"supplies\"] as string[]).length;\n        setSent(`List sent to Angela: ${n} ${n === 1 ? \"item\" : \"items\"}.`);\n      }}\n    >\n      <CheckboxGroup\n        name=\"supplies\"\n        legend=\"For Meredith's birthday, buy\"\n        options={SUPPLIES}\n        validate={(value) => ((value as string[]).length ? null : \"Pick at least one. The party is at 3.\")}\n      />\n      <FormActions>\n        <Button type=\"submit\" variant=\"primary\">\n          Send to Angela\n        </Button>\n      </FormActions>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {sent}\n      </p>\n    </Form>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/checkbox-group-party.tsx"
+    }
+  ],
+  "categories": [
+    "checkbox-group"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,526 @@
+{
+  "name": "date-picker",
+  "title": "Date picker",
+  "description": "Single-date calendar and picker on react-day-picker, sharing the range calendar's look, wording and bounds; the chosen day floods ink. DateTimePicker adds a time row (a TimeField cell, 24- or 12-hour, with optional minTime/maxTime) under the calendar.",
+  "whenToUse": "Use it to choose one day, or a day and time, from a calendar docked to its field. For a first and last day use Date range; for a time alone use Time field.",
+  "parts": [
+    {
+      "name": "Calendar",
+      "description": "Single-date calendar on react-day-picker, with RangeCalendar's look, locale wording and bounds. The chosen day is the current choice among exclusive options, so it floods INK; today is underlined; unavailable days are hatched, disabled and skipped by the arrow keys.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isDateUnavailable",
+          "type": "Unavailable",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "\"en-GB\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onEscape",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": "Escape inside the grid (lets a popover close)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(d: Date) => void",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "today",
+          "type": "Date",
+          "default": "sod(new Date())",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "Date",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "number",
+          "default": "1",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DatePicker",
+      "description": "Trigger field (calendar affix · formatted date) + the calendar docked to the field frame, built from the parts.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "Date",
+          "default": "null",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isDateUnavailable",
+          "type": "Unavailable",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame; the label is visually hidden."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Submitted with a form, as YYYY-MM-DD."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(d: Date) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "\"Choose a date\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "presets",
+          "type": "{ label: string; date: () => Date; }[]",
+          "default": "[]",
+          "required": false,
+          "description": "Quick choices shown as a row of cells under the calendar (\"Today\", \"Next Monday\")."
+        },
+        {
+          "name": "today",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": "The chosen day. Controlled with `value` + `onValueChange`, or uncontrolled from `defaultValue`."
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DatePickerAffix",
+      "description": "The calendar glyph's cell at the trigger's start (hidden from assistive tech). Children replace the glyph.",
+      "props": []
+    },
+    {
+      "name": "DatePickerClose",
+      "description": "Closes the popup (DateTimePicker's Done): a key cell at the end of a row.",
+      "props": []
+    },
+    {
+      "name": "DatePickerPopup",
+      "description": "The calendar's surface: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. It docks to the trigger (seven days wide, or the trigger's width when the two are within --kl-snap) and carries the configuration (density, motion, theme, dir) of the place it is written. Focus lands on the grid's day.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "The frame the popup docks to: `cell` when the trigger has `layout=\"cell\"`."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<PopoverPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Popover.Portal."
+        }
+      ]
+    },
+    {
+      "name": "DatePickerPreset",
+      "description": "One quick choice: a key cell (its label travels under a press).",
+      "props": []
+    },
+    {
+      "name": "DatePickerPresets",
+      "description": "A row of quick choices under the calendar.",
+      "props": []
+    },
+    {
+      "name": "DatePickerTrigger",
+      "description": "The trigger: a field frame of cells (pass the affix and the value; a Field's ! cell first). `layout=\"cell\"`: a cell of an enclosing frame. The look is DateRangePicker's (`pickerStyles`).",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DatePickerValue",
+      "description": "The value cell: the chosen day, or the placeholder.",
+      "props": [
+        {
+          "name": "placeholder",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Shown, in the placeholder's ink, while there are no children."
+        }
+      ]
+    },
+    {
+      "name": "DateTimePicker",
+      "description": "A day and a time of day in one field: the DatePicker's trigger and docked calendar, with a time row (TimeField as a cell, and Done) under the calendar. Pickup ┌────┬───────────────────────────────┐ │ ▦ │ Thu 12 Nov 2026, 14:30 CET │ trigger: affix · date and time ├────┴───────────────────────────────┤ │ calendar … │ ├──────┬─────────────────────┬───────┤ │ Time │ 14 : 30 CET │ Done │ time row └──────┴─────────────────────┴───────┘ - Choosing a day keeps the popup open (the time is still to set) and keeps the time already chosen (or `defaultTime`). Changes apply as they are made; Done, Escape or a press outside closes, and focus returns to the trigger. - Keyboard: the calendar's grid keys; Tab moves grid → presets → hours → minutes (→ period) → Done. Delete or Backspace on the closed trigger clears the value (unless `required`). - A time typed before any day is held and given to the day chosen next. A part cleared while editing leaves the last complete time in place. - Field: Base UI Field.Root; `name` submits local \"YYYY-MM-DDTHH:MM\"; `required` (\"Choose a date and time.\"), `validate`, `invalid`, `error` and the Form's server errors show under the frame, with the ! cell in the trigger.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultMonth",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultTime",
+          "type": "string",
+          "default": "\"09:00\"",
+          "required": false,
+          "description": "Time given to a day chosen before any time (default \"09:00\", or `minTime` when that is later)."
+        },
+        {
+          "name": "defaultValue",
+          "type": "Date",
+          "default": "null",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "doneLabel",
+          "type": "string",
+          "default": "\"Done\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "hourCycle",
+          "type": "12 | 24",
+          "default": "24",
+          "required": false,
+          "description": "24 (default) or 12 with a day-period part; also how the trigger prints the time."
+        },
+        {
+          "name": "isDateUnavailable",
+          "type": "Unavailable",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isTimeUnavailable",
+          "type": "(day: Date, time: string) => string | boolean | undefined",
+          "default": "",
+          "required": false,
+          "description": "A booked or closed time on a day: true, or a short reason (\"booked\"). With `slots`, the slot is hatched, disabled and skipped by the arrows, its name ends \"unavailable (reason)\", and a day with no slot left is unavailable in the calendar (\"fully booked\"). Without `slots`, a typed time it returns true for is invalid with `unavailableMessage`."
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "maxTime",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "minTime",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Earliest and latest time of day (\"HH:MM\", 24-hour), on every day. The time cell's arrows stay inside; a typed time outside is invalid (on the time cell and the field) with `rangeMessage`."
+        },
+        {
+          "name": "minuteStep",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Submitted with a form as local \"YYYY-MM-DDTHH:MM\" (or \"\" when empty)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(d: Date | null) => void",
+          "default": "",
+          "required": false,
+          "description": "Called on every complete change (a day, a time, a preset), and with null when cleared."
+        },
+        {
+          "name": "placeholder",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "\"Choose a date and time\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "presets",
+          "type": "{ label: string; date: () => Date; }[]",
+          "default": "[]",
+          "required": false,
+          "description": "Quick choices under the calendar. A preset whose time is midnight keeps the chosen time; any other time is used as given."
+        },
+        {
+          "name": "rangeMessage",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "slots",
+          "type": "string[] | ((day: Date) => string[])",
+          "default": "",
+          "required": false,
+          "description": "Offered times (\"HH:MM\", 24-hour), the same every day or per day. Given, the time row becomes a list of slots to choose from (a radio group) instead of the typed time cell."
+        },
+        {
+          "name": "timeLabel",
+          "type": "string",
+          "default": "\"Time\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "today",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "unavailableMessage",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "Date",
+          "default": "",
+          "required": false,
+          "description": "The chosen moment (local time). Controlled with `value` + `onValueChange`, or uncontrolled from `defaultValue`."
+        },
+        {
+          "name": "weekStartsOn",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "zone",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Zone affix printed in the time cell and the trigger (\"CET\"). Values are local times; this is a label."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-flood",
+      "values": [
+        "manual"
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-on",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "calendar",
+        "date-picker",
+        "date-picker-close",
+        "date-picker-placeholder",
+        "date-picker-popup",
+        "date-picker-trigger",
+        "date-time-picker",
+        "date-time-picker-slot",
+        "date-time-picker-slot-status",
+        "date-time-picker-slots",
+        "date-time-picker-text",
+        "date-time-picker-time",
+        "date-time-picker-time-label",
+        "date-time-picker-zone"
+      ]
+    },
+    {
+      "name": "data-unavailable",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "date-picker-delivery",
+      "title": "Date picker: delivery day",
+      "file": "date-picker-delivery.tsx"
+    },
+    {
+      "name": "date-picker-meeting",
+      "title": "Date picker: client meeting",
+      "file": "date-picker-meeting.tsx"
+    }
+  ]
+}

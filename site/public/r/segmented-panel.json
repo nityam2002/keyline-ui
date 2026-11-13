@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-panel",
+  "title": "Segmented control: leaderboard",
+  "description": "An example of Segmented control: leaderboard.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/segmented"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/segmented-panel.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Panel, PanelBody, PanelHeader } from \"../ui/panel\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\n\nconst BOARD = [\n  { rep: \"Dwight Schrute\", sales: 41, calls: 212 },\n  { rep: \"Jim Halpert\", sales: 33, calls: 148 },\n  { rep: \"Phyllis Vance\", sales: 28, calls: 131 },\n  { rep: \"Stanley Hudson\", sales: 26, calls: 64 },\n];\n\nexport function Leaderboard() {\n  const [by, setBy] = useState<\"sales\" | \"calls\">(\"sales\");\n  const rows = [...BOARD].sort((a, b) => b[by] - a[by]);\n\n  return (\n    <Panel className=\"max-w-[440px]\">\n      <PanelHeader\n        title=\"This month\"\n        actions={\n          <Segmented\n            layout=\"cell\"\n            size=\"compact\"\n            aria-label=\"Rank by\"\n            value={by}\n            onValueChange={(v) => setBy(v as \"sales\" | \"calls\")}\n          >\n            <SegmentedItem value=\"sales\">Sales</SegmentedItem>\n            <SegmentedItem value=\"calls\">Calls</SegmentedItem>\n          </Segmented>\n        }\n      />\n      <PanelBody>\n        <ol className=\"m-0 grid list-none gap-1 p-0 text-[14px]\" aria-label={`Ranked by ${by}`}>\n          {rows.map((r, i) => (\n            <li key={r.rep}>\n              <span className=\"grid grid-cols-[1.5rem_minmax(0,1fr)_auto] gap-x-2\">\n                <span className=\"font-kl-mono text-kl-ink-3\">{i + 1}</span>\n                <span className=\"truncate\">{r.rep}</span>\n                <span className=\"text-kl-ink-2 tabular-nums\">\n                  {r[by]} {by}\n                </span>\n              </span>\n            </li>\n          ))}\n        </ol>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/segmented-panel.tsx"
+    }
+  ],
+  "categories": [
+    "segmented"
+  ],
+  "type": "registry:block"
+}

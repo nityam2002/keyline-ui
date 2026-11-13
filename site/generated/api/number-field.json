@@ -1,0 +1,157 @@
+{
+  "name": "number-field",
+  "title": "Number field",
+  "description": "A number in a field frame with stepper key cells and a unit cell: Base UI NumberField (locale parsing, hold-to-repeat, min/max) inside a Field.",
+  "whenToUse": "Use it to enter a number with step buttons and a unit. For a value on a scale dragged by hand use Slider.",
+  "parts": [
+    {
+      "name": "NumberField",
+      "description": "A number in a field frame, with stepper cells, built from the parts above. - Arrow Up/Down step, Shift+Arrow takes `largeStep`, Alt+Arrow `smallStep`, Page Up/Down the large step, Home/End jump to min/max. Typing is parsed in the field's locale; the value commits on blur or Enter. - The steppers are not in the Tab order (Base UI): the input is the one stop, the keys do the stepping. - It is a Base UI Field: a Form collects the value under `name`, and `validate`, `invalid` and the Form's `errors` print under the frame.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "decrementLabel",
+          "type": "string",
+          "default": "\"Decrease\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "incrementLabel",
+          "type": "string",
+          "default": "\"Increase\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "Visible label (visually hidden with layout=\"cell\")."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden)."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "steppers",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": "Stepper cells (− and +). Off for a field where stepping makes no sense (an order number, a postcode is not a number field at all)."
+        },
+        {
+          "name": "unit",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Unit printed in an affix cell after the number, in the Code voice (\"kg\", \"%\", \"pallets\")."
+        }
+      ]
+    },
+    {
+      "name": "NumberFieldDecrement",
+      "description": "The − key cell. Base UI repeats while held and disables it at `min`; it is not in the Tab order.",
+      "props": []
+    },
+    {
+      "name": "NumberFieldGroup",
+      "description": "The frame of cells: the attention cell (inserted at its start, open while the field is invalid), then its children. `layout=\"cell\"`: the frame is a cell of an enclosing frame (no border of its own).",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "NumberFieldIncrement",
+      "description": "The + key cell. Base UI repeats while held and disables it at `max`; it is not in the Tab order.",
+      "props": []
+    },
+    {
+      "name": "NumberFieldInput",
+      "description": "The input cell: end-aligned with tabular figures, so the digits stay put while the value steps. A number keeps its sign where it belongs in RTL (\"-18\", not \"18-\"): the text is laid out as its own paragraph while the alignment still follows the page.",
+      "props": []
+    },
+    {
+      "name": "NumberFieldRoot",
+      "description": "Base UI's NumberField.Root: value, `min`/`max`, `step` (`largeStep`, `smallStep`), `format` and `locale` (Intl.NumberFormat), hold-to-repeat, form value (`name`). `onValueChange` gets Base UI's event details last.",
+      "props": []
+    },
+    {
+      "name": "NumberFieldUnit",
+      "description": "The unit cell after the input, in the Code voice (\"kg\", \"%\", \"pallets\"). It is a label, not part of the value; the seam between it and the input is the soft one, so the two read as one value. Its content is isolated, so a unit led by a neutral character (\"°C\") keeps its order in RTL.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-align",
+      "values": [
+        "end"
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "number-field",
+        "number-field-decrement",
+        "number-field-group",
+        "number-field-increment",
+        "number-field-input",
+        "number-field-root",
+        "number-field-unit"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-number-pad",
+      "values": [
+        "8px",
+        "var(--kl-inset)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "number-field-price",
+      "title": "Number field: unit price",
+      "file": "number-field-price.tsx"
+    },
+    {
+      "name": "number-field-reorder",
+      "title": "Number field: reorder",
+      "file": "number-field-reorder.tsx"
+    }
+  ]
+}

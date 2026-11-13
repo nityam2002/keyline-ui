@@ -1,0 +1,119 @@
+{
+  "name": "notice",
+  "title": "Notice",
+  "description": "Inline message: a tone cell with a glyph, the message, and action cells; folds away; narrow layout drops actions to their own row.",
+  "whenToUse": "Use it for an inline message about something that is still true where it sits, such as a warning on a form. For something that just happened use Toast.",
+  "parts": [
+    {
+      "name": "Notice",
+      "description": "An inline message about the place it sits in. One frame: a signal cell carrying the tone's glyph (shape, not only colour), the message, and its actions as cells. It never floats: a toast is a record of something that happened; a notice describes a condition that is still true. The frame (data-slot=\"notice\") takes the props; it sits in a fold (data-slot=\"notice-root\") that `open` unfolds from the top keyline.",
+      "props": [
+        {
+          "name": "actions",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Actions: Buttons with layout=\"cell\". They share the notice's keylines and wrap below on narrow widths."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "dismissLabel",
+          "type": "string",
+          "default": "\"Dismiss\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a row of an enclosing frame (top of a panel, above a table)."
+        },
+        {
+          "name": "live",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "Announce when it appears. Use for results of something the user just did, not for page furniture."
+        },
+        {
+          "name": "onDismiss",
+          "type": "() => void",
+          "default": "",
+          "required": false,
+          "description": "Renders a close cell."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": "false folds the notice back to its top keyline (and makes it inert); true unfolds it."
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "type": "\"done\" | \"attention\" | \"info\" | \"neutral\"",
+          "default": "\"info\"",
+          "required": false,
+          "description": "info: cobalt, \"i\" · done: the working-set yellow, ✓ · attention: red, ! · neutral: ink rule, no fill"
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": [
+        "done",
+        "none"
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "notice",
+        "notice-actions",
+        "notice-content",
+        "notice-description",
+        "notice-dismiss",
+        "notice-root",
+        "notice-signal",
+        "notice-title"
+      ]
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "notice-stock",
+      "title": "Notice: paper stock",
+      "file": "notice-stock.tsx"
+    }
+  ]
+}

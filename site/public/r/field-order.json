@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field-order",
+  "title": "Field: new order",
+  "description": "An example of Field: new order.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/field-order.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Field,\n  FieldAffix,\n  FieldDescription,\n  FieldError,\n  FieldFrame,\n  FieldControl,\n  FieldLabel,\n  FieldTextarea,\n  Form,\n  FormActions,\n} from \"../ui/field\";\n\nconst IN_STOCK = 480;\n\nexport function NewOrder() {\n  const [placed, setPlaced] = useState<string | null>(null);\n\n  return (\n    <Form\n      orientation=\"responsive\"\n      onFormSubmit={(v) => {\n        const cases = Number(v[\"cases\"]);\n        setPlaced(\n          `Order DM-4142 placed: ${cases} ${cases === 1 ? \"case\" : \"cases\"} for ${v[\"client\"]}. Darryl has the note.`,\n        );\n      }}\n    >\n      <Field name=\"client\">\n        <FieldLabel>Client</FieldLabel>\n        <FieldFrame>\n          <FieldControl required defaultValue=\"Scranton Business Park\" autoComplete=\"organization\" />\n        </FieldFrame>\n        <FieldError match=\"valueMissing\">Who is the order for?</FieldError>\n      </Field>\n      <Field\n        name=\"cases\"\n        validate={(value) =>\n          Number(value) > IN_STOCK ? `The warehouse has ${IN_STOCK} cases. Split the order or ask Darryl.` : null\n        }\n      >\n        <FieldLabel>Quantity</FieldLabel>\n        <FieldFrame>\n          <FieldControl type=\"number\" inputMode=\"numeric\" min={1} required defaultValue=\"40\" align=\"end\" />\n          <FieldAffix>cases</FieldAffix>\n        </FieldFrame>\n        <FieldDescription>20 lb copy paper, 10 reams to a case.</FieldDescription>\n        <FieldError />\n      </Field>\n      <Field name=\"note\">\n        <FieldLabel>Delivery note</FieldLabel>\n        <FieldFrame>\n          <FieldTextarea rows={3} placeholder=\"Loading dock is round the back.\" />\n        </FieldFrame>\n        <FieldDescription>Darryl reads this before he loads the truck.</FieldDescription>\n      </Field>\n      <FormActions>\n        <Button type=\"submit\" variant=\"primary\">\n          Place order\n        </Button>\n      </FormActions>\n      <p role=\"status\" data-kl-span=\"control\" className=\"min-h-5 text-[14px] text-kl-ink-2\">\n        {placed ?? \"Try 500 cases, or clear the client.\"}\n      </p>\n    </Form>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/field-order.tsx"
+    }
+  ],
+  "categories": [
+    "field"
+  ],
+  "type": "registry:block"
+}

@@ -2,11 +2,12 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { siteFile } from "./source";
+import changelog from "./changelog.json";
 
 /*
  * When a docs page last changed, for the sitemap's lastModified. A component's date is its registry item's
  * `updated` (an ISO date in src/registry/keyline/**\/<item>.meta.ts, Phase 13); an item without one, and a guide,
- * fall back to git's last commit date of the meta or the page source. No date at all (a shallow clone, a tarball)
+ * fall back to git's last commit date of the meta or the page source; the changelog page takes its newest release. No date at all (a shallow clone, a tarball)
  * gives undefined, and the sitemap leaves the field out rather than claim the build date.
  */
 
@@ -49,6 +50,8 @@ export function gitDate(file: string): string | undefined {
 export function pageModified(page: { href: string; item?: string }): Date | undefined {
   const meta = page.item ? metaFile(page.item) : undefined;
   const source = path.join(/*turbopackIgnore: true*/ ROOT, "site/app", page.href, "page.tsx");
-  const iso = (meta && (metaUpdated(meta) ?? gitDate(meta))) ?? gitDate(source);
+  // the changelog page changes when a release is added to it
+  const release = page.href === "/docs/changelog" ? changelog.releases[0]?.date : undefined;
+  const iso = release ?? (meta && (metaUpdated(meta) ?? gitDate(meta))) ?? gitDate(source);
   return iso ? new Date(iso) : undefined;
 }

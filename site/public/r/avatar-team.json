@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-team",
+  "title": "Avatar: account team",
+  "description": "An example of Avatar: account team.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/avatar",
+    "@keyline-ui/checkbox-group",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/avatar-team.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Avatar, AvatarGroup } from \"../ui/avatar\";\nimport { CheckboxGroup } from \"../ui/checkbox-group\";\n\nconst STAFF = [\n  { value: \"dwight\", label: \"Dwight Schrute\", photo: \"/avatars/dwight-schrute.svg\" },\n  { value: \"jim\", label: \"Jim Halpert\", photo: \"/avatars/jim-halpert.svg\" },\n  { value: \"phyllis\", label: \"Phyllis Vance\", photo: \"/avatars/phyllis-vance.svg\" },\n  { value: \"stanley\", label: \"Stanley Hudson\", photo: \"/avatars/stanley-hudson.svg\" },\n  { value: \"andy\", label: \"Andy Bernard\", photo: \"/avatars/andy-bernard.svg\" },\n  { value: \"pam\", label: \"Pam Beesly\", photo: \"/avatars/pam-beesly.svg\" },\n];\n\nexport function AccountTeam() {\n  const [team, setTeam] = useState([\"dwight\", \"jim\", \"phyllis\"]);\n  const people = STAFF.filter((s) => team.includes(s.value));\n\n  return (\n    <div className=\"grid gap-5 sm:grid-cols-[1fr_auto] sm:items-start\">\n      <CheckboxGroup\n        legend=\"Lackawanna County account\"\n        description=\"Who gets the county's orders and calls.\"\n        options={STAFF}\n        value={team}\n        onValueChange={setTeam}\n      />\n      <div className=\"grid gap-2 sm:justify-items-end\">\n        <span className=\"text-[13px] font-semibold text-kl-ink-2\">On the account</span>\n        {people.length ? (\n          <AvatarGroup label=\"On the Lackawanna County account\" max={4}>\n            {people.map((p) => (\n              <Avatar key={p.value} name={p.label} src={p.photo} />\n            ))}\n          </AvatarGroup>\n        ) : (\n          <span className=\"text-[14px] text-kl-ink-3\">Nobody yet</span>\n        )}\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/avatar-team.tsx"
+    }
+  ],
+  "categories": [
+    "avatar"
+  ],
+  "type": "registry:block"
+}

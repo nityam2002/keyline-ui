@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-icon",
+  "title": "Toggle: pin client",
+  "description": "An example of Toggle: pin client.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/toggle"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toggle-icon.tsx",
+      "content": "\"use client\";\n\nimport { Pin } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { Toggle } from \"../ui/toggle\";\n\nexport function PinClient() {\n  const [pinned, setPinned] = useState(true);\n\n  return (\n    <div className=\"flex flex-wrap items-center gap-3\">\n      <Toggle icon pressed={pinned} onPressedChange={setPinned} aria-label=\"Pin to my clients\">\n        <Pin size={16} aria-hidden=\"true\" />\n      </Toggle>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        Blue Cross of Pennsylvania{\" \"}\n        {pinned ? \"is pinned to the top of Stanley’s clients.\" : \"is back in alphabetical order.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toggle-icon.tsx"
+    }
+  ],
+  "categories": [
+    "toggle"
+  ],
+  "type": "registry:block"
+}

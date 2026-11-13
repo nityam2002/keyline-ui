@@ -214,7 +214,6 @@ For sizes, fonts and weights, write the arbitrary-variable form instead of the n
     the class it guards, then restore it. A guard that compares
     parts with each other can pass on broken code (size-contained stats with no flex basis all collapse to the same
     width); assert the expected value.
-  - Remove the component's entries from `tests/parts/known-failures.ts`.
 - **Page specs** select by `data-slot` and roles, never by the removed `kl-` classes. Run them in Chromium and WebKit.
 - `pnpm test` checks that every `--kl-*` a part reads, including the `(--kl-x)` forms, is defined.
 - **Parity** is proven with screenshots: see [Visual parity](#visual-parity) below. A style guard is no longer

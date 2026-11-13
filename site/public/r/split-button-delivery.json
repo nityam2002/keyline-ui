@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "split-button-delivery",
+  "title": "Split button: book delivery",
+  "description": "An example of Split button: book delivery.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/menu",
+    "@keyline-ui/split-button"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/split-button-delivery.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { MenuItem, MenuSeparator } from \"../ui/menu\";\nimport {\n  SplitButton,\n  SplitButtonAction,\n  SplitButtonMenu,\n  SplitButtonPopup,\n  SplitButtonTrigger,\n} from \"../ui/split-button\";\n\nexport function BookDelivery() {\n  const [booked, setBooked] = useState<string | null>(null);\n\n  return (\n    <div className=\"grid gap-4\">\n      <p className=\"m-0 text-[14px]\">\n        Order <span className=\"font-kl-mono whitespace-nowrap\">DM-4120</span> · Wilkes-Barre Library · 6 cases, recycled\n        bond\n      </p>\n      <SplitButton variant=\"primary\" className=\"justify-self-start\">\n        <SplitButtonAction onClick={() => setBooked(\"Booked on Darryl’s next truck, today at 2 PM.\")}>\n          Book delivery\n        </SplitButtonAction>\n        <SplitButtonMenu>\n          <SplitButtonTrigger aria-label=\"Other ways to deliver\" />\n          <SplitButtonPopup>\n            <MenuItem onClick={() => setBooked(\"Booked for tomorrow, 8 AM. The library opens at 9.\")}>\n              Tomorrow morning\n            </MenuItem>\n            <MenuItem onClick={() => setBooked(\"Held at the branch. Pam will call when it’s at reception.\")}>\n              Customer pickup at the branch\n            </MenuItem>\n            <MenuSeparator />\n            <MenuItem\n              description=\"Half today, half on Friday\"\n              onClick={() => setBooked(\"Split: 3 cases today, 3 cases Friday.\")}\n            >\n              Split across two trucks\n            </MenuItem>\n          </SplitButtonPopup>\n        </SplitButtonMenu>\n      </SplitButton>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {booked ?? \"Not booked yet. The warehouse closes at 5.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/split-button-delivery.tsx"
+    }
+  ],
+  "categories": [
+    "split-button"
+  ],
+  "type": "registry:block"
+}

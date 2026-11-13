@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-office",
+  "title": "Command menu: office commands",
+  "description": "An example of Command menu: office commands.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/command",
+    "@keyline-ui/kbd",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/command-office.tsx",
+      "content": "\"use client\";\n\nimport { useEffect, useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  CommandDialog,\n  CommandEmpty,\n  CommandFooter,\n  CommandGroup,\n  CommandInput,\n  CommandItem,\n  CommandList,\n} from \"../ui/command\";\nimport { Kbd, KbdGroup } from \"../ui/kbd\";\n\nconst PAGES = [\"Orders\", \"Clients\", \"Invoices\", \"Warehouse\"];\n\nexport function OfficeCommands() {\n  const [open, setOpen] = useState(false);\n  const [q, setQ] = useState(\"\");\n  const [last, setLast] = useState(\"Nothing run yet.\");\n\n  // ⌘K or Ctrl+K opens it from anywhere on the page\n  useEffect(() => {\n    const onKey = (e: KeyboardEvent) => {\n      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === \"k\") {\n        e.preventDefault();\n        setOpen((o) => !o);\n      }\n    };\n    window.addEventListener(\"keydown\", onKey);\n    return () => window.removeEventListener(\"keydown\", onKey);\n  }, []);\n\n  const run = (said: string) => () => {\n    setOpen(false);\n    setQ(\"\");\n    setLast(said);\n  };\n\n  return (\n    <div className=\"grid gap-4\">\n      <div className=\"flex flex-wrap items-center gap-3\">\n        <Button onClick={() => setOpen(true)}>Commands</Button>\n        <span className=\"text-[14px] text-kl-ink-2\">\n          or press{\" \"}\n          <KbdGroup>\n            <Kbd>Ctrl</Kbd>\n            <Kbd>K</Kbd>\n          </KbdGroup>\n        </span>\n      </div>\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {last}\n      </p>\n      <CommandDialog open={open} onOpenChange={(o) => (setOpen(o), o || setQ(\"\"))}>\n        <CommandInput placeholder=\"Type a command or a client…\" value={q} onValueChange={setQ} />\n        <CommandList>\n          <CommandEmpty query={q}>Try “order”, “call” or a client.</CommandEmpty>\n          <CommandGroup heading=\"Go to\">\n            {PAGES.map((p) => (\n              <CommandItem key={p} value={`go to ${p}`} onSelect={run(`Opened ${p}.`)}>\n                {p}\n              </CommandItem>\n            ))}\n          </CommandGroup>\n          <CommandGroup heading=\"Actions\">\n            <CommandItem value=\"new order\" shortcut=\"N\" onSelect={run(\"Started a new order.\")}>\n              New order\n            </CommandItem>\n            <CommandItem value=\"call lackawanna county\" meta=\"Dwight\" onSelect={run(\"Calling Lackawanna County.\")}>\n              Call Lackawanna County\n            </CommandItem>\n            <CommandItem value=\"print invoices\" onSelect={run(\"Sent 40 invoices to the printer.\")}>\n              Print today&apos;s invoices\n            </CommandItem>\n            <CommandItem value=\"order from stamford\" disabled>\n              Order from Stamford (closed)\n            </CommandItem>\n          </CommandGroup>\n        </CommandList>\n        <CommandFooter>\n          <span>\n            <Kbd>↑↓</Kbd> move\n          </span>\n          <span>\n            <Kbd>↵</Kbd> run\n          </span>\n          <span>\n            <Kbd>⌥1–9</Kbd> run by number\n          </span>\n        </CommandFooter>\n      </CommandDialog>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/command-office.tsx"
+    }
+  ],
+  "categories": [
+    "command"
+  ],
+  "type": "registry:block"
+}

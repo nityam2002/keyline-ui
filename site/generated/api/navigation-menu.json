@@ -1,0 +1,150 @@
+{
+  "name": "navigation-menu",
+  "title": "Navigation menu",
+  "description": "Site navigation (Base UI Navigation Menu): a control frame of section triggers and links, the open trigger inverse, the current page cobalt; each section's panel docks to the frame's keyline with link cells on shared seams (title, description, code).",
+  "whenToUse": "Use it for a website's navigation where sections open a panel of links. For an app's own sections use Nav; for an app's commands use Menubar.",
+  "parts": [
+    {
+      "name": "NavigationMenu",
+      "description": "The root with its popup in place: the list goes inside, the panel docks under it.",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuCard",
+      "description": "A link cell in a panel: title, description, code. `active` marks the current page.",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "A Code-voice identifier at the cell's end (a service code, a terminal code)."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "NavigationMenuContent",
+      "description": "A section's panel content; it swaps in place inside the popup.",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuGrid",
+      "description": "The panel's links as cells on shared seams: two columns where there is room, one where there is not. Each cell draws its end and bottom keylines; the grid's negative end and bottom margins hide the last ones.",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuItem",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuLink",
+      "description": "A top-level link cell (no panel). `active` marks the current page (aria-current=\"page\", cobalt).",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuList",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuPopup",
+      "description": "The panel: Base UI's Portal, Positioner, Popup and Viewport in one part, with the positioner's placement props lifted. Docked to the frame (the list), not the open trigger: the trigger sits inside the frame's k2 border, so a trigger-anchored panel ran k2 inside the frame's edge. On the frame, the panel's top border lies on the frame's bottom border (sideOffset -k2) and their outer start edges coincide; the panel stays put between sections and never animates its size. It carries the configuration of the place it is written.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<NavigationMenuPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's NavigationMenu.Portal."
+        }
+      ]
+    },
+    {
+      "name": "NavigationMenuRoot",
+      "description": "The root: Base UI's NavigationMenu.Root, told the DOM's reading direction.",
+      "props": []
+    },
+    {
+      "name": "NavigationMenuTrigger",
+      "description": "",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "navigation-menu",
+        "navigation-menu-card",
+        "navigation-menu-card-code",
+        "navigation-menu-card-description",
+        "navigation-menu-card-title",
+        "navigation-menu-content",
+        "navigation-menu-grid",
+        "navigation-menu-grid-item",
+        "navigation-menu-icon",
+        "navigation-menu-item",
+        "navigation-menu-link",
+        "navigation-menu-list",
+        "navigation-menu-popup",
+        "navigation-menu-trigger",
+        "navigation-menu-viewport"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-attach",
+      "values": [
+        "\"2px\""
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "navigation-menu-site",
+      "title": "Navigation menu: paper site nav",
+      "file": "navigation-menu-site.tsx"
+    }
+  ]
+}

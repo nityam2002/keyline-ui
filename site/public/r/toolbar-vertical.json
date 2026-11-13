@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar-vertical",
+  "title": "Toolbar: floor plan tools",
+  "description": "An example of Toolbar: floor plan tools.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/toolbar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toolbar-vertical.tsx",
+      "content": "\"use client\";\n\nimport { Minus, MousePointer2, Move, Plus, Ruler } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { Toolbar, ToolbarButton, ToolbarToggle, ToolbarToggleGroup } from \"../ui/toolbar\";\n\nexport function FloorPlanTools() {\n  const [tool, setTool] = useState<string[]>([\"pointer\"]);\n  const [zoom, setZoom] = useState(100);\n\n  return (\n    <div className=\"flex items-start gap-3\">\n      <Toolbar orientation=\"vertical\" aria-label=\"Warehouse floor plan tools\">\n        <ToolbarToggleGroup\n          aria-label=\"Tool\"\n          multiple={false}\n          value={tool}\n          onValueChange={(v) => v.length && setTool(v)}\n        >\n          <ToolbarToggle icon value=\"pointer\" aria-label=\"Select\">\n            <MousePointer2 size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"pan\" aria-label=\"Pan\">\n            <Move size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n          <ToolbarToggle icon value=\"measure\" aria-label=\"Measure\">\n            <Ruler size={16} aria-hidden=\"true\" />\n          </ToolbarToggle>\n        </ToolbarToggleGroup>\n        <ToolbarButton icon aria-label=\"Zoom in\" disabled={zoom >= 200} onClick={() => setZoom((z) => z + 25)}>\n          <Plus size={16} aria-hidden=\"true\" />\n        </ToolbarButton>\n        <ToolbarButton icon aria-label=\"Zoom out\" disabled={zoom <= 50} onClick={() => setZoom((z) => z - 25)}>\n          <Minus size={16} aria-hidden=\"true\" />\n        </ToolbarButton>\n      </Toolbar>\n      <p role=\"status\">\n        Tool: {tool[0]} · zoom {zoom}%\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toolbar-vertical.tsx"
+    }
+  ],
+  "categories": [
+    "toolbar"
+  ],
+  "type": "registry:block"
+}

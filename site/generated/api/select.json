@@ -1,0 +1,223 @@
+{
+  "name": "select",
+  "title": "Select",
+  "description": "Single select: field-frame trigger with a caret cell; the list docks to the frame. Options form (with groups) or parts named as Base UI names them (SelectRoot, SelectTrigger, SelectValue, SelectPopup, SelectItem, SelectGroup, SelectSeparator …).",
+  "whenToUse": "Use it to choose one option from a list that docks under its field. For long lists to filter by typing use Combobox; on phones and for autofill use Native select.",
+  "parts": [
+    {
+      "name": "Select",
+      "description": "Single select from an options list, built from the parts above. Options with a `group` are listed under headings. For custom rows, separators or groups you build yourself, compose the parts instead. The trigger's accessible name always carries the full value; option labels wrap in the list. Behaviour, keyboard, typeahead, form participation (`name`, `required`) and controlled/uncontrolled state are Base UI Select's; `onValueChange` receives Base UI's event details (the reason, the event) after the value. The wrapper is a Base UI Field.Root: a Form collects the value under `name`, and the Form's `errors`, `validate` and `required` produce the message under the frame.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the list's portal renders (defaults to <body>)."
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (the label is visually hidden)."
+        },
+        {
+          "name": "options",
+          "type": "Option[]",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "\"Choose…\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SelectGroup",
+      "description": "A run of options under one heading. A group after a group is divided by a seam.",
+      "props": []
+    },
+    {
+      "name": "SelectGroupLabel",
+      "description": "A group's heading, in the Code voice; the group's first option sits on its seam.",
+      "props": []
+    },
+    {
+      "name": "SelectIcon",
+      "description": "The caret cell: inverse while the list is open.",
+      "props": []
+    },
+    {
+      "name": "SelectItem",
+      "description": "One option: the mark cell, the label (wraps; the full text is always readable here) with an optional description, and an optional trailing code cell that never squeezes. The cursor is the inverse row. Disabled options stay reachable (they can be read) but can't be chosen.",
+      "props": [
+        {
+          "name": "code",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing code cell: ≤ 4 mono characters (an ID, a key)."
+        },
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SelectItemIndicator",
+      "description": "The chosen option's mark: the exclusive-choice square and dot, drawn with borders so it survives forced colours. Unchosen rows keep the cell empty.",
+      "props": []
+    },
+    {
+      "name": "SelectItemText",
+      "description": "The option's text: what the trigger shows once it is chosen.",
+      "props": []
+    },
+    {
+      "name": "SelectLabel",
+      "description": "The field's label. Inside `layout=\"cell\"` hide it (`className=\"kl-sr\"`); the trigger keeps the name.",
+      "props": []
+    },
+    {
+      "name": "SelectList",
+      "description": "The options' container inside the popup.",
+      "props": []
+    },
+    {
+      "name": "SelectPopup",
+      "description": "The list's surface: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. It docks to the frame (its shared edge on the frame's keyline, no cut), unfolds from that edge, is at least the owner's width (15rem only when the owner is clearly narrower), and carries the configuration (cut, density, motion, theme, dir) of the place it is written. Rows are separated by soft rules.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "The frame the list docks to: `cell` when the trigger has `layout=\"cell\"`."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<SelectPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Select.Portal."
+        }
+      ]
+    },
+    {
+      "name": "SelectScrollDownArrow",
+      "description": "Scrolls the list down while the pointer rests on it; shown only while there is more below.",
+      "props": []
+    },
+    {
+      "name": "SelectScrollUpArrow",
+      "description": "Scrolls the list up while the pointer rests on it; shown only while there is more above.",
+      "props": []
+    },
+    {
+      "name": "SelectSeparator",
+      "description": "A seam between options; the option after it draws no second rule.",
+      "props": []
+    },
+    {
+      "name": "SelectTrigger",
+      "description": "The trigger: a field frame of cells. It holds the attention cell a Field inserts when invalid, then its children (by default the value and the caret). Its own edge takes keyboard focus; open is the inverse caret cell, never a ring. `layout=\"cell\"`: it fills a cell of an enclosing frame instead of drawing its own.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SelectValue",
+      "description": "The value cell. A block, not a flex box: text-overflow applies only to a block's own line, so on a flex box the ellipsis never appeared and a long value pushed the caret cell. It is centred, not stretched, so the seam a Field draws after the attention cell would be a text-high red stub: the ! cell's red fill is already the edge there, and the value draws no start border (`border-s-0` outranks the Field's cell rule).",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "select",
+        "select-group",
+        "select-group-label",
+        "select-icon",
+        "select-item",
+        "select-item-code",
+        "select-item-indicator",
+        "select-item-label",
+        "select-item-text",
+        "select-label",
+        "select-list",
+        "select-popup",
+        "select-scroll-down-arrow",
+        "select-scroll-up-arrow",
+        "select-separator",
+        "select-trigger",
+        "select-value"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-dock-w",
+      "values": [
+        "15rem"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "select-assign",
+      "title": "Select: assign lead",
+      "file": "select-assign.tsx"
+    },
+    {
+      "name": "select-form",
+      "title": "Select: quote form",
+      "file": "select-form.tsx"
+    }
+  ]
+}

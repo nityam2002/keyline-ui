@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs-account",
+  "title": "Tabs: client account",
+  "description": "An example of Tabs: client account.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/tabs"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/tabs-account.tsx",
+      "content": "\"use client\";\n\nimport { Tabs, TabsList, TabsPanel, TabsTab } from \"../ui/tabs\";\n\nconst ORDERS = [\n  [\"DM-4107\", \"120 cases, copy paper\", \"Thu 12 Nov\"],\n  [\"DM-4126\", \"80 cases, copy paper\", \"Delivered\"],\n  [\"DM-4031\", \"20 cases, cardstock\", \"Delivered\"],\n];\n\nexport function ClientAccount() {\n  return (\n    <Tabs defaultValue=\"overview\">\n      <TabsList aria-label=\"Lackawanna County\">\n        <TabsTab value=\"overview\">Overview</TabsTab>\n        <TabsTab value=\"orders\" count={ORDERS.length}>\n          Orders\n        </TabsTab>\n        <TabsTab value=\"notes\">Notes</TabsTab>\n      </TabsList>\n      <TabsPanel value=\"overview\" className=\"grid gap-2 pt-4 text-[14px]\">\n        <p className=\"m-0\">\n          Lackawanna County has bought from the Scranton branch since 2003, through the purchasing office on North\n          Washington Avenue.\n        </p>\n        <p className=\"m-0 text-kl-ink-2\">Account rep: Dwight Schrute. Billing: Angela Martin.</p>\n      </TabsPanel>\n      <TabsPanel value=\"orders\" className=\"pt-4\">\n        <ul className=\"m-0 grid list-none gap-2 p-0 text-[14px]\">\n          {ORDERS.map(([id, what, when]) => (\n            <li key={id} className=\"grid grid-cols-[auto_1fr_auto] gap-3\">\n              <span className=\"font-kl-mono text-[13px]\">{id}</span>\n              <span>{what}</span>\n              <span className=\"text-kl-ink-2\">{when}</span>\n            </li>\n          ))}\n        </ul>\n      </TabsPanel>\n      <TabsPanel value=\"notes\" className=\"pt-4 text-[14px]\">\n        <p className=\"m-0\">\n          The new purchasing officer prefers calls to email. Deliveries go to the loading dock, not reception.\n        </p>\n      </TabsPanel>\n    </Tabs>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/tabs-account.tsx"
+    }
+  ],
+  "categories": [
+    "tabs"
+  ],
+  "type": "registry:block"
+}

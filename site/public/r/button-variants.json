@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-variants",
+  "title": "Button: expense review",
+  "description": "An example of Button: expense review.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/button-variants.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\n\ntype Decision = \"approved\" | \"receipt\" | \"skipped\" | \"rejected\" | null;\n\nexport function ExpenseReview() {\n  const [decision, setDecision] = useState<Decision>(null);\n  const result = {\n    approved: \"Approved. Accounting pays it with Friday's run.\",\n    receipt: \"Kevin has been asked for the receipt.\",\n    skipped: \"Skipped. It comes back to the top of tomorrow’s queue.\",\n    rejected: \"Rejected. Kevin gets a note from Angela.\",\n  };\n\n  return (\n    <div className=\"grid gap-4\">\n      <p className=\"m-0 text-[14px]\">\n        Kevin Malone · <span className=\"tabular-nums\">$14.99</span> · “Cookies for the 3 o’clock meeting”\n      </p>\n      <div className=\"flex flex-wrap gap-3\">\n        <Button variant=\"primary\" onClick={() => setDecision(\"approved\")}>\n          Approve\n        </Button>\n        <Button onClick={() => setDecision(\"receipt\")}>Ask for receipt</Button>\n        <Button variant=\"quiet\" onClick={() => setDecision(\"skipped\")}>\n          Skip\n        </Button>\n        <Button variant=\"destructive\" onClick={() => setDecision(\"rejected\")}>\n          Reject\n        </Button>\n      </div>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {decision ? result[decision] : \"Waiting for a decision.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/button-variants.tsx"
+    }
+  ],
+  "categories": [
+    "button"
+  ],
+  "type": "registry:block"
+}

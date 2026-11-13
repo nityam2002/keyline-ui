@@ -1,0 +1,193 @@
+{
+  "name": "scroll-area",
+  "title": "Scroll Area",
+  "description": "A native scroll container with Keyline scrollbars (Base UI Scroll Area): a bar is a cell on the region's edge, owning its seam; content is padded only while an axis overflows; corner cell for both bars; focusable viewport with an inset ring. The thumb reveals while its axis scrolls and when the pointer is on the bar, widens and darkens there, inks while held, then fades (overlay platforms; always shown where native bars take space, in forced colours and for more contrast).",
+  "whenToUse": "Use it for any region that scrolls inside a frame, keeping native scrolling with a drawn bar. For a conversation log use Message scroller.",
+  "parts": [
+    {
+      "name": "ScrollArea",
+      "description": "A native scroll container with Keyline scrollbars (Base UI Scroll Area), built from the parts above. Scrolling itself is the browser's: wheel, trackpad, touch momentum, keyboard and find-in-page all behave natively; Base UI hides the native bar and drives the thumb from the real scroll position. Construction: a scrollbar is a cell on the region's inline-end (or block-end) edge. It owns the 1px seam that divides it from the content; its thumb is a solid block inset 2px. Content is padded by the bar's width only while that axis overflows, so the bar never covers text. With both bars, the corner cell closes the L-junction. Bars render only while their axis overflows. Behaviour (after macOS overlay scrollbars): the cell stays, the thumb reveals inside it. Scrolling an axis shows its thumb slim at once; the pointer on the bar widens it to the cell and darkens it; holding it inks it. A short idle after the last of these, it fades; new input brings it back from wherever the fade is. Pressing the track lands the thumb under the pointer and keeps dragging.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Names the scrollable region. The viewport is focusable whenever it overflows (Base UI), so keyboard users can scroll content that has no focusable children; a name tells them what they are in. Give it when the region is not already labelled by its surroundings."
+        },
+        {
+          "name": "scrollbarVisibility",
+          "type": "\"system\" | \"scroll\" | \"always\"",
+          "default": "",
+          "required": false,
+          "description": "When a thumb shows (the bar's cell and seam are always there while its axis overflows). system (default): follow the platform. Where native scrollbars overlay content (macOS \"Automatically\", iOS, Android), the thumb shows while that axis scrolls, while the pointer is over the bar, and while it is held, then fades. Where native scrollbars take space (macOS \"Always\", Windows, a mouse on \"Automatically\"), it always shows. scroll: always behave like an overlay platform. always: always show. Forced colours and a request for more contrast always show it."
+        },
+        {
+          "name": "scrollbars",
+          "type": "\"horizontal\" | \"vertical\" | \"both\"",
+          "default": "\"vertical\"",
+          "required": false,
+          "description": "Which scrollbars the region has (ScrollAreaScrollbar parts to render). Default: vertical."
+        },
+        {
+          "name": "track",
+          "type": "\"cell\" | \"rail\"",
+          "default": "",
+          "required": false,
+          "description": "How a bar meets the region (declared, never inferred from ancestors). cell (default): the region is a frame or sits inside one; each bar is a cell on its edge with a 1px seam. rail: the region is not a frame (a page or a pane on the page background); a bar has no cell to belong to, so it is a 1px keyline rail with the solid thumb centred on it."
+        },
+        {
+          "name": "viewportClassName",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ScrollAreaBars",
+      "description": "The bars, thumbs and corner of a scroll area, as its root's `scrollbars` asks. Shared by ScrollArea and MessageScroller.",
+      "props": [
+        {
+          "name": "scrollbars",
+          "type": "\"horizontal\" | \"vertical\" | \"both\"",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ScrollAreaContent",
+      "description": "The content (Base UI ScrollArea.Content): what scrolls. Lay it out with `className`.",
+      "props": []
+    },
+    {
+      "name": "ScrollAreaCorner",
+      "description": "The corner (Base UI ScrollArea.Corner), where two bars meet.",
+      "props": []
+    },
+    {
+      "name": "ScrollAreaRoot",
+      "description": "The root (Base UI ScrollArea.Root): direction, construction attributes and the resolved reveal mode.",
+      "props": [
+        {
+          "name": "scrollbarVisibility",
+          "type": "\"system\" | \"scroll\" | \"always\"",
+          "default": "\"system\"",
+          "required": false,
+          "description": "When a thumb shows (the bar's cell and seam are always there while its axis overflows). system (default): follow the platform. Where native scrollbars overlay content (macOS \"Automatically\", iOS, Android), the thumb shows while that axis scrolls, while the pointer is over the bar, and while it is held, then fades. Where native scrollbars take space (macOS \"Always\", Windows, a mouse on \"Automatically\"), it always shows. scroll: always behave like an overlay platform. always: always show. Forced colours and a request for more contrast always show it."
+        },
+        {
+          "name": "scrollbars",
+          "type": "\"horizontal\" | \"vertical\" | \"both\"",
+          "default": "\"vertical\"",
+          "required": false,
+          "description": "Which scrollbars the region has (ScrollAreaScrollbar parts to render). Default: vertical."
+        },
+        {
+          "name": "track",
+          "type": "\"cell\" | \"rail\"",
+          "default": "\"cell\"",
+          "required": false,
+          "description": "How a bar meets the region (declared, never inferred from ancestors). cell (default): the region is a frame or sits inside one; each bar is a cell on its edge with a 1px seam. rail: the region is not a frame (a page or a pane on the page background); a bar has no cell to belong to, so it is a 1px keyline rail with the solid thumb centred on it."
+        }
+      ]
+    },
+    {
+      "name": "ScrollAreaScrollbar",
+      "description": "A scrollbar (Base UI ScrollArea.Scrollbar): a cell on the region's edge, or a rail. Renders only while its axis overflows.",
+      "props": []
+    },
+    {
+      "name": "ScrollAreaThumb",
+      "description": "The thumb (Base UI ScrollArea.Thumb).",
+      "props": []
+    },
+    {
+      "name": "ScrollAreaViewport",
+      "description": "The viewport (Base UI ScrollArea.Viewport): the native scroller, focusable while it overflows.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-bars",
+      "values": []
+    },
+    {
+      "name": "data-kl-reveal",
+      "values": []
+    },
+    {
+      "name": "data-kl-track",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "scroll-area-content",
+        "scroll-area-corner",
+        "scroll-area-scrollbar",
+        "scroll-area-thumb"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-reveal-hold",
+      "values": [
+        "400ms"
+      ]
+    },
+    {
+      "name": "--kl-sb",
+      "values": [
+        "12px"
+      ]
+    },
+    {
+      "name": "--kl-t-conceal",
+      "values": [
+        "0ms",
+        "300ms"
+      ]
+    },
+    {
+      "name": "--kl-t-grip",
+      "values": [
+        "0ms",
+        "120ms"
+      ]
+    },
+    {
+      "name": "--kl-t-reveal",
+      "values": [
+        "0ms",
+        "90ms"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "scroll-area-log",
+      "title": "Scroll Area: activity log",
+      "file": "scroll-area-log.tsx"
+    }
+  ]
+}

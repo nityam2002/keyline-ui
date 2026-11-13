@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker-meeting",
+  "title": "Date picker: client meeting",
+  "description": "An example of Date picker: client meeting.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/date-picker",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/date-picker-meeting.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DateTimePicker } from \"../ui/date-picker\";\n\nconst tomorrow = () => {\n  const d = new Date();\n  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);\n};\n\n// Michael's calendar: the 9 AM slot is his \"conference room meeting\" every Monday\nconst busy = (day: Date, time: string) =>\n  day.getDay() === 1 && time === \"09:00\"\n    ? \"Michael's Monday meeting\"\n    : day.getDay() === 5 && time === \"15:00\"\n      ? \"pretzel day\"\n      : false;\n\nexport function ClientMeeting() {\n  const [when, setWhen] = useState<Date | null>(null);\n\n  return (\n    <div className=\"grid max-w-[360px] gap-3\">\n      <DateTimePicker\n        label=\"Meet the Lackawanna County buyer\"\n        locale=\"en-US\"\n        hourCycle={12}\n        min={tomorrow()}\n        slots={[\"09:00\", \"11:00\", \"13:30\", \"15:00\"]}\n        isTimeUnavailable={busy}\n        isDateUnavailable={(d) => (d.getDay() === 0 || d.getDay() === 6 ? \"weekend\" : false)}\n        value={when}\n        onValueChange={setWhen}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {when ? `Booked. Jim takes the meeting; Dwight is not to attend.` : \"Pick a day, then one of the open slots.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/date-picker-meeting.tsx"
+    }
+  ],
+  "categories": [
+    "date-picker"
+  ],
+  "type": "registry:block"
+}

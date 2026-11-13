@@ -1,0 +1,227 @@
+{
+  "name": "questionnaire",
+  "title": "Questionnaire",
+  "description": "A multi-step form on @shadcn/react's Questionnaire, as the reference: single choice (the radio group's rows and ink band), multiple choice (checkbox rows), free text (the field frame), required and optional steps, Back, Skip, Next and Submit as Button cells, answers kept when going back, errors described on the current step, focus on the new step's heading, Progress for the step.",
+  "whenToUse": "Use it for a form asked one question at a time, with progress, skipping and going back. For a form shown all at once use Field and Form.",
+  "parts": [
+    {
+      "name": "Questionnaire",
+      "description": "The form, in one region frame. `items` declares the steps (`name`, `required`, `choices`) and drives progress, navigation and validation; read the answers from FormData in `onSubmit`. `item` / `onItemChange` control the step; `shortcuts=\"letters\" | \"numbers\"` turns on choice keys.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireActions",
+      "description": "The action row: Back at the start; Skip and Next (or Submit on the last step) at the end.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireChoice",
+      "description": "A choice row: a native radio or checkbox under the row, the box, the label and description, the shortcut cell.",
+      "props": [
+        {
+          "name": "description",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "QuestionnaireChoices",
+      "description": "The choices: the radio group's rows in one control frame. A single choice is covered by its ink band, which stretches between rows; several choices (`multiple` on the item) are checkbox rows.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireDescription",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireError",
+      "description": "The step's error: the field error's look, announced (role=alert) and described on the step only while it shows.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireInput",
+      "description": "A free-text answer in the field frame (the ! cell appears when the step is invalid), named by the question. `type` as the library: text, email, number, url, tel, date and the other input types.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireItem",
+      "description": "One step: a fieldset named by its title. `required`, `multiple`, `invalid` (your own check) and `name` as the library.",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireNext",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "QuestionnairePrevious",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireProgress",
+      "description": "\"Question 2 of 4\" over a Keyline Progress whose fill is the steps behind you.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "(current: number, total: number) => string",
+          "default": "(c: number, t: number) => `Question ${c} of ${t}`",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "QuestionnaireSkip",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireSubmit",
+      "description": "Submits the form on the last step. `signal` shows the submission: pending, done, failed (Button's signals).",
+      "props": []
+    },
+    {
+      "name": "QuestionnaireTitle",
+      "description": "The step's question: a heading inside the fieldset's legend. It takes focus when the step appears. Optional steps say so (`optionalText`, null to hide it).",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "level",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "default": "2",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "optionalText",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "\"Optional\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-checked",
+      "values": []
+    },
+    {
+      "name": "data-disabled",
+      "values": []
+    },
+    {
+      "name": "data-invalid",
+      "values": []
+    },
+    {
+      "name": "data-kind",
+      "values": [
+        "attention"
+      ]
+    },
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-multiple",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "questionnaire",
+        "questionnaire-actions",
+        "questionnaire-choice",
+        "questionnaire-choice-box",
+        "questionnaire-choice-description",
+        "questionnaire-choice-input",
+        "questionnaire-choice-key",
+        "questionnaire-choice-label",
+        "questionnaire-choice-mark",
+        "questionnaire-choice-text",
+        "questionnaire-choices",
+        "questionnaire-count",
+        "questionnaire-error",
+        "questionnaire-field",
+        "questionnaire-heading",
+        "questionnaire-item",
+        "questionnaire-legend",
+        "questionnaire-optional",
+        "questionnaire-progress"
+      ]
+    },
+    {
+      "name": "data-unchecked",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-button-px",
+      "values": [
+        "32px"
+      ]
+    },
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-red)"
+      ]
+    },
+    {
+      "name": "--kl-radio-meta",
+      "values": [
+        "40px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "questionnaire-party",
+      "title": "Questionnaire: birthday survey",
+      "file": "questionnaire-party.tsx"
+    }
+  ]
+}

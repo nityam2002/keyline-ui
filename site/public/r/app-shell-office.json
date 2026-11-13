@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "app-shell-office",
+  "title": "App shell: office shell",
+  "description": "An example of App shell: office shell.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/app-shell",
+    "@keyline-ui/breadcrumb",
+    "@keyline-ui/button",
+    "@keyline-ui/inspector",
+    "@keyline-ui/item",
+    "@keyline-ui/keyline",
+    "@keyline-ui/nav",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/app-shell-office.tsx",
+      "content": "\"use client\";\n\nimport { useRef, useState } from \"react\";\nimport { AppShell } from \"../ui/app-shell\";\nimport { Breadcrumb } from \"../ui/breadcrumb\";\nimport { Button } from \"../ui/button\";\nimport { Inspector, InspectorActions, InspectorBody, InspectorFacts, InspectorHeader } from \"../ui/inspector\";\nimport { Item, ItemContent, ItemList, ItemMedia } from \"../ui/item\";\nimport { Nav } from \"../ui/nav\";\nimport { Status } from \"../ui/status\";\n\nconst VIEWS = { orders: \"Orders\", clients: \"Clients\", warehouse: \"Warehouse\" } as const;\ntype View = keyof typeof VIEWS;\n\nconst ORDERS = [\n  { id: \"DM-4107\", client: \"Lackawanna County\", cases: 120, rep: \"Dwight Schrute\" },\n  { id: \"DM-4108\", client: \"Blue Cross of Pennsylvania\", cases: 60, rep: \"Jim Halpert\" },\n  { id: \"DM-4109\", client: \"Vance Refrigeration\", cases: 12, rep: \"Phyllis Vance\" },\n];\n\nexport function OfficeShell() {\n  const [view, setView] = useState<View>(\"orders\");\n  const [open, setOpen] = useState<string | null>(null);\n  const opener = useRef<HTMLElement | null>(null);\n  const order = ORDERS.find((o) => o.id === open);\n\n  return (\n    <AppShell\n      // a low breakpoint keeps the sidebar in a preview this narrow\n      narrowAt={400}\n      mainProps={{ className: \"min-h-[300px]\" }}\n      navSize={180}\n      navLabel=\"Scranton branch\"\n      nav={\n        <Nav\n          layout=\"cell\"\n          label=\"Scranton branch\"\n          value={view}\n          onValueChange={(v) => setView(v as View)}\n          items={Object.entries(VIEWS).map(([value, label]) => ({ value, label }))}\n        />\n      }\n      header={\n        <Breadcrumb\n          layout=\"cell\"\n          items={[\n            {\n              label: \"Scranton\",\n              render: <a href=\"?view=orders\" onClick={(e) => (e.preventDefault(), setView(\"orders\"))} />,\n            },\n            { label: VIEWS[view] },\n          ]}\n        />\n      }\n      actions={\n        <Button layout=\"cell\" variant=\"primary\">\n          New order\n        </Button>\n      }\n      aside={\n        order ? (\n          <Inspector>\n            <InspectorHeader\n              code={order.id}\n              title={order.client}\n              status={<Status kind=\"normal\">Out for delivery</Status>}\n              onClose={() => setOpen(null)}\n            />\n            <InspectorBody>\n              <InspectorFacts\n                items={[\n                  { label: \"Cases\", value: order.cases },\n                  { label: \"Rep\", value: order.rep },\n                ]}\n              />\n            </InspectorBody>\n            <InspectorActions>\n              <Button layout=\"cell\" onClick={() => setOpen(null)}>\n                Close\n              </Button>\n            </InspectorActions>\n          </Inspector>\n        ) : null\n      }\n      asideLabel=\"Order\"\n      asideOpen={!!order}\n      onAsideOpenChange={(o) => (o ? null : setOpen(null))}\n      asideFinalFocus={opener}\n    >\n      {view === \"orders\" ? (\n        <ItemList aria-label=\"Open orders\">\n          {ORDERS.map((o) => (\n            <Item\n              key={o.id}\n              current={o.id === open}\n              render={<button type=\"button\" />}\n              onClick={(e) => {\n                opener.current = e.currentTarget;\n                setOpen(o.id);\n              }}\n            >\n              <ItemMedia>{o.id.slice(3)}</ItemMedia>\n              <ItemContent title={o.client} description={o.rep} />\n            </Item>\n          ))}\n        </ItemList>\n      ) : (\n        <p className=\"m-0 text-[14px] text-kl-ink-2\">\n          {view === \"clients\" ? \"64 active clients.\" : \"88 pallets on the floor.\"}\n        </p>\n      )}\n    </AppShell>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/app-shell-office.tsx"
+    }
+  ],
+  "categories": [
+    "app-shell"
+  ],
+  "type": "registry:block"
+}

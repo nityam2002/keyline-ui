@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bubble-reactions",
+  "title": "Bubble: party announcement",
+  "description": "An example of Bubble: party announcement.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/avatar",
+    "@keyline-ui/bubble",
+    "@keyline-ui/keyline",
+    "@keyline-ui/message"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/bubble-reactions.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Avatar } from \"../ui/avatar\";\nimport { Bubble, BubbleContent, BubbleReactions } from \"../ui/bubble\";\nimport { Message, MessageAvatar, MessageContent, MessageHeader } from \"../ui/message\";\n\nexport function PartyAnnouncement() {\n  const [mine, setMine] = useState(false);\n  const count = 4 + (mine ? 1 : 0);\n\n  return (\n    <div className=\"max-w-[520px]\">\n      <Message align=\"start\">\n        <MessageAvatar>\n          <Avatar name=\"Angela Martin\" decorative />\n        </MessageAvatar>\n        <MessageContent>\n          <MessageHeader>\n            <span>Angela Martin</span>\n            <time dateTime=\"2026-11-10T09:05\">9:05</time>\n          </MessageHeader>\n          <Bubble>\n            <BubbleContent>The Party Planning Committee meets at 3 in the break room.</BubbleContent>\n          </Bubble>\n          <Bubble>\n            <BubbleContent>Theme is decided. It is not up for discussion.</BubbleContent>\n            <BubbleReactions>\n              <button\n                type=\"button\"\n                aria-pressed={mine}\n                aria-label={`Thumbs up, ${count}${mine ? \", you reacted\" : \"\"}`}\n                onClick={() => setMine(!mine)}\n              >\n                👍 <span className=\"font-kl-mono\">{count}</span>\n              </button>\n            </BubbleReactions>\n          </Bubble>\n        </MessageContent>\n      </Message>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/bubble-reactions.tsx"
+    }
+  ],
+  "categories": [
+    "bubble"
+  ],
+  "type": "registry:block"
+}

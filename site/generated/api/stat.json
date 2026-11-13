@@ -1,0 +1,145 @@
+{
+  "name": "stat",
+  "title": "Stat",
+  "description": "Count voice with label, unit, delta signal and an optional meter.",
+  "whenToUse": "Use Stat for one headline figure with its unit and change, and Meter for a quantity against a limit. For a task in progress use Progress; for many values use Chart or Table.",
+  "parts": [
+    {
+      "name": "Meter",
+      "description": "A measured quantity in a 1px frame (Base UI Meter). Ink fill; red when over `high`. Value is announced by Base UI Meter. Given `label`, it renders its parts itself; pass children (the parts) to compose them instead.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "The parts, composed: MeterLabel, MeterValue, MeterTrack with MeterIndicator."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "The label and value are visible by default; hide them only when the surrounding text already says both (e.g. inside Stat)."
+        },
+        {
+          "name": "high",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "Over this value the fill and the readout turn red."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MeterIndicator",
+      "description": "The fill (Base UI Meter.Indicator): ink, red when over `high`.",
+      "props": []
+    },
+    {
+      "name": "MeterLabel",
+      "description": "What is measured (Base UI Meter.Label): it names the meter.",
+      "props": []
+    },
+    {
+      "name": "MeterTrack",
+      "description": "The frame (Base UI Meter.Track): a k1 keyline box, 10px tall.",
+      "props": []
+    },
+    {
+      "name": "MeterValue",
+      "description": "The readout in the Code voice (Base UI Meter.Value), red when over `high`. Hidden from assistive technology: the meter announces its value.",
+      "props": []
+    },
+    {
+      "name": "Stat",
+      "description": "A metric: label, the Count voice, unit as code, and an optional delta and meter. The delta is a shape + text, coloured only when it needs attention (tone=\"bad\" → red).",
+      "props": [
+        {
+          "name": "delta",
+          "type": "{ value: ReactNode; direction: \"flat\" | \"up\" | \"down\"; tone?: \"neutral\" | \"good\" | \"bad\" | undefined; label?: string | undefined; }",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "meter",
+          "type": "{ value: number; max?: number | undefined; label?: string | undefined; }",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-dir",
+      "values": []
+    },
+    {
+      "name": "data-over",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "meter",
+        "meter-indicator",
+        "meter-label",
+        "meter-track",
+        "meter-value",
+        "stat",
+        "stat-arrow",
+        "stat-delta",
+        "stat-label",
+        "stat-value"
+      ]
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "stat-sales",
+      "title": "Stat: branch stats",
+      "file": "stat-sales.tsx"
+    },
+    {
+      "name": "stat-warehouse",
+      "title": "Stat: warehouse space",
+      "file": "stat-warehouse.tsx"
+    }
+  ]
+}

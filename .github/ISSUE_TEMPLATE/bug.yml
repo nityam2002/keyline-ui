@@ -1,0 +1,162 @@
+name: Bug report
+description: A Keyline component behaves or looks wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tracker is for problems you can reproduce. Report a security problem privately instead (see the [security policy](https://github.com/nityam2002/keyline-ui/security/policy)); report a keyboard, screen reader, focus, contrast or motion problem with the accessibility form.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I searched the open and closed issues and found no duplicate.
+          required: true
+        - label: I re-added the latest version of the affected items (`npx shadcn@latest add @keyline-ui/<name> --overwrite`) and the problem is still there.
+          required: true
+        - label: I read the component's page in the [docs](https://keyline-ui.dev/docs/components).
+          required: true
+  - type: dropdown
+    id: items
+    attributes:
+      label: Affected items
+      description: Every installed item that takes part in the bug. Choose "not sure" if you cannot tell.
+      multiple: true
+      options:
+        - accordion
+        - alert-dialog
+        - app-shell
+        - attachment
+        - avatar
+        - breadcrumb
+        - bubble
+        - button
+        - button-group
+        - carousel
+        - chart
+        - checkbox
+        - checkbox-group
+        - collapsible
+        - combobox
+        - command
+        - context-menu
+        - data-table
+        - date-picker
+        - date-range
+        - dialog
+        - direction
+        - drawer
+        - empty
+        - field
+        - hover-card
+        - inspector
+        - item
+        - kbd
+        - keyline
+        - keyline-shadcn
+        - marker
+        - menu
+        - menubar
+        - message
+        - message-scroller
+        - multiselect
+        - native-select
+        - nav
+        - navigation-menu
+        - notice
+        - number-field
+        - otp-field
+        - pagination
+        - panel
+        - popover
+        - progress
+        - questionnaire
+        - radio-group
+        - resizable
+        - scroll-area
+        - segmented
+        - select
+        - sheet
+        - shipments-demo
+        - sidebar
+        - skeleton
+        - slider
+        - split-button
+        - stat
+        - status
+        - switch
+        - table
+        - tabs
+        - time-field
+        - toast
+        - toggle
+        - toggle-group
+        - toolbar
+        - tooltip
+        - not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happens
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: Link the docs sentence you rely on, if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps, and a link to a minimal repository or sandbox. A report without a reproduction may be closed.
+      placeholder: |
+        1. Add @keyline-ui/menu to a Vite + shadcn app
+        2. Open the menu with the keyboard
+        3. See ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Item versions
+      description: The version of each affected item in https://keyline-ui.dev/r/versions.json when you added it, or the date you added it.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser, version and OS
+      placeholder: Chrome 142 on macOS 16, Firefox 145 on Windows 11
+    validations:
+      required: true
+  - type: input
+    id: stack
+    attributes:
+      label: React, Tailwind CSS and framework versions
+      placeholder: React 19.3, Tailwind CSS 4.3, Next.js 16.4
+    validations:
+      required: true
+  - type: dropdown
+    id: modes
+    attributes:
+      label: Modes in use
+      multiple: true
+      options:
+        - light
+        - dark
+        - compact density
+        - right-to-left
+        - reduced motion
+        - forced colours (high contrast)
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output or screenshots
+      description: Paste browser console output here, or drag in screenshots or a short recording.
+      render: shell

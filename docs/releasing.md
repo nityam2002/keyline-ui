@@ -2,46 +2,72 @@
 
 Keyline is published by deploying the documentation site: `site/public/r/` is served at `/r/{name}.json`, and that
 is what the shadcn CLI downloads when someone adds a Keyline component. There is no npm package. The hosted registry is always
-the latest deployed version, so deploy the site only from a release commit.
+the latest deployed version, and the host deploys main on every push, so everything merged to main is released.
 
 ## First release only
 
 The site's origin is `https://keyline-ui.dev`, set as `"homepage"` in `package.json`. The registry catalog and
 the site's install commands read it, and `pnpm test` fails unless every install command in `README.md` and
-`docs/usage.md` uses it. If the origin ever changes, change all three together.
+`docs/releasing.md` uses it. If the origin ever changes, change them together.
 
 1. Add `"repository"` to `package.json` once the GitHub repository exists.
 2. Point the domain at the site's host and serve the site over HTTPS at that origin (the CLI fetches
    `https://keyline-ui.dev/r/{name}.json`).
 3. Verify the domain in Google Search Console and submit `https://keyline-ui.dev/sitemap.xml`.
+4. In the repository's settings, add a branch rule (ruleset) for main that requires the status check `ci` and
+   nothing else; the jobs it gathers change, the check's name does not. Enable Renovate for the repository.
+5. For the opt-in agent review (`.github/workflows/review.yml`), add the `ANTHROPIC_API_KEY` repository secret
+   and install the Claude GitHub App. Without them the workflow fails only when a maintainer asks for a review.
 
-## Every release
+## What a release is
 
-1. Set `"version"` in `package.json` and note user-visible changes in the release notes.
-2. Rebuild and check, on a clean checkout:
+Each item is versioned on its own (semver, in its `.meta.ts`), so a release is not a separate step. A release is:
 
-   ```sh
-   pnpm install --frozen-lockfile
-   pnpm registry:build      # site/public/r must not change; if it does, commit it
-   pnpm check
-   pnpm test:consumer
-   ```
+1. **A bump.** Every change to what an item installs raises that item's `version`; a breaking change raises its
+   major. `pnpm versions:check` fails on a shipped change without one (`scripts/registry/versions.ts`, against
+   `versions.lock.json`).
+2. **A changelog entry.** The bump's entry goes at the top of the item's `changelog[]`. A breaking one follows the
+   template in [CONTRIBUTING](../.github/CONTRIBUTING.md#versions-and-breaking-changes): what changed, the diff,
+   the diff for a locally modified copy and an agent prompt. `pnpm changelog` generates `CHANGELOG.md` and the
+   site's `/docs/changelog` from those entries, and `pnpm changelog:check` fails when they drift.
+3. **A merge.** Merging to `main` and deploying the site publishes it: the new item JSON and `/r/versions.json`,
+   which lists every item's version, file hash and history.
 
-3. Commit, tag `v<version>`, push, and let CI pass.
-4. Deploy the site from that commit. Any Next.js host works: build with `pnpm site:build` and serve with
-   `pnpm site:start` (or the platform's equivalent for `next build site`). The site must serve `site/public`
-   at the root.
-   Build it with `KEYLINE_SITE_ENV=production` (Vercel's production deployments set `VERCEL_ENV` instead): only
-   that build may be indexed by search engines and lists its sitemap. Every other build sends `noindex`
-   (`site/lib/seo.ts`).
-5. Check the published registry, not the local one:
+Tags are cut by the release workflow from the merged versions; nobody tags by hand.
 
-   ```sh
-   curl -fsS https://keyline-ui.dev/r/registry.json | head -c 200
-   KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next.sh "$(mktemp -d)"
-   ```
+Removing or renaming anything public (an export, a `data-slot`, a `data-*` attribute, a CSS custom property) fails
+`tests/registry/surface.test.ts` unless the item's new entry is breaking. A removed item stays for one more minor
+release as a tombstone that points at its replacement, and its name is never reused (see CONTRIBUTING).
 
-   The second command is the Next.js consumer check, installing from the public site.
+## Every deploy
+
+Before merging, the pull request must pass CI's `ci` check
+([CONTRIBUTING, "Continuous integration"](../.github/CONTRIBUTING.md#continuous-integration)), which includes the
+consumer installs, and every item whose shipped files changed must be bumped with a changelog entry.
+
+After the merge, `.github/workflows/release.yml` runs on the push to main:
+
+1. **Deploy.** The host's Git integration deploys main (Vercel, building with `pnpm site:build`; the site must
+   serve `site/public` at the root). Production deployments set `VERCEL_ENV=production`, or
+   `KEYLINE_SITE_ENV=production` on another host: only that build may be indexed by search engines and lists its
+   sitemap. Every other build, previews included, sends `noindex` (`site/lib/seo.ts`).
+2. **Verify.** `node scripts/registry/verify-hosted.ts --wait 1200` fetches every file in `site/public/r` from
+   `https://keyline-ui.dev/r/` (the index, `versions.json` and every item) and fails unless each one equals the
+   commit's file. It re-checks for up to 20 minutes while the deploy goes live. A red run means production does
+   not serve what main holds: look at the host's deployment for that commit.
+3. **Tag.** When `versions.lock.json` differs from the last `v*` tag, and the `ci` check passed on the commit, the
+   workflow cuts an annotated tag `v<commit date>-<short sha>` whose message records the lock's blob, then checks
+   that the tag points at the commit and names its lock. Tags are never cut by hand.
+
+To check production by hand, or after redeploying on the host:
+
+```sh
+node scripts/registry/verify-hosted.ts
+KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next.sh "$(mktemp -d)"
+```
+
+The second command is the Next.js consumer check, installing from the public site. To rerun the whole workflow,
+use **Run workflow** on `release.yml` in the Actions tab, on main.
 
 ## Optional: the shadcn registry directory
 

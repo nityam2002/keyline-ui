@@ -40,6 +40,7 @@ const TOC: TocGroup[] = [
     items: [
       { id: "new-project", label: "New project" },
       { id: "existing-project", label: "Existing project" },
+      { id: "item-names", label: "Item names" },
       { id: "requirements", label: "Requirements" },
     ],
   },
@@ -95,6 +96,15 @@ export default function InstallationPage() {
       </p>
       <CodeBlock code={MAPPED} lang="json" copyLabel="registry mapping" />
 
+      <h3 id="item-names">Item names</h3>
+      <p>
+        Items are added by the names in the registry index, <a href="/r/registry.json">/r/registry.json</a>: for example{" "}
+        <code>select</code>, <code>date-picker</code>, <code>scroll-area</code>, <code>toolbar</code> and{" "}
+        <code>app-shell</code>. A few names install other items: <code>sidebar</code> installs <code>app-shell</code>{" "}
+        and <code>nav</code>, and <code>alert-dialog</code> installs <code>dialog</code>, which exports{" "}
+        <code>AlertDialog</code>.
+      </p>
+
       <h2 id="requirements">Requirements</h2>
       <ul>
         <li>React 19 and TypeScript.</li>
@@ -117,17 +127,25 @@ export default function InstallationPage() {
           <strong>Files</strong> go to <code>components/keyline/</code> (<code>ui</code>, <code>lib</code>, and{" "}
           <code>blocks</code> for a block), under <code>src/</code> when your project uses it, following your{" "}
           <code>components</code> alias. Import them as <code>@/components/keyline/ui/button</code>, with your own alias
-          in place of <code>@</code>.
+          in place of <code>@</code>: a project with <code>src/</code> and a <code>~/*</code> alias imports{" "}
+          <code>~/components/keyline/ui/button</code>. The <code>keyline/</code> folder is fixed: your <code>ui</code>{" "}
+          alias does not move it, which keeps Keyline apart from shadcn&apos;s <code>components/ui/</code>.
+          Keyline&apos;s files import each other by relative path, and <code>cn()</code> through your <code>utils</code>{" "}
+          alias.
         </li>
         <li>
           <strong>Dependencies</strong> come along: the Keyline components a component is built from, Base UI, the
           fonts, and any library it wraps (for example <code>recharts</code> for Chart), at the version Keyline is
-          tested with.
+          tested with. Wrapped libraries are pinned exactly; npm records an exact pin as a caret range (
+          <code>^4.14.8</code>) in your <code>package.json</code>, so edit it, or set <code>save-exact</code>, to hold
+          the version.
         </li>
         <li>
-          <strong>CSS</strong> is merged into the stylesheet named in <code>components.json</code>: the theme&apos;s{" "}
-          <code>--kl-*</code> tokens and each component&apos;s own <code>kl-</code> rules. Adding a component again
-          updates its rules in place; it does not add a second copy.
+          <strong>CSS</strong>: every component depends on <code>@keyline-ui/keyline</code>, the theme, which merges the{" "}
+          <code>--kl-*</code> tokens, the shared construction rules and the <code>kl-</code> Tailwind utilities into the
+          stylesheet named in <code>components.json</code>. Components are styled with Tailwind utilities in their own
+          source, which your Tailwind picks up from <code>components/keyline/</code>; a block may add <code>kl-</code>{" "}
+          rules of its own. Adding an item again updates its rules in place; it does not add a second copy.
         </li>
         <li>
           <strong>Fonts</strong> (Atkinson Hyperlegible Next and Mono) are npm packages imported from that stylesheet,
@@ -163,17 +181,17 @@ export default function InstallationPage() {
       <CodeBlock code={UPDATE} lang="bash" copyLabel="update command" />
       <p>
         Without <code>--overwrite</code>, the CLI skips files that are unchanged and asks before replacing one you
-        edited. CSS rules that changed are updated in place; a rule Keyline removed or renamed stays in your stylesheet
-        until you delete it.
+        edited. Components add no CSS of their own (they are styled with Tailwind utilities in their source), so
+        re-adding one replaces only its files. Re-adding the theme (<code>@keyline-ui/keyline</code>) or a block updates
+        its tokens and rules in your stylesheet in place, and adds any that are new.
       </p>
 
       <h2 id="removing">Removing</h2>
       <p>
-        Delete the component&apos;s files from <code>components/keyline/</code>. The CLI does not remove CSS, so delete
-        that component&apos;s
-        <code> kl-</code> rules from your stylesheet as well, and any packages you no longer use. For configuration,
-        theming and the composition rules, start with <Link href="/docs/theming">Theming</Link> and{" "}
-        <Link href="/docs/composition">Composition</Link>.
+        Delete the component&apos;s files from <code>components/keyline/</code>. A component adds no CSS, so its files
+        are all there is; for a block, also delete the rules it added to your stylesheet. Remove any packages you no
+        longer use. For configuration, theming and the composition rules, start with{" "}
+        <Link href="/docs/theming">Theming</Link> and <Link href="/docs/composition">Composition</Link>.
       </p>
 
       <h2 id="troubleshooting">Troubleshooting</h2>

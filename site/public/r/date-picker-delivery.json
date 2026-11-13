@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker-delivery",
+  "title": "Date picker: delivery day",
+  "description": "An example of Date picker: delivery day.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/date-picker",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/date-picker-delivery.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { DatePicker } from \"../ui/date-picker\";\n\nconst day = (offset: number) => {\n  const d = new Date();\n  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + offset);\n};\nconst nextMonday = () => day((8 - new Date().getDay()) % 7 || 7);\n\nexport function DeliveryDay() {\n  const [date, setDate] = useState<Date | null>(null);\n\n  return (\n    <div className=\"grid max-w-[360px] gap-3\">\n      <DatePicker\n        label=\"Deliver on\"\n        locale=\"en-US\"\n        min={day(1)}\n        max={day(60)}\n        value={date}\n        onValueChange={setDate}\n        isDateUnavailable={(d) => (d.getDay() === 0 || d.getDay() === 6 ? \"no weekend deliveries\" : false)}\n        presets={[{ label: \"Next Monday\", date: nextMonday }]}\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {date\n          ? `On Darryl's route for ${date.toLocaleDateString(\"en-US\", { weekday: \"long\", month: \"long\", day: \"numeric\" })}.`\n          : \"Weekdays only, from tomorrow.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/date-picker-delivery.tsx"
+    }
+  ],
+  "categories": [
+    "date-picker"
+  ],
+  "type": "registry:block"
+}

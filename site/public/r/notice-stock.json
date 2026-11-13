@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "notice-stock",
+  "title": "Notice: paper stock",
+  "description": "An example of Notice: paper stock.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/notice"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/notice-stock.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Notice } from \"../ui/notice\";\n\nexport function PaperStock() {\n  const [state, setState] = useState<\"low\" | \"ordered\" | \"gone\">(\"low\");\n\n  return (\n    <div className=\"grid gap-3\">\n      <Notice\n        open={state !== \"gone\"}\n        live={state === \"ordered\"}\n        tone={state === \"low\" ? \"attention\" : \"done\"}\n        title={state === \"low\" ? \"Letter paper is down to 30 cases\" : \"120 cases reordered from the mill\"}\n        description={\n          state === \"low\"\n            ? \"That covers two days of deliveries. Darryl needs a week's notice.\"\n            : \"They arrive Thursday. Darryl has the dock booked.\"\n        }\n        actions={\n          state === \"low\" ? (\n            <Button layout=\"cell\" variant=\"primary\" onClick={() => setState(\"ordered\")}>\n              Reorder 120 cases\n            </Button>\n          ) : null\n        }\n        onDismiss={state === \"ordered\" ? () => setState(\"gone\") : undefined}\n      />\n      {state === \"gone\" ? (\n        <Button size=\"compact\" variant=\"quiet\" className=\"justify-self-start\" onClick={() => setState(\"low\")}>\n          Show the warning again\n        </Button>\n      ) : null}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/notice-stock.tsx"
+    }
+  ],
+  "categories": [
+    "notice"
+  ],
+  "type": "registry:block"
+}

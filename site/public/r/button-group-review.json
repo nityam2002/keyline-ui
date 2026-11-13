@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-group-review",
+  "title": "Button group: order review",
+  "description": "An example of Button group: order review.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/button-group",
+    "@keyline-ui/keyline"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/button-group-review.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { ButtonGroup, ButtonGroupText } from \"../ui/button-group\";\n\nconst ORDERS = [\n  { id: \"DM-4102\", client: \"Scranton Business Park\", paper: \"40 cases, 20 lb copy\", rep: \"Dwight Schrute\" },\n  { id: \"DM-4087\", client: \"Lackawanna County\", paper: \"12 cases, cardstock\", rep: \"Jim Halpert\" },\n  { id: \"DM-4120\", client: \"Wilkes-Barre Library\", paper: \"6 cases, recycled bond\", rep: \"Phyllis Vance\" },\n  { id: \"DM-4131\", client: \"Blue Cross of Pennsylvania\", paper: \"25 cases, letterhead\", rep: \"Stanley Hudson\" },\n  { id: \"DM-4136\", client: \"Harper Collins, Scranton\", paper: \"8 cases, legal pads\", rep: \"Andy Bernard\" },\n];\n\nexport function OrderReview() {\n  const [i, setI] = useState(0);\n  const order = ORDERS[i];\n  if (!order) return null;\n\n  return (\n    <div className=\"grid gap-4\">\n      <ButtonGroup aria-label=\"Today’s orders\" className=\"justify-self-start\">\n        <Button layout=\"cell\" disabled={i === 0} onClick={() => setI(i - 1)}>\n          Previous\n        </Button>\n        <ButtonGroupText aria-live=\"polite\">\n          {i + 1} of {ORDERS.length}\n        </ButtonGroupText>\n        <Button layout=\"cell\" disabled={i === ORDERS.length - 1} onClick={() => setI(i + 1)}>\n          Next\n        </Button>\n      </ButtonGroup>\n      <dl className=\"m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-[14px]\">\n        <dt className=\"text-kl-ink-3\">Order</dt>\n        <dd className=\"m-0 font-kl-mono\">{order.id}</dd>\n        <dt className=\"text-kl-ink-3\">Client</dt>\n        <dd className=\"m-0\">{order.client}</dd>\n        <dt className=\"text-kl-ink-3\">Paper</dt>\n        <dd className=\"m-0\">{order.paper}</dd>\n        <dt className=\"text-kl-ink-3\">Sales rep</dt>\n        <dd className=\"m-0\">{order.rep}</dd>\n      </dl>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/button-group-review.tsx"
+    }
+  ],
+  "categories": [
+    "button-group"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,70 @@
+{
+  "name": "button-group",
+  "title": "Button group",
+  "description": "Buttons attached in one control frame: Button cells on shared seams, each its own Tab stop; text cells and a heavier separator; horizontal or vertical. Toolbar is the one-Tab-stop row; SplitButton the action with its menu.",
+  "whenToUse": "Use it for a few related buttons that each stay their own Tab stop, such as zoom in and out. For a long row of commands that should be one stop use Toolbar.",
+  "parts": [
+    {
+      "name": "ButtonGroup",
+      "description": "Buttons attached in one control frame: cells on shared seams (C1), each button its own Tab stop. Use it for a few related commands that are not a toolbar: Previous · Next, − · 100% · +, Copy · Share. For a row of many commands that should be one Tab stop with arrow keys, use Toolbar; for an action with its menu, SplitButton; for one exclusive choice, Segmented. Children are cells: Button layout=\"cell\", ButtonGroupText, a MenuTrigger rendering a Button cell. `orientation=\"vertical\"` stacks them on horizontal seams. A group inside a group is not drawn (put the groups one gutter apart instead: unrelated parts sit apart).",
+      "props": [
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "default": "\"horizontal\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ButtonGroupSeparator",
+      "description": "A heavier seam between sub-groups of cells (2px, a control's weight) where a plain seam reads as one run. Base UI's Separator, oriented across the group.",
+      "props": []
+    },
+    {
+      "name": "ButtonGroupText",
+      "description": "A text cell in the group: a value between steppers, a unit, a label (\"Page 3\"). Not focusable.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "button-group",
+        "button-group-separator",
+        "button-group-text"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-button-px",
+      "values": [
+        "calc(var(--kl-inset)+14px)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "button-group-menu",
+      "title": "Button group: tracking link",
+      "file": "button-group-menu.tsx"
+    },
+    {
+      "name": "button-group-review",
+      "title": "Button group: order review",
+      "file": "button-group-review.tsx"
+    },
+    {
+      "name": "button-group-zoom",
+      "title": "Button group: report zoom",
+      "file": "button-group-zoom.tsx"
+    }
+  ]
+}

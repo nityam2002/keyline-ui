@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "resizable-calls",
+  "title": "Resizable: call log",
+  "description": "An example of Resizable: call log.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/item",
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/resizable"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/resizable-calls.tsx",
+      "content": "\"use client\";\n\nimport { Phone } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Item, ItemContent, ItemList, ItemMedia, ItemMeta } from \"../ui/item\";\nimport { Panel, PanelBody, PanelHeader } from \"../ui/panel\";\nimport { ResizableHandle, ResizablePanel, ResizablePanelGroup, usePanelRef } from \"../ui/resizable\";\n\nconst CALLS = [\n  {\n    id: \"c1\",\n    who: \"Lackawanna County\",\n    when: \"9:12\",\n    note: \"Wants 40 more cases before the county fair. Dwight promised Thursday.\",\n  },\n  {\n    id: \"c2\",\n    who: \"Blue Cross of Pennsylvania\",\n    when: \"10:40\",\n    note: \"Asked about the recycled stock. Jim is sending samples.\",\n  },\n  {\n    id: \"c3\",\n    who: \"Vance Refrigeration\",\n    when: \"13:05\",\n    note: \"Nobody at the dock to sign. Bob says try again tomorrow at nine.\",\n  },\n];\n\nconst phone = <Phone size={16} aria-hidden=\"true\" />;\n\nexport function CallLog() {\n  const [chosen, setChosen] = useState(\"c1\");\n  const [listHidden, setListHidden] = useState(false);\n  const list = usePanelRef();\n  const call = CALLS.find((c) => c.id === chosen)!;\n\n  return (\n    <Panel>\n      <PanelHeader\n        title=\"Today's calls\"\n        actions={\n          // dragging needs a pointer alternative: this button collapses and restores the list\n          <Button layout=\"cell\" onClick={() => (listHidden ? list.current?.expand() : list.current?.collapse())}>\n            {listHidden ? \"Show list\" : \"Hide list\"}\n          </Button>\n        }\n      />\n      <PanelBody flush>\n        {/* the group fills its parent's height, and a Panel body's rows size to their content: give it a box */}\n        <div className=\"h-[340px]\">\n          <ResizablePanelGroup orientation=\"vertical\">\n            <ResizablePanel\n              id=\"calls\"\n              panelRef={list}\n              defaultSize=\"55%\"\n              minSize=\"35%\"\n              collapsible\n              onResize={(s) => setListHidden(s.asPercentage === 0)}\n            >\n              {/* the pane is usually taller than three rows: close the last row so it doesn't dangle */}\n              <ItemList\n                layout=\"cell\"\n                aria-label=\"Today's calls\"\n                className=\"[&>:last-child]:border-b [&>:last-child]:border-kl-line\"\n              >\n                {CALLS.map((c) => (\n                  <Item\n                    key={c.id}\n                    current={c.id === chosen}\n                    render={<button type=\"button\" />}\n                    onClick={() => setChosen(c.id)}\n                  >\n                    {/* the media cell is what floods for the current row */}\n                    <ItemMedia>{phone}</ItemMedia>\n                    <ItemContent title={c.who} />\n                    <ItemMeta>{c.when}</ItemMeta>\n                  </Item>\n                ))}\n              </ItemList>\n            </ResizablePanel>\n            <ResizableHandle withHandle aria-label=\"Call list height\" />\n            <ResizablePanel id=\"note\" minSize=\"25%\">\n              <div className=\"grid gap-2 p-4 text-[14px]\">\n                <h3 className=\"m-0 text-[15px] font-semibold\">{call.who}</h3>\n                <p className=\"m-0 text-kl-ink-2\">{call.note}</p>\n              </div>\n            </ResizablePanel>\n          </ResizablePanelGroup>\n        </div>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/resizable-calls.tsx"
+    }
+  ],
+  "categories": [
+    "resizable"
+  ],
+  "type": "registry:block"
+}

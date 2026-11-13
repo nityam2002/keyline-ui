@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast-undo",
+  "title": "Toast: archive undo",
+  "description": "An example of Toast: archive undo.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/toast"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toast-undo.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { ToastFloating, ToastProvider, useToaster } from \"../ui/toast\";\n\nconst ORDERS = [\n  \"DM-4103 · Scranton Business Park\",\n  \"DM-4104 · Penn Paper Supply\",\n  \"DM-4105 · Blue Cross of Pennsylvania\",\n];\n\nfunction Orders() {\n  const toast = useToaster();\n  const [orders, setOrders] = useState(ORDERS);\n\n  const archive = (o: string) => {\n    const at = orders.indexOf(o);\n    setOrders((all) => all.filter((x) => x !== o));\n    toast.notify({\n      title: `${o.split(\" · \")[0]} archived`,\n      description: \"It stays in the quarter's reports.\",\n      action: { label: \"Undo\", onClick: () => setOrders((all) => [...all.slice(0, at), o, ...all.slice(at)]) },\n    });\n  };\n\n  return (\n    <ul aria-label=\"Delivered orders\" className=\"m-0 grid list-none gap-3 p-0 text-[14px]\">\n      {orders.map((o) => (\n        <li key={o} className=\"grid grid-cols-[1fr_auto] items-center gap-3\">\n          <span>{o}</span>\n          <Button size=\"compact\" onClick={() => archive(o)}>\n            Archive\n          </Button>\n        </li>\n      ))}\n      {orders.length ? null : <li className=\"text-kl-ink-2\">Everything delivered is archived.</li>}\n    </ul>\n  );\n}\n\nexport function ArchiveUndo() {\n  return (\n    <ToastProvider>\n      <Orders />\n      <ToastFloating />\n    </ToastProvider>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toast-undo.tsx"
+    }
+  ],
+  "categories": [
+    "toast"
+  ],
+  "type": "registry:block"
+}

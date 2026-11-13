@@ -1,0 +1,235 @@
+{
+  "name": "avatar",
+  "title": "Avatar",
+  "description": "A person or organisation as a square cell (Base UI Avatar): the photo rises in from the bottom keyline, initials hold the cell while it loads or after it fails, status as its floor keyline (a line shape per kind, never over the face); AvatarGroup joins avatars on shared seams with a +N count cell.",
+  "whenToUse": "Use it to show a person or organisation as a square cell, alone or as a group with an overflow count. For a status label use Status or Badge.",
+  "parts": [
+    {
+      "name": "Avatar",
+      "description": "A person or organisation as a square cell (Base UI Avatar). The photo fills the cell; while it loads or after it fails, the initials hold the cell in the UI voice. There is no radius in the language, so an avatar is never a circle; with the cut off or on it is the same square (an avatar is a cell, never cut). Given `name` (and `src`), it renders its image and initials itself. Pass children (AvatarImage, AvatarFallback) to compose them instead.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string | ((state: AvatarState) => string | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": "The name is already printed beside the avatar (a list row, a header): hide it from assistive technology so the name isn't read twice."
+        },
+        {
+          "name": "fallback",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Overrides the initials, e.g. a two-letter org code or a 16px glyph."
+        },
+        {
+          "name": "fallbackDelay",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "Base UI: wait this long before showing the initials, so a fast image never flashes them. Default 0."
+        },
+        {
+          "name": "imageProps",
+          "type": "Omit<AvatarImageProps, \"src\">",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 1px keyline. cell: a square filling the width of a square-ish cell of an enclosing frame (a hover card's header); it draws no edge. In a list row use a control avatar in the media cell."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "The person or organisation. Names the avatar (role=\"img\") and gives the initials."
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "default": "\"md\"",
+          "required": false,
+          "description": "sm 24 · md 32 (default; a list row) · lg 40 · xl 56 (a profile header). Ignored with layout=\"cell\"."
+        },
+        {
+          "name": "src",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Photo or logo. While it loads, and if it fails, the initials show: never a broken image."
+        },
+        {
+          "name": "status",
+          "type": "\"none\" | \"done\" | \"normal\" | \"waiting\" | \"attention\"",
+          "default": "",
+          "required": false,
+          "description": "Status on the avatar's floor: its bottom keyline becomes a signal line, never drawn over the face. Each kind has its own line shape (active solid, away dashed, attention red with a red frame, done double, offline none and a grayscale photo), so it survives grayscale and forced colours. Its words join the accessible name."
+        },
+        {
+          "name": "statusLabel",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Words for the status (default by kind: active, away, needs attention, done, offline)."
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties | ((state: AvatarState) => CSSProperties | undefined)",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "AvatarFallback",
+      "description": "What holds the cell while the image loads or after it fails (Base UI Avatar.Fallback): the avatar's initials unless given children. Hidden from assistive technology: the avatar carries the name.",
+      "props": []
+    },
+    {
+      "name": "AvatarGroup",
+      "description": "Several avatars as cells of one keyline frame, sharing seams (C1: related parts touch). Not a stack of overlapping circles: every face stays whole. With `max`, the overflow becomes one count cell. For a count that opens the full list, leave out `max` and compose AvatarGroupCount with a PopoverTrigger.",
+      "props": [
+        {
+          "name": "countLabel",
+          "type": "(hidden: number) => string",
+          "default": "(n) => `${n} more`",
+          "required": false,
+          "description": "Words for the count cell. Default (n) => `${n} more`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Names the group, e.g. \"Assignees\". The visible names and the hidden count are read after it."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "Show at most this many cells; the rest fold into a count cell (+N) that takes the last place."
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "default": "\"md\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "default": "",
+          "required": false,
+          "description": "Everyone in the group, when more exist than the children passed (a server count)."
+        }
+      ]
+    },
+    {
+      "name": "AvatarGroupCount",
+      "description": "The overflow cell (+N), tabular. Pass `render={<button type=\"button\" />}` (or put it in a trigger's `render`) when pressing it should show everyone.",
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "default": "",
+          "required": true,
+          "description": "How many are not shown."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "AvatarImage",
+      "description": "The photo or logo (Base UI Avatar.Image). It shows once loaded; until then, or if it fails, the fallback holds the cell. Decorative: the avatar carries the name.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-size",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "avatar",
+        "avatar-fallback",
+        "avatar-group",
+        "avatar-group-count",
+        "avatar-image"
+      ]
+    },
+    {
+      "name": "data-status",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-av",
+      "values": [
+        "24px",
+        "32px",
+        "40px",
+        "56px",
+        "inherit"
+      ]
+    },
+    {
+      "name": "--kl-av-fs",
+      "values": [
+        "10px",
+        "13px",
+        "15px",
+        "18px",
+        "20px",
+        "inherit"
+      ]
+    },
+    {
+      "name": "--kl-av-st",
+      "values": [
+        "3px",
+        "4px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "avatar-status",
+      "title": "Avatar: whos in",
+      "file": "avatar-status.tsx"
+    },
+    {
+      "name": "avatar-team",
+      "title": "Avatar: account team",
+      "file": "avatar-team.tsx"
+    }
+  ]
+}

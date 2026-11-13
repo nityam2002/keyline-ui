@@ -5,6 +5,8 @@ export default {
   type: "registry:ui",
   title: "Command menu",
   description: "⌘K command menu: digit cells run by index, grouped results, empty state.",
+  whenToUse:
+    "Use it as a command palette: run commands by name with the keyboard. For commands on a trigger use Menu; for choosing a value in a form use Combobox.",
   files: [{ path: "src/registry/keyline/ui/command.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "cmdk"],
   registryDependencies: [
@@ -14,4 +16,7 @@ export default {
     "@keyline-ui/dialog",
     "@keyline-ui/keyline-render",
   ],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;

@@ -1,0 +1,67 @@
+{
+  "name": "menubar",
+  "title": "Menubar",
+  "description": "A row of menus in one frame (Base UI Menubar): title key cells, the open title inverse, menus docked to the frame's edge with Menu's rows and checkbox and radio items.",
+  "whenToUse": "Use it for a desktop-style row of menus in an application, such as File, Edit and View. For a website's navigation use Navigation menu; for a row of commands use Toolbar.",
+  "parts": [
+    {
+      "name": "Menubar",
+      "description": "A row of menus in one frame: each title is a key cell, each menu docks to the frame's edge under it. ┌──────┬──────┬───────┬──────┐ │ File │ Edit │ View │ Help │ title cells (View open: the inverse cell) └──────┴──────┼───────┴──────┘ │ ☑ Status │ the menu: Menu's rows, checkbox and radio items, submenus │ ○ 24 rows │ - Behaviour is Base UI Menubar: one Tab stop, Left/Right move between titles (wrapping), Down/Enter/ Space open, and while one menu is open, Left/Right and hover move to the neighbouring menu. Escape closes and returns focus to the title. - The open title is the inverse cell (Select's open caret); the menu's top border lies on the frame's bottom keyline at the frame's weight, so the two read as one shape. No cut on the menu. - Narrow: the row scrolls sideways and marks the hidden edge (scroll edges). - The rows are Menu's: import MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup(Label) and MenuSubmenuRoot* from ./menu (re-exported here under Menubar names too).",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MenubarPopup",
+      "description": "A menu of the bar: Base UI's Portal, Positioner and Popup in one part, with the positioner's placement props lifted. It docks under its title: the frame's bottom keyline is the shared edge, and the menu's top border lies on it at the frame's weight. The surface is Menu's (MenuSurface), so it carries `data-slot=\"menu-popup\"`.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<MenuPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Props for Base UI's Menu.Portal."
+        }
+      ]
+    },
+    {
+      "name": "MenubarTrigger",
+      "description": "A menu's title. Rendered as another part, the element is that part's and carries its data-slot.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "menubar",
+        "menubar-trigger"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "menubar-report",
+      "title": "Menubar: sales report menus",
+      "file": "menubar-report.tsx"
+    }
+  ]
+}

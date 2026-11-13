@@ -1,0 +1,115 @@
+{
+  "name": "message",
+  "title": "Message",
+  "description": "A sender's run in a conversation, on one reading edge: the header (name, time), every bubble's text, the file glyphs and the receipt start on the same line. Consecutive bubbles stack on shared keylines; the avatar sits in the gutter level with the first bubble. align=\"end\" is the reader's own run, at the end of the log, mirrored with the writing direction.",
+  "whenToUse": "Use it to group one sender's consecutive messages with name, time and receipt on one edge. Put Bubble inside it, and Message scroller around the log.",
+  "parts": [
+    {
+      "name": "Message",
+      "description": "",
+      "props": [
+        {
+          "name": "align",
+          "type": "\"end\" | \"start\"",
+          "default": "\"start\"",
+          "required": false,
+          "description": "start: the other party. end: the reader's own messages."
+        }
+      ]
+    },
+    {
+      "name": "MessageAvatar",
+      "description": "The avatar gutter. Put a size=\"md\" Avatar in it (decorative when the header prints the name). The reader's own run leaves it out.",
+      "props": []
+    },
+    {
+      "name": "MessageContent",
+      "description": "The run's column: header, bubbles, footers. It is as wide as its widest bubble, and everything in it hangs from the run's outer edge (start for theirs, end for yours).",
+      "props": []
+    },
+    {
+      "name": "MessageFooter",
+      "description": "Delivery state of the bubble right above it (\"Sent\", \"Read 14:22\", \"Not sent: no signal.\" + a Retry button), on the run's outer edge, in the Code voice.",
+      "props": [
+        {
+          "name": "tone",
+          "type": "\"attention\"",
+          "default": "",
+          "required": false,
+          "description": "attention: the bubble above was not sent (the reason, then a Retry button)."
+        }
+      ]
+    },
+    {
+      "name": "MessageGroup",
+      "description": "Runs one after another, one gutter and a half apart (a log's content is already one).",
+      "props": []
+    },
+    {
+      "name": "MessageHeader",
+      "description": "Sender and time, over the bubbles' text inset on the run's outer edge: the name in the UI voice, the time in the Code voice (pass a <time>).",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-align",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": []
+    },
+    {
+      "name": "data-tone",
+      "values": []
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-av",
+      "values": [
+        "var(--kl-msg-av)"
+      ]
+    },
+    {
+      "name": "--kl-av-fs",
+      "values": [
+        "10px"
+      ]
+    },
+    {
+      "name": "--kl-msg-av",
+      "values": [
+        "24px",
+        "32px"
+      ]
+    },
+    {
+      "name": "--kl-msg-gap",
+      "values": [
+        "6px"
+      ]
+    },
+    {
+      "name": "--kl-msg-head",
+      "values": [
+        "18px"
+      ]
+    },
+    {
+      "name": "--kl-msg-x",
+      "values": [
+        "max(8px,var(--kl-inset) - 2px)",
+        "var(--kl-inset)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "message-thread",
+      "title": "Message: thread with jim",
+      "file": "message-thread.tsx"
+    }
+  ]
+}

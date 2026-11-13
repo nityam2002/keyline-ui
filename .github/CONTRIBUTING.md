@@ -22,9 +22,9 @@ shadcn CLI copies into someone else's project. Everything else in the repository
 document those items.
 
 - **`src/registry/`** is the product. `src/registry/keyline/` holds the source (each component is
-  `ui/<name>.tsx` with its `ui/<name>.meta.ts`; a component not yet converted to utilities also has a
-  `ui/<name>.css`). Each item has a `<name>.meta.ts` beside its source (typed by `src/registry/item.ts`): its
-  title, description, files, CSS file if any, and dependencies. `sidebar` and `alert-dialog`,
+  `ui/<name>.tsx` with its `ui/<name>.meta.ts`, styled with Tailwind utilities and no CSS file). Each item has a
+  `<name>.meta.ts` beside its source (typed by `src/registry/item.ts`): its title, description, files, and
+  dependencies; only the theme items and blocks name a CSS file, and the build fails if a ui item does. `sidebar` and `alert-dialog`,
   which only install other items, live in `src/registry/keyline/virtual/`.
 - **`site/public/r/`** is the built registry, one JSON file per item, which is what `npx shadcn add` downloads.
   The documentation site serves it at `/r/{name}.json`, so deploying the site publishes the registry. It is
@@ -49,7 +49,7 @@ document those items.
   (`tests/browser/`; its [README](../tests/browser/README.md) covers both), compile-only type tests
   (`tests/types/`) and consumer checks (`tests/consumer/`), which install items into fresh
   projects.
-- **`docs/`** holds [usage.md](../docs/usage.md) for people installing Keyline, [design.md](../docs/design.md) for
+- **`docs/`** holds [design.md](../docs/design.md) for
   the design model every component follows, and [releasing.md](../docs/releasing.md) for publishing a version.
 
 ## Making a change
@@ -61,7 +61,7 @@ document those items.
    in light, dark, compact, RTL, narrow and reduced-motion configurations in both engines, and writes the images to
    `.artifacts/captures/`. The specs assert on geometry, styles and the accessibility tree rather than pixels, so
    this is how a visual change gets seen.
-   When a change must not alter the look (a refactor, a CSS-to-Tailwind conversion), prove it with
+   When a change must not alter the look (a refactor, a utility rewrite), prove it with
    `pnpm test:visual [--base <commit>] [--only <entries>]`: it screenshots every specimen entry and the app and
    playground routes across theme, density, direction and both engines, at the base commit and in the working
    tree, and fails on any pixel that differs. See [docs/recipe.md](../docs/recipe.md#visual-parity). It is not
@@ -69,8 +69,15 @@ document those items.
 4. If the change affects what an item installs (its files, CSS, imports, or its meta), run
    `pnpm registry:build` and commit `site/public/r/` and `registry.json` with it. `pnpm test` and CI fail when
    they are out of date.
-5. Run `pnpm lint` and `pnpm format` (which rewrites files in place) as you go.
-6. Run `pnpm check` before opening a pull request. It takes about five minutes and runs, in order:
+5. **Every change to a shipped file bumps its item.** Anything an item installs is hashed into
+   `versions.lock.json`, and `pnpm versions:check` fails when that changes while the item's `version` does not.
+   In the item's `.meta.ts`: bump `version` (patch for a fix, minor for something new, major for a breaking
+   change), add the entry for it at the top of `changelog[]` and set `updated` to its date. Then run
+   `pnpm versions:lock`, `pnpm changelog` and `pnpm registry:build`, and commit `versions.lock.json`,
+   `CHANGELOG.md` and `site/lib/changelog.json` with the change. One bump covers every commit of a pull request.
+   See [Versions and breaking changes](#versions-and-breaking-changes).
+6. Run `pnpm lint` and `pnpm format` (which rewrites files in place) as you go.
+7. Run `pnpm check` before opening a pull request. It takes about five minutes and runs, in order:
    - `pnpm typecheck`: the source, the tests (`tsconfig.tests.json`), the scripts (`tsconfig.scripts.json`) and
      the site, under the strict compiler options in `tsconfig.json`. Fix an error at its cause; a `!` or a cast
      carries a comment saying why it is safe.
@@ -81,7 +88,7 @@ document those items.
    - `pnpm test`: unit tests, including the install commands in the docs, the built registry (that it equals a
      fresh build, and what every shipped item must and must not contain) and the lint guard.
    - `pnpm test:types`: compile-only type tests for the generic parts.
-   - `pnpm registry:build`, `pnpm registry:verify`, every part test (`pnpm test:parts`), every page spec (`pnpm test:browser`) and the
+   - `pnpm registry:build`, `pnpm registry:verify`, `pnpm versions:check`, `pnpm changelog:check`, every part test (`pnpm test:parts`), every page spec (`pnpm test:browser`) and the
      CSS-order check (`pnpm test:css-order`). Neither browser runner retries a failed test.
 
 Two slower checks run when they apply:
@@ -102,12 +109,56 @@ written. A new component is done when it has all of these:
 
 - source in `src/registry/keyline/ui/` (`ui/<name>.tsx`, no CSS file), following [docs/design.md](../docs/design.md)
   and the recipe
-- a `ui/<name>.meta.ts` beside it (copy a neighbour's), with `site/public/r/` rebuilt
+- a `ui/<name>.meta.ts` beside it (copy a neighbour's), at `version: "1.0.0"` with its first changelog entry, and
+  `site/public/r/`, `versions.lock.json`, the surface snapshot and the changelog regenerated
 - a specimen in `src/demo/specimens/`, wired into `src/demo/App.tsx`
 - a page and example in `site/`
-- a part test in `tests/parts/` running the conformance suite and axe over every exported part, with any failure it
-  cannot fix yet recorded in `tests/parts/known-failures.ts`
+- a part test in `tests/parts/` running the conformance suite and axe over every exported part
 - page specs in `tests/browser/` covering behaviour, keyboard, focus and the accessibility tree in every engine
+
+## Versions and breaking changes
+
+Each item has its own semver `version` in its `.meta.ts`, with `updated` and `changelog[]` (newest first; typed by
+`src/registry/item.ts`). They are the one source for `CHANGELOG.md`, the site's `/docs/changelog` and
+`/r/versions.json`, so never edit those by hand.
+
+- `pnpm versions:check` (`scripts/registry/versions.ts`) hashes everything `shadcn add` installs from each item:
+  every file, its dependencies, and its `css`/`cssVars`. It fails when a hash changed without a bump, a version
+  went backwards, the newest changelog entry is not for `version`, a breaking entry ships without a major bump, or
+  `versions.lock.json` is out of date. `pnpm versions:lock` rewrites the lock, and refuses while any other
+  problem remains.
+- `tests/registry/surface.test.ts` records each item's exported names, `data-slot` values, `data-*` attributes and
+  CSS custom properties in `tests/registry/surface.snapshot.json`. Removing or renaming one fails unless the item's
+  version went up and a new entry is breaking. After adding to the surface, run `pnpm surface:update`.
+- **Removing an item:** never delete it outright, and never reuse a published name. Keep its meta as a tombstone
+  for one more minor release, with `deprecated: "<replacement>"`, a description that starts
+  `Deprecated: use @keyline-ui/<replacement>.`, a breaking changelog entry, and a file that re-exports from the
+  replacement (or a stub that throws an error naming it). Delete the tombstone in a later release;
+  `pnpm versions:lock` then records the name as retired, and no new item can take it.
+- **Unstable items** carry a `Preview` suffix on their export names (`OTPFieldPreview`) until they are promoted.
+
+A breaking entry is written for someone who already copied the item, and follows this template:
+
+```ts
+{
+  version: "2.0.0",
+  date: "2026-12-01",
+  // what changed, and why, in a sentence or two
+  note: "Kbd's `size` prop is gone: the key cell follows the density of its region.",
+  breaking: true,
+  migration: {
+    // before/after for a project that uses the item, against @/components/keyline/...
+    diff: `- <Kbd size="sm">K</Kbd>\n+ <Kbd>K</Kbd>`,
+    // the smallest change for someone who keeps a locally modified copy and will not re-add it
+    modified: `- export function Kbd({ size, ...props }: KbdProps) {\n+ export function Kbd(props: KbdProps) {`,
+    // steps an agent can follow: what to change, what not to touch, how to check the result (visually too)
+    prompt: "Update Keyline's Kbd to 2.0.0. 1. Re-add it: npx shadcn@latest add @keyline-ui/kbd. 2. ...",
+  },
+}
+```
+
+The re-add command (`npx shadcn@latest add @keyline-ui/<name>`) is generated. In `CHANGELOG.md` and on the site
+the entry's line starts with **Breaking:**, followed by the migration.
 
 ## Rules, and why
 
@@ -125,9 +176,41 @@ written. A new component is done when it has all of these:
 - **A check stays as strict as it was.** Fix the code rather than loosen an assertion or a tolerance. A
   `test.skip` names the engine limitation that requires it.
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every pull request, fork pull requests included, and on every push to main.
+Each check below is a job; a matrix job reports one check per engine. To fix one, run its commands locally.
+
+| Check | What it runs | When it fails |
+|---|---|---|
+| `Static (typecheck, lint, format, type tests)` | `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test:types` | Fix the error at its cause; `pnpm format` rewrites the formatting. |
+| `Unit (tests, versions, changelog)` | `pnpm test`, `pnpm versions:check`, `pnpm changelog:check` | Out-of-date registry: `pnpm registry:build` and commit. Version or changelog drift: bump the item, add its `changelog[]` entry, run `pnpm changelog`. |
+| `Parts (chromium)`, `(firefox)`, `(webkit)` | `pnpm test:parts --browser=<engine>` | Run `pnpm test:parts <name> --browser=<engine>`. |
+| `Page specs (chromium)`, `(firefox)`, `(webkit)` | `pnpm test:browser --project=<engine>` | Run `pnpm exec playwright test <name> --project=<engine>`; the run's report and traces are attached to the workflow run. |
+| `Page specs (timing)` | the `@timing` tests in Chrome then WebKit, one at a time | A settle time or frame count moved; find what made it slower. |
+| `CSS order` | `pnpm test:css-order` | A rule depends on another item's CSS coming first (design.md, rule 9). |
+| `Registry (build, diff, validate, verify)` | `pnpm registry:build` (must leave no diff), `pnpm exec shadcn registry validate`, `pnpm registry:verify` | Rebuild and commit `site/public/r/` and `registry.json`; fix the meta the message names. |
+| `Site and demo builds` | `pnpm build`, `pnpm site:build` | Run the same command. |
+| `Consumer installs` | `pnpm test:consumer` | Logs are attached to the workflow run; `pnpm test:consumer -- <check>` reruns one. |
+| `Visual parity (advisory)` | `pnpm test:visual --base <pull request base>` | Advisory, never required. Expected for a change meant to look different; for a refactor, the attached diff shows what moved. |
+| `ci` | nothing of its own | Fails when any check above (except the advisory one) failed, was cancelled or was skipped. |
+
+`ci` is the only required status check; the repository owner sets it in the branch rules for main. A skipped
+job fails it on purpose: no job has a path filter, so a skip means something is wrong.
+
+On a push to main, `.github/workflows/release.yml` verifies the deployed registry and tags the release
+([docs/releasing.md](../docs/releasing.md)). Dependency updates come from Renovate (`renovate.json`) weekly; Base
+UI and each wrapped library arrive in a pull request of their own.
+
+The workflows are hardened: no permissions by default and `contents: read` per job; every action pinned to a full
+commit SHA with its version in a comment; checkout never keeps the token; every job has a timeout; no
+`pull_request_target`. Keep all of that in a workflow change, and check it with
+[actionlint](https://github.com/rhysd/actionlint).
+
 ## Pull requests
 
 Keep each pull request to one change, and say what a reviewer should look at. Visible changes need before and
-after captures.
+after captures. Check the change against [REVIEW.md](../REVIEW.md) before opening it. A maintainer can ask for an
+agent review by commenting `@claude review` (`.github/workflows/review.yml`); it is never a required check.
 
 By contributing, you agree that your contributions are licensed under the [MIT License](../LICENSE).

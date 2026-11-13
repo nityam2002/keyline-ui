@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "time-field-delivery",
+  "title": "Time field: dock time",
+  "description": "An example of Time field: dock time.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/time-field"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/time-field-delivery.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { TimeField } from \"../ui/time-field\";\n\nconst show = (t: string) =>\n  new Date(`2026-01-01T${t}`).toLocaleTimeString(\"en-US\", { hour: \"numeric\", minute: \"2-digit\" });\n\nexport function DockTime() {\n  const [time, setTime] = useState<string | null>(\"10:30\");\n\n  return (\n    <div className=\"grid max-w-[320px] gap-3\">\n      <TimeField\n        label=\"Truck arrives at\"\n        hourCycle={12}\n        locale=\"en-US\"\n        minuteStep={15}\n        min=\"07:00\"\n        max=\"16:00\"\n        zone=\"EST\"\n        value={time}\n        onValueChange={setTime}\n        description=\"The dock is open 7 AM to 4 PM. Arrow keys move by 15 minutes.\"\n      />\n      <p role=\"status\" className=\"text-[14px] text-kl-ink-2\">\n        {time ? `Darryl will have the dock clear at ${show(time)}.` : \"No arrival time yet.\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/time-field-delivery.tsx"
+    }
+  ],
+  "categories": [
+    "time-field"
+  ],
+  "type": "registry:block"
+}

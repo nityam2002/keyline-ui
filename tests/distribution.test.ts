@@ -20,7 +20,7 @@ const walk = (dir: string): string[] =>
     const p = join(dir, n);
     return statSync(join(root, p)).isDirectory() ? walk(p) : [p];
   });
-const DOCS = ["README.md", "docs/usage.md", "docs/releasing.md"];
+const DOCS = ["README.md", "docs/releasing.md"];
 const SITE = [...walk("site/app"), ...walk("site/components"), ...walk("site/lib")].filter((f) =>
   /\.(tsx?|css)$/.test(f),
 );
@@ -68,7 +68,7 @@ test("every registry add command points at the registry's public origin", () => 
 });
 
 test("no local or placeholder hosts in what consumers read or download", () => {
-  const files = [...DOCS, "docs/usage.md", ...SITE, ...walk("site/public/r")];
+  const files = [...DOCS, ...SITE, ...walk("site/public/r")];
   for (const f of files) assert.doesNotMatch(read(f), /localhost|127\.0\.0\.1|example\.invalid/, f);
 });
 

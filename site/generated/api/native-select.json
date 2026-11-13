@@ -1,0 +1,76 @@
+{
+  "name": "native-select",
+  "title": "Native select",
+  "description": "The platform's own select in a Keyline field frame: the caret cell drawn over its end, the OS list in the page's scheme, options or groups, a Field participant (name, required, validate, Form errors).",
+  "whenToUse": "Use it in long forms on phones and for fields the browser can autofill; the open list is the system's. For a styled list that docks to its field use Select.",
+  "parts": [
+    {
+      "name": "NativeSelect",
+      "description": "NativeSelect: the platform's own <select> in a Keyline field frame. For long forms on touch devices, autofill (country, region), and anywhere the OS picker is the better list; Select is the styled listbox for everything else. A Field participant (name, required, validate, Form errors). ┌─────────────────────────────┬────┐ │ Rotterdam ECT Delta │ ⌄ │ one frame: the select fills it, the caret cell is drawn └─────────────────────────────┴────┘ over its end (clicks reach the select) The open list is the operating system's: it follows the page's light or dark scheme, not the theme. Single choice only: a multiple select is a CheckboxGroup or Multiselect here.",
+      "props": [
+        {
+          "name": "children",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own frame. cell: a cell of an enclosing frame (label visually hidden)."
+        },
+        {
+          "name": "options",
+          "type": "(NativeSelectOption | NativeSelectGroup)[]",
+          "default": "",
+          "required": false,
+          "description": "Options (or labelled groups of options). Or pass <option>/<optgroup> children instead."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "An empty first option. Not selectable again once a value is chosen when `required`."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "native-select",
+        "native-select-control",
+        "native-select-frame",
+        "native-select-icon"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "native-select-transfer",
+      "title": "Native select: transfer request",
+      "file": "native-select-transfer.tsx"
+    }
+  ]
+}

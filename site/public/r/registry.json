@@ -26,6 +26,27 @@
       ]
     },
     {
+      "name": "accordion-policies",
+      "type": "registry:block",
+      "title": "Accordion: branch policies",
+      "description": "An example of Accordion: branch policies.",
+      "categories": [
+        "accordion"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/accordion-policies.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/accordion-policies.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/accordion",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "alert-dialog",
       "type": "registry:ui",
       "title": "Alert dialog",
@@ -36,6 +57,28 @@
         "@keyline-ui/dialog"
       ],
       "dependencies": []
+    },
+    {
+      "name": "alert-dialog-remove",
+      "type": "registry:block",
+      "title": "Alert dialog: remove client",
+      "description": "An example of Alert dialog: remove client.",
+      "categories": [
+        "alert-dialog"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/alert-dialog-remove.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/alert-dialog-remove.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/dialog",
+        "@keyline-ui/keyline"
+      ]
     },
     {
       "name": "app-shell",
@@ -62,6 +105,33 @@
       ]
     },
     {
+      "name": "app-shell-office",
+      "type": "registry:block",
+      "title": "App shell: office shell",
+      "description": "An example of App shell: office shell.",
+      "categories": [
+        "app-shell"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/app-shell-office.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/app-shell-office.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/app-shell",
+        "@keyline-ui/breadcrumb",
+        "@keyline-ui/button",
+        "@keyline-ui/inspector",
+        "@keyline-ui/item",
+        "@keyline-ui/keyline",
+        "@keyline-ui/nav",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "attachment",
       "type": "registry:ui",
       "title": "Attachment",
@@ -80,6 +150,28 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "attachment-upload",
+      "type": "registry:block",
+      "title": "Attachment: invoice uploads",
+      "description": "An example of Attachment: invoice uploads.",
+      "categories": [
+        "attachment"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/attachment-upload.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/attachment-upload.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/attachment",
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -105,6 +197,49 @@
       ]
     },
     {
+      "name": "avatar-status",
+      "type": "registry:block",
+      "title": "Avatar: whos in",
+      "description": "An example of Avatar: whos in.",
+      "categories": [
+        "avatar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/avatar-status.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/avatar-status.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "avatar-team",
+      "type": "registry:block",
+      "title": "Avatar: account team",
+      "description": "An example of Avatar: account team.",
+      "categories": [
+        "avatar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/avatar-team.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/avatar-team.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/checkbox-group",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "breadcrumb",
       "type": "registry:ui",
       "title": "Breadcrumb",
@@ -127,6 +262,28 @@
       ]
     },
     {
+      "name": "breadcrumb-drive",
+      "type": "registry:block",
+      "title": "Breadcrumb: drive folder",
+      "description": "An example of Breadcrumb: drive folder.",
+      "categories": [
+        "breadcrumb"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/breadcrumb-drive.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/breadcrumb-drive.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/breadcrumb",
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "bubble",
       "type": "registry:ui",
       "title": "Bubble",
@@ -145,6 +302,29 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "bubble-reactions",
+      "type": "registry:block",
+      "title": "Bubble: party announcement",
+      "description": "An example of Bubble: party announcement.",
+      "categories": [
+        "bubble"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/bubble-reactions.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/bubble-reactions.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/bubble",
+        "@keyline-ui/keyline",
+        "@keyline-ui/message"
       ]
     },
     {
@@ -170,6 +350,27 @@
       ]
     },
     {
+      "name": "button-affix",
+      "type": "registry:block",
+      "title": "Button: warehouse queue",
+      "description": "An example of Button: warehouse queue.",
+      "categories": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-affix.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-affix.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "button-group",
       "type": "registry:ui",
       "title": "Button group",
@@ -190,6 +391,138 @@
         "@keyline-ui/button",
         "@keyline-ui/keyline-render",
         "utils"
+      ]
+    },
+    {
+      "name": "button-group-menu",
+      "type": "registry:block",
+      "title": "Button group: tracking link",
+      "description": "An example of Button group: tracking link.",
+      "categories": [
+        "button-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-group-menu.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-group-menu.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/button-group",
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu"
+      ]
+    },
+    {
+      "name": "button-group-review",
+      "type": "registry:block",
+      "title": "Button group: order review",
+      "description": "An example of Button group: order review.",
+      "categories": [
+        "button-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-group-review.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-group-review.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/button-group",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "button-group-zoom",
+      "type": "registry:block",
+      "title": "Button group: report zoom",
+      "description": "An example of Button group: report zoom.",
+      "categories": [
+        "button-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-group-zoom.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-group-zoom.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/button-group",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "button-invoice",
+      "type": "registry:block",
+      "title": "Button: invoice actions",
+      "description": "An example of Button: invoice actions.",
+      "categories": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-invoice.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-invoice.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "button-retry",
+      "type": "registry:block",
+      "title": "Button: corporate sync",
+      "description": "An example of Button: corporate sync.",
+      "categories": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-retry.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-retry.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "button-variants",
+      "type": "registry:block",
+      "title": "Button: expense review",
+      "description": "An example of Button: expense review.",
+      "categories": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/button-variants.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/button-variants.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -233,6 +566,27 @@
       ]
     },
     {
+      "name": "carousel-posters",
+      "type": "registry:block",
+      "title": "Carousel: employee of the month",
+      "description": "An example of Carousel: employee of the month.",
+      "categories": [
+        "carousel"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/carousel-posters.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/carousel-posters.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/carousel",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
@@ -258,6 +612,75 @@
       ]
     },
     {
+      "name": "chart-returns",
+      "type": "registry:block",
+      "title": "Chart: returns by client",
+      "description": "An example of Chart: returns by client.",
+      "categories": [
+        "chart"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/chart-returns.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/chart-returns.tsx"
+        }
+      ],
+      "dependencies": [
+        "recharts@3.10.1"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/chart",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "chart-sales",
+      "type": "registry:block",
+      "title": "Chart: sales by rep",
+      "description": "An example of Chart: sales by rep.",
+      "categories": [
+        "chart"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/chart-sales.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/chart-sales.tsx"
+        }
+      ],
+      "dependencies": [
+        "recharts@3.10.1"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/chart",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "chart-target",
+      "type": "registry:block",
+      "title": "Chart: weekly target",
+      "description": "An example of Chart: weekly target.",
+      "categories": [
+        "chart"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/chart-target.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/chart-target.tsx"
+        }
+      ],
+      "dependencies": [
+        "recharts@3.10.1"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/chart",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -276,6 +699,27 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "checkbox-closing",
+      "type": "registry:block",
+      "title": "Checkbox: closing checklist",
+      "description": "An example of Checkbox: closing checklist.",
+      "categories": [
+        "checkbox"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/checkbox-closing.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/checkbox-closing.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/checkbox",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -302,6 +746,72 @@
       ]
     },
     {
+      "name": "checkbox-group-party",
+      "type": "registry:block",
+      "title": "Checkbox group: party supplies",
+      "description": "An example of Checkbox group: party supplies.",
+      "categories": [
+        "checkbox-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/checkbox-group-party.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/checkbox-group-party.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/checkbox-group",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "checkbox-group-price-list",
+      "type": "registry:block",
+      "title": "Checkbox group: price list recipients",
+      "description": "An example of Checkbox group: price list recipients.",
+      "categories": [
+        "checkbox-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/checkbox-group-price-list.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/checkbox-group-price-list.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/checkbox-group",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "checkbox-invoices",
+      "type": "registry:block",
+      "title": "Checkbox: print invoices",
+      "description": "An example of Checkbox: print invoices.",
+      "categories": [
+        "checkbox"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/checkbox-invoices.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/checkbox-invoices.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/checkbox",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "collapsible",
       "type": "registry:ui",
       "title": "Collapsible",
@@ -320,6 +830,29 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "collapsible-options",
+      "type": "registry:block",
+      "title": "Collapsible: delivery options",
+      "description": "An example of Collapsible: delivery options.",
+      "categories": [
+        "collapsible"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/collapsible-options.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/collapsible-options.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/collapsible",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/switch"
       ]
     },
     {
@@ -362,6 +895,48 @@
       ]
     },
     {
+      "name": "combobox-client",
+      "type": "registry:block",
+      "title": "Combobox: find client",
+      "description": "An example of Combobox: find client.",
+      "categories": [
+        "combobox"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/combobox-client.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/combobox-client.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/combobox",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "combobox-directory",
+      "type": "registry:block",
+      "title": "Combobox: corporate directory",
+      "description": "An example of Combobox: corporate directory.",
+      "categories": [
+        "combobox"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/combobox-directory.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/combobox-directory.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/combobox",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "command",
       "type": "registry:ui",
       "title": "Command menu",
@@ -386,6 +961,79 @@
       ]
     },
     {
+      "name": "command-office",
+      "type": "registry:block",
+      "title": "Command menu: office commands",
+      "description": "An example of Command menu: office commands.",
+      "categories": [
+        "command"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/command-office.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/command-office.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/command",
+        "@keyline-ui/kbd",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "composition-cells",
+      "type": "registry:block",
+      "title": "Composition: declared cells",
+      "description": "An example of Composition: declared cells.",
+      "categories": [
+        "guide"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/composition-cells.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/composition-cells.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/segmented"
+      ]
+    },
+    {
+      "name": "config-scope",
+      "type": "registry:block",
+      "title": "Configuration: branch theme",
+      "description": "An example of Configuration: branch theme.",
+      "categories": [
+        "guide"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/config-scope.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/config-scope.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/checkbox",
+        "@keyline-ui/keyline",
+        "@keyline-ui/keyline-config",
+        "@keyline-ui/segmented",
+        "@keyline-ui/select",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context menu",
@@ -406,6 +1054,28 @@
         "@keyline-ui/keyline-scope",
         "@keyline-ui/menu",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "context-menu-clients",
+      "type": "registry:block",
+      "title": "Context menu: client list",
+      "description": "An example of Context menu: client list.",
+      "categories": [
+        "context-menu"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/context-menu-clients.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/context-menu-clients.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/context-menu",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -448,6 +1118,30 @@
       "dependencies": []
     },
     {
+      "name": "data-table-orders",
+      "type": "registry:block",
+      "title": "Data Table: orders data table",
+      "description": "An example of Data Table: orders data table.",
+      "categories": [
+        "data-table"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/data-table-orders.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/data-table-orders.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/data-table",
+        "@keyline-ui/keyline",
+        "@keyline-ui/status",
+        "@keyline-ui/table"
+      ]
+    },
+    {
       "name": "date-picker",
       "type": "registry:ui",
       "title": "Date picker",
@@ -472,6 +1166,48 @@
         "@keyline-ui/date-range",
         "@keyline-ui/field",
         "@keyline-ui/time-field"
+      ]
+    },
+    {
+      "name": "date-picker-delivery",
+      "type": "registry:block",
+      "title": "Date picker: delivery day",
+      "description": "An example of Date picker: delivery day.",
+      "categories": [
+        "date-picker"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/date-picker-delivery.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/date-picker-delivery.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/date-picker",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "date-picker-meeting",
+      "type": "registry:block",
+      "title": "Date picker: client meeting",
+      "description": "An example of Date picker: client meeting.",
+      "categories": [
+        "date-picker"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/date-picker-meeting.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/date-picker-meeting.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/date-picker",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -501,6 +1237,27 @@
       ]
     },
     {
+      "name": "date-range-vacation",
+      "type": "registry:block",
+      "title": "Date range picker: vacation request",
+      "description": "An example of Date range picker: vacation request.",
+      "categories": [
+        "date-range"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/date-range-vacation.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/date-range-vacation.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/date-range",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
@@ -524,6 +1281,29 @@
       ]
     },
     {
+      "name": "dialog-new-client",
+      "type": "registry:block",
+      "title": "Dialog: new client",
+      "description": "An example of Dialog: new client.",
+      "categories": [
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/dialog-new-client.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/dialog-new-client.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/dialog",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "direction",
       "type": "registry:ui",
       "title": "Direction",
@@ -541,6 +1321,32 @@
       "registryDependencies": [
         "@keyline-ui/keyline",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "direction-rtl",
+      "type": "registry:block",
+      "title": "Direction: mirrored invoices",
+      "description": "An example of Direction: mirrored invoices.",
+      "categories": [
+        "direction"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/direction-rtl.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/direction-rtl.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/breadcrumb",
+        "@keyline-ui/button",
+        "@keyline-ui/direction",
+        "@keyline-ui/keyline",
+        "@keyline-ui/pagination",
+        "@keyline-ui/segmented",
+        "@keyline-ui/tooltip"
       ]
     },
     {
@@ -568,6 +1374,28 @@
       ]
     },
     {
+      "name": "drawer-delivery",
+      "type": "registry:block",
+      "title": "Drawer: truck route",
+      "description": "An example of Drawer: truck route.",
+      "categories": [
+        "drawer"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/drawer-delivery.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/drawer-delivery.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/drawer",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "empty",
       "type": "registry:ui",
       "title": "Empty",
@@ -590,6 +1418,51 @@
       ]
     },
     {
+      "name": "empty-calls",
+      "type": "registry:block",
+      "title": "Empty: call log",
+      "description": "An example of Empty: call log.",
+      "categories": [
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/empty-calls.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/empty-calls.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/empty",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "empty-search",
+      "type": "registry:block",
+      "title": "Empty: client search",
+      "description": "An example of Empty: client search.",
+      "categories": [
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/empty-search.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/empty-search.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/empty",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "field",
       "type": "registry:ui",
       "title": "Field",
@@ -608,6 +1481,71 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "field-carton",
+      "type": "registry:block",
+      "title": "Field: carton size",
+      "description": "An example of Field: carton size.",
+      "categories": [
+        "field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/field-carton.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/field-carton.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "field-order",
+      "type": "registry:block",
+      "title": "Field: new order",
+      "description": "An example of Field: new order.",
+      "categories": [
+        "field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/field-order.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/field-order.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
+      "name": "field-tracking",
+      "type": "registry:block",
+      "title": "Field: track shipment",
+      "description": "An example of Field: track shipment.",
+      "categories": [
+        "field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/field-tracking.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/field-tracking.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -633,6 +1571,29 @@
       ]
     },
     {
+      "name": "hover-card-client",
+      "type": "registry:block",
+      "title": "Hover card: client cards",
+      "description": "An example of Hover card: client cards.",
+      "categories": [
+        "hover-card"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/hover-card-client.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/hover-card-client.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/hover-card",
+        "@keyline-ui/keyline",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "inspector",
       "type": "registry:ui",
       "title": "Inspector",
@@ -652,6 +1613,30 @@
         "utils",
         "@keyline-ui/keyline-render",
         "@keyline-ui/scroll-area"
+      ]
+    },
+    {
+      "name": "inspector-order",
+      "type": "registry:block",
+      "title": "Inspector: order inspector",
+      "description": "An example of Inspector: order inspector.",
+      "categories": [
+        "inspector"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/inspector-order.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/inspector-order.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/inspector",
+        "@keyline-ui/item",
+        "@keyline-ui/keyline",
+        "@keyline-ui/status"
       ]
     },
     {
@@ -676,6 +1661,28 @@
       ]
     },
     {
+      "name": "item-settings",
+      "type": "registry:block",
+      "title": "Item: alert settings",
+      "description": "An example of Item: alert settings.",
+      "categories": [
+        "item"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/item-settings.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/item-settings.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/item",
+        "@keyline-ui/keyline",
+        "@keyline-ui/switch"
+      ]
+    },
+    {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
@@ -694,6 +1701,27 @@
         "@keyline-ui/keyline",
         "@keyline-ui/keyline-render",
         "utils"
+      ]
+    },
+    {
+      "name": "kbd-shortcuts",
+      "type": "registry:block",
+      "title": "Kbd: order shortcuts",
+      "description": "An example of Kbd: order shortcuts.",
+      "categories": [
+        "kbd"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/kbd-shortcuts.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/kbd-shortcuts.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/kbd",
+        "@keyline-ui/keyline"
       ]
     },
     {
@@ -1942,6 +2970,31 @@
       ]
     },
     {
+      "name": "marker-activity",
+      "type": "registry:block",
+      "title": "Marker: order activity",
+      "description": "An example of Marker: order activity.",
+      "categories": [
+        "marker"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/marker-activity.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/marker-activity.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/marker",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "menu",
       "type": "registry:ui",
       "title": "Menu",
@@ -1961,6 +3014,52 @@
         "utils",
         "@keyline-ui/keyline-scope",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "menu-notifications",
+      "type": "registry:block",
+      "title": "Menu: notification menu",
+      "description": "An example of Menu: notification menu.",
+      "categories": [
+        "menu"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/menu-notifications.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/menu-notifications.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu"
+      ]
+    },
+    {
+      "name": "menu-order-actions",
+      "type": "registry:block",
+      "title": "Menu: order actions",
+      "description": "An example of Menu: order actions.",
+      "categories": [
+        "menu"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/menu-order-actions.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/menu-order-actions.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu"
       ]
     },
     {
@@ -1985,6 +3084,27 @@
         "@keyline-ui/scroll-edges",
         "@keyline-ui/menu",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "menubar-report",
+      "type": "registry:block",
+      "title": "Menubar: sales report menus",
+      "description": "An example of Menubar: sales report menus.",
+      "categories": [
+        "menubar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/menubar-report.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/menubar-report.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/menubar"
       ]
     },
     {
@@ -2033,6 +3153,80 @@
       ]
     },
     {
+      "name": "message-scroller-chat",
+      "type": "registry:block",
+      "title": "Message scroller: driver chat",
+      "description": "An example of Message scroller: driver chat.",
+      "categories": [
+        "message-scroller"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/message-scroller-chat.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/message-scroller-chat.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/bubble",
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/message",
+        "@keyline-ui/message-scroller"
+      ]
+    },
+    {
+      "name": "message-thread",
+      "type": "registry:block",
+      "title": "Message: thread with jim",
+      "description": "An example of Message: thread with jim.",
+      "categories": [
+        "message"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/message-thread.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/message-thread.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/avatar",
+        "@keyline-ui/bubble",
+        "@keyline-ui/keyline",
+        "@keyline-ui/message"
+      ]
+    },
+    {
+      "name": "modes-region",
+      "type": "registry:block",
+      "title": "Modes: modes region",
+      "description": "An example of Modes: modes region.",
+      "categories": [
+        "guide"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/modes-region.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/modes-region.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/direction",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/segmented",
+        "@keyline-ui/select"
+      ]
+    },
+    {
       "name": "multiselect",
       "type": "registry:ui",
       "title": "Multiselect",
@@ -2054,6 +3248,27 @@
       ]
     },
     {
+      "name": "multiselect-memo",
+      "type": "registry:block",
+      "title": "Multiselect: memo recipients",
+      "description": "An example of Multiselect: memo recipients.",
+      "categories": [
+        "multiselect"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/multiselect-memo.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/multiselect-memo.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/multiselect"
+      ]
+    },
+    {
       "name": "native-select",
       "type": "registry:ui",
       "title": "Native select",
@@ -2072,6 +3287,29 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/field"
+      ]
+    },
+    {
+      "name": "native-select-transfer",
+      "type": "registry:block",
+      "title": "Native select: transfer request",
+      "description": "An example of Native select: transfer request.",
+      "categories": [
+        "native-select"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/native-select-transfer.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/native-select-transfer.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/native-select"
       ]
     },
     {
@@ -2099,6 +3337,29 @@
       ]
     },
     {
+      "name": "nav-sidebar",
+      "type": "registry:block",
+      "title": "Nav: office sidebar",
+      "description": "An example of Nav: office sidebar.",
+      "categories": [
+        "nav"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/nav-sidebar.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/nav-sidebar.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/nav"
+      ]
+    },
+    {
       "name": "navigation-menu",
       "type": "registry:ui",
       "title": "Navigation menu",
@@ -2120,6 +3381,27 @@
         "@keyline-ui/scroll-edges",
         "@keyline-ui/keyline-motion",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "navigation-menu-site",
+      "type": "registry:block",
+      "title": "Navigation menu: paper site nav",
+      "description": "An example of Navigation menu: paper site nav.",
+      "categories": [
+        "navigation-menu"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/navigation-menu-site.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/navigation-menu-site.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/navigation-menu"
       ]
     },
     {
@@ -2145,6 +3427,28 @@
       ]
     },
     {
+      "name": "notice-stock",
+      "type": "registry:block",
+      "title": "Notice: paper stock",
+      "description": "An example of Notice: paper stock.",
+      "categories": [
+        "notice"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/notice-stock.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/notice-stock.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/notice"
+      ]
+    },
+    {
       "name": "number-field",
       "type": "registry:ui",
       "title": "Number field",
@@ -2164,6 +3468,48 @@
         "utils",
         "@keyline-ui/keyline-render",
         "@keyline-ui/field"
+      ]
+    },
+    {
+      "name": "number-field-price",
+      "type": "registry:block",
+      "title": "Number field: unit price",
+      "description": "An example of Number field: unit price.",
+      "categories": [
+        "number-field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/number-field-price.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/number-field-price.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/number-field"
+      ]
+    },
+    {
+      "name": "number-field-reorder",
+      "type": "registry:block",
+      "title": "Number field: reorder",
+      "description": "An example of Number field: reorder.",
+      "categories": [
+        "number-field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/number-field-reorder.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/number-field-reorder.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/number-field"
       ]
     },
     {
@@ -2204,6 +3550,27 @@
       ]
     },
     {
+      "name": "otp-sign-in",
+      "type": "registry:block",
+      "title": "OTP field: sign in code",
+      "description": "An example of OTP field: sign in code.",
+      "categories": [
+        "otp-field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/otp-sign-in.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/otp-sign-in.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/otp-field"
+      ]
+    },
+    {
       "name": "pagination",
       "type": "registry:ui",
       "title": "Pagination",
@@ -2225,6 +3592,27 @@
       ]
     },
     {
+      "name": "pagination-invoices",
+      "type": "registry:block",
+      "title": "Pagination: invoice archive",
+      "description": "An example of Pagination: invoice archive.",
+      "categories": [
+        "pagination"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/pagination-invoices.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/pagination-invoices.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/pagination"
+      ]
+    },
+    {
       "name": "panel",
       "type": "registry:ui",
       "title": "Panel",
@@ -2243,6 +3631,51 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "panel-grid",
+      "type": "registry:block",
+      "title": "Panel: branch board",
+      "description": "An example of Panel: branch board.",
+      "categories": [
+        "panel"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/panel-grid.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/panel-grid.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/status"
+      ]
+    },
+    {
+      "name": "panel-targets",
+      "type": "registry:block",
+      "title": "Panel: sales targets",
+      "description": "An example of Panel: sales targets.",
+      "categories": [
+        "panel"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/panel-targets.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/panel-targets.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/stat"
       ]
     },
     {
@@ -2268,6 +3701,29 @@
       ]
     },
     {
+      "name": "popover-note",
+      "type": "registry:block",
+      "title": "Popover: delivery note",
+      "description": "An example of Popover: delivery note.",
+      "categories": [
+        "popover"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/popover-note.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/popover-note.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/popover"
+      ]
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -2286,6 +3742,50 @@
         "@keyline-ui/keyline",
         "@keyline-ui/keyline-render",
         "utils"
+      ]
+    },
+    {
+      "name": "progress-print",
+      "type": "registry:block",
+      "title": "Progress: print invoices",
+      "description": "An example of Progress: print invoices.",
+      "categories": [
+        "progress"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/progress-print.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/progress-print.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/progress"
+      ]
+    },
+    {
+      "name": "progress-upload",
+      "type": "registry:block",
+      "title": "Progress: upload report",
+      "description": "An example of Progress: upload report.",
+      "categories": [
+        "progress"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/progress-upload.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/progress-upload.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/progress"
       ]
     },
     {
@@ -2317,6 +3817,30 @@
       ]
     },
     {
+      "name": "questionnaire-party",
+      "type": "registry:block",
+      "title": "Questionnaire: birthday survey",
+      "description": "An example of Questionnaire: birthday survey.",
+      "categories": [
+        "questionnaire"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/questionnaire-party.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/questionnaire-party.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/questionnaire",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Radio group",
@@ -2341,6 +3865,49 @@
       ]
     },
     {
+      "name": "radio-group-delivery",
+      "type": "registry:block",
+      "title": "Radio group: delivery choice",
+      "description": "An example of Radio group: delivery choice.",
+      "categories": [
+        "radio-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/radio-group-delivery.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/radio-group-delivery.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/radio-group"
+      ]
+    },
+    {
+      "name": "radio-group-panel",
+      "type": "registry:block",
+      "title": "Radio group: paper weight",
+      "description": "An example of Radio group: paper weight.",
+      "categories": [
+        "radio-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/radio-group-panel.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/radio-group-panel.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/radio-group"
+      ]
+    },
+    {
       "name": "resizable",
       "type": "registry:ui",
       "title": "Resizable",
@@ -2358,6 +3925,32 @@
       "registryDependencies": [
         "@keyline-ui/keyline",
         "utils"
+      ]
+    },
+    {
+      "name": "resizable-calls",
+      "type": "registry:block",
+      "title": "Resizable: call log",
+      "description": "An example of Resizable: call log.",
+      "categories": [
+        "resizable"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/resizable-calls.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/resizable-calls.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/item",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/resizable"
       ]
     },
     {
@@ -2382,6 +3975,29 @@
         "utils",
         "@keyline-ui/keyline-render",
         "@keyline-ui/keyline-scope"
+      ]
+    },
+    {
+      "name": "scroll-area-log",
+      "type": "registry:block",
+      "title": "Scroll Area: activity log",
+      "description": "An example of Scroll Area: activity log.",
+      "categories": [
+        "scroll-area"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/scroll-area-log.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/scroll-area-log.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/item",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/scroll-area"
       ]
     },
     {
@@ -2425,6 +4041,49 @@
       ]
     },
     {
+      "name": "segmented-panel",
+      "type": "registry:block",
+      "title": "Segmented control: leaderboard",
+      "description": "An example of Segmented control: leaderboard.",
+      "categories": [
+        "segmented"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/segmented-panel.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/segmented-panel.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/segmented"
+      ]
+    },
+    {
+      "name": "segmented-period",
+      "type": "registry:block",
+      "title": "Segmented control: sales by period",
+      "description": "An example of Segmented control: sales by period.",
+      "categories": [
+        "segmented"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/segmented-period.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/segmented-period.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/segmented"
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -2446,6 +4105,50 @@
         "@keyline-ui/options",
         "@keyline-ui/field",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "select-assign",
+      "type": "registry:block",
+      "title": "Select: assign lead",
+      "description": "An example of Select: assign lead.",
+      "categories": [
+        "select"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/select-assign.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/select-assign.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/select"
+      ]
+    },
+    {
+      "name": "select-form",
+      "type": "registry:block",
+      "title": "Select: quote form",
+      "description": "An example of Select: quote form.",
+      "categories": [
+        "select"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/select-form.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/select-form.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/field",
+        "@keyline-ui/keyline",
+        "@keyline-ui/select"
       ]
     },
     {
@@ -2484,6 +4187,50 @@
         "@keyline-ui/keyline-scope",
         "@keyline-ui/keyline-render",
         "@keyline-ui/dialog"
+      ]
+    },
+    {
+      "name": "sheet-order",
+      "type": "registry:block",
+      "title": "Sheet: order sheet",
+      "description": "An example of Sheet: order sheet.",
+      "categories": [
+        "sheet"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/sheet-order.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/sheet-order.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/sheet",
+        "@keyline-ui/status"
+      ]
+    },
+    {
+      "name": "shipments-block",
+      "type": "registry:block",
+      "title": "Blocks: shipments block",
+      "description": "An example of Blocks: shipments block.",
+      "categories": [
+        "guide"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/shipments-block.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/shipments-block.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/shipments-demo"
       ]
     },
     {
@@ -2682,6 +4429,31 @@
       "dependencies": []
     },
     {
+      "name": "sidebar-rail",
+      "type": "registry:block",
+      "title": "Sidebar (AppShell + Nav): rail sidebar",
+      "description": "An example of Sidebar (AppShell + Nav): rail sidebar.",
+      "categories": [
+        "sidebar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/sidebar-rail.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/sidebar-rail.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/app-shell",
+        "@keyline-ui/breadcrumb",
+        "@keyline-ui/keyline",
+        "@keyline-ui/nav"
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
@@ -2701,6 +4473,30 @@
         "@keyline-ui/keyline",
         "@keyline-ui/keyline-render",
         "utils"
+      ]
+    },
+    {
+      "name": "skeleton-client",
+      "type": "registry:block",
+      "title": "Skeleton: client card",
+      "description": "An example of Skeleton: client card.",
+      "categories": [
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/skeleton-client.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/skeleton-client.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/skeleton",
+        "@keyline-ui/stat"
       ]
     },
     {
@@ -2728,6 +4524,48 @@
       ]
     },
     {
+      "name": "slider-discount",
+      "type": "registry:block",
+      "title": "Slider: county discount",
+      "description": "An example of Slider: county discount.",
+      "categories": [
+        "slider"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/slider-discount.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/slider-discount.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/slider"
+      ]
+    },
+    {
+      "name": "slider-range",
+      "type": "registry:block",
+      "title": "Slider: price range",
+      "description": "An example of Slider: price range.",
+      "categories": [
+        "slider"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/slider-range.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/slider-range.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/slider"
+      ]
+    },
+    {
       "name": "split-button",
       "type": "registry:ui",
       "title": "Split button",
@@ -2748,6 +4586,50 @@
         "utils",
         "@keyline-ui/menu",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "split-button-delivery",
+      "type": "registry:block",
+      "title": "Split button: book delivery",
+      "description": "An example of Split button: book delivery.",
+      "categories": [
+        "split-button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/split-button-delivery.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/split-button-delivery.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu",
+        "@keyline-ui/split-button"
+      ]
+    },
+    {
+      "name": "split-button-export",
+      "type": "registry:block",
+      "title": "Split button: export report",
+      "description": "An example of Split button: export report.",
+      "categories": [
+        "split-button"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/split-button-export.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/split-button-export.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu",
+        "@keyline-ui/split-button"
       ]
     },
     {
@@ -2773,6 +4655,51 @@
       ]
     },
     {
+      "name": "stat-sales",
+      "type": "registry:block",
+      "title": "Stat: branch stats",
+      "description": "An example of Stat: branch stats.",
+      "categories": [
+        "stat"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/stat-sales.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/stat-sales.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/segmented",
+        "@keyline-ui/stat"
+      ]
+    },
+    {
+      "name": "stat-warehouse",
+      "type": "registry:block",
+      "title": "Stat: warehouse space",
+      "description": "An example of Stat: warehouse space.",
+      "categories": [
+        "stat"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/stat-warehouse.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/stat-warehouse.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/stat"
+      ]
+    },
+    {
       "name": "status",
       "type": "registry:ui",
       "title": "Status and badge",
@@ -2795,6 +4722,49 @@
       ]
     },
     {
+      "name": "status-badges",
+      "type": "registry:block",
+      "title": "Status and badge: invoice badges",
+      "description": "An example of Status and badge: invoice badges.",
+      "categories": [
+        "status"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/status-badges.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/status-badges.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/status"
+      ]
+    },
+    {
+      "name": "status-deliveries",
+      "type": "registry:block",
+      "title": "Status and badge: delivery board",
+      "description": "An example of Status and badge: delivery board.",
+      "categories": [
+        "status"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/status-deliveries.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/status-deliveries.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/status"
+      ]
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
@@ -2814,6 +4784,27 @@
         "utils",
         "@keyline-ui/checkbox",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "switch-alerts",
+      "type": "registry:block",
+      "title": "Switch: alert settings",
+      "description": "An example of Switch: alert settings.",
+      "categories": [
+        "switch"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/switch-alerts.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/switch-alerts.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/switch"
       ]
     },
     {
@@ -2846,6 +4837,72 @@
       ]
     },
     {
+      "name": "table-lines",
+      "type": "registry:block",
+      "title": "Table: order lines",
+      "description": "An example of Table: order lines.",
+      "categories": [
+        "table"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/table-lines.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/table-lines.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/table"
+      ]
+    },
+    {
+      "name": "table-loading",
+      "type": "registry:block",
+      "title": "Table: invoice table",
+      "description": "An example of Table: invoice table.",
+      "categories": [
+        "table"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/table-loading.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/table-loading.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/table"
+      ]
+    },
+    {
+      "name": "table-orders",
+      "type": "registry:block",
+      "title": "Table: open orders",
+      "description": "An example of Table: open orders.",
+      "categories": [
+        "table"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/table-orders.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/table-orders.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/status",
+        "@keyline-ui/table"
+      ]
+    },
+    {
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
@@ -2871,6 +4928,68 @@
       ]
     },
     {
+      "name": "tabs-account",
+      "type": "registry:block",
+      "title": "Tabs: client account",
+      "description": "An example of Tabs: client account.",
+      "categories": [
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/tabs-account.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/tabs-account.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/tabs"
+      ]
+    },
+    {
+      "name": "tabs-views",
+      "type": "registry:block",
+      "title": "Tabs: call views",
+      "description": "An example of Tabs: call views.",
+      "categories": [
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/tabs-views.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/tabs-views.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/tabs"
+      ]
+    },
+    {
+      "name": "theming-roles",
+      "type": "registry:block",
+      "title": "Theming: role cards",
+      "description": "An example of Theming: role cards.",
+      "categories": [
+        "guide"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/theming-roles.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/theming-roles.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline"
+      ]
+    },
+    {
       "name": "time-field",
       "type": "registry:ui",
       "title": "Time field",
@@ -2889,6 +5008,27 @@
         "@keyline-ui/keyline",
         "utils",
         "@keyline-ui/field"
+      ]
+    },
+    {
+      "name": "time-field-delivery",
+      "type": "registry:block",
+      "title": "Time field: dock time",
+      "description": "An example of Time field: dock time.",
+      "categories": [
+        "time-field"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/time-field-delivery.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/time-field-delivery.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/time-field"
       ]
     },
     {
@@ -2912,6 +5052,50 @@
         "utils",
         "@keyline-ui/keyline-scope",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "toast-promise",
+      "type": "registry:block",
+      "title": "Toast: send report",
+      "description": "An example of Toast: send report.",
+      "categories": [
+        "toast"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toast-promise.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toast-promise.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/toast"
+      ]
+    },
+    {
+      "name": "toast-undo",
+      "type": "registry:block",
+      "title": "Toast: archive undo",
+      "description": "An example of Toast: archive undo.",
+      "categories": [
+        "toast"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toast-undo.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toast-undo.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/toast"
       ]
     },
     {
@@ -2963,6 +5147,93 @@
       ]
     },
     {
+      "name": "toggle-group-panel",
+      "type": "registry:block",
+      "title": "Toggle group: supply room",
+      "description": "An example of Toggle group: supply room.",
+      "categories": [
+        "toggle-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toggle-group-panel.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toggle-group-panel.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/panel",
+        "@keyline-ui/toggle-group"
+      ]
+    },
+    {
+      "name": "toggle-group-reps",
+      "type": "registry:block",
+      "title": "Toggle group: orders by rep",
+      "description": "An example of Toggle group: orders by rep.",
+      "categories": [
+        "toggle-group"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toggle-group-reps.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toggle-group-reps.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/toggle-group"
+      ]
+    },
+    {
+      "name": "toggle-icon",
+      "type": "registry:block",
+      "title": "Toggle: pin client",
+      "description": "An example of Toggle: pin client.",
+      "categories": [
+        "toggle"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toggle-icon.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toggle-icon.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/toggle"
+      ]
+    },
+    {
+      "name": "toggle-receipts",
+      "type": "registry:block",
+      "title": "Toggle: expense filter",
+      "description": "An example of Toggle: expense filter.",
+      "categories": [
+        "toggle"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toggle-receipts.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toggle-receipts.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/toggle"
+      ]
+    },
+    {
       "name": "toolbar",
       "type": "registry:ui",
       "title": "Toolbar",
@@ -2990,6 +5261,31 @@
       ]
     },
     {
+      "name": "toolbar-editor",
+      "type": "registry:block",
+      "title": "Toolbar: memo editor",
+      "description": "An example of Toolbar: memo editor.",
+      "categories": [
+        "toolbar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toolbar-editor.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toolbar-editor.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu",
+        "@keyline-ui/toolbar",
+        "@keyline-ui/tooltip"
+      ]
+    },
+    {
       "name": "toolbar-overflow",
       "type": "registry:lib",
       "title": "Toolbar overflow",
@@ -3003,6 +5299,75 @@
       ],
       "dependencies": [],
       "registryDependencies": []
+    },
+    {
+      "name": "toolbar-panel",
+      "type": "registry:block",
+      "title": "Toolbar: orders panel",
+      "description": "An example of Toolbar: orders panel.",
+      "categories": [
+        "toolbar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toolbar-panel.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toolbar-panel.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/menu",
+        "@keyline-ui/panel",
+        "@keyline-ui/toolbar"
+      ]
+    },
+    {
+      "name": "toolbar-scroll",
+      "type": "registry:block",
+      "title": "Toolbar: order commands",
+      "description": "An example of Toolbar: order commands.",
+      "categories": [
+        "toolbar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toolbar-scroll.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toolbar-scroll.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/toolbar"
+      ]
+    },
+    {
+      "name": "toolbar-vertical",
+      "type": "registry:block",
+      "title": "Toolbar: floor plan tools",
+      "description": "An example of Toolbar: floor plan tools.",
+      "categories": [
+        "toolbar"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/toolbar-vertical.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/toolbar-vertical.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/keyline",
+        "@keyline-ui/toolbar"
+      ]
     },
     {
       "name": "tooltip",
@@ -3024,6 +5389,30 @@
         "utils",
         "@keyline-ui/keyline-scope",
         "@keyline-ui/keyline-render"
+      ]
+    },
+    {
+      "name": "tooltip-icons",
+      "type": "registry:block",
+      "title": "Tooltip: invoice tools",
+      "description": "An example of Tooltip: invoice tools.",
+      "categories": [
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "src/registry/keyline/examples/tooltip-icons.tsx",
+          "type": "registry:component",
+          "target": "components/keyline/examples/tooltip-icons.tsx"
+        }
+      ],
+      "dependencies": [
+        "lucide-react@1.71.0"
+      ],
+      "registryDependencies": [
+        "@keyline-ui/button",
+        "@keyline-ui/keyline",
+        "@keyline-ui/tooltip"
       ]
     }
   ]

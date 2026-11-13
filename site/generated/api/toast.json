@@ -1,0 +1,237 @@
+{
+  "name": "toast",
+  "title": "Toast",
+  "description": "Actionable feedback on Base UI Toast that docks into a host cell or floats at the inline-end corner: done, failed, info, warning and loading kinds, a description line, one action (Undo, Retry), the countdown draining the keyline. useToaster() and createToaster() add promise tracking, update and dismiss, and calls from outside React.",
+  "whenToUse": "Use it for a short record of something that just happened, with at most one action such as Undo. For something that stays true where it sits use Notice.",
+  "parts": [
+    {
+      "name": "ToastAction",
+      "description": "The action cell (Undo, Retry): paper on the ink toast, yellow on hover. A cell sets no border: the row of cells draws the divider before it.",
+      "props": []
+    },
+    {
+      "name": "ToastClose",
+      "description": "The dismiss cell. It shows only an icon, so it needs a name.",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Defines a string value that labels the current element."
+        }
+      ]
+    },
+    {
+      "name": "ToastDescription",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "ToastDock",
+      "description": "DOCKED feedback: the viewport inside a host cell (e.g. the table pager), rendering the manager's toasts. The front message fills the cell and counts the ones waiting (+2); hovering or focusing the dock unfolds them upward on shared seams. The undo countdown drains the bottom keyline and pauses with the timers. Swipe toward the inline end to dismiss.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Floating only: where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<ToastPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Floating only: props for Base UI's Toast.Portal."
+        },
+        {
+          "name": "timeout",
+          "type": "number",
+          "default": "6000",
+          "required": false,
+          "description": "The countdown's length for a toast that names no timeout: the provider's `timeout` (default 6000)."
+        }
+      ]
+    },
+    {
+      "name": "ToastFloating",
+      "description": "Floating fallback for pages without a dock, at the bottom inline-end corner. The newest message is in front (an ink 2px frame); older ones wait behind it as paper cards whose top keylines peek above it. Hover or keyboard focus fans the stack out into a column and pauses every timer. Swipe down or toward the inline end to dismiss.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Floating only: where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<ToastPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Floating only: props for Base UI's Toast.Portal."
+        },
+        {
+          "name": "timeout",
+          "type": "number",
+          "default": "6000",
+          "required": false,
+          "description": "The countdown's length for a toast that names no timeout: the provider's `timeout` (default 6000)."
+        }
+      ]
+    },
+    {
+      "name": "ToastProvider",
+      "description": "Wrap the app once. Up to `limit` (3) messages stay at once, newest in front; older ones wait behind it as a stack and come forward as the newer ones close. Pass `toastManager={toaster}` (from `createToaster()`) to raise messages from outside React too.",
+      "props": []
+    },
+    {
+      "name": "ToastRoot",
+      "description": "One message: Base UI's Toast.Root, drawn for the viewport it is in. It marks its kind (data-kind: done, failed, info, warning, loading), whether it is in front (data-kl-front) and whether it waits behind the front one (data-kl-behind). It swipes away toward the inline end (a floating one also down) unless `swipeDirection` says otherwise.",
+      "props": []
+    },
+    {
+      "name": "ToastTitle",
+      "description": "",
+      "props": []
+    },
+    {
+      "name": "ToastViewport",
+      "description": "Where toasts show: Base UI's Viewport (the F6 landmark; hover and keyboard focus expand it and pause the timers). `placement=\"floating\"` adds Base UI's Portal and carries the configuration of the place it is written. Give it ToastRoot children, or use ToastDock / ToastFloating, which render the manager's toasts.",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | ShadowRoot | RefObject<HTMLElement | ShadowRoot | null>",
+          "default": "",
+          "required": false,
+          "description": "Floating only: where the portal renders (defaults to <body>)."
+        },
+        {
+          "name": "placement",
+          "type": "\"dock\" | \"floating\"",
+          "default": "\"dock\"",
+          "required": false,
+          "description": "dock (default): in flow, inside a host cell · floating: fixed at the bottom inline-end corner, in a portal."
+        },
+        {
+          "name": "portalProps",
+          "type": "Omit<ToastPortalProps, \"children\" | \"container\">",
+          "default": "",
+          "required": false,
+          "description": "Floating only: props for Base UI's Toast.Portal."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kind",
+      "values": [
+        "attention"
+      ]
+    },
+    {
+      "name": "data-kl-behind",
+      "values": []
+    },
+    {
+      "name": "data-kl-front",
+      "values": []
+    },
+    {
+      "name": "data-kl-paused",
+      "values": []
+    },
+    {
+      "name": "data-placement",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "toast-action",
+        "toast-cells",
+        "toast-close",
+        "toast-description",
+        "toast-drain",
+        "toast-more",
+        "toast-pending",
+        "toast-root",
+        "toast-signal",
+        "toast-text",
+        "toast-title",
+        "toast-viewport"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-bw",
+      "values": [
+        "3px"
+      ]
+    },
+    {
+      "name": "--kl-toast-t",
+      "values": [
+        "`${t.timeout ?? timeout"
+      ]
+    },
+    {
+      "name": "--kl-ts-ease",
+      "values": [
+        "cubic-bezier(0.22,1,0.36,1)"
+      ]
+    },
+    {
+      "name": "--kl-ts-gap",
+      "values": [
+        "8px"
+      ]
+    },
+    {
+      "name": "--kl-ts-i",
+      "values": [
+        "var(--toast-index,0)"
+      ]
+    },
+    {
+      "name": "--kl-ts-move",
+      "values": [
+        "0ms",
+        "320ms"
+      ]
+    },
+    {
+      "name": "--kl-ts-peek",
+      "values": [
+        "8px"
+      ]
+    },
+    {
+      "name": "--kl-ts-x",
+      "values": [
+        "var(--toast-swipe-movement-x,0px)"
+      ]
+    },
+    {
+      "name": "--kl-ts-y",
+      "values": [
+        "var(--toast-swipe-movement-y,0px)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "toast-promise",
+      "title": "Toast: send report",
+      "file": "toast-promise.tsx"
+    },
+    {
+      "name": "toast-undo",
+      "title": "Toast: archive undo",
+      "file": "toast-undo.tsx"
+    }
+  ]
+}

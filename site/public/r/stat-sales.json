@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat-sales",
+  "title": "Stat: branch stats",
+  "description": "An example of Stat: branch stats.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/panel",
+    "@keyline-ui/segmented",
+    "@keyline-ui/stat"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/stat-sales.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Panel, PanelBody, PanelHeader } from \"../ui/panel\";\nimport { Segmented, SegmentedItem } from \"../ui/segmented\";\nimport { Stat } from \"../ui/stat\";\n\nconst QUARTERS = {\n  q3: { reams: 18_240, reamsWas: 17_100, clients: 64, clientsWas: 66, quota: 81 },\n  q4: { reams: 19_880, reamsWas: 18_240, clients: 61, clientsWas: 64, quota: 94 },\n};\n\nconst pct = (now: number, was: number) => `${Math.abs(Math.round(((now - was) / was) * 1000) / 10)}%`;\n\nexport function BranchStats() {\n  const [q, setQ] = useState<keyof typeof QUARTERS>(\"q4\");\n  const d = QUARTERS[q];\n  const lost = d.clientsWas - d.clients;\n\n  return (\n    <Panel>\n      <PanelHeader\n        title=\"Scranton branch\"\n        code={q.toUpperCase()}\n        actions={\n          <Segmented\n            aria-label=\"Quarter\"\n            size=\"compact\"\n            value={q}\n            onValueChange={(v: string) => setQ(v as keyof typeof QUARTERS)}\n          >\n            <SegmentedItem value=\"q3\">Q3</SegmentedItem>\n            <SegmentedItem value=\"q4\">Q4</SegmentedItem>\n          </Segmented>\n        }\n      />\n      <PanelBody flush>\n        <div className=\"@container\">\n          <div className=\"grid divide-y divide-kl-line @md:grid-cols-3 @md:divide-x @md:divide-y-0\">\n            <Stat\n              label=\"Paper sold\"\n              value={d.reams.toLocaleString(\"en-US\")}\n              unit=\"REAMS\"\n              delta={{\n                value: pct(d.reams, d.reamsWas),\n                direction: \"up\",\n                tone: \"good\",\n                label: `up ${pct(d.reams, d.reamsWas)} on the quarter before`,\n              }}\n            />\n            <Stat\n              label=\"Active clients\"\n              value={d.clients}\n              delta={{ value: lost, direction: \"down\", tone: \"bad\", label: `${lost} fewer than the quarter before` }}\n            />\n            <Stat\n              label=\"Corporate quota\"\n              value={d.quota}\n              unit=\"%\"\n              meter={{ value: d.quota, label: \"Corporate quota met\" }}\n            />\n          </div>\n        </div>\n      </PanelBody>\n    </Panel>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/stat-sales.tsx"
+    }
+  ],
+  "categories": [
+    "stat"
+  ],
+  "type": "registry:block"
+}

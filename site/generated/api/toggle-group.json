@@ -1,0 +1,60 @@
+{
+  "name": "toggle-group",
+  "title": "Toggle group",
+  "description": "Independent toggles in one frame; each cell floods from the press point and carries a lamp.",
+  "whenToUse": "Use it for several independent toggles in one frame, such as text formatting. For one choice of a few use Segmented; for a single toggle use Toggle.",
+  "parts": [
+    {
+      "name": "ToggleGroup",
+      "description": "Independent toggles in one frame. Each cell FLOODS yellow from the press point and carries a lamp. A row that does not fit scrolls inside its frame.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "cell: a cell of an enclosing frame (no own border, cut or background)."
+        }
+      ]
+    },
+    {
+      "name": "ToggleGroupItem",
+      "description": "One toggle of the group: Base UI's Toggle, drawn as Toggle's cell inside the group's frame.",
+      "props": [
+        {
+          "name": "count",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "toggle-group",
+        "toggle-group-item"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "toggle-group-panel",
+      "title": "Toggle group: supply room",
+      "file": "toggle-group-panel.tsx"
+    },
+    {
+      "name": "toggle-group-reps",
+      "title": "Toggle group: orders by rep",
+      "file": "toggle-group-reps.tsx"
+    }
+  ]
+}

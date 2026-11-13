@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar-rail",
+  "title": "Sidebar (AppShell + Nav): rail sidebar",
+  "description": "An example of Sidebar (AppShell + Nav): rail sidebar.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/app-shell",
+    "@keyline-ui/breadcrumb",
+    "@keyline-ui/keyline",
+    "@keyline-ui/nav"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/sidebar-rail.tsx",
+      "content": "\"use client\";\n\nimport { ChartNoAxesColumn, FileText, UserRound, Warehouse } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { AppShell } from \"../ui/app-shell\";\nimport { Breadcrumb } from \"../ui/breadcrumb\";\nimport { Nav, type NavItem } from \"../ui/nav\";\n\nconst ITEMS: NavItem[] = [\n  { value: \"orders\", label: \"Orders\", count: 11, icon: <FileText size={16} aria-hidden=\"true\" /> },\n  { value: \"clients\", label: \"Clients\", count: 64, icon: <UserRound size={16} aria-hidden=\"true\" /> },\n  { value: \"warehouse\", label: \"Warehouse\", icon: <Warehouse size={16} aria-hidden=\"true\" /> },\n  { value: \"reports\", label: \"Reports\", icon: <ChartNoAxesColumn size={16} aria-hidden=\"true\" /> },\n];\n\nconst SAID: Record<string, string> = {\n  orders: \"11 open orders, 2 held.\",\n  clients: \"64 active clients.\",\n  warehouse: \"88 pallets on the floor.\",\n  reports: \"Weekly sales: 1,810 reams.\",\n};\n\nexport function RailSidebar() {\n  const [view, setView] = useState(\"orders\");\n  return (\n    <AppShell\n      narrowAt={400}\n      mainProps={{ className: \"min-h-[260px]\" }}\n      navSize={180}\n      collapse=\"rail\"\n      navLabel=\"Scranton branch\"\n      nav={<Nav layout=\"cell\" label=\"Scranton branch\" value={view} onValueChange={setView} items={ITEMS} />}\n      header={\n        <Breadcrumb\n          layout=\"cell\"\n          items={[\n            {\n              label: \"Scranton\",\n              render: <a href=\"?view=orders\" onClick={(e) => (e.preventDefault(), setView(\"orders\"))} />,\n            },\n            { label: ITEMS.find((i) => i.value === view)!.label as string },\n          ]}\n        />\n      }\n    >\n      <p role=\"status\" className=\"m-0 text-[14px] text-kl-ink-2\">\n        {SAID[view]}\n      </p>\n    </AppShell>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/sidebar-rail.tsx"
+    }
+  ],
+  "categories": [
+    "sidebar"
+  ],
+  "type": "registry:block"
+}

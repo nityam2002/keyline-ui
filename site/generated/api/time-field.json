@@ -1,0 +1,196 @@
+{
+  "name": "time-field",
+  "title": "Time field",
+  "description": "A time of day in one field frame: hour and minute spin-button cells that wrap, a day-period cell on a 12-hour clock, a zone affix, optional min/max bounds; the 24-hour \"HH:MM\" value reaches Base UI Form and FormData.",
+  "whenToUse": "Use it to type a time of day in parts. For a day from a calendar use Date picker.",
+  "parts": [
+    {
+      "name": "TimeField",
+      "description": "A time of day in one field frame: two spin-button cells (three for a 12-hour clock) and a zone affix. Pickup ┌──────┬───┬──────┬─────┐ ┌──────┬───┬──────┬────┬─────┐ │ 14 │ : │ 30 │ CET │ 24-hour │ 02 │ : │ 30 │ PM │ CET │ 12-hour └──────┴───┴──────┴─────┘ └──────┴───┴──────┴────┴─────┘ - Each part is an input with role=\"spinbutton\" (aria-valuenow/min/max/text), so it is announced as a spin button with its value, not as a text box. Tab moves through the parts in reading order. - Arrow Up/Down step and WRAP (23 → 00, 12 → 01, 59 → 00): a clock has no end. Page Up/Down move hours by 6 (3 on a 12-hour clock) and minutes by 10. Home/End go to the first and last value. - Typing: digits only. Hours advance after two digits, or one digit that cannot start a two-digit hour (\"7\" is 07; on a 12-hour clock \"2\" is 02). On a 12-hour clock minutes advance to the period the same way. The period takes \"a\" or \"p\" (or a letter only one of the locale's names has), and the arrows switch it. Backspace in an empty part returns to the one before. Blur pads (\"7\" → \"07\"). - The value is always 24-hour \"HH:MM\", so changing `hourCycle` never changes what is stored or submitted. On a 12-hour clock the value is complete only once the period is chosen. - Field: the frame, focus edge, ! cell, hatch and messages are Field's. The value reaches Base UI Form (and FormData) through a hidden Field control named `name`; `required` is checked there (\"Enter a time\"). - RTL: the ! cell and zone follow the page; the time itself stays in clock order (dir=\"ltr\"), with the period where the locale puts it.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "default": "null",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "hourCycle",
+          "type": "12 | 24",
+          "default": "24",
+          "required": false,
+          "description": "24: hours 00–23 (default). 12: hours 01–12 and a day-period part (AM/PM, named by `locale`)."
+        },
+        {
+          "name": "hourLabel",
+          "type": "string",
+          "default": "\"Hours\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "Visible label (visually hidden with layout=\"cell\"). Names the group; each part is named too."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden)."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Names the day periods and decides whether the period comes before the hours (e.g. \"ko\", \"zh\"). Default: the runtime's."
+        },
+        {
+          "name": "max",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "min",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Earliest and latest allowed time, \"HH:MM\" 24-hour. Arrow keys never step outside them (they wrap to the other bound); a typed time outside them is invalid with `rangeMessage`."
+        },
+        {
+          "name": "minuteLabel",
+          "type": "string",
+          "default": "\"Minutes\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "minuteStep",
+          "type": "number",
+          "default": "1",
+          "required": false,
+          "description": "Arrow keys move minutes by this much (and snap to it). Default 1."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Form name; the submitted value is \"HH:MM\", 24-hour (or \"\" when incomplete)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void",
+          "default": "",
+          "required": false,
+          "description": "Called with \"HH:MM\" (24-hour) once every part holds a value, and with null when one is cleared."
+        },
+        {
+          "name": "periodLabel",
+          "type": "string",
+          "default": "\"AM/PM\"",
+          "required": false,
+          "description": "Accessible name of the day-period part (12-hour). Default \"AM/PM\"."
+        },
+        {
+          "name": "rangeMessage",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "Error for a time outside min/max. Default \"Choose a time from {min} to {max}.\" in the shown clock."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": "\"HH:MM\", 24-hour, whatever the hour cycle shown. null (or \"\") is no time."
+        },
+        {
+          "name": "zone",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Trailing affix cell in the Code voice: a time zone (\"CET\"), \"local\"."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-cycle",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "time-field",
+        "time-field-frame",
+        "time-field-join",
+        "time-field-period",
+        "time-field-period-input",
+        "time-field-period-sizer",
+        "time-field-value",
+        "time-field-zone"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "time-field-delivery",
+      "title": "Time field: dock time",
+      "file": "time-field-delivery.tsx"
+    }
+  ]
+}

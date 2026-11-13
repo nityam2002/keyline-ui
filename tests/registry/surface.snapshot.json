@@ -1,0 +1,4510 @@
+{
+  "accordion-policies": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchPolicies"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "accordion": {
+    "version": "1.0.0",
+    "exports": [
+      "Accordion",
+      "AccordionHeader",
+      "AccordionHeaderProps",
+      "AccordionItem",
+      "AccordionPanel",
+      "AccordionPanelProps",
+      "AccordionRoot",
+      "AccordionRootProps",
+      "AccordionTrigger",
+      "AccordionTriggerProps"
+    ],
+    "slots": [
+      "accordion",
+      "accordion-caret",
+      "accordion-content",
+      "accordion-description",
+      "accordion-header",
+      "accordion-item",
+      "accordion-meta",
+      "accordion-panel",
+      "accordion-title",
+      "accordion-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "ending-style",
+      "flush",
+      "kl-layout",
+      "panel-open",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--accordion-panel-height",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-weight-strong"
+    ]
+  },
+  "alert-dialog-remove": {
+    "version": "1.0.0",
+    "exports": [
+      "RemoveClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "alert-dialog": {
+    "version": "1.0.0",
+    "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "app-shell-office": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeShell"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "app-shell": {
+    "version": "1.0.0",
+    "exports": [
+      "AppShell",
+      "AppShellActions",
+      "AppShellAside",
+      "AppShellAsideProps",
+      "AppShellCrumbs",
+      "AppShellHeader",
+      "AppShellMain",
+      "AppShellNav",
+      "AppShellProps",
+      "AppShellRoot",
+      "AppShellRootProps",
+      "AppShellToggle"
+    ],
+    "slots": [
+      "app-shell",
+      "app-shell-actions",
+      "app-shell-aside",
+      "app-shell-crumbs",
+      "app-shell-header",
+      "app-shell-main",
+      "app-shell-nav",
+      "app-shell-sentinel",
+      "app-shell-toggle"
+    ],
+    "dataAttributes": [
+      "kl-aside",
+      "kl-at",
+      "kl-icons",
+      "kl-item",
+      "kl-nav",
+      "kl-rail",
+      "kl-shell",
+      "kl-shell-sheet",
+      "kl-sticky-head"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-cut-size",
+      "--kl-gutter",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-paper",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-seam",
+      "--kl-shell-aside",
+      "--kl-shell-bg",
+      "--kl-shell-cols-top",
+      "--kl-shell-head-h",
+      "--kl-shell-nav",
+      "--kl-shell-nav-h",
+      "--kl-shell-rail",
+      "--kl-shell-top"
+    ]
+  },
+  "attachment-upload": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceUploads"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "attachment": {
+    "version": "1.0.0",
+    "exports": [
+      "Attachment",
+      "AttachmentAction",
+      "AttachmentActions",
+      "AttachmentContent",
+      "AttachmentDescription",
+      "AttachmentGlyph",
+      "AttachmentMedia",
+      "AttachmentTitle",
+      "AttachmentTrigger"
+    ],
+    "slots": [
+      "attachment",
+      "attachment-action",
+      "attachment-actions",
+      "attachment-bar",
+      "attachment-content",
+      "attachment-description",
+      "attachment-mark",
+      "attachment-media",
+      "attachment-title",
+      "attachment-title-extension",
+      "attachment-title-stem",
+      "attachment-trigger"
+    ],
+    "dataAttributes": [
+      "kind",
+      "kl-layout",
+      "mark",
+      "size",
+      "status"
+    ],
+    "cssProperties": [
+      "--kl-att-x",
+      "--kl-bw",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-font-mono",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-msg-x",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-ring-out",
+      "--kl-t-flood",
+      "--kl-t-unflood",
+      "--kl-t-unfold",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "avatar-status": {
+    "version": "1.0.0",
+    "exports": [
+      "WhosIn"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "avatar-team": {
+    "version": "1.0.0",
+    "exports": [
+      "AccountTeam"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "avatar": {
+    "version": "1.0.0",
+    "exports": [
+      "Avatar",
+      "AvatarFallback",
+      "AvatarFallbackProps",
+      "AvatarGroup",
+      "AvatarGroupCount",
+      "AvatarGroupCountProps",
+      "AvatarGroupProps",
+      "AvatarImage",
+      "AvatarImageProps",
+      "AvatarProps",
+      "AvatarSize",
+      "AvatarStatus",
+      "avatarInitials"
+    ],
+    "slots": [
+      "avatar",
+      "avatar-fallback",
+      "avatar-group",
+      "avatar-group-count",
+      "avatar-image"
+    ],
+    "dataAttributes": [
+      "popup-open",
+      "size",
+      "starting-style",
+      "status"
+    ],
+    "cssProperties": [
+      "--kl-av",
+      "--kl-av-fs",
+      "--kl-av-st",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-k1",
+      "--kl-ring-in",
+      "--kl-t-unflood",
+      "--kl-t-unfold",
+      "--kl-weight-strong"
+    ]
+  },
+  "breadcrumb-drive": {
+    "version": "1.0.0",
+    "exports": [
+      "DriveFolder"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "breadcrumb": {
+    "version": "1.0.0",
+    "exports": [
+      "Breadcrumb",
+      "BreadcrumbProps",
+      "Crumb"
+    ],
+    "slots": [
+      "breadcrumb",
+      "breadcrumb-item",
+      "breadcrumb-link",
+      "breadcrumb-list",
+      "breadcrumb-more",
+      "breadcrumb-page",
+      "breadcrumb-separator"
+    ],
+    "dataAttributes": [
+      "kl-early",
+      "kl-folded",
+      "kl-layout",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-k1",
+      "--kl-row",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "bubble-reactions": {
+    "version": "1.0.0",
+    "exports": [
+      "PartyAnnouncement"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "bubble": {
+    "version": "1.0.0",
+    "exports": [
+      "Bubble",
+      "BubbleContent",
+      "BubbleGroup",
+      "BubbleProps",
+      "BubbleReactions",
+      "BubbleState"
+    ],
+    "slots": [
+      "bubble",
+      "bubble-bang",
+      "bubble-content",
+      "bubble-group",
+      "bubble-reactions",
+      "bubble-text"
+    ],
+    "dataAttributes": [
+      "pending",
+      "tone"
+    ],
+    "cssProperties": [
+      "--kl-bubble-x",
+      "--kl-bw",
+      "--kl-cut-size",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-fs",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-msg-gap",
+      "--kl-msg-x",
+      "--kl-ring",
+      "--kl-t-unfold",
+      "--kl-weight-display"
+    ]
+  },
+  "button-affix": {
+    "version": "1.0.0",
+    "exports": [
+      "WarehouseQueue"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-menu": {
+    "version": "1.0.0",
+    "exports": [
+      "TrackingLink"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-review": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderReview"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group-zoom": {
+    "version": "1.0.0",
+    "exports": [
+      "ReportZoom"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-group": {
+    "version": "1.0.0",
+    "exports": [
+      "ButtonGroup",
+      "ButtonGroupProps",
+      "ButtonGroupSeparator",
+      "ButtonGroupText"
+    ],
+    "slots": [
+      "button-group",
+      "button-group-separator",
+      "button-group-text"
+    ],
+    "dataAttributes": [
+      "kl-layout"
+    ],
+    "cssProperties": [
+      "--kl-button-px",
+      "--kl-ctl",
+      "--kl-inset",
+      "--kl-k2",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "button-invoice": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceActions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-retry": {
+    "version": "1.0.0",
+    "exports": [
+      "CorporateSync"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button-variants": {
+    "version": "1.0.0",
+    "exports": [
+      "ExpenseReview"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "button": {
+    "version": "1.0.0",
+    "exports": [
+      "Button",
+      "ButtonAffix",
+      "buttonVariants"
+    ],
+    "slots": [
+      "button",
+      "button-affix",
+      "button-done",
+      "button-fail",
+      "button-label"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-layout",
+      "kl-pressed",
+      "open",
+      "signal",
+      "size"
+    ],
+    "cssProperties": [
+      "--kl-button-px",
+      "--kl-bw",
+      "--kl-cobalt",
+      "--kl-ctl",
+      "--kl-cut-line",
+      "--kl-cut-nested",
+      "--kl-cut-size",
+      "--kl-dis-line",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-k1",
+      "--kl-key-y",
+      "--kl-red",
+      "--kl-ring-in",
+      "--kl-text-body",
+      "--kl-text-code",
+      "--kl-text-label",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "calendar": {
+    "version": "1.0.0",
+    "exports": [
+      "DateRange",
+      "Unavailable",
+      "addDays",
+      "between",
+      "countAvailable",
+      "formatRange",
+      "order",
+      "sameDay",
+      "sod"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "carousel-posters": {
+    "version": "1.0.0",
+    "exports": [
+      "EmployeeOfTheMonth"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "carousel": {
+    "version": "1.0.0",
+    "exports": [
+      "Carousel",
+      "CarouselApi",
+      "CarouselBar",
+      "CarouselContent",
+      "CarouselItem",
+      "CarouselNext",
+      "CarouselPosition",
+      "CarouselPrevious",
+      "useCarousel"
+    ],
+    "slots": [
+      "carousel",
+      "carousel-bar",
+      "carousel-chevron",
+      "carousel-content",
+      "carousel-count",
+      "carousel-item",
+      "carousel-position",
+      "carousel-tick",
+      "carousel-ticks",
+      "carousel-track"
+    ],
+    "dataAttributes": [
+      "in-view",
+      "kl-band",
+      "kl-item",
+      "kl-motion",
+      "kl-stretch",
+      "orientation"
+    ],
+    "cssProperties": [
+      "--kl-carousel-h",
+      "--kl-ctl",
+      "--kl-k1",
+      "--kl-ring",
+      "--kl-ring-in"
+    ]
+  },
+  "chart-returns": {
+    "version": "1.0.0",
+    "exports": [
+      "ReturnsByClient"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-stack"
+    ],
+    "cssProperties": [
+      "--color-kept",
+      "--color-returned",
+      "--kl-data-alert"
+    ]
+  },
+  "chart-sales": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesByRep"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--color-q3",
+      "--color-q4"
+    ]
+  },
+  "chart-target": {
+    "version": "1.0.0",
+    "exports": [
+      "WeeklyTarget"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--color-reams"
+    ]
+  },
+  "chart": {
+    "version": "1.0.0",
+    "exports": [
+      "ChartConfig",
+      "ChartContainer",
+      "ChartFigure",
+      "ChartLegend",
+      "ChartLegendContent",
+      "ChartTable",
+      "ChartTooltip",
+      "ChartTooltipContent",
+      "useChart"
+    ],
+    "slots": [
+      "chart",
+      "chart-figure",
+      "chart-figure-caption",
+      "chart-figure-description",
+      "chart-figure-title",
+      "chart-key",
+      "chart-legend",
+      "chart-legend-item",
+      "chart-table",
+      "chart-tooltip",
+      "chart-tooltip-item",
+      "chart-tooltip-label",
+      "chart-tooltip-name",
+      "chart-tooltip-value"
+    ],
+    "dataAttributes": [
+      "kl-motion",
+      "kl-stack"
+    ],
+    "cssProperties": [
+      "--color",
+      "--kl-data-1",
+      "--kl-data-2",
+      "--kl-data-3",
+      "--kl-focus",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-k1",
+      "--kl-on-inverse",
+      "--kl-ring",
+      "--kl-ring-out",
+      "--kl-weight-strong"
+    ]
+  },
+  "checkbox-closing": {
+    "version": "1.0.0",
+    "exports": [
+      "ClosingChecklist"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox-group-party": {
+    "version": "1.0.0",
+    "exports": [
+      "PartySupplies"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox-group-price-list": {
+    "version": "1.0.0",
+    "exports": [
+      "PriceListRecipients"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox-group": {
+    "version": "1.0.0",
+    "exports": [
+      "CheckboxGroup",
+      "CheckboxGroupFrame",
+      "CheckboxGroupItem",
+      "CheckboxGroupLegend",
+      "CheckboxGroupOption",
+      "CheckboxGroupProps",
+      "CheckboxGroupRoot"
+    ],
+    "slots": [
+      "checkbox-group",
+      "checkbox-group-frame",
+      "checkbox-group-item",
+      "checkbox-group-item-box",
+      "checkbox-group-item-description",
+      "checkbox-group-item-label",
+      "checkbox-group-item-meta",
+      "checkbox-group-item-row",
+      "checkbox-group-item-text",
+      "checkbox-group-legend"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "empty",
+      "invalid",
+      "kl-layout",
+      "kl-orientation",
+      "kl-parent"
+    ],
+    "cssProperties": [
+      "--kl-cbg-meta",
+      "--kl-cut-line",
+      "--kl-dis-line",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-red",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "checkbox-invoices": {
+    "version": "1.0.0",
+    "exports": [
+      "PrintInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "checkbox": {
+    "version": "1.0.0",
+    "exports": [
+      "Checkbox",
+      "CheckboxField",
+      "CheckboxIndicator",
+      "CheckboxRoot",
+      "checkboxStyles",
+      "choiceStyles"
+    ],
+    "slots": [
+      "checkbox",
+      "checkbox-field",
+      "checkbox-field-box",
+      "checkbox-field-description",
+      "checkbox-field-label",
+      "checkbox-field-row",
+      "checkbox-field-text",
+      "checkbox-indicator"
+    ],
+    "dataAttributes": [
+      "checked",
+      "disabled",
+      "indeterminate",
+      "kl-layout",
+      "kl-on",
+      "unchecked"
+    ],
+    "cssProperties": [
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-on-inverse",
+      "--kl-ring",
+      "--kl-ring-out",
+      "--kl-row",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-tick",
+      "--kl-tick-path",
+      "--kl-weight-strong",
+      "--kl-yellow"
+    ]
+  },
+  "collapsible-options": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryOptions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "collapsible": {
+    "version": "1.0.0",
+    "exports": [
+      "Collapsible",
+      "CollapsiblePanel",
+      "CollapsiblePanelProps",
+      "CollapsibleRoot",
+      "CollapsibleTrigger",
+      "CollapsibleTriggerProps"
+    ],
+    "slots": [
+      "collapsible",
+      "collapsible-box",
+      "collapsible-content",
+      "collapsible-label",
+      "collapsible-meta",
+      "collapsible-panel",
+      "collapsible-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "ending-style",
+      "panel-open",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--collapsible-panel-height",
+      "--kl-coll-box",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-hatch",
+      "--kl-k2",
+      "--kl-ring-out",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "collection": {
+    "version": "1.0.0",
+    "exports": [
+      "PageSlot",
+      "Sort",
+      "SortDirection",
+      "SortList",
+      "compareBy",
+      "compareValues",
+      "nextSort",
+      "nextSortList",
+      "pageWindow",
+      "sortLevel",
+      "sortOf"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "combobox-client": {
+    "version": "1.0.0",
+    "exports": [
+      "FindClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "combobox-directory": {
+    "version": "1.0.0",
+    "exports": [
+      "CorporateDirectory"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "combobox": {
+    "version": "1.0.0",
+    "exports": [
+      "Combobox",
+      "ComboboxChip",
+      "ComboboxChipRemove",
+      "ComboboxChips",
+      "ComboboxClear",
+      "ComboboxCollection",
+      "ComboboxEmpty",
+      "ComboboxGroup",
+      "ComboboxGroupLabel",
+      "ComboboxInput",
+      "ComboboxInputGroup",
+      "ComboboxItem",
+      "ComboboxList",
+      "ComboboxOption",
+      "ComboboxPopup",
+      "ComboboxRoot",
+      "ComboboxStatus",
+      "ComboboxTrigger"
+    ],
+    "slots": [
+      "combobox",
+      "combobox-chip",
+      "combobox-chip-remove",
+      "combobox-chips",
+      "combobox-clear",
+      "combobox-empty",
+      "combobox-group",
+      "combobox-group-label",
+      "combobox-input",
+      "combobox-input-group",
+      "combobox-item",
+      "combobox-item-code",
+      "combobox-item-indicator",
+      "combobox-item-label",
+      "combobox-list",
+      "combobox-popup",
+      "combobox-status",
+      "combobox-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "highlighted",
+      "invalid",
+      "kl-error",
+      "kl-layout",
+      "kl-orientation",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--available-height",
+      "--kl-cut-line",
+      "--kl-dis-line",
+      "--kl-dock-w",
+      "--kl-edge-w",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-ink-3",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-red",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-text-code",
+      "--kl-text-display",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "command-office": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeCommands"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "command": {
+    "version": "1.0.0",
+    "exports": [
+      "Command",
+      "CommandDialog",
+      "CommandEmpty",
+      "CommandFooter",
+      "CommandGroup",
+      "CommandInput",
+      "CommandItem",
+      "CommandList",
+      "CommandSeparator"
+    ],
+    "slots": [
+      "command",
+      "command-empty",
+      "command-footer",
+      "command-group",
+      "command-input",
+      "command-input-wrapper",
+      "command-item",
+      "command-item-index",
+      "command-list",
+      "command-separator"
+    ],
+    "dataAttributes": [
+      "kl-flood",
+      "kl-on",
+      "selected"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-ink-3",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "composition-cells": {
+    "version": "1.0.0",
+    "exports": [
+      "DeclaredCells"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "config-scope": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchTheme"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "context-menu-clients": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientList"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "context-menu": {
+    "version": "1.0.0",
+    "exports": [
+      "ContextMenu",
+      "ContextMenuCheckboxItem",
+      "ContextMenuGroup",
+      "ContextMenuGroupLabel",
+      "ContextMenuItem",
+      "ContextMenuPopup",
+      "ContextMenuRadioGroup",
+      "ContextMenuRadioItem",
+      "ContextMenuRoot",
+      "ContextMenuSeparator",
+      "ContextMenuSubmenuPopup",
+      "ContextMenuSubmenuRoot",
+      "ContextMenuSubmenuTrigger",
+      "ContextMenuTrigger"
+    ],
+    "slots": [
+      "context-menu-trigger"
+    ],
+    "dataAttributes": [
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--kl-k2"
+    ]
+  },
+  "data-table-model": {
+    "version": "1.0.0",
+    "exports": [
+      "ColumnSort",
+      "DataTableColumnMeta",
+      "DataTableFilter",
+      "PageRange",
+      "SortLevel",
+      "ariaSortOf",
+      "columnAlign",
+      "describeFilter",
+      "fromSortList",
+      "isFilterActive",
+      "matchesFilter",
+      "matchesSearch",
+      "nextSorting",
+      "pageRange",
+      "rowCode",
+      "selectionScope",
+      "sortLevelOf",
+      "toSortList"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "data-table-orders": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersDataTable"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "table"
+    ],
+    "cssProperties": []
+  },
+  "data-table": {
+    "version": "1.0.0",
+    "exports": [
+      "DataTable",
+      "DataTableBulkBar",
+      "DataTableBulkBarProps",
+      "DataTableChangeDetails",
+      "DataTableColumnDef",
+      "DataTableFilter",
+      "DataTableInstance",
+      "DataTablePagination",
+      "DataTableProps",
+      "DataTableSearch",
+      "DataTableSlice",
+      "DataTableState",
+      "UseDataTableOptions",
+      "useDataTable"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "table"
+    ],
+    "cssProperties": []
+  },
+  "date-picker-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryDay"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "date-picker-meeting": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientMeeting"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "date-picker": {
+    "version": "1.0.0",
+    "exports": [
+      "Calendar",
+      "CalendarProps",
+      "DatePicker",
+      "DatePickerAffix",
+      "DatePickerClose",
+      "DatePickerPopup",
+      "DatePickerPreset",
+      "DatePickerPresets",
+      "DatePickerProps",
+      "DatePickerRoot",
+      "DatePickerTrigger",
+      "DatePickerValue",
+      "DateTimePicker",
+      "DateTimePickerProps"
+    ],
+    "slots": [
+      "calendar",
+      "date-picker",
+      "date-picker-close",
+      "date-picker-placeholder",
+      "date-picker-popup",
+      "date-picker-trigger",
+      "date-time-picker",
+      "date-time-picker-slot",
+      "date-time-picker-slot-status",
+      "date-time-picker-slots",
+      "date-time-picker-text",
+      "date-time-picker-time",
+      "date-time-picker-time-label",
+      "date-time-picker-zone"
+    ],
+    "dataAttributes": [
+      "kl-density",
+      "kl-flood",
+      "kl-layout",
+      "kl-on",
+      "kl-orientation",
+      "unavailable"
+    ],
+    "cssProperties": [
+      "--kl-day",
+      "--kl-font-mono",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-line-soft",
+      "--kl-row",
+      "--kl-weight-strong"
+    ]
+  },
+  "date-range-vacation": {
+    "version": "1.0.0",
+    "exports": [
+      "VacationRequest"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "date-range": {
+    "version": "1.0.0",
+    "exports": [
+      "Bounds",
+      "CalendarGlyph",
+      "DateRange",
+      "DateRangeAffix",
+      "DateRangeCaption",
+      "DateRangeCount",
+      "DateRangeFooter",
+      "DateRangePicker",
+      "DateRangePickerProps",
+      "DateRangePopup",
+      "DateRangePreset",
+      "DateRangePresets",
+      "DateRangeRoot",
+      "DateRangeTotal",
+      "DateRangeTrigger",
+      "DateRangeValue",
+      "EmptyState",
+      "RangeCalendar",
+      "calendarStyles",
+      "countAvailable",
+      "formatRange",
+      "gridDay",
+      "pickerStyles",
+      "useDayPicker",
+      "usePart",
+      "useRefs"
+    ],
+    "slots": [
+      "calendar-dropdown",
+      "date-range",
+      "date-range-placeholder",
+      "date-range-popup",
+      "date-range-trigger",
+      "range-calendar",
+      "select"
+    ],
+    "dataAttributes": [
+      "cont-next",
+      "cont-prev",
+      "disabled",
+      "end",
+      "in-range",
+      "invalid",
+      "kl-density",
+      "kl-flood",
+      "kl-layout",
+      "kl-on",
+      "pending",
+      "popup-open",
+      "preview",
+      "today",
+      "unavailable"
+    ],
+    "cssProperties": [
+      "--available-height",
+      "--kl-cell",
+      "--kl-day",
+      "--kl-dock-w",
+      "--kl-fc",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-fs",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-yellow"
+    ]
+  },
+  "dialog-new-client": {
+    "version": "1.0.0",
+    "exports": [
+      "NewClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "dialog": {
+    "version": "1.0.0",
+    "exports": [
+      "AlertDialog",
+      "AlertDialogContent",
+      "AlertDialogPopup",
+      "AlertDialogRoot",
+      "AlertDialogTrigger",
+      "Dialog",
+      "DialogBackdrop",
+      "DialogBody",
+      "DialogClose",
+      "DialogDescription",
+      "DialogFooter",
+      "DialogHeader",
+      "DialogPopup",
+      "DialogRoot",
+      "DialogTitle",
+      "DialogTrigger"
+    ],
+    "slots": [
+      "alert-dialog-body",
+      "alert-dialog-cancel",
+      "alert-dialog-confirm",
+      "alert-dialog-footer",
+      "alert-dialog-header",
+      "alert-dialog-popup",
+      "alert-dialog-signal",
+      "alert-dialog-trigger",
+      "dialog-backdrop",
+      "dialog-body",
+      "dialog-close",
+      "dialog-description",
+      "dialog-footer",
+      "dialog-header",
+      "dialog-popup",
+      "dialog-title",
+      "dialog-trigger"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "starting-style",
+      "tone"
+    ],
+    "cssProperties": [
+      "--kl-c-room",
+      "--kl-cell",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-k3",
+      "--kl-raised",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-lead",
+      "--kl-text-title",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-z-overlay"
+    ]
+  },
+  "direction-rtl": {
+    "version": "1.0.0",
+    "exports": [
+      "MirroredInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "direction": {
+    "version": "1.0.0",
+    "exports": [
+      "DirectionProvider",
+      "DirectionProviderProps",
+      "useDirection"
+    ],
+    "slots": [
+      "direction"
+    ],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "drawer-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "TruckRoute"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "drawer": {
+    "version": "1.0.0",
+    "exports": [
+      "Drawer",
+      "DrawerBody",
+      "DrawerClose",
+      "DrawerDescription",
+      "DrawerFooter",
+      "DrawerHeader",
+      "DrawerPopup",
+      "DrawerRoot",
+      "DrawerTitle",
+      "DrawerTrigger"
+    ],
+    "slots": [
+      "drawer-backdrop",
+      "drawer-body",
+      "drawer-close",
+      "drawer-description",
+      "drawer-grip",
+      "drawer-popup",
+      "drawer-title",
+      "drawer-trigger",
+      "drawer-viewport"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "kl-released",
+      "kl-snap",
+      "side",
+      "starting-style",
+      "swipe-direction",
+      "swiping"
+    ],
+    "cssProperties": [
+      "--drawer-snap-point-offset",
+      "--drawer-swipe-movement-x",
+      "--drawer-swipe-movement-y",
+      "--drawer-swipe-progress",
+      "--kl-cell",
+      "--kl-cut-size",
+      "--kl-drawer-size",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-k3",
+      "--kl-move",
+      "--kl-raised",
+      "--kl-release-back",
+      "--kl-release-out",
+      "--kl-scrim-min",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-title",
+      "--kl-weight-strong",
+      "--kl-z-overlay"
+    ]
+  },
+  "empty-calls": {
+    "version": "1.0.0",
+    "exports": [
+      "CallLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "empty-search": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientSearch"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "empty": {
+    "version": "1.0.0",
+    "exports": [
+      "Empty",
+      "EmptyKind",
+      "EmptyProps"
+    ],
+    "slots": [
+      "empty",
+      "empty-actions",
+      "empty-code",
+      "empty-content",
+      "empty-count",
+      "empty-description",
+      "empty-figure",
+      "empty-title"
+    ],
+    "dataAttributes": [
+      "kl-density"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-cut-line",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-red",
+      "--kl-text-title",
+      "--kl-weight-strong"
+    ]
+  },
+  "field-carton": {
+    "version": "1.0.0",
+    "exports": [
+      "CartonSize"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "field-order": {
+    "version": "1.0.0",
+    "exports": [
+      "NewOrder"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-span"
+    ],
+    "cssProperties": []
+  },
+  "field-tracking": {
+    "version": "1.0.0",
+    "exports": [
+      "TrackShipment"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "field": {
+    "version": "1.0.0",
+    "exports": [
+      "Field",
+      "FieldAffix",
+      "FieldBar",
+      "FieldControl",
+      "FieldDescription",
+      "FieldError",
+      "FieldFrame",
+      "FieldGroup",
+      "FieldGroupError",
+      "FieldGroupJoin",
+      "FieldGroupPart",
+      "FieldLabel",
+      "FieldMessages",
+      "FieldParticipantProps",
+      "FieldRoot",
+      "FieldTextarea",
+      "FieldValidity",
+      "Fieldset",
+      "FieldsetLegend",
+      "Form",
+      "FormActions",
+      "fieldStyles",
+      "useDescribedByMirror"
+    ],
+    "slots": [
+      "field",
+      "field-affix",
+      "field-bar",
+      "field-control",
+      "field-description",
+      "field-error",
+      "field-frame",
+      "field-group",
+      "field-group-error",
+      "field-group-frame",
+      "field-group-join",
+      "field-group-legend",
+      "field-group-part",
+      "field-group-part-control",
+      "field-group-part-label",
+      "field-label",
+      "field-textarea",
+      "fieldset",
+      "fieldset-legend",
+      "form",
+      "form-actions"
+    ],
+    "dataAttributes": [
+      "align",
+      "invalid",
+      "kind",
+      "kl-density",
+      "kl-form-orientation",
+      "kl-icon",
+      "kl-layout",
+      "kl-orientation",
+      "kl-spacer",
+      "side",
+      "size"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-c",
+      "--kl-cell",
+      "--kl-ctl",
+      "--kl-font-mono",
+      "--kl-form-gap",
+      "--kl-form-label",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-red",
+      "--kl-row",
+      "--kl-text-code",
+      "--kl-text-label",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "hover-card-client": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientCards"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "hover-card": {
+    "version": "1.0.0",
+    "exports": [
+      "HoverCard",
+      "HoverCardBody",
+      "HoverCardFacts",
+      "HoverCardHeader",
+      "HoverCardPopup",
+      "HoverCardRoot",
+      "HoverCardTrigger",
+      "createHoverCardHandle"
+    ],
+    "slots": [
+      "hover-card-body",
+      "hover-card-code",
+      "hover-card-description",
+      "hover-card-fact",
+      "hover-card-facts",
+      "hover-card-header",
+      "hover-card-media",
+      "hover-card-popup",
+      "hover-card-title",
+      "hover-card-trigger"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "kl-motion",
+      "popup-open",
+      "side",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--available-height",
+      "--kl-c",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hc-delay",
+      "--kl-hc-draw",
+      "--kl-ink-3",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-ring",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "inspector-order": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderInspector"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "inspector": {
+    "version": "1.0.0",
+    "exports": [
+      "Inspector",
+      "InspectorActions",
+      "InspectorBody",
+      "InspectorBodyProps",
+      "InspectorFacts",
+      "InspectorFactsProps",
+      "InspectorHeader",
+      "InspectorHeaderProps",
+      "InspectorRow",
+      "InspectorSection"
+    ],
+    "slots": [
+      "inspector",
+      "inspector-actions",
+      "inspector-body",
+      "inspector-close",
+      "inspector-fact",
+      "inspector-facts",
+      "inspector-header",
+      "inspector-heading",
+      "inspector-row",
+      "inspector-section",
+      "inspector-title"
+    ],
+    "dataAttributes": [
+      "open"
+    ],
+    "cssProperties": [
+      "--kl-c-room",
+      "--kl-font-mono",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-weight-strong"
+    ]
+  },
+  "item-settings": {
+    "version": "1.0.0",
+    "exports": [
+      "AlertSettings"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "item": {
+    "version": "1.0.0",
+    "exports": [
+      "Item",
+      "ItemActions",
+      "ItemContent",
+      "ItemContentProps",
+      "ItemList",
+      "ItemListProps",
+      "ItemMedia",
+      "ItemMeta",
+      "ItemProps"
+    ],
+    "slots": [
+      "item",
+      "item-actions",
+      "item-content",
+      "item-description",
+      "item-list",
+      "item-media",
+      "item-meta",
+      "item-row",
+      "item-title"
+    ],
+    "dataAttributes": [
+      "current",
+      "interactive",
+      "kl-layout"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-c-room",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-t-flood",
+      "--kl-t-unflood",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "kbd-shortcuts": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderShortcuts"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "kbd": {
+    "version": "1.0.0",
+    "exports": [
+      "Kbd",
+      "KbdGroup",
+      "KbdGroupProps",
+      "KbdProps"
+    ],
+    "slots": [
+      "kbd",
+      "kbd-group"
+    ],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--kl-font-mono",
+      "--kl-k1",
+      "--kl-text-code"
+    ]
+  },
+  "keyline-config": {
+    "version": "1.0.0",
+    "exports": [
+      "DEFAULT_CONFIG",
+      "FONTS",
+      "FontId",
+      "KeylineConfig",
+      "KeylineConfigScope",
+      "PALETTES",
+      "Palette",
+      "PaletteId",
+      "ROLE_TONE",
+      "attributesSnippet",
+      "changedTokens",
+      "configAttributes",
+      "configToCss",
+      "configToRegistryItem",
+      "configTokens",
+      "darkFill",
+      "decodeConfig",
+      "encodeConfig",
+      "hueOf",
+      "normalizeConfig",
+      "paletteWarnings",
+      "roleColor",
+      "scopeSelector",
+      "weights",
+      "whiteContrast"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-config",
+      "kl-density",
+      "kl-motion"
+    ],
+    "cssProperties": [
+      "--kl-attention",
+      "--kl-commit",
+      "--kl-cut",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-neutral-c",
+      "--kl-neutral-h",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-working"
+    ]
+  },
+  "keyline-motion": {
+    "version": "1.0.0",
+    "exports": [
+      "Spring",
+      "animate",
+      "changedByKey",
+      "floodFromKeyboard",
+      "floodFromPointer",
+      "floodHandlers",
+      "parseCssLength",
+      "parseCssTime",
+      "releaseEasing",
+      "tokenMs",
+      "tokenPx",
+      "usePresence",
+      "useStretch",
+      "useTransientFlag",
+      "velocityTracker"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "disabled",
+      "kl-band",
+      "kl-band-clip",
+      "kl-band-fill",
+      "kl-clip",
+      "kl-covered",
+      "kl-flight",
+      "kl-ghost",
+      "kl-ghost-item",
+      "kl-item",
+      "kl-more",
+      "kl-press",
+      "kl-stretch",
+      "kl-tug",
+      "testid"
+    ],
+    "cssProperties": [
+      "--kl-band-c0",
+      "--kl-band-c1",
+      "--kl-fx",
+      "--kl-fy",
+      "--kl-stretch-lead",
+      "--kl-stretch-trail",
+      "--kl-stretch-tug",
+      "--kl-t-flood",
+      "--kl-t-fold"
+    ]
+  },
+  "keyline-render": {
+    "version": "1.0.0",
+    "exports": [
+      "ClassName",
+      "PartProps",
+      "Style",
+      "dataAttrs",
+      "resolveClassName",
+      "resolveStyle"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "keyline-scope": {
+    "version": "1.0.0",
+    "exports": [
+      "DockLayout",
+      "KEYLINE_CONFIG_TOKENS",
+      "KeylineScope",
+      "dockGeometry",
+      "domDir",
+      "scopeProps",
+      "useDomDirection",
+      "useKeylineScope",
+      "useMergedRef"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-config",
+      "kl-density",
+      "kl-motion",
+      "kl-scope"
+    ],
+    "cssProperties": [
+      "--kl-attach",
+      "--kl-attention",
+      "--kl-commit",
+      "--kl-cut",
+      "--kl-dock-grow",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-neutral-c",
+      "--kl-neutral-h",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-working"
+    ]
+  },
+  "keyline-shadcn": {
+    "version": "1.0.0",
+    "exports": [],
+    "slots": [],
+    "dataAttributes": [
+      "kl-config"
+    ],
+    "cssProperties": [
+      "--accent",
+      "--accent-foreground",
+      "--background",
+      "--border",
+      "--card",
+      "--card-foreground",
+      "--destructive",
+      "--font-mono",
+      "--font-sans",
+      "--foreground",
+      "--input",
+      "--kl-cell",
+      "--kl-cobalt",
+      "--kl-focus",
+      "--kl-font",
+      "--kl-fs",
+      "--kl-ink",
+      "--kl-ink-2",
+      "--kl-line",
+      "--kl-on-cobalt",
+      "--kl-on-yellow",
+      "--kl-paper",
+      "--kl-raised",
+      "--kl-red",
+      "--kl-seam",
+      "--kl-tint",
+      "--kl-yellow",
+      "--muted",
+      "--muted-foreground",
+      "--popover",
+      "--popover-foreground",
+      "--primary",
+      "--primary-foreground",
+      "--radius",
+      "--ring",
+      "--secondary",
+      "--secondary-foreground",
+      "--sidebar",
+      "--sidebar-accent",
+      "--sidebar-accent-foreground",
+      "--sidebar-border",
+      "--sidebar-foreground",
+      "--sidebar-primary",
+      "--sidebar-primary-foreground",
+      "--sidebar-ring"
+    ]
+  },
+  "keyline-skill": {
+    "version": "1.0.0",
+    "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--overwrite"
+    ]
+  },
+  "keyline": {
+    "version": "1.0.0",
+    "exports": [
+      "COLOUR_ROLES",
+      "CONSTANTS",
+      "CUT",
+      "CUT_DEFAULT",
+      "DENSITIES",
+      "Density",
+      "MOTION",
+      "MOTION_REDUCED",
+      "PALETTE",
+      "RHYTHM",
+      "SHADCN_MAP",
+      "SOURCES",
+      "SPACING",
+      "TEXT",
+      "THEME_ENTRIES",
+      "TYPE",
+      "Token",
+      "Z"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "alert",
+      "align",
+      "checked",
+      "disabled",
+      "ending-style",
+      "instant",
+      "invalid",
+      "kind",
+      "kl-band",
+      "kl-config",
+      "kl-covered",
+      "kl-cut",
+      "kl-density",
+      "kl-fade",
+      "kl-flight",
+      "kl-flood",
+      "kl-form-orientation",
+      "kl-item",
+      "kl-layout",
+      "kl-more",
+      "kl-motion",
+      "kl-on",
+      "kl-orientation",
+      "kl-press",
+      "kl-pressed",
+      "kl-ring",
+      "kl-span",
+      "kl-tug",
+      "mark",
+      "on",
+      "open",
+      "pressed",
+      "selected",
+      "side",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--anchor-width",
+      "--available-height",
+      "--available-width",
+      "--color-kl-cell",
+      "--color-kl-cobalt",
+      "--color-kl-cobalt-hi",
+      "--color-kl-cobalt-lo",
+      "--color-kl-cobalt-text",
+      "--color-kl-data-1",
+      "--color-kl-data-2",
+      "--color-kl-data-3",
+      "--color-kl-data-alert",
+      "--color-kl-data-mark",
+      "--color-kl-dis",
+      "--color-kl-dis-line",
+      "--color-kl-focus",
+      "--color-kl-ink",
+      "--color-kl-ink-2",
+      "--color-kl-ink-3",
+      "--color-kl-inverse",
+      "--color-kl-line",
+      "--color-kl-line-soft",
+      "--color-kl-on-cobalt",
+      "--color-kl-on-inverse",
+      "--color-kl-on-red",
+      "--color-kl-on-yellow",
+      "--color-kl-paper",
+      "--color-kl-press",
+      "--color-kl-raised",
+      "--color-kl-red",
+      "--color-kl-red-hi",
+      "--color-kl-red-lo",
+      "--color-kl-red-text",
+      "--color-kl-scrim",
+      "--color-kl-seam",
+      "--color-kl-tint",
+      "--color-kl-yellow",
+      "--color-kl-yellow-row",
+      "--ease-kl-in",
+      "--ease-kl-out",
+      "--font-kl",
+      "--font-kl-mono",
+      "--font-weight-kl-display",
+      "--font-weight-kl-strong",
+      "--kl-attach",
+      "--kl-attention",
+      "--kl-bw",
+      "--kl-c",
+      "--kl-c-room",
+      "--kl-cell",
+      "--kl-cobalt",
+      "--kl-cobalt-hi",
+      "--kl-cobalt-lo",
+      "--kl-cobalt-text",
+      "--kl-commit",
+      "--kl-ctl",
+      "--kl-cut",
+      "--kl-cut-control",
+      "--kl-cut-line",
+      "--kl-cut-nested",
+      "--kl-cut-region",
+      "--kl-cut-size",
+      "--kl-cut-w",
+      "--kl-d",
+      "--kl-dark",
+      "--kl-data-1",
+      "--kl-data-2",
+      "--kl-data-3",
+      "--kl-data-alert",
+      "--kl-data-mark",
+      "--kl-dis",
+      "--kl-dis-line",
+      "--kl-dock-a",
+      "--kl-dock-grow",
+      "--kl-dock-on",
+      "--kl-dock-w",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-edge-band",
+      "--kl-edge-w",
+      "--kl-fc",
+      "--kl-fg",
+      "--kl-flood-seed",
+      "--kl-focus",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-form-gap",
+      "--kl-form-label",
+      "--kl-fs",
+      "--kl-fx",
+      "--kl-fy",
+      "--kl-gutter",
+      "--kl-hatch",
+      "--kl-ink",
+      "--kl-ink-2",
+      "--kl-ink-3",
+      "--kl-inset",
+      "--kl-inverse",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-k3",
+      "--kl-key-y",
+      "--kl-line",
+      "--kl-line-soft",
+      "--kl-more",
+      "--kl-more-g",
+      "--kl-more-max",
+      "--kl-more-s",
+      "--kl-more-w",
+      "--kl-neutral-c",
+      "--kl-neutral-h",
+      "--kl-o",
+      "--kl-on-cobalt",
+      "--kl-on-inverse",
+      "--kl-on-red",
+      "--kl-on-yellow",
+      "--kl-paper",
+      "--kl-pending-c",
+      "--kl-press",
+      "--kl-raised",
+      "--kl-red",
+      "--kl-red-hi",
+      "--kl-red-lo",
+      "--kl-red-text",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-ring-out",
+      "--kl-row",
+      "--kl-run-dir",
+      "--kl-scrim",
+      "--kl-seam",
+      "--kl-snap",
+      "--kl-stretch-lead",
+      "--kl-stretch-trail",
+      "--kl-stretch-tug",
+      "--kl-t-flood",
+      "--kl-t-fold",
+      "--kl-t-tick",
+      "--kl-t-unflood",
+      "--kl-t-unfold",
+      "--kl-text-body",
+      "--kl-text-code",
+      "--kl-text-display",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-text-meta",
+      "--kl-text-title",
+      "--kl-tint",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-working",
+      "--kl-yellow",
+      "--kl-yellow-row",
+      "--kl-z-overlay",
+      "--kl-z-toast",
+      "--spacing-kl-ctl",
+      "--spacing-kl-cut-control",
+      "--spacing-kl-cut-nested",
+      "--spacing-kl-cut-region",
+      "--spacing-kl-gutter",
+      "--spacing-kl-inset",
+      "--spacing-kl-k1",
+      "--spacing-kl-k2",
+      "--spacing-kl-k3",
+      "--spacing-kl-row",
+      "--text-kl-body",
+      "--text-kl-code",
+      "--text-kl-display",
+      "--text-kl-label",
+      "--text-kl-lead",
+      "--text-kl-meta",
+      "--text-kl-title"
+    ]
+  },
+  "marker-activity": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderActivity"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "marker": {
+    "version": "1.0.0",
+    "exports": [
+      "Marker",
+      "MarkerContent",
+      "MarkerIcon",
+      "MarkerProps",
+      "MarkerVariant"
+    ],
+    "slots": [
+      "marker",
+      "marker-content",
+      "marker-icon",
+      "marker-run"
+    ],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-font-mono",
+      "--kl-k1",
+      "--kl-text-meta"
+    ]
+  },
+  "menu-notifications": {
+    "version": "1.0.0",
+    "exports": [
+      "NotificationMenu"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "menu-order-actions": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderActions"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "menu": {
+    "version": "1.0.0",
+    "exports": [
+      "Menu",
+      "MenuCheckboxItem",
+      "MenuGroup",
+      "MenuGroupLabel",
+      "MenuItem",
+      "MenuPopup",
+      "MenuRadioGroup",
+      "MenuRadioItem",
+      "MenuSeparator",
+      "MenuSubmenuRoot",
+      "MenuSubmenuTrigger",
+      "MenuSurface",
+      "MenuTrigger"
+    ],
+    "slots": [
+      "menu-checkbox-item",
+      "menu-group",
+      "menu-group-label",
+      "menu-item",
+      "menu-item-box",
+      "menu-item-code",
+      "menu-item-indicator",
+      "menu-item-label",
+      "menu-item-shortcut",
+      "menu-popup",
+      "menu-radio-group",
+      "menu-radio-item",
+      "menu-separator",
+      "menu-submenu-trigger",
+      "menu-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "highlighted",
+      "kind",
+      "kl-dock-probe",
+      "kl-menu-row",
+      "popup-open",
+      "variant"
+    ],
+    "cssProperties": [
+      "--anchor-width",
+      "--available-height",
+      "--kl-attach",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-row",
+      "--kl-text-body",
+      "--kl-text-code",
+      "--kl-text-meta",
+      "--kl-weight-strong"
+    ]
+  },
+  "menubar-report": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesReportMenus"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "menubar": {
+    "version": "1.0.0",
+    "exports": [
+      "Menubar",
+      "MenubarCheckboxItem",
+      "MenubarGroup",
+      "MenubarGroupLabel",
+      "MenubarItem",
+      "MenubarMenu",
+      "MenubarPopup",
+      "MenubarRadioGroup",
+      "MenubarRadioItem",
+      "MenubarSeparator",
+      "MenubarSubmenuPopup",
+      "MenubarSubmenuRoot",
+      "MenubarSubmenuTrigger",
+      "MenubarTrigger"
+    ],
+    "slots": [
+      "menubar",
+      "menubar-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-layout",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--anchor-width",
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-font",
+      "--kl-hatch",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "message-scroller-chat": {
+    "version": "1.0.0",
+    "exports": [
+      "DriverChat"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "message-scroller": {
+    "version": "1.0.0",
+    "exports": [
+      "MessageScroller",
+      "MessageScrollerButton",
+      "MessageScrollerContent",
+      "MessageScrollerItem",
+      "MessageScrollerProvider",
+      "MessageScrollerSeparator",
+      "MessageScrollerViewport",
+      "useMessageScroller",
+      "useMessageScrollerScrollable",
+      "useMessageScrollerVisibility"
+    ],
+    "slots": [
+      "message-scroller",
+      "message-scroller-button",
+      "message-scroller-button-count",
+      "message-scroller-button-label",
+      "message-scroller-content",
+      "message-scroller-item",
+      "message-scroller-scroll",
+      "message-scroller-separator",
+      "message-scroller-viewport"
+    ],
+    "dataAttributes": [
+      "active",
+      "direction",
+      "kl-motion",
+      "kl-travel",
+      "open",
+      "pending-scroll",
+      "scrollable"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-gutter",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-sb",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-weight-strong"
+    ]
+  },
+  "message-thread": {
+    "version": "1.0.0",
+    "exports": [
+      "ThreadWithJim"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "message": {
+    "version": "1.0.0",
+    "exports": [
+      "Message",
+      "MessageAvatar",
+      "MessageContent",
+      "MessageFooter",
+      "MessageFooterProps",
+      "MessageGroup",
+      "MessageHeader",
+      "MessageProps",
+      "MessageState"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "align",
+      "tone"
+    ],
+    "cssProperties": [
+      "--kl-av",
+      "--kl-av-fs",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-gutter",
+      "--kl-inset",
+      "--kl-k2",
+      "--kl-msg-av",
+      "--kl-msg-gap",
+      "--kl-msg-head",
+      "--kl-msg-x",
+      "--kl-ring",
+      "--kl-weight-strong"
+    ]
+  },
+  "modes-region": {
+    "version": "1.0.0",
+    "exports": [
+      "ModesRegion"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-cut",
+      "kl-density",
+      "kl-motion",
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "multiselect-memo": {
+    "version": "1.0.0",
+    "exports": [
+      "MemoRecipients"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "multiselect": {
+    "version": "1.0.0",
+    "exports": [
+      "Multiselect",
+      "MultiselectOption",
+      "MultiselectProps"
+    ],
+    "slots": [
+      "multiselect",
+      "multiselect-count",
+      "multiselect-foot",
+      "multiselect-head"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "highlighted",
+      "kl-layout",
+      "selected",
+      "zero"
+    ],
+    "cssProperties": [
+      "--available-height",
+      "--kl-ctl",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-text-code",
+      "--kl-text-display",
+      "--kl-text-label",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "native-select-transfer": {
+    "version": "1.0.0",
+    "exports": [
+      "TransferRequest"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "native-select": {
+    "version": "1.0.0",
+    "exports": [
+      "NativeSelect",
+      "NativeSelectGroup",
+      "NativeSelectOption",
+      "NativeSelectProps"
+    ],
+    "slots": [
+      "native-select",
+      "native-select-control",
+      "native-select-frame",
+      "native-select-icon"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-layout",
+      "kl-orientation"
+    ],
+    "cssProperties": [
+      "--kl-dark",
+      "--kl-font",
+      "--kl-inset",
+      "--kl-text-lead"
+    ]
+  },
+  "nav-sidebar": {
+    "version": "1.0.0",
+    "exports": [
+      "OfficeSidebar"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "nav": {
+    "version": "1.0.0",
+    "exports": [
+      "Nav",
+      "NavAction",
+      "NavActionProps",
+      "NavExpandContext",
+      "NavGroup",
+      "NavIdentity",
+      "NavIdentityProps",
+      "NavItem",
+      "NavProps",
+      "NavRailContext"
+    ],
+    "slots": [
+      "nav",
+      "nav-action",
+      "nav-fold",
+      "nav-footer",
+      "nav-group",
+      "nav-group-label",
+      "nav-group-list",
+      "nav-header",
+      "nav-identity",
+      "nav-identity-mark",
+      "nav-identity-meta",
+      "nav-identity-name",
+      "nav-identity-title",
+      "nav-item",
+      "nav-item-action",
+      "nav-item-caret",
+      "nav-item-count",
+      "nav-item-icon",
+      "nav-item-label",
+      "nav-list",
+      "nav-row",
+      "nav-sub",
+      "nav-tooltip-count"
+    ],
+    "dataAttributes": [
+      "kl-band",
+      "kl-clip",
+      "kl-covered",
+      "kl-depth",
+      "kl-holds",
+      "kl-icons",
+      "kl-item",
+      "kl-layout",
+      "kl-rail",
+      "kl-stretch",
+      "open",
+      "orientation",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--kl-band-c0",
+      "--kl-band-c1",
+      "--kl-c-room",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-hatch",
+      "--kl-ink-3",
+      "--kl-inverse",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-line",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "navigation-menu-site": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperSiteNav"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "navigation-menu": {
+    "version": "1.0.0",
+    "exports": [
+      "NavigationMenu",
+      "NavigationMenuCard",
+      "NavigationMenuContent",
+      "NavigationMenuGrid",
+      "NavigationMenuItem",
+      "NavigationMenuLink",
+      "NavigationMenuList",
+      "NavigationMenuPopup",
+      "NavigationMenuRoot",
+      "NavigationMenuTrigger"
+    ],
+    "slots": [
+      "navigation-menu",
+      "navigation-menu-card",
+      "navigation-menu-card-code",
+      "navigation-menu-card-description",
+      "navigation-menu-card-title",
+      "navigation-menu-content",
+      "navigation-menu-grid",
+      "navigation-menu-grid-item",
+      "navigation-menu-icon",
+      "navigation-menu-item",
+      "navigation-menu-link",
+      "navigation-menu-list",
+      "navigation-menu-popup",
+      "navigation-menu-trigger",
+      "navigation-menu-viewport"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "ending-style",
+      "kl-band",
+      "kl-covered",
+      "kl-item",
+      "kl-stretch",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--kl-attach",
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-text-body",
+      "--kl-text-code",
+      "--kl-text-label",
+      "--kl-weight-strong",
+      "--popup-height",
+      "--popup-width"
+    ]
+  },
+  "notice-stock": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperStock"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "notice": {
+    "version": "1.0.0",
+    "exports": [
+      "Notice",
+      "NoticeProps",
+      "NoticeTone"
+    ],
+    "slots": [
+      "notice",
+      "notice-actions",
+      "notice-content",
+      "notice-description",
+      "notice-dismiss",
+      "notice-root",
+      "notice-signal",
+      "notice-title"
+    ],
+    "dataAttributes": [
+      "kind",
+      "open"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-font",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-row",
+      "--kl-text-label",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "number-field-price": {
+    "version": "1.0.0",
+    "exports": [
+      "UnitPrice"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "number-field-reorder": {
+    "version": "1.0.0",
+    "exports": [
+      "Reorder"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "number-field": {
+    "version": "1.0.0",
+    "exports": [
+      "NumberField",
+      "NumberFieldDecrement",
+      "NumberFieldGroup",
+      "NumberFieldIncrement",
+      "NumberFieldInput",
+      "NumberFieldProps",
+      "NumberFieldRoot",
+      "NumberFieldUnit"
+    ],
+    "slots": [
+      "number-field",
+      "number-field-decrement",
+      "number-field-group",
+      "number-field-increment",
+      "number-field-input",
+      "number-field-root",
+      "number-field-unit"
+    ],
+    "dataAttributes": [
+      "align",
+      "disabled",
+      "kl-layout",
+      "kl-orientation"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-ctl",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-number-pad",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row"
+    ]
+  },
+  "options": {
+    "version": "1.0.0",
+    "exports": [
+      "groupBy",
+      "hasGroups",
+      "longestValue"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "otp-field": {
+    "version": "1.0.0",
+    "exports": [
+      "OtpField",
+      "OtpFieldFrame",
+      "OtpFieldInput",
+      "OtpFieldProps",
+      "OtpFieldRoot",
+      "OtpFieldSeparator",
+      "OtpSignal"
+    ],
+    "slots": [
+      "otp-field",
+      "otp-field-done",
+      "otp-field-frame",
+      "otp-field-input",
+      "otp-field-root",
+      "otp-field-separator"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "filled",
+      "invalid",
+      "kl-density",
+      "kl-layout",
+      "kl-orientation",
+      "open",
+      "readonly",
+      "signal"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-ctl",
+      "--kl-focus",
+      "--kl-font",
+      "--kl-k1",
+      "--kl-line-soft",
+      "--kl-otp-floor",
+      "--kl-otp-fs",
+      "--kl-otp-u",
+      "--kl-otp-w",
+      "--kl-ring",
+      "--kl-weight-strong"
+    ]
+  },
+  "otp-sign-in": {
+    "version": "1.0.0",
+    "exports": [
+      "SignInCode"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "pagination-invoices": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceArchive"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "pagination": {
+    "version": "1.0.0",
+    "exports": [
+      "Pagination",
+      "PaginationProps"
+    ],
+    "slots": [
+      "pagination",
+      "pagination-ellipsis",
+      "pagination-frame",
+      "pagination-next",
+      "pagination-page",
+      "pagination-previous",
+      "pagination-status"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-layout"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-pg-ch",
+      "--kl-pg-sw",
+      "--kl-row",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "panel-grid": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchBoard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "panel-targets": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesTargets"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "panel": {
+    "version": "1.0.0",
+    "exports": [
+      "Panel",
+      "PanelBody",
+      "PanelBodyProps",
+      "PanelFooter",
+      "PanelGrid",
+      "PanelGridProps",
+      "PanelHeader",
+      "PanelHeaderProps",
+      "PanelProps"
+    ],
+    "slots": [
+      "panel",
+      "panel-actions",
+      "panel-body",
+      "panel-description",
+      "panel-footer",
+      "panel-grid",
+      "panel-header",
+      "panel-heading",
+      "panel-title"
+    ],
+    "dataAttributes": [
+      "flush",
+      "kl-layout",
+      "span"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-c-room",
+      "--kl-gutter",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-pg-min",
+      "--kl-seam",
+      "--kl-weight-strong"
+    ]
+  },
+  "popover-note": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryNote"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "popover": {
+    "version": "1.0.0",
+    "exports": [
+      "Popover",
+      "PopoverBody",
+      "PopoverClose",
+      "PopoverDescription",
+      "PopoverFooter",
+      "PopoverHeader",
+      "PopoverPopup",
+      "PopoverRoot",
+      "PopoverTitle",
+      "PopoverTrigger"
+    ],
+    "slots": [
+      "popover-body",
+      "popover-close",
+      "popover-description",
+      "popover-footer",
+      "popover-header",
+      "popover-popup",
+      "popover-title",
+      "popover-trigger"
+    ],
+    "dataAttributes": [
+      "detached",
+      "ending-style",
+      "side",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--anchor-width",
+      "--available-height",
+      "--kl-attach",
+      "--kl-c",
+      "--kl-dock-w",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-gutter",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-row",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-label",
+      "--kl-text-lead",
+      "--kl-weight-strong"
+    ]
+  },
+  "progress-print": {
+    "version": "1.0.0",
+    "exports": [
+      "PrintInvoices"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "progress-upload": {
+    "version": "1.0.0",
+    "exports": [
+      "UploadReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "progress": {
+    "version": "1.0.0",
+    "exports": [
+      "Progress",
+      "ProgressDetail",
+      "ProgressIndicator",
+      "ProgressLabel",
+      "ProgressProps",
+      "ProgressState",
+      "ProgressTrack",
+      "ProgressValue"
+    ],
+    "slots": [
+      "progress",
+      "progress-detail",
+      "progress-indicator",
+      "progress-label",
+      "progress-track",
+      "progress-value"
+    ],
+    "dataAttributes": [
+      "failed",
+      "indeterminate",
+      "kind",
+      "kl-motion",
+      "progressing"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-hatch",
+      "--kl-k1",
+      "--kl-run-dir",
+      "--kl-t-unfold",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "questionnaire-party": {
+    "version": "1.0.0",
+    "exports": [
+      "BirthdaySurvey"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "questionnaire": {
+    "version": "1.0.0",
+    "exports": [
+      "Questionnaire",
+      "QuestionnaireActions",
+      "QuestionnaireChoice",
+      "QuestionnaireChoices",
+      "QuestionnaireDescription",
+      "QuestionnaireError",
+      "QuestionnaireInput",
+      "QuestionnaireItem",
+      "QuestionnaireNext",
+      "QuestionnairePrevious",
+      "QuestionnaireProgress",
+      "QuestionnaireSkip",
+      "QuestionnaireSubmit",
+      "QuestionnaireTitle"
+    ],
+    "slots": [
+      "questionnaire",
+      "questionnaire-actions",
+      "questionnaire-choice",
+      "questionnaire-choice-box",
+      "questionnaire-choice-description",
+      "questionnaire-choice-input",
+      "questionnaire-choice-key",
+      "questionnaire-choice-label",
+      "questionnaire-choice-mark",
+      "questionnaire-choice-text",
+      "questionnaire-choices",
+      "questionnaire-count",
+      "questionnaire-error",
+      "questionnaire-field",
+      "questionnaire-heading",
+      "questionnaire-item",
+      "questionnaire-legend",
+      "questionnaire-optional",
+      "questionnaire-progress"
+    ],
+    "dataAttributes": [
+      "checked",
+      "disabled",
+      "invalid",
+      "kind",
+      "kl-band",
+      "kl-item",
+      "kl-layout",
+      "kl-stretch",
+      "multiple",
+      "unchecked"
+    ],
+    "cssProperties": [
+      "--kl-button-px",
+      "--kl-c-room",
+      "--kl-cut-line",
+      "--kl-gutter",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-radio-meta",
+      "--kl-red",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "radio-group-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryChoice"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "radio-group-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "PaperWeight"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "radio-group": {
+    "version": "1.0.0",
+    "exports": [
+      "Radio",
+      "RadioGroup",
+      "RadioGroupItem",
+      "RadioGroupProps",
+      "RadioIndicator",
+      "RadioRoot",
+      "radioStyles"
+    ],
+    "slots": [
+      "radio",
+      "radio-group",
+      "radio-group-item",
+      "radio-group-item-box",
+      "radio-group-item-description",
+      "radio-group-item-label",
+      "radio-group-item-meta",
+      "radio-group-item-text",
+      "radio-indicator"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-band",
+      "kl-covered",
+      "kl-item",
+      "kl-layout",
+      "kl-stretch",
+      "unchecked"
+    ],
+    "cssProperties": [
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-radio-meta",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-weight-strong"
+    ]
+  },
+  "resizable-calls": {
+    "version": "1.0.0",
+    "exports": [
+      "CallLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "resizable": {
+    "version": "1.0.0",
+    "exports": [
+      "GroupImperativeHandle",
+      "Layout",
+      "PanelImperativeHandle",
+      "ResizableHandle",
+      "ResizablePanel",
+      "ResizablePanelGroup",
+      "useDefaultLayout",
+      "useGroupRef",
+      "usePanelRef"
+    ],
+    "slots": [
+      "resizable",
+      "resizable-grip",
+      "resizable-handle",
+      "resizable-panel"
+    ],
+    "dataAttributes": [
+      "separator"
+    ],
+    "cssProperties": [
+      "--kl-ink-2",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-ring"
+    ]
+  },
+  "scroll-area-log": {
+    "version": "1.0.0",
+    "exports": [
+      "ActivityLog"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "scroll-area": {
+    "version": "1.0.0",
+    "exports": [
+      "ScrollArea",
+      "ScrollAreaBars",
+      "ScrollAreaContent",
+      "ScrollAreaCorner",
+      "ScrollAreaProps",
+      "ScrollAreaRoot",
+      "ScrollAreaRootProps",
+      "ScrollAreaScrollbar",
+      "ScrollAreaThumb",
+      "ScrollAreaViewport",
+      "ScrollbarVisibility"
+    ],
+    "slots": [
+      "scroll-area-content",
+      "scroll-area-corner",
+      "scroll-area-scrollbar",
+      "scroll-area-thumb"
+    ],
+    "dataAttributes": [
+      "has-overflow-x",
+      "has-overflow-y",
+      "kl-motion",
+      "kl-travel",
+      "orientation",
+      "scrolling"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-k1",
+      "--kl-reveal-hold",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-sb",
+      "--kl-t-conceal",
+      "--kl-t-grip",
+      "--kl-t-reveal"
+    ]
+  },
+  "scroll-edges": {
+    "version": "1.0.0",
+    "exports": [
+      "scrollEdges",
+      "useScrollEdges"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-fade",
+      "kl-more"
+    ],
+    "cssProperties": [
+      "--kl-more-max"
+    ]
+  },
+  "segmented-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "Leaderboard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "segmented-period": {
+    "version": "1.0.0",
+    "exports": [
+      "SalesByPeriod"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "segmented": {
+    "version": "1.0.0",
+    "exports": [
+      "Segmented",
+      "SegmentedItem",
+      "SegmentedItemProps",
+      "SegmentedProps"
+    ],
+    "slots": [
+      "segmented",
+      "segmented-item"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-band",
+      "kl-covered",
+      "kl-item",
+      "kl-layout",
+      "kl-stretch"
+    ],
+    "cssProperties": [
+      "--kl-ctl",
+      "--kl-cut-nested",
+      "--kl-cut-size",
+      "--kl-hatch",
+      "--kl-ring-in",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "select-assign": {
+    "version": "1.0.0",
+    "exports": [
+      "AssignLead"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "select-form": {
+    "version": "1.0.0",
+    "exports": [
+      "QuoteForm"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "select": {
+    "version": "1.0.0",
+    "exports": [
+      "Select",
+      "SelectGroup",
+      "SelectGroupLabel",
+      "SelectIcon",
+      "SelectItem",
+      "SelectItemIndicator",
+      "SelectItemText",
+      "SelectLabel",
+      "SelectList",
+      "SelectOption",
+      "SelectPopup",
+      "SelectRoot",
+      "SelectScrollDownArrow",
+      "SelectScrollUpArrow",
+      "SelectSeparator",
+      "SelectTrigger",
+      "SelectValue"
+    ],
+    "slots": [
+      "select",
+      "select-group",
+      "select-group-label",
+      "select-icon",
+      "select-item",
+      "select-item-code",
+      "select-item-indicator",
+      "select-item-label",
+      "select-item-text",
+      "select-label",
+      "select-list",
+      "select-popup",
+      "select-scroll-down-arrow",
+      "select-scroll-up-arrow",
+      "select-separator",
+      "select-trigger",
+      "select-value"
+    ],
+    "dataAttributes": [
+      "direction",
+      "disabled",
+      "highlighted",
+      "kl-layout",
+      "kl-orientation",
+      "placeholder",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--available-height",
+      "--kl-dock-w",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-row",
+      "--kl-text-code",
+      "--kl-text-lead",
+      "--kl-text-meta"
+    ]
+  },
+  "selection": {
+    "version": "1.0.0",
+    "exports": [
+      "Id",
+      "Scope",
+      "patchWithUndo",
+      "removeWithUndo",
+      "restrictTo",
+      "scopeOf",
+      "setMany",
+      "toggle",
+      "useSelection"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "sheet-order": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderSheet"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "sheet": {
+    "version": "1.0.0",
+    "exports": [
+      "Sheet",
+      "SheetBody",
+      "SheetClose",
+      "SheetDescription",
+      "SheetFooter",
+      "SheetHeader",
+      "SheetPopup",
+      "SheetRoot",
+      "SheetTitle",
+      "SheetTrigger"
+    ],
+    "slots": [
+      "sheet-popup"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "side",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--kl-cell",
+      "--kl-cut-size",
+      "--kl-ease-in",
+      "--kl-ease-out",
+      "--kl-k3",
+      "--kl-raised",
+      "--kl-sheet-size",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-z-overlay"
+    ]
+  },
+  "shipments-block": {
+    "version": "1.0.0",
+    "exports": [
+      "ShipmentsBlock"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "shipments-demo": {
+    "version": "1.0.0",
+    "exports": [
+      "CARRIERS",
+      "LEGS",
+      "STATUS",
+      "Shipment",
+      "Shipments",
+      "ShipmentsProps",
+      "StatusKey",
+      "TODAY",
+      "UNAVAILABLE",
+      "fmtDay",
+      "fmtEur",
+      "fmtKg",
+      "isUnavailable",
+      "makeShipments",
+      "searchCarriers"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "insp-field",
+      "inspecting",
+      "inspector",
+      "late",
+      "status"
+    ],
+    "cssProperties": [
+      "--kl-cell",
+      "--kl-cobalt",
+      "--kl-ctl",
+      "--kl-font-mono",
+      "--kl-gutter",
+      "--kl-ink-2",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k3",
+      "--kl-line-soft",
+      "--kl-press",
+      "--kl-red-text",
+      "--kl-row",
+      "--kl-weight-strong"
+    ]
+  },
+  "sidebar-rail": {
+    "version": "1.0.0",
+    "exports": [
+      "RailSidebar"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "sidebar": {
+    "version": "1.0.0",
+    "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "skeleton-client": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientCard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "skeleton": {
+    "version": "1.0.0",
+    "exports": [
+      "Skeleton",
+      "SkeletonGroup",
+      "SkeletonGroupProps",
+      "SkeletonProps",
+      "SkeletonShape"
+    ],
+    "slots": [
+      "skeleton",
+      "skeleton-group",
+      "skeleton-line"
+    ],
+    "dataAttributes": [
+      "kl-motion",
+      "shape"
+    ],
+    "cssProperties": [
+      "--kl-ctl",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-run-dir"
+    ]
+  },
+  "slider-discount": {
+    "version": "1.0.0",
+    "exports": [
+      "CountyDiscount"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "slider-range": {
+    "version": "1.0.0",
+    "exports": [
+      "PriceRange"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "slider": {
+    "version": "1.0.0",
+    "exports": [
+      "Slider",
+      "SliderControl",
+      "SliderFrame",
+      "SliderIndicator",
+      "SliderLabel",
+      "SliderProps",
+      "SliderRoot",
+      "SliderThumb",
+      "SliderTrack",
+      "SliderValue"
+    ],
+    "slots": [
+      "slider",
+      "slider-control",
+      "slider-frame",
+      "slider-indicator",
+      "slider-label",
+      "slider-readout",
+      "slider-thumb",
+      "slider-thumb-grip",
+      "slider-track",
+      "slider-value"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "dragging",
+      "invalid",
+      "kl-density",
+      "kl-layout",
+      "kl-orientation",
+      "kl-rail",
+      "kl-range",
+      "kl-sizer"
+    ],
+    "cssProperties": [
+      "--kl-ctl",
+      "--kl-cut-line",
+      "--kl-dis-line",
+      "--kl-ease-out",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-red",
+      "--kl-ring",
+      "--kl-ring-out",
+      "--kl-row",
+      "--kl-slider-rail",
+      "--kl-slider-th",
+      "--kl-slider-tw",
+      "--kl-stretch-lead",
+      "--kl-weight-strong"
+    ]
+  },
+  "split-button-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "BookDelivery"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "split-button-export": {
+    "version": "1.0.0",
+    "exports": [
+      "ExportReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "split-button": {
+    "version": "1.0.0",
+    "exports": [
+      "SplitButton",
+      "SplitButtonAction",
+      "SplitButtonMenu",
+      "SplitButtonPopup",
+      "SplitButtonProps",
+      "SplitButtonTrigger",
+      "SplitButtonTriggerProps"
+    ],
+    "slots": [
+      "split-button",
+      "split-button-action",
+      "split-button-trigger"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-layout",
+      "popup-open"
+    ],
+    "cssProperties": [
+      "--kl-cobalt",
+      "--kl-ctl",
+      "--kl-cut-line",
+      "--kl-hatch",
+      "--kl-ring-in",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "stat-sales": {
+    "version": "1.0.0",
+    "exports": [
+      "BranchStats"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "stat-warehouse": {
+    "version": "1.0.0",
+    "exports": [
+      "WarehouseSpace"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "stat": {
+    "version": "1.0.0",
+    "exports": [
+      "Meter",
+      "MeterIndicator",
+      "MeterLabel",
+      "MeterProps",
+      "MeterTrack",
+      "MeterValue",
+      "Stat",
+      "StatDelta",
+      "StatProps"
+    ],
+    "slots": [
+      "meter",
+      "meter-indicator",
+      "meter-label",
+      "meter-track",
+      "meter-value",
+      "stat",
+      "stat-arrow",
+      "stat-delta",
+      "stat-label",
+      "stat-value"
+    ],
+    "dataAttributes": [
+      "dir",
+      "over",
+      "tone"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-t-unfold",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "status-badges": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceBadges"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "status-deliveries": {
+    "version": "1.0.0",
+    "exports": [
+      "DeliveryBoard"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "status": {
+    "version": "1.0.0",
+    "exports": [
+      "Badge",
+      "BadgeProps",
+      "BadgeTone",
+      "Status",
+      "StatusKind",
+      "StatusProps"
+    ],
+    "slots": [
+      "badge",
+      "status"
+    ],
+    "dataAttributes": [
+      "kind"
+    ],
+    "cssProperties": [
+      "--kl-font-mono",
+      "--kl-k1",
+      "--kl-text-code",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "switch-alerts": {
+    "version": "1.0.0",
+    "exports": [
+      "AlertSettings"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "switch": {
+    "version": "1.0.0",
+    "exports": [
+      "Switch",
+      "SwitchField",
+      "SwitchRoot",
+      "SwitchThumb"
+    ],
+    "slots": [
+      "switch",
+      "switch-field",
+      "switch-field-cell",
+      "switch-field-description",
+      "switch-field-label",
+      "switch-field-row",
+      "switch-field-text",
+      "switch-thumb"
+    ],
+    "dataAttributes": [
+      "checked",
+      "disabled",
+      "kl-density",
+      "kl-layout"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-hatch",
+      "--kl-inset",
+      "--kl-k2",
+      "--kl-ring",
+      "--kl-ring-out",
+      "--kl-stretch-lead",
+      "--kl-stretch-trail",
+      "--kl-sw",
+      "--kl-sw-gap"
+    ]
+  },
+  "table-lines": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderLines"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "table-loading": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceTable"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "table-orders": {
+    "version": "1.0.0",
+    "exports": [
+      "OpenOrders"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "table": {
+    "version": "1.0.0",
+    "exports": [
+      "FilterToken",
+      "Sort",
+      "SortDirection",
+      "SortList",
+      "Status",
+      "Table",
+      "TableBody",
+      "TableBulkBar",
+      "TableBulkBarProps",
+      "TableCaption",
+      "TableCell",
+      "TableCellProps",
+      "TableDetail",
+      "TableExpandCell",
+      "TableFrame",
+      "TableHead",
+      "TableHeadProps",
+      "TableHeader",
+      "TableIndexCell",
+      "TableLoadingRows",
+      "TablePager",
+      "TablePagination",
+      "TableRow",
+      "TableRowProps",
+      "TableScroll",
+      "TableSearch",
+      "TableSortHeader",
+      "TableSortHeaderProps",
+      "TableState",
+      "TableToolbar",
+      "TableViews",
+      "compareBy",
+      "compareValues",
+      "nextSort",
+      "nextSortList",
+      "sortLevel",
+      "sortOf",
+      "useDetailPresence",
+      "useRowMotion"
+    ],
+    "slots": [
+      "filter-token",
+      "table-bulk-count",
+      "table-bulk-scope",
+      "table-detail",
+      "table-expand-cell",
+      "table-index-cell",
+      "table-loading-bar",
+      "table-loading-row",
+      "table-range",
+      "table-scroll",
+      "table-search",
+      "table-sort-button",
+      "table-sort-label",
+      "table-sort-level",
+      "table-sort-mark",
+      "table-state",
+      "table-views-end"
+    ],
+    "dataAttributes": [
+      "align",
+      "checked",
+      "dir",
+      "disabled",
+      "empty",
+      "expanded",
+      "indeterminate",
+      "kl-level",
+      "kl-motion",
+      "kl-on",
+      "kl-opening",
+      "kl-tb-item",
+      "kl-token",
+      "kl-token-x",
+      "open",
+      "orientation",
+      "selected",
+      "sort"
+    ],
+    "cssProperties": [
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-ink",
+      "--kl-inset",
+      "--kl-inverse",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-line-soft",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-run-dir",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-yellow-row"
+    ]
+  },
+  "tabs-account": {
+    "version": "1.0.0",
+    "exports": [
+      "ClientAccount"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "tabs-views": {
+    "version": "1.0.0",
+    "exports": [
+      "CallViews"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "tabs": {
+    "version": "1.0.0",
+    "exports": [
+      "Tabs",
+      "TabsList",
+      "TabsListProps",
+      "TabsPanel",
+      "TabsRoot",
+      "TabsTab",
+      "TabsTabProps"
+    ],
+    "slots": [
+      "tabs",
+      "tabs-list",
+      "tabs-panel",
+      "tabs-tab",
+      "tabs-tab-count",
+      "tabs-tab-label"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "has-count",
+      "kl-band",
+      "kl-covered",
+      "kl-item",
+      "kl-layout",
+      "kl-stretch"
+    ],
+    "cssProperties": [
+      "--kl-c-room",
+      "--kl-ctl",
+      "--kl-font",
+      "--kl-gutter",
+      "--kl-hatch",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-ring-out",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  },
+  "theming-roles": {
+    "version": "1.0.0",
+    "exports": [
+      "RoleCards"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "testid"
+    ],
+    "cssProperties": []
+  },
+  "time-field-delivery": {
+    "version": "1.0.0",
+    "exports": [
+      "DockTime"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "time-field": {
+    "version": "1.0.0",
+    "exports": [
+      "TimeField",
+      "TimeFieldProps",
+      "timeOutside"
+    ],
+    "slots": [
+      "time-field",
+      "time-field-frame",
+      "time-field-join",
+      "time-field-period",
+      "time-field-period-input",
+      "time-field-period-sizer",
+      "time-field-value",
+      "time-field-zone"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-cycle",
+      "kl-layout",
+      "kl-orientation"
+    ],
+    "cssProperties": [
+      "--kl-k1",
+      "--kl-weight-strong"
+    ]
+  },
+  "toast-promise": {
+    "version": "1.0.0",
+    "exports": [
+      "SendReport"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toast-undo": {
+    "version": "1.0.0",
+    "exports": [
+      "ArchiveUndo"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toast": {
+    "version": "1.0.0",
+    "exports": [
+      "Notify",
+      "ToastAction",
+      "ToastClose",
+      "ToastDescription",
+      "ToastDock",
+      "ToastFloating",
+      "ToastKind",
+      "ToastProvider",
+      "ToastRoot",
+      "ToastTitle",
+      "ToastViewport",
+      "createToaster",
+      "useToast",
+      "useToaster"
+    ],
+    "slots": [
+      "toast-action",
+      "toast-cells",
+      "toast-close",
+      "toast-description",
+      "toast-drain",
+      "toast-more",
+      "toast-pending",
+      "toast-root",
+      "toast-signal",
+      "toast-text",
+      "toast-title",
+      "toast-viewport"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "expanded",
+      "kind",
+      "kl-behind",
+      "kl-front",
+      "kl-motion",
+      "kl-paused",
+      "limited",
+      "starting-style",
+      "swipe-direction",
+      "swiping"
+    ],
+    "cssProperties": [
+      "--kl-bw",
+      "--kl-ease-out",
+      "--kl-font",
+      "--kl-fs",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-ring-out",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-body",
+      "--kl-text-label",
+      "--kl-text-meta",
+      "--kl-toast-t",
+      "--kl-ts-ease",
+      "--kl-ts-gap",
+      "--kl-ts-i",
+      "--kl-ts-move",
+      "--kl-ts-peek",
+      "--kl-ts-x",
+      "--kl-ts-y",
+      "--kl-weight-display",
+      "--kl-weight-strong",
+      "--kl-z-toast",
+      "--toast-frontmost-height",
+      "--toast-height",
+      "--toast-index",
+      "--toast-offset-y",
+      "--toast-swipe-movement-x",
+      "--toast-swipe-movement-y"
+    ]
+  },
+  "toggle-group-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "SupplyRoom"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle-group-reps": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersByRep"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle-group": {
+    "version": "1.0.0",
+    "exports": [
+      "ToggleGroup",
+      "ToggleGroupItem",
+      "ToggleGroupItemProps",
+      "ToggleGroupProps"
+    ],
+    "slots": [
+      "toggle-group",
+      "toggle-group-item"
+    ],
+    "dataAttributes": [
+      "kl-layout"
+    ],
+    "cssProperties": [
+      "--kl-ctl"
+    ]
+  },
+  "toggle-icon": {
+    "version": "1.0.0",
+    "exports": [
+      "PinClient"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle-receipts": {
+    "version": "1.0.0",
+    "exports": [
+      "ExpenseFilter"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toggle": {
+    "version": "1.0.0",
+    "exports": [
+      "Toggle",
+      "ToggleProps",
+      "toggleContents",
+      "toggleVariants"
+    ],
+    "slots": [
+      "toggle",
+      "toggle-count",
+      "toggle-label",
+      "toggle-lamp"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "kl-icon",
+      "kl-layout",
+      "pressed"
+    ],
+    "cssProperties": [
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-cut-line",
+      "--kl-dis",
+      "--kl-dis-line",
+      "--kl-fc",
+      "--kl-fg",
+      "--kl-hatch",
+      "--kl-press",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-text-body",
+      "--kl-weight-strong"
+    ]
+  },
+  "toolbar-editor": {
+    "version": "1.0.0",
+    "exports": [
+      "MemoEditor"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar-overflow": {
+    "version": "1.0.0",
+    "exports": [
+      "Blocked",
+      "FOLDING_SLOTS",
+      "FitInput",
+      "FitStep",
+      "Fold",
+      "ItemKind",
+      "LAYOUT_UNIT",
+      "MorePlace",
+      "RowItem",
+      "SlotElement",
+      "fitStep",
+      "fitsIn",
+      "fold",
+      "isGroup",
+      "kindOf",
+      "overflows",
+      "splits"
+    ],
+    "slots": [],
+    "dataAttributes": [
+      "kl-keep-together",
+      "kl-primary"
+    ],
+    "cssProperties": []
+  },
+  "toolbar-panel": {
+    "version": "1.0.0",
+    "exports": [
+      "OrdersPanel"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar-scroll": {
+    "version": "1.0.0",
+    "exports": [
+      "OrderCommands"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar-vertical": {
+    "version": "1.0.0",
+    "exports": [
+      "FloorPlanTools"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "toolbar": {
+    "version": "1.0.0",
+    "exports": [
+      "Toolbar",
+      "ToolbarButton",
+      "ToolbarButtonProps",
+      "ToolbarGroup",
+      "ToolbarInput",
+      "ToolbarInputProps",
+      "ToolbarLink",
+      "ToolbarMenu",
+      "ToolbarMenuCheckboxItem",
+      "ToolbarMenuContent",
+      "ToolbarMenuGroup",
+      "ToolbarMenuGroupLabel",
+      "ToolbarMenuItem",
+      "ToolbarMenuRadioGroup",
+      "ToolbarMenuRadioItem",
+      "ToolbarMenuSeparator",
+      "ToolbarMenuTrigger",
+      "ToolbarProps",
+      "ToolbarRoot",
+      "ToolbarSeparator",
+      "ToolbarSpacer",
+      "ToolbarToggle",
+      "ToolbarToggleGroup",
+      "ToolbarToggleGroupProps",
+      "ToolbarToggleProps",
+      "useInToolbar"
+    ],
+    "slots": [
+      "toolbar",
+      "toolbar-affix",
+      "toolbar-band",
+      "toolbar-button",
+      "toolbar-caret",
+      "toolbar-done",
+      "toolbar-fail",
+      "toolbar-group",
+      "toolbar-input",
+      "toolbar-input-cell",
+      "toolbar-label",
+      "toolbar-lamp",
+      "toolbar-link",
+      "toolbar-menu-count",
+      "toolbar-menu-trigger",
+      "toolbar-more",
+      "toolbar-separator",
+      "toolbar-spacer",
+      "toolbar-toggle",
+      "toolbar-toggle-group"
+    ],
+    "dataAttributes": [
+      "disabled",
+      "highlighted",
+      "kl-band",
+      "kl-count",
+      "kl-covered",
+      "kl-icon",
+      "kl-item",
+      "kl-keep-together",
+      "kl-layout",
+      "kl-more",
+      "kl-overflow",
+      "kl-primary",
+      "kl-scope",
+      "kl-stretch",
+      "kl-tb-item",
+      "open",
+      "orientation",
+      "pressed",
+      "signal"
+    ],
+    "cssProperties": [
+      "--anchor-width",
+      "--kl-bw",
+      "--kl-c",
+      "--kl-ctl",
+      "--kl-fg",
+      "--kl-font",
+      "--kl-font-mono",
+      "--kl-gutter",
+      "--kl-hatch",
+      "--kl-ink-3",
+      "--kl-inset",
+      "--kl-k1",
+      "--kl-k2",
+      "--kl-ring",
+      "--kl-ring-in",
+      "--kl-row",
+      "--kl-tb-h",
+      "--kl-weight-display",
+      "--kl-weight-strong"
+    ]
+  },
+  "tooltip-icons": {
+    "version": "1.0.0",
+    "exports": [
+      "InvoiceTools"
+    ],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": []
+  },
+  "tooltip": {
+    "version": "1.0.0",
+    "exports": [
+      "Tooltip",
+      "TooltipPopup",
+      "TooltipProvider",
+      "TooltipRoot",
+      "TooltipTrigger"
+    ],
+    "slots": [
+      "tooltip-label",
+      "tooltip-popup",
+      "tooltip-shortcut",
+      "tooltip-trigger"
+    ],
+    "dataAttributes": [
+      "ending-style",
+      "instant",
+      "starting-style"
+    ],
+    "cssProperties": [
+      "--kl-font-mono",
+      "--kl-t-fold",
+      "--kl-t-unfold",
+      "--kl-text-code",
+      "--kl-text-label",
+      "--kl-weight-strong"
+    ]
+  }
+}

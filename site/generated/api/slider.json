@@ -1,0 +1,205 @@
+{
+  "name": "slider",
+  "title": "Slider",
+  "description": "A continuous or stepped value (or a range) in one control frame: the Meter's rail with an ink fill, a 2px thumb with a grip keyline, and a readout cell sized for the longest value.",
+  "whenToUse": "Use it for a value or range on a scale chosen by dragging, with a readout. For an exact number typed in use Number field.",
+  "parts": [
+    {
+      "name": "Slider",
+      "description": "A continuous or stepped value in one control frame of two cells, built from the parts above. The readout cell is sized for the longest value the scale can print, so the frame never jitters. Field: the slider sits in a Base UI Field.Root, so a Form collects its value under `name` (a number, or an array for a range) and `validate`, `invalid` and the Form's `errors` print under the frame, and the frame inserts the ! cell before the rail, in either layout. The Field.Root is a `display: contents` host: the SliderRoot (role=\"group\") stays the grid that a horizontal Form lays out.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "getAriaValueText",
+          "type": "(formattedValue: string, value: number, index: number) => string",
+          "default": "",
+          "required": false,
+          "description": "Text read for a thumb's value (e.g. \"12 kilograms\"). Defaults to the formatted value and unit when the unit is text."
+        },
+        {
+          "name": "label",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": "Visible label (visually hidden with layout=\"cell\"). Names every thumb."
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own 2px frame. cell: a cell of an enclosing frame (no border, label visually hidden)."
+        },
+        {
+          "name": "railStyle",
+          "type": "CSSProperties",
+          "default": "",
+          "required": false,
+          "description": "Paints the rail itself, for a slider whose scale is visual (a hue spectrum). The fill is then drawn as a hollow window."
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "default": "true",
+          "required": false,
+          "description": "The readout cell. Hide it only when the surrounding text already prints the value."
+        },
+        {
+          "name": "thumbLabels",
+          "type": "string[]",
+          "default": "",
+          "required": false,
+          "description": "Range sliders: one accessible name per thumb. Defaults to \"<label>, from\" / \"<label>, to\" when the label is text."
+        },
+        {
+          "name": "unit",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Unit printed after the value in the readout cell, in the Code voice (\"kg\", \"°\", \"%\")."
+        }
+      ]
+    },
+    {
+      "name": "SliderControl",
+      "description": "The rail cell: the whole cell is the hit area. The thumb's centre reaches the track's ends, so the cell keeps half a thumb plus the inset clear on each side.",
+      "props": []
+    },
+    {
+      "name": "SliderFrame",
+      "description": "The control frame: a row of cells (the control, then the value). The attention cell is inserted at its start and opens while the slider is invalid. `layout=\"cell\"`: the frame is a cell of an enclosing frame (no border of its own). Sits inside SliderRoot, whose state it follows.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SliderIndicator",
+      "description": "The fill: ink, the current choice on a continuum; a range fills between its two thumbs. A press on the rail or an arrow key moves its end with the stretch lead (100ms, zero bounce); while dragging it follows the pointer directly. Hidden on a painted rail (`data-kl-rail=\"painted\"` on the root).",
+      "props": []
+    },
+    {
+      "name": "SliderLabel",
+      "description": "Names the slider; Base UI ties it to every thumb.",
+      "props": []
+    },
+    {
+      "name": "SliderRoot",
+      "description": "Base UI's Slider.Root, laid out as a field (label, frame, messages). Direction comes from the DOM `dir` (read again before each press and focus), so RTL mirrors geometry and arrow keys. Keyboard, pointer, range collisions, form value (`name`) and controlled/uncontrolled state are Base UI's; `onValueChange` gets its event details last.",
+      "props": [
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: the root is a field (label above the frame). cell: it fills a cell of an enclosing frame."
+        }
+      ]
+    },
+    {
+      "name": "SliderThumb",
+      "description": "The thumb: a standalone 2px block; its centre is the value. Without children it draws its grip keyline.",
+      "props": []
+    },
+    {
+      "name": "SliderTrack",
+      "description": "The rail: the Meter's k1 track. Give it a `style` background to paint the scale itself (a hue spectrum).",
+      "props": []
+    },
+    {
+      "name": "SliderValue",
+      "description": "The value cell. Its children are Base UI's: a function of the formatted values (and the numbers). Slider fills it with the live value and a hidden sizer holding the longest value the scale can print, in one grid cell, so the cell is as wide as its widest value and never moves the rail.",
+      "props": []
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-orientation",
+      "values": []
+    },
+    {
+      "name": "data-kl-rail",
+      "values": []
+    },
+    {
+      "name": "data-kl-range",
+      "values": []
+    },
+    {
+      "name": "data-kl-sizer",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "slider",
+        "slider-control",
+        "slider-frame",
+        "slider-indicator",
+        "slider-label",
+        "slider-readout",
+        "slider-thumb",
+        "slider-thumb-grip",
+        "slider-track",
+        "slider-value"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-line",
+      "values": [
+        "var(--kl-dis-line)",
+        "var(--kl-red)"
+      ]
+    },
+    {
+      "name": "--kl-slider-rail",
+      "values": [
+        "10px",
+        "8px"
+      ]
+    },
+    {
+      "name": "--kl-slider-th",
+      "values": [
+        "18px",
+        "24px"
+      ]
+    },
+    {
+      "name": "--kl-slider-tw",
+      "values": [
+        "12px",
+        "14px"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "slider-discount",
+      "title": "Slider: county discount",
+      "file": "slider-discount.tsx"
+    },
+    {
+      "name": "slider-range",
+      "title": "Slider: price range",
+      "file": "slider-range.tsx"
+    }
+  ]
+}

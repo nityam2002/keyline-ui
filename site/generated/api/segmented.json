@@ -1,0 +1,117 @@
+{
+  "name": "segmented",
+  "title": "Segmented control",
+  "description": "Exclusive choice in one frame; the ink band stretches between cells.",
+  "whenToUse": "Use it for one choice of a few short options on one line, such as a view mode. For choices that need a description use Radio group; for switching panels use Tabs.",
+  "parts": [
+    {
+      "name": "Segmented",
+      "description": "Exclusive choice inside one control frame. Radio-group semantics (arrows move and select). The ink band STRETCHES between cells: leading edge first, trailing edge follows, zero bounce.",
+      "props": [
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": "control: its own frame. cell: a cell of an enclosing frame."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "\"default\" | \"compact\"",
+          "default": "\"default\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SegmentedItem",
+      "description": "One choice: Base UI's Radio.",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "The unique identifying value of the radio in a group."
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-item",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-size",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "segmented",
+        "segmented-item"
+      ]
+    }
+  ],
+  "cssVariables": [
+    {
+      "name": "--kl-cut-size",
+      "values": [
+        "var(--kl-cut-nested)"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "name": "segmented-panel",
+      "title": "Segmented control: leaderboard",
+      "file": "segmented-panel.tsx"
+    },
+    {
+      "name": "segmented-period",
+      "title": "Segmented control: sales by period",
+      "file": "segmented-period.tsx"
+    }
+  ]
+}

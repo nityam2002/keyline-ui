@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "nav-sidebar",
+  "title": "Nav: office sidebar",
+  "description": "An example of Nav: office sidebar.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/nav"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/nav-sidebar.tsx",
+      "content": "\"use client\";\n\nimport { ChartNoAxesColumn, FileText, PartyPopper, Plus, UserRound, Warehouse } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { Nav, NavIdentity, type NavGroup } from \"../ui/nav\";\n\nconst GROUPS: NavGroup[] = [\n  {\n    label: \"Sales\",\n    items: [\n      { value: \"orders\", label: \"Orders\", count: 11, icon: <FileText size={16} aria-hidden=\"true\" /> },\n      { value: \"clients\", label: \"Clients\", count: 64, icon: <UserRound size={16} aria-hidden=\"true\" /> },\n      {\n        value: \"reports\",\n        label: \"Reports\",\n        icon: <ChartNoAxesColumn size={16} aria-hidden=\"true\" />,\n        items: [\n          { value: \"reports-weekly\", label: \"Weekly sales\" },\n          { value: \"reports-quarter\", label: \"Quarter to date\" },\n        ],\n      },\n    ],\n  },\n  {\n    label: \"Office\",\n    items: [\n      { value: \"warehouse\", label: \"Warehouse\", icon: <Warehouse size={16} aria-hidden=\"true\" /> },\n      { value: \"parties\", label: \"Party planning\", count: 2, icon: <PartyPopper size={16} aria-hidden=\"true\" /> },\n      { value: \"hr\", label: \"Human resources\", disabled: true, icon: <Plus size={16} aria-hidden=\"true\" /> },\n    ],\n  },\n];\n\nconst TITLES: Record<string, string> = {\n  orders: \"11 open orders, 2 held\",\n  clients: \"64 active clients\",\n  \"reports-weekly\": \"Weekly sales: 1,810 reams\",\n  \"reports-quarter\": \"Quarter to date: 19,880 reams\",\n  warehouse: \"88 pallets on the floor\",\n  parties: \"Two parties this month. Angela has the budget.\",\n};\n\nexport function OfficeSidebar() {\n  const [view, setView] = useState(\"orders\");\n\n  return (\n    <div className=\"grid gap-4 sm:grid-cols-[240px_1fr]\">\n      <Nav\n        label=\"Scranton branch\"\n        value={view}\n        onValueChange={setView}\n        groups={GROUPS}\n        header={<NavIdentity mark=\"DM\" title=\"Scranton\" meta=\"Branch 0418\" />}\n      />\n      <p role=\"status\" className=\"m-0 self-start text-[14px] text-kl-ink-2\">\n        {TITLES[view]}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/nav-sidebar.tsx"
+    }
+  ],
+  "categories": [
+    "nav"
+  ],
+  "type": "registry:block"
+}

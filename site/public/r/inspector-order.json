@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "inspector-order",
+  "title": "Inspector: order inspector",
+  "description": "An example of Inspector: order inspector.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/inspector",
+    "@keyline-ui/item",
+    "@keyline-ui/keyline",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/inspector-order.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport {\n  Inspector,\n  InspectorActions,\n  InspectorBody,\n  InspectorFacts,\n  InspectorHeader,\n  InspectorRow,\n  InspectorSection,\n} from \"../ui/inspector\";\nimport { Item, ItemContent, ItemList, ItemMedia } from \"../ui/item\";\nimport { Status } from \"../ui/status\";\n\nconst ORDERS = [\n  { id: \"DM-4107\", client: \"Lackawanna County\", cases: 120, rep: \"Dwight Schrute\", due: \"Thu 12 Nov\", held: false },\n  { id: \"DM-4109\", client: \"Vance Refrigeration\", cases: 12, rep: \"Phyllis Vance\", due: \"Wed 11 Nov\", held: true },\n  { id: \"DM-4112\", client: \"Scranton Business Park\", cases: 40, rep: \"Jim Halpert\", due: \"Fri 13 Nov\", held: false },\n];\n\nexport function OrderInspector() {\n  const [id, setId] = useState<string | null>(\"DM-4109\");\n  const [released, setReleased] = useState<string[]>([]);\n  const o = ORDERS.find((x) => x.id === id);\n  const held = o ? o.held && !released.includes(o.id) : false;\n\n  return (\n    <div className=\"@container grid items-start gap-4 md:grid-cols-[1fr_minmax(0,300px)]\">\n      <ItemList aria-label=\"Orders\">\n        {ORDERS.map((x) => (\n          <Item key={x.id} current={x.id === id} render={<button type=\"button\" />} onClick={() => setId(x.id)}>\n            <ItemMedia>{x.id.slice(3)}</ItemMedia>\n            <ItemContent title={x.client} description={x.rep} />\n          </Item>\n        ))}\n      </ItemList>\n      {o ? (\n        <Inspector aria-label={`Order ${o.id}`}>\n          <InspectorHeader\n            code={o.id}\n            title={o.client}\n            status={held ? <Status kind=\"attention\">Held</Status> : <Status kind=\"normal\">Scheduled</Status>}\n            onClose={() => setId(null)}\n          />\n          <InspectorBody>\n            <InspectorFacts\n              items={[\n                { label: \"Cases\", value: o.cases },\n                { label: \"Due\", value: o.due },\n              ]}\n            />\n            <InspectorRow>\n              <InspectorSection>\n                <h3 className=\"m-0 text-[13px] font-semibold\">Rep</h3>\n                <p className=\"m-0 text-[14px]\">{o.rep}</p>\n              </InspectorSection>\n              <InspectorSection>\n                <h3 className=\"m-0 text-[13px] font-semibold\">Note</h3>\n                <p className=\"m-0 text-[14px]\">{held ? \"No one at the dock to sign.\" : \"None.\"}</p>\n              </InspectorSection>\n            </InspectorRow>\n          </InspectorBody>\n          <InspectorActions>\n            <Button layout=\"cell\" variant=\"primary\" disabled={!held} onClick={() => setReleased((r) => [...r, o.id])}>\n              {held ? \"Release the hold\" : \"Not held\"}\n            </Button>\n          </InspectorActions>\n        </Inspector>\n      ) : (\n        <p className=\"m-0 text-[14px] text-kl-ink-2\">Choose an order to inspect it.</p>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/inspector-order.tsx"
+    }
+  ],
+  "categories": [
+    "inspector"
+  ],
+  "type": "registry:block"
+}

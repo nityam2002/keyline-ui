@@ -6,6 +6,8 @@ export default {
   title: "Combobox",
   description:
     "Single-value combobox: a Select you can type into. Local filtering or an async source (abort, status, retry), optional groups; the list docks to the frame.",
+  whenToUse:
+    "Use it to choose one option from a long list by typing to filter. For a short list use Select; for several values use Multiselect.",
   files: [{ path: "src/registry/keyline/ui/combobox.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react"],
   registryDependencies: [
@@ -16,4 +18,7 @@ export default {
     "@keyline-ui/field",
     "@keyline-ui/keyline-render",
   ],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;

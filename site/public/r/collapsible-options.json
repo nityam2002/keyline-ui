@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible-options",
+  "title": "Collapsible: delivery options",
+  "description": "An example of Collapsible: delivery options.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/collapsible",
+    "@keyline-ui/field",
+    "@keyline-ui/keyline",
+    "@keyline-ui/switch"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/collapsible-options.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport { Collapsible, CollapsiblePanel, CollapsibleTrigger } from \"../ui/collapsible\";\nimport { Field, FieldDescription, FieldFrame, FieldControl, FieldLabel } from \"../ui/field\";\nimport { SwitchField } from \"../ui/switch\";\n\nexport function DeliveryOptions() {\n  const [liftgate, setLiftgate] = useState(false);\n  const [window, setWindow] = useState(\"\");\n  const set = (liftgate ? 1 : 0) + (window ? 1 : 0);\n\n  return (\n    <div className=\"grid max-w-[420px] gap-4\">\n      <Field>\n        <FieldLabel>Deliver to</FieldLabel>\n        <FieldFrame>\n          <FieldControl defaultValue=\"200 North Washington Avenue\" />\n        </FieldFrame>\n      </Field>\n      <Collapsible>\n        <CollapsibleTrigger meta={set ? `${set} set` : undefined}>Delivery options</CollapsibleTrigger>\n        <CollapsiblePanel contentClassName=\"grid gap-4\">\n          <SwitchField\n            label=\"Liftgate truck\"\n            description=\"For a dock without a ramp.\"\n            checked={liftgate}\n            onCheckedChange={setLiftgate}\n          />\n          <Field>\n            <FieldLabel>Delivery window</FieldLabel>\n            <FieldFrame>\n              <FieldControl value={window} onChange={(e) => setWindow(e.target.value)} placeholder=\"9:00 to 11:00\" />\n            </FieldFrame>\n            <FieldDescription>Darryl plans the route the night before.</FieldDescription>\n          </Field>\n        </CollapsiblePanel>\n      </Collapsible>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/collapsible-options.tsx"
+    }
+  ],
+  "categories": [
+    "collapsible"
+  ],
+  "type": "registry:block"
+}

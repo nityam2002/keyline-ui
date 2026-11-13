@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "status-badges",
+  "title": "Status and badge: invoice badges",
+  "description": "An example of Status and badge: invoice badges.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/status"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/status-badges.tsx",
+      "content": "\"use client\";\n\nimport { Badge } from \"../ui/status\";\n\nconst INVOICES = [\n  { id: \"INV-2207\", client: \"Scranton Business Park\", amount: \"$1,284.00\", tone: \"plain\" as const, tag: \"SENT\" },\n  { id: \"INV-2208\", client: \"Lackawanna County\", amount: \"$9,610.00\", tone: \"signal\" as const, tag: \"NEW\" },\n  { id: \"INV-2164\", client: \"Harper Collins\", amount: \"$2,450.00\", tone: \"attention\" as const, tag: \"OVERDUE\" },\n];\n\nexport function InvoiceBadges() {\n  return (\n    <ul className=\"m-0 grid list-none gap-3 p-0 text-[14px]\">\n      {INVOICES.map((i) => (\n        <li key={i.id} className=\"flex flex-wrap items-center gap-x-3 gap-y-1\">\n          <Badge>{i.id}</Badge>\n          <span className=\"min-w-0 flex-1\">{i.client}</span>\n          <span className=\"tabular-nums\">{i.amount}</span>\n          <Badge tone={i.tone}>{i.tag}</Badge>\n        </li>\n      ))}\n    </ul>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/status-badges.tsx"
+    }
+  ],
+  "categories": [
+    "status"
+  ],
+  "type": "registry:block"
+}

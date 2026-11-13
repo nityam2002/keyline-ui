@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip-icons",
+  "title": "Tooltip: invoice tools",
+  "description": "An example of Tooltip: invoice tools.",
+  "dependencies": [
+    "lucide-react@1.71.0"
+  ],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/tooltip-icons.tsx",
+      "content": "\"use client\";\n\nimport { Archive, Copy, Mail, Printer } from \"lucide-react\";\nimport { useState } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { Tooltip } from \"../ui/tooltip\";\n\nconst TOOLS = [\n  { name: \"Print\", key: \"⌘P\", Icon: Printer, done: \"Sent to the printer by Kevin's desk.\" },\n  { name: \"Email to client\", key: \"⌘E\", Icon: Mail, done: \"Emailed to Lackawanna County.\" },\n  { name: \"Duplicate\", key: \"⌘D\", Icon: Copy, done: \"Duplicated as DM-4142.\" },\n  { name: \"Archive\", key: \"⌘⌫\", Icon: Archive, done: \"Archived. It stays in reports.\" },\n];\n\nexport function InvoiceTools() {\n  const [last, setLast] = useState(\"\");\n  return (\n    <div className=\"grid gap-3\">\n      <div role=\"toolbar\" aria-label=\"Invoice DM-4107\" className=\"flex gap-2\">\n        {TOOLS.map((t) => (\n          <Tooltip key={t.name} content={t.name} shortcut={t.key}>\n            <Button size=\"icon\" aria-label={t.name} onClick={() => setLast(t.done)}>\n              <t.Icon size={16} aria-hidden=\"true\" />\n            </Button>\n          </Tooltip>\n        ))}\n      </div>\n      <p role=\"status\" className=\"m-0 min-h-5 text-[14px] text-kl-ink-2\">\n        {last}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/tooltip-icons.tsx"
+    }
+  ],
+  "categories": [
+    "tooltip"
+  ],
+  "type": "registry:block"
+}

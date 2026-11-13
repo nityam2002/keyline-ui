@@ -41,8 +41,6 @@ describeConformance("button", {
 ```
 
 - A part that needs context (a Menu item inside its Root and Popup) passes `wrap`, which renders it in place.
-- An assertion a part fails today goes in `tests/parts/known-failures.ts` and runs as an expected failure, so the
-  list can only shrink: when a fix makes it pass, the suite fails until the entry is removed.
 - `expectNoAxeViolations()` (`tests/parts/axe.ts`) runs axe over the document; mount inside `<main>`.
 - `countRenders()` (`tests/parts/render-count.ts`) counts commits per component name, for parts whose cost is
   their re-renders.

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast-promise",
+  "title": "Toast: send report",
+  "description": "An example of Toast: send report.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/button",
+    "@keyline-ui/keyline",
+    "@keyline-ui/toast"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/toast-promise.tsx",
+      "content": "\"use client\";\n\nimport { useRef } from \"react\";\nimport { Button } from \"../ui/button\";\nimport { ToastFloating, ToastProvider, useToaster } from \"../ui/toast\";\n\nfunction Send() {\n  const toast = useToaster();\n  const tries = useRef(0);\n\n  const send = () => {\n    tries.current += 1;\n    // the first send fails (corporate's fax is jammed), the retry gets through\n    const fails = tries.current === 1;\n    const sent = new Promise<number>((ok, no) => setTimeout(() => (fails ? no(new Error(\"busy\")) : ok(14)), 1600));\n    toast\n      .promise(sent, {\n        loading: { title: \"Sending the quarterly report to corporate…\" },\n        done: (pages) => ({ title: \"Report sent to Jan\", description: `${pages} pages, received in New York.` }),\n        failed: {\n          title: \"Corporate didn't pick up\",\n          description: \"Their fax line is busy.\",\n          action: { label: \"Retry\", onClick: send },\n        },\n      })\n      .catch(() => {});\n  };\n\n  return <Button onClick={send}>Send to corporate</Button>;\n}\n\nexport function SendReport() {\n  return (\n    <ToastProvider>\n      <Send />\n      <ToastFloating />\n    </ToastProvider>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/toast-promise.tsx"
+    }
+  ],
+  "categories": [
+    "toast"
+  ],
+  "type": "registry:block"
+}

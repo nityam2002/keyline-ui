@@ -1,0 +1,219 @@
+{
+  "name": "nav",
+  "title": "Nav",
+  "description": "Vertical (or wrapping) location list; the cobalt band stretches between items. Labelled groups, icon key cells, nested links under a disclosure, row actions (NavAction), a brand identity block and a footer; a rail of key cells with tooltips inside AppShell. With AppShell it is the sidebar (@keyline-ui/sidebar).",
+  "whenToUse": "Use it for an application's sections in a sidebar, with the current one marked. For a website's top navigation use Navigation menu; for views of one place use Tabs.",
+  "parts": [
+    {
+      "name": "Nav",
+      "description": "App location. A region frame holding a list of items; the current item is under a cobalt band that STRETCHES between items, vertically in a sidebar and horizontally once the layout turns it into a row (axis follows the list's flex direction). Items are links (`href`) or buttons; current = aria-current. - `groups` label sections (a list per group, named by its label); the band crosses between them. - `icon` puts a glyph in a key cell at the item's start; in AppShell's rail only the key cells show and the label flies out beside the item on hover and on keyboard focus (it stays the accessible name). - `footer` sits at the bottom of the column.",
+      "props": [
+        {
+          "name": "className",
+          "type": "string",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "footer",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": "Pinned to the bottom of the nav (who is signed in, a workspace, settings)."
+        },
+        {
+          "name": "groups",
+          "type": "NavGroup[]",
+          "default": "",
+          "required": false,
+          "description": "Labelled sections, separated by a heavy seam; one cobalt band still runs across all of them."
+        },
+        {
+          "name": "header",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "items",
+          "type": "NavItem[]",
+          "default": "",
+          "required": false,
+          "description": "Flat list of items. Or pass `groups`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "\"control\" | \"cell\"",
+          "default": "\"control\"",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "linkComponent",
+          "type": "ElementType<any, keyof IntrinsicElements>",
+          "default": "\"a\"",
+          "required": false,
+          "description": "What renders an `href` item. Default `\"a\"` (a full page load). Pass your router's link, such as Next's `Link`, so items navigate client-side; it receives the anchor's props (href, className, onClick, aria-*)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(v: string) => void",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"responsive\"",
+          "default": "\"vertical\"",
+          "required": false,
+          "description": "responsive: vertical while the nav is narrower than 300px, a row when wider (container query)."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "NavAction",
+      "description": "The ⋯ key cell of a row action: pass it as a MenuTrigger's render, so the item's commands open in a Menu docked to the row. `label` names it (\"More for Saved view: Late arrivals\").",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "default": "",
+          "required": true,
+          "description": "Names the cell (\"More for Saved view: Late arrivals\")."
+        }
+      ]
+    },
+    {
+      "name": "NavIdentity",
+      "description": "A header or footer identity for a sidebar Nav: a square mark cell, then a title and a meta line (a site code, a role). On a rail only the mark shows; the title and meta stay in the accessibility tree.",
+      "props": [
+        {
+          "name": "mark",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "default": "",
+          "required": true,
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data-kl-band",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-clip",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-kl-depth",
+      "values": []
+    },
+    {
+      "name": "data-kl-holds",
+      "values": []
+    },
+    {
+      "name": "data-kl-icons",
+      "values": []
+    },
+    {
+      "name": "data-kl-item",
+      "values": []
+    },
+    {
+      "name": "data-kl-layout",
+      "values": []
+    },
+    {
+      "name": "data-kl-rail",
+      "values": []
+    },
+    {
+      "name": "data-kl-stretch",
+      "values": [
+        ""
+      ]
+    },
+    {
+      "name": "data-open",
+      "values": []
+    },
+    {
+      "name": "data-orientation",
+      "values": []
+    },
+    {
+      "name": "data-slot",
+      "values": [
+        "nav",
+        "nav-action",
+        "nav-fold",
+        "nav-footer",
+        "nav-group",
+        "nav-group-label",
+        "nav-group-list",
+        "nav-header",
+        "nav-identity",
+        "nav-identity-mark",
+        "nav-identity-meta",
+        "nav-identity-name",
+        "nav-identity-title",
+        "nav-item",
+        "nav-item-action",
+        "nav-item-caret",
+        "nav-item-count",
+        "nav-item-icon",
+        "nav-item-label",
+        "nav-list",
+        "nav-row",
+        "nav-sub",
+        "nav-tooltip-count"
+      ]
+    }
+  ],
+  "cssVariables": [],
+  "examples": [
+    {
+      "name": "nav-sidebar",
+      "title": "Nav: office sidebar",
+      "file": "nav-sidebar.tsx"
+    }
+  ]
+}

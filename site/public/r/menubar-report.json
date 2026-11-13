@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menubar-report",
+  "title": "Menubar: sales report menus",
+  "description": "An example of Menubar: sales report menus.",
+  "dependencies": [],
+  "registryDependencies": [
+    "@keyline-ui/keyline",
+    "@keyline-ui/menubar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/keyline/examples/menubar-report.tsx",
+      "content": "\"use client\";\n\nimport { useState } from \"react\";\nimport {\n  Menubar,\n  MenubarCheckboxItem,\n  MenubarPopup,\n  MenubarItem,\n  MenubarMenu,\n  MenubarRadioGroup,\n  MenubarRadioItem,\n  MenubarSeparator,\n  MenubarTrigger,\n} from \"../ui/menubar\";\n\nexport function SalesReportMenus() {\n  const [period, setPeriod] = useState(\"quarter\");\n  const [targets, setTargets] = useState(true);\n  const [byRep, setByRep] = useState(false);\n  const [last, setLast] = useState<string | null>(null);\n\n  return (\n    <div className=\"grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4\">\n      <Menubar aria-label=\"Sales report\">\n        <MenubarMenu>\n          <MenubarTrigger>File</MenubarTrigger>\n          <MenubarPopup>\n            <MenubarItem onClick={() => setLast(\"Saved a copy for David Wallace.\")}>Save a copy</MenubarItem>\n            <MenubarItem shortcut=\"⌘P\" onClick={() => setLast(\"Sent to the printer by the annex.\")}>\n              Print\n            </MenubarItem>\n          </MenubarPopup>\n        </MenubarMenu>\n        <MenubarMenu>\n          <MenubarTrigger>View</MenubarTrigger>\n          <MenubarPopup>\n            <MenubarCheckboxItem checked={targets} onCheckedChange={setTargets}>\n              Branch targets\n            </MenubarCheckboxItem>\n            <MenubarCheckboxItem checked={byRep} onCheckedChange={setByRep}>\n              Split by sales rep\n            </MenubarCheckboxItem>\n            <MenubarSeparator />\n            <MenubarRadioGroup value={period} onValueChange={setPeriod}>\n              <MenubarRadioItem value=\"month\">This month</MenubarRadioItem>\n              <MenubarRadioItem value=\"quarter\">This quarter</MenubarRadioItem>\n              <MenubarRadioItem value=\"year\">This year</MenubarRadioItem>\n            </MenubarRadioGroup>\n          </MenubarPopup>\n        </MenubarMenu>\n        <MenubarMenu>\n          <MenubarTrigger>Share</MenubarTrigger>\n          <MenubarPopup>\n            <MenubarItem onClick={() => setLast(\"Emailed to the Scranton sales team.\")}>\n              Email the sales team\n            </MenubarItem>\n            <MenubarItem onClick={() => setLast(\"Posted on the break room board.\")}>Post in the break room</MenubarItem>\n          </MenubarPopup>\n        </MenubarMenu>\n        <MenubarMenu>\n          <MenubarTrigger>Help</MenubarTrigger>\n          <MenubarPopup>\n            <MenubarItem onClick={() => setLast(\"Ticket opened with IT. Nick will be up shortly.\")}>Ask IT</MenubarItem>\n          </MenubarPopup>\n        </MenubarMenu>\n      </Menubar>\n      <p role=\"status\" className=\"m-0 min-h-10 text-[14px] text-kl-ink-2\">\n        Q3 sales, Scranton · {period === \"month\" ? \"this month\" : period === \"quarter\" ? \"this quarter\" : \"this year\"}\n        {targets ? \" · against targets\" : \"\"}\n        {byRep ? \" · by rep\" : \"\"}\n        {last ? ` · ${last}` : \"\"}\n      </p>\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/keyline/examples/menubar-report.tsx"
+    }
+  ],
+  "categories": [
+    "menubar"
+  ],
+  "type": "registry:block"
+}

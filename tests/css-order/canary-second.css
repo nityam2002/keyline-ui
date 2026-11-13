@@ -1,0 +1,4 @@
+/* See canary-first.css: imported after the Keyline stylesheets, so it wins in the build as written. */
+.kl-css-order-canary {
+  text-decoration-line: line-through;
+}

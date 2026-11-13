@@ -1,8 +1,21 @@
 import fs from "node:fs";
+import path from "node:path";
 import ts from "typescript";
 import { BLOCKS, CATALOG, GUIDES, WRITTEN } from "./catalog";
 import { installCommand, registryAddCommand, SITE_ORIGIN } from "./registry";
 import { exampleSource, siteFile } from "./source";
+import { apiPage } from "./api";
+import changelog from "./changelog.json";
+import {
+  attributeMeaning,
+  cssVariableMeaning,
+  kebab,
+  otherParts,
+  pageRows,
+  PARTS_API_LEDE,
+  propRows,
+  type Row,
+} from "./component-page";
 import * as catalog from "./catalog";
 import * as tokens from "../../src/registry/keyline/theme/tokens";
 
@@ -48,9 +61,113 @@ export const DOC_PAGES: DocPageInfo[] = [
 ];
 if (DOC_PAGES.length !== WRITTEN.length) throw new Error("Keyline site: DOC_PAGES and WRITTEN disagree");
 
-/** The page source behind a docs URL. */
+const GENERATED = /^\/docs\/components\/([a-z0-9-]+)$/;
+
+/** The hand-written source behind a docs URL: the page itself, or for a page the generated component route renders
+ *  (app/docs/components/[name]), its content file (site/content/components/<name>.tsx). */
 export function pageSourceFile(href: string): string {
-  return siteFile(`app${href}/page.tsx`);
+  const name = GENERATED.exec(href)?.[1];
+  const own = path.join(/*turbopackIgnore: true*/ siteFile("app"), href, "page.tsx");
+  if (!name || fs.existsSync(/*turbopackIgnore: true*/ own)) return siteFile(`app${href}/page.tsx`);
+  return siteFile(`content/components/${name}.tsx`);
+}
+
+/**
+ * A generated component page as Markdown, section by section as app/docs/components/[name]/page.tsx renders it:
+ * the content file's prose (lede, install note, usage, examples, reference), the item's API data
+ * (site/generated/api/<name>.json: when to use it, props merged with the prose's descriptions, parts, data
+ * attributes, CSS variables), the install command and the example sources. The rules that turn API data into rows
+ * are lib/component-page.ts, shared with the page.
+ */
+function componentBody(name: string, file: string): string[] {
+  const api = apiPage(name);
+  const { scope, sf } = scan(file);
+  let content: ts.ObjectLiteralExpression | undefined;
+  const find = (node: ts.Node) => {
+    if (ts.isVariableDeclaration(node) && node.name.getText() === "content" && node.initializer) {
+      const init = node.initializer;
+      if (ts.isObjectLiteralExpression(init)) content = init;
+    }
+    ts.forEachChild(node, find);
+  };
+  find(sf);
+  const fields = content?.properties;
+  if (!fields) throw new Unreadable(`${file}: no \`export const content\` object`);
+  const field = (key: string) =>
+    fields.find((p): p is ts.PropertyAssignment => ts.isPropertyAssignment(p) && propName(p.name) === key)?.initializer;
+  const conv = new Converter(scope);
+  const prose = (key: string): string[] => {
+    const e = field(key);
+    if (!e) return [];
+    const inner = ts.isParenthesizedExpression(e) ? e.expression : e;
+    if (ts.isJsxElement(inner) || ts.isJsxFragment(inner) || ts.isJsxSelfClosingElement(inner))
+      return conv.blocks([inner as unknown as ts.JsxChild]);
+    const v = evaluate(inner, scope);
+    return v == null ? [] : [conv.inlineValue(v)];
+  };
+  const titleExpr = field("title");
+  const title = titleExpr ? String(evaluate(titleExpr, scope)) : api.title;
+  const propsExpr = field("props");
+  const written = (propsExpr ? evaluate(propsExpr, scope) : []) as Row<unknown>[];
+  const code = (s: string) => "`" + s + "`";
+  const codes = (vs: string[]) => (vs.length ? vs.map(code).join(", ") : "—");
+  const propTable = (rows: Row<unknown>[]) =>
+    conv.table(
+      ["Prop", "Type", "Default", "Description"],
+      rows.map((r) => [
+        code(r.name),
+        code(r.type),
+        r.default === "—" ? "—" : code(r.default),
+        conv.inlineValue(r.description),
+      ]),
+    );
+  const others = otherParts(api);
+  return [
+    `# ${title}`,
+    ...prose("lede"),
+    ...(api.whenToUse ? ["## When to use {#when-to-use}", api.whenToUse] : []),
+    "## Installation {#installation}",
+    fence(installCommand(name), "bash"),
+    ...prose("install"),
+    "## Usage {#usage}",
+    ...prose("usage"),
+    ...prose("examples"),
+    "## Props {#props}",
+    propTable(pageRows(api, written)),
+    ...(others.length
+      ? [
+          "### Parts API {#parts-api}",
+          PARTS_API_LEDE,
+          ...others.flatMap((p) => [
+            `#### ${code(p.name)} {#api-${kebab(p.name)}}`,
+            ...(p.description ? [p.description] : []),
+            propTable(propRows(p, [])),
+          ]),
+        ]
+      : []),
+    ...(api.attributes.length
+      ? [
+          "### Data attributes {#data-attributes}",
+          conv.table(
+            ["Attribute", "Values", "Meaning"],
+            api.attributes.map((a) => {
+              const m = attributeMeaning(a.name, api);
+              return [code(a.name), codes(a.values), "mirrors" in m ? `Mirrors the ${code(m.mirrors)} prop.` : m.text];
+            }),
+          ),
+        ]
+      : []),
+    ...(api.cssVariables.length
+      ? [
+          "### CSS variables {#css-variables}",
+          conv.table(
+            ["Variable", "Values it sets", "Where"],
+            api.cssVariables.map((v) => [code(v.name), codes(v.values), cssVariableMeaning(v.name, name)]),
+          ),
+        ]
+      : []),
+    ...prose("reference"),
+  ].filter(Boolean);
 }
 
 /* ------------------------------------------------------------------ evaluation of the page's constants */
@@ -226,7 +343,7 @@ class Converter {
       .replace(/[ ]{2,}/g, " ");
   }
 
-  private inlineValue(v: unknown): string {
+  inlineValue(v: unknown): string {
     if (v == null || v === false) return "";
     if (typeof v === "string" || typeof v === "number") return String(v);
     if (typeof v === "object" && "jsx" in v) {
@@ -296,7 +413,7 @@ class Converter {
     return [fence(String(v), lang)];
   }
 
-  private table(head: string[], rows: string[][]): string {
+  table(head: string[], rows: string[][]): string {
     return [`| ${head.join(" | ")} |`, `| ${head.map(() => "---").join(" | ")} |`]
       .concat(rows.map((r) => `| ${r.map(cell).join(" | ")} |`))
       .join("\n");
@@ -377,12 +494,12 @@ class Converter {
 }
 
 /** The JSX a page's default export returns, and the constants it can read. */
-function readPage(file: string): { jsx: El; scope: Scope; sf: ts.SourceFile } {
+/** A source file's constants and the values it imports from MODULES. */
+function scan(file: string): { scope: Scope; sf: ts.SourceFile } {
   const sf = ts.createSourceFile(file, fs.readFileSync(file, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   const scope: Scope = new Map();
   const imports = new Map<string, { module: Record<string, unknown>; name: string }>();
   IMPORTED.set(scope, imports);
-  let jsx: El | undefined;
   const visit = (node: ts.Node) => {
     if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer)
       scope.set(node.name.text, node.initializer);
@@ -395,6 +512,12 @@ function readPage(file: string): { jsx: El; scope: Scope; sf: ts.SourceFile } {
     ts.forEachChild(node, visit);
   };
   visit(sf);
+  return { scope, sf };
+}
+
+function readPage(file: string): { jsx: El; scope: Scope; sf: ts.SourceFile } {
+  const { scope, sf } = scan(file);
+  let jsx: El | undefined;
   for (const st of sf.statements) {
     const isDefault =
       ts.isFunctionDeclaration(st) && st.modifiers?.some((m) => m.kind === ts.SyntaxKind.DefaultKeyword);
@@ -416,8 +539,11 @@ function readPage(file: string): { jsx: El; scope: Scope; sf: ts.SourceFile } {
 /** The page's own text as Markdown, without the preamble: what /llms-full.txt and the search index read. */
 export function pageBody(href: string): string {
   const file = pageSourceFile(href);
-  const { jsx, scope } = readPage(file);
   try {
+    const generated = GENERATED.exec(href)?.[1];
+    if (generated && !file.endsWith("page.tsx")) return componentBody(generated, file).join("\n\n");
+    if (href === "/docs/changelog") return changelogBody(file).join("\n\n");
+    const { jsx, scope } = readPage(file);
     return new Converter(scope).blocks([jsx as unknown as ts.JsxChild]).join("\n\n");
   } catch (e) {
     if (e instanceof Unreadable) throw new Error(`Keyline site: cannot read ${file} as Markdown: ${e.message}`);
@@ -458,4 +584,57 @@ export function shiftHeadings(md: string): string {
       return !inFence && /^#{1,5} /.test(line) ? `#${line}` : line;
     })
     .join("\n");
+}
+
+type Migration = { diff: string; readd: string; modified: string; prompt: string };
+type ChangeEntry = { item: string; version: string; note: string; breaking: boolean; migration?: Migration };
+
+/**
+ * The changelog page (app/docs/changelog) renders lib/changelog.json, which `pnpm changelog` generates: its written
+ * lede is read from the page source, and each release is written from the same data, as the page lays it out.
+ */
+function changelogBody(file: string): string[] {
+  const { jsx, scope } = readPage(file);
+  const conv = new Converter(scope);
+  const written = childrenOf(jsx).filter((c): c is ts.JsxElement => ts.isJsxElement(c));
+  const pageOf = new Map(
+    CATALOG.flatMap((g) => g.items.flatMap((e) => (e.href ? [[e.item, url(e.href)] as const] : []))),
+  );
+  const longDate = (date: string) =>
+    new Date(`${date}T00:00:00Z`).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  const releases = (changelog as { releases: { date: string; entries: ChangeEntry[] }[] }).releases;
+  return [
+    ...conv.blocks(written),
+    ...releases.flatMap(({ date, entries }) => [
+      `## ${longDate(date)} {#d-${date}}`,
+      conv.table(
+        ["Item", "Version", "Change"],
+        entries.map((e) => [
+          pageOf.has(e.item) ? `[${e.item}](${pageOf.get(e.item)})` : "`" + e.item + "`",
+          "`" + e.version + "`",
+          e.breaking ? `**Breaking:** ${e.note} [Migration](#${e.item}-${e.version})` : e.note,
+        ]),
+      ),
+      ...entries.flatMap((e) =>
+        e.migration
+          ? [
+              `### ${e.item} ${e.version}: migration {#${e.item}-${e.version}}`,
+              e.note,
+              fence(e.migration.diff, "text"),
+              "Re-add it:",
+              fence(e.migration.readd, "bash"),
+              "If you keep a locally modified copy:",
+              fence(e.migration.modified, "text"),
+              "Agent prompt:",
+              fence(e.migration.prompt, "text"),
+            ]
+          : [],
+      ),
+    ]),
+  ];
 }

@@ -1,6 +1,6 @@
 // Builds the registry: site/public/r/{name}.json, what the shadcn CLI fetches, from the per-item metadata
 // (src/registry/keyline/**/<name>.meta.ts) and the source. The documentation site serves that folder at /r/{name}.json,
-// so deploying the site publishes the registry.
+// so deploying the site publishes the registry. Beside the items it writes r/versions.json (scripts/registry/versions.ts).
 //
 //   pnpm registry:build
 //
@@ -9,8 +9,9 @@
 // registry.json, runs `shadcn build` into site/public/r and fails if shadcn's output differs from the in-memory one.
 //
 // Items name each other as @keyline-ui/<name>, never by URL, so the same files work wherever they are served.
-// Each item's CSS file is converted into the registry `css` object (and, for the theme, `cssVars`), so `shadcn add`
-// writes exactly the rules that item needs into the consumer's CSS: nothing undeclared.
+// Only the theme items and blocks carry CSS: a theme's CSS file becomes its `cssVars` and `css` (the foundation), a
+// block's becomes its `css`. A component's look is Tailwind utilities in its .tsx, so a ui item that lists a .css
+// fails the build (checkCss): the per-item CSS path is gone and cannot come back unnoticed.
 import postcss, { type ChildNode, type Container } from "postcss";
 import {
   readFileSync,
@@ -29,6 +30,7 @@ import { pathToFileURL } from "node:url";
 import { registryItemSchema } from "shadcn/schema";
 
 import type { KeylineItem } from "../../src/registry/item.ts";
+import { currentItems, publishedVersions, VERSIONS } from "./versions.ts";
 
 export const ROOT = new URL("../..", import.meta.url).pathname;
 export const OUTPUT = "site/public/r";
@@ -117,7 +119,7 @@ function convert(file: string, theme: boolean): { css: CssObject; cssVars?: CssV
 }
 
 /* ---------------------------------------------------------------- metas */
-type Meta = KeylineItem & { metaFile: string };
+export type Meta = KeylineItem & { metaFile: string };
 
 export async function loadMetas(): Promise<Meta[]> {
   const files = globSync("src/registry/keyline/**/*.meta.ts", { cwd: ROOT }).sort();
@@ -129,6 +131,9 @@ export async function loadMetas(): Promise<Meta[]> {
   const seen = new Set<string>();
   for (const m of metas) {
     if (seen.has(m.name)) fail(`two items are named ${m.name}`);
+    // site/public/r also serves the index and the versions; an item cannot take their file names
+    if (`${m.name}.json` === INDEX || `${m.name}.json` === VERSIONS)
+      fail(`${m.metaFile}: ${m.name} is a reserved name`);
     seen.add(m.name);
   }
   // code-point order, so the index does not depend on the file system
@@ -184,47 +189,21 @@ function checkClientBoundary(file: string) {
     fail(`${file}: write the directive as "use client"; with the semicolon (see the comment above)`);
 }
 
-// ---------- CSS-level dependencies ----------
-// A component's markup can use classes another item styles. Imports cannot reveal that, so: every kl-* class an
-// item's source uses that neither its own CSS nor the theme styles must come from an item it depends on. If none of
-// its (transitive) dependencies styles it, the item whose CSS styles it becomes a dependency: the one named by the
-// class's prefix (kl-<item>-*) when several mention it, the only one otherwise; still ambiguous fails the build.
-// Classes no CSS styles are hooks.
-function cssDependencies(metas: Meta[], derived: Map<string, Set<string>>) {
-  const classesIn = (txt: string) => new Set([...txt.matchAll(/\.(kl-[a-z0-9-]+)/g)].map((m) => m[1] ?? ""));
-  const styled = new Map(metas.flatMap((it) => (it.cssFile ? [[it.name, classesIn(read(it.cssFile))] as const] : [])));
-  const themeClasses = new Set(metas.filter((it) => it.theme).flatMap((it) => [...(styled.get(it.name) ?? [])]));
-  const depsOf = (name: string, seen = new Set<string>()) => {
-    for (const d of derived.get(name) ?? []) {
-      const n = d.replace(`${NS}/`, "");
-      if (!seen.has(n)) {
-        seen.add(n);
-        depsOf(n, seen);
-      }
-    }
-    return seen;
-  };
+// ---------- where CSS may live ----------
+// shadcn add merges an item's `css` into the consumer's stylesheet per property and never removes a declaration, so a
+// component stylesheet shipped that way cannot be updated cleanly. Components draw with utilities; only the theme
+// (tokens and the foundation) and blocks may name a CSS file.
+export function checkCss(metas: Meta[]) {
   for (const it of metas) {
-    if (it.theme || it.type === "registry:block") continue;
-    const own = styled.get(it.name) ?? new Set<string>();
-    const used = new Set(
-      (it.files ?? []).flatMap((f) => [...read(f.path).matchAll(/["'`\s(](kl-[a-z0-9-]+)/g)].map((m) => m[1] ?? "")),
-    );
-    const ownersOf = (c: string) => [...styled].filter(([n, set]) => n !== it.name && set.has(c)).map(([n]) => n);
-    // classes with one owner first: they often settle the ambiguous ones
-    const pending = [...used]
-      .filter((c) => !own.has(c) && !themeClasses.has(c))
-      .sort((a, b) => ownersOf(a).length - ownersOf(b).length || a.localeCompare(b));
-    for (const c of pending) {
-      const owners = ownersOf(c);
-      if (!owners.length) continue;
-      const deps = depsOf(it.name);
-      if (owners.some((o) => deps.has(o))) continue;
-      const named = owners.filter((o) => c === `kl-${o}` || c.startsWith(`kl-${o}-`));
-      const pick = named.length === 1 ? named[0] : owners.length === 1 ? owners[0] : undefined;
-      if (!pick) return fail(`${it.name} uses .${c}, styled by ${owners.join(", ")}: declare which one it depends on`);
-      derived.get(it.name)?.add(`${NS}/${pick}`);
+    const where = `${it.name} (${it.metaFile})`;
+    if (it.type === "registry:ui") {
+      if (it.cssFile) fail(`${where}: a ui item cannot ship CSS (cssFile ${it.cssFile}); write its look as utilities`);
+      const css = (it.files ?? []).find((f) => f.path.endsWith(".css"));
+      if (css) fail(`${where}: a ui item cannot ship CSS (files lists ${css.path}); write its look as utilities`);
     }
+    if (it.cssFile && it.type !== "registry:theme" && it.type !== "registry:block")
+      fail(`${where}: only theme and block items may name a cssFile, not ${it.type}`);
+    if (it.theme && it.type !== "registry:theme") fail(`${where}: \`theme: true\` needs type registry:theme`);
   }
 }
 
@@ -250,7 +229,6 @@ export function deriveDependencies(metas: Meta[]) {
     pkgs.set(it.name, p);
     reg.set(it.name, r);
   }
-  cssDependencies(metas, reg);
   return { pkgs, reg };
 }
 
@@ -296,32 +274,53 @@ const ordered = (item: Record<string, unknown>) => {
   return Object.fromEntries(ITEM_KEYS.filter((k) => item[k] !== undefined).map((k) => [k, item[k]]));
 };
 
-export type Built = { index: string; items: Map<string, string> };
+/** `items` is what shadcn build writes (each item and the index); `versions` is r/versions.json beside them. */
+export type Built = { index: string; items: Map<string, string>; versions: string };
 
 export async function buildRegistry(): Promise<Built> {
   const metas = await loadMetas();
+  checkCss(metas);
   const pkg = JSON.parse(read("package.json")) as { homepage?: string; dependencies?: Record<string, string> };
   const pkgDeps = pkg.dependencies ?? {};
   const { pkgs, reg } = deriveDependencies(metas);
   // a package the repo pins exactly (no ^ or ~) is pinned for consumers too, so they get the version tested here
   const pinned = (p: string) => (/^\d+\.\d+\.\d+$/.test(pkgDeps[p] ?? "") ? `${p}@${pkgDeps[p]}` : p);
 
-  const indexItems = metas.map(({ metaFile, cssFile, theme, requires: _requires, ...item }) => {
-    sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
-    sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
-    if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);
-    return {
-      ...item,
-      dependencies: (item.dependencies ?? []).toSorted().map(pinned),
-      registryDependencies: item.registryDependencies ?? [],
-      // Keyline installs into its own folder, so it never collides with shadcn's components/ui/*
-      files: (item.files ?? []).map((f) => ({
-        ...f,
-        target: f.target ?? f.path.replace(/^src\/registry\/keyline\//, "components/keyline/"),
-      })),
-      ...(cssFile ? convert(cssFile, theme === true) : {}),
-    };
-  });
+  const indexItems = metas.map(
+    // the release fields are published in r/versions.json, not in the item
+    ({
+      metaFile,
+      cssFile,
+      theme,
+      requires: _r,
+      whenToUse: _w,
+      version: _v,
+      updated: _u,
+      changelog: _c,
+      deprecated,
+      ...item
+    }) => {
+      sameSet(item.name, "dependencies", item.dependencies ?? [], pkgs.get(item.name) ?? new Set());
+      sameSet(item.name, "registryDependencies", item.registryDependencies ?? [], reg.get(item.name) ?? new Set());
+      if (cssFile && !existsSync(ROOT + cssFile)) fail(`${item.name} (${metaFile}): missing css ${cssFile}`);
+      // a tombstone says so wherever the CLI or a reader shows its description
+      if (deprecated !== undefined && !item.description?.startsWith(`Deprecated: use @keyline-ui/${deprecated}.`))
+        fail(
+          `${item.name} (${metaFile}): a tombstone's description starts "Deprecated: use @keyline-ui/${deprecated}."`,
+        );
+      return {
+        ...item,
+        dependencies: (item.dependencies ?? []).toSorted().map(pinned),
+        registryDependencies: item.registryDependencies ?? [],
+        // Keyline installs into its own folder, so it never collides with shadcn's components/ui/*
+        files: (item.files ?? []).map((f) => ({
+          ...f,
+          target: f.target ?? f.path.replace(/^src\/registry\/keyline\//, "components/keyline/"),
+        })),
+        ...(cssFile ? convert(cssFile, theme === true) : {}),
+      };
+    },
+  );
   registryItemSchema.array().parse(indexItems);
 
   const index = {
@@ -340,7 +339,7 @@ export async function buildRegistry(): Promise<Built> {
   const indexText = JSON.stringify(index, null, 2) + "\n";
   // shadcn build copies the index as it is
   items.set("registry.json", indexText);
-  return { index: indexText, items };
+  return { index: indexText, items, versions: publishedVersions(currentItems(metas, items)) };
 }
 
 /* ---------------------------------------------------------------- as a script */
@@ -366,6 +365,7 @@ async function main() {
   rmSync(ROOT + OUTPUT, { recursive: true, force: true });
   mkdirSync(ROOT + OUTPUT, { recursive: true });
   for (const f of written) writeFileSync(posix.join(ROOT, OUTPUT, f), built.items.get(f) ?? "", { flag: "w" });
+  writeFileSync(posix.join(ROOT, OUTPUT, VERSIONS), built.versions);
   rmSync(tmp, { recursive: true, force: true });
   console.log(`${OUTPUT}: ${built.items.size - 1} items, dependencies checked against the source, namespace ${NS}`);
 }

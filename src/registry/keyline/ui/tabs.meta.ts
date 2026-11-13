@@ -5,6 +5,8 @@ export default {
   type: "registry:ui",
   title: "Tabs",
   description: "Tabs with a cobalt location band that stretches; optional count voice; panels.",
+  whenToUse:
+    "Use it to switch between views of one place. For an app's sections use Nav; for a compact choice of a value use Segmented.",
   files: [{ path: "src/registry/keyline/ui/tabs.tsx", type: "registry:ui" }],
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: [
@@ -15,4 +17,7 @@ export default {
     "@keyline-ui/keyline-scope",
     "@keyline-ui/keyline-render",
   ],
+  version: "1.0.0",
+  updated: "2026-11-13",
+  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
 } satisfies KeylineItem;
