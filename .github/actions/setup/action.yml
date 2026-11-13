@@ -1,0 +1,47 @@
+# Shared setup for every CI job: pnpm (the version in package.json "packageManager"), Node.js (.nvmrc), the
+# dependencies from the lockfile, and, when `browsers` is given, Playwright browsers. The browser download is
+# cached by Playwright version and browser set, so a Playwright bump fetches new browsers and nothing else does.
+name: Set up Keyline
+description: Install pnpm, Node.js, dependencies and optionally Playwright browsers.
+inputs:
+  browsers:
+    description: Space-separated `playwright install` names (chrome, chromium, firefox, webkit); empty installs none.
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+
+    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    - name: Read the installed Playwright version
+      if: inputs.browsers != ''
+      id: playwright
+      shell: bash
+      run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Playwright browsers
+      if: inputs.browsers != ''
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: ms-playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-${{ inputs.browsers }}
+
+    # Runs on a cache hit too: --with-deps installs the system libraries, which are not cached, and the download
+    # itself is skipped when the browser is already in the cache. `chrome` is Google Chrome, installed system-wide.
+    - name: Install Playwright browsers
+      if: inputs.browsers != ''
+      shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: |
+        read -ra browsers <<< "$BROWSERS"
+        pnpm exec playwright install --with-deps "${browsers[@]}"

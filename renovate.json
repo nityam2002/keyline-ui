@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Weekly dependency updates. Base UI and each library a component wraps (docs/design.md, 'Foundations') get a pull request of their own, so a primitive bump is reviewed alone against the browser suite; dev tooling is grouped. A held version (allowedVersions, or a disabled update) must carry a description with a link to the issue or pull request that explains it. minimumReleaseAge is three days because pnpm-workspace.yaml keeps versions published in the last day out of an install, so a pull request for a newer one could not install.",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "timezone": "UTC",
+  "schedule": ["* 0-5 * * 1"],
+  "minimumReleaseAge": "3 days",
+  "internalChecksFilter": "strict",
+  "labels": ["dependencies"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 0-5 1-7 * 1"]
+  },
+  "packageRules": [
+    {
+      "description": "Base UI is the primitive layer: reviewed alone, against the part tests and page specs in every engine.",
+      "groupName": "Base UI",
+      "matchPackageNames": ["@base-ui/*"]
+    },
+    {
+      "description": "Wrapped libraries are pinned exactly (docs/design.md, 'Foundations'), each in a pull request of its own.",
+      "matchPackageNames": [
+        "react-resizable-panels",
+        "react-day-picker",
+        "recharts",
+        "embla-carousel-react",
+        "@shadcn/react",
+        "cmdk",
+        "@tanstack/react-table"
+      ],
+      "rangeStrategy": "pin"
+    },
+    { "groupName": "react-resizable-panels", "matchPackageNames": ["react-resizable-panels"] },
+    { "groupName": "react-day-picker", "matchPackageNames": ["react-day-picker"] },
+    { "groupName": "recharts", "matchPackageNames": ["recharts"] },
+    { "groupName": "embla-carousel", "matchPackageNames": ["embla-carousel-react", "embla-carousel*"] },
+    { "groupName": "@shadcn/react", "matchPackageNames": ["@shadcn/react"] },
+    { "groupName": "cmdk", "matchPackageNames": ["cmdk"] },
+    { "groupName": "@tanstack/react-table", "matchPackageNames": ["@tanstack/react-table"] },
+    {
+      "description": "Build, test, lint and site tooling move together.",
+      "groupName": "dev tooling",
+      "matchDepTypes": ["devDependencies"]
+    },
+    {
+      "description": "Workflow actions stay pinned to a full commit SHA with the version in a comment.",
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"]
+    }
+  ]
+}

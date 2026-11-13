@@ -1,0 +1,49 @@
+# Opt-in agent review. A maintainer comments `@claude review` on a pull request; Claude reads REVIEW.md and the
+# diff and posts its findings. It is never a required check, and it never runs on its own.
+#
+# Safety: `issue_comment` runs this file as it is on main, with the secret available, so the job runs only for a
+# comment by the repository's owner, a member or a collaborator. It checks out main (REVIEW.md and the docs it
+# points to), not the pull request's code, and reads the change through `gh pr diff`; nothing from the pull
+# request is executed. Needs the ANTHROPIC_API_KEY repository secret.
+name: Agent review
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+concurrency:
+  group: review-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: Agent review
+    if: >-
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '@claude review') &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read # read REVIEW.md and the docs
+      pull-requests: write # post the review comment
+      id-token: write # the action exchanges the job's OIDC token for its GitHub App token
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.264
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.issue.number }}
+
+            Review this pull request as REVIEW.md in the repository root describes, reading the documents it
+            points to. Read the change with `gh pr diff` and `gh pr view`. Post one summary comment with
+            `gh pr comment`, and inline comments for findings tied to a line.
+          claude_args: >-
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Grep,Glob"

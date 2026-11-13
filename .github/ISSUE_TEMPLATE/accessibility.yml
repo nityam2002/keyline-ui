@@ -1,0 +1,141 @@
+name: Accessibility problem
+description: Keyboard, screen reader, focus, contrast, zoom or motion behaviour that blocks or misleads someone.
+labels: [accessibility]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keyline's accessibility commitments are in [docs/design.md](https://github.com/nityam2002/keyline-ui/blob/main/docs/design.md#accessibility-commitments). A report against one of them is a bug, whatever the visual result.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I searched the open and closed issues and found no duplicate.
+          required: true
+        - label: I re-added the latest version of the affected items (`npx shadcn@latest add @keyline-ui/<name> --overwrite`) and the problem is still there.
+          required: true
+
+  - type: dropdown
+    id: items
+    attributes:
+      label: Affected items
+      description: Every installed item that takes part in the problem. Choose "not sure" if you cannot tell.
+      multiple: true
+      options:
+        - accordion
+        - alert-dialog
+        - app-shell
+        - attachment
+        - avatar
+        - breadcrumb
+        - bubble
+        - button
+        - button-group
+        - carousel
+        - chart
+        - checkbox
+        - checkbox-group
+        - collapsible
+        - combobox
+        - command
+        - context-menu
+        - data-table
+        - date-picker
+        - date-range
+        - dialog
+        - direction
+        - drawer
+        - empty
+        - field
+        - hover-card
+        - inspector
+        - item
+        - kbd
+        - keyline
+        - keyline-shadcn
+        - marker
+        - menu
+        - menubar
+        - message
+        - message-scroller
+        - multiselect
+        - native-select
+        - nav
+        - navigation-menu
+        - notice
+        - number-field
+        - otp-field
+        - pagination
+        - panel
+        - popover
+        - progress
+        - questionnaire
+        - radio-group
+        - resizable
+        - scroll-area
+        - segmented
+        - select
+        - sheet
+        - shipments-demo
+        - sidebar
+        - skeleton
+        - slider
+        - split-button
+        - stat
+        - status
+        - switch
+        - table
+        - tabs
+        - time-field
+        - toast
+        - toggle
+        - toggle-group
+        - toolbar
+        - tooltip
+        - not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Kind of problem
+      multiple: true
+      options:
+        - keyboard (a key does nothing, the wrong thing, or traps focus)
+        - focus (lost, not visible, or returned to the wrong place)
+        - screen reader (wrong name, role, state, or announcement)
+        - contrast or forced colours
+        - zoom, text spacing or reflow
+        - motion (ignores reduced motion, or moves too much)
+        - pointer or touch target
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happens, and what you expected
+      description: Name the WAI-ARIA pattern or WCAG criterion if you know it.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: The keys pressed or the gestures used, in order, and a link to a minimal repository or sandbox.
+    validations:
+      required: true
+  - type: input
+    id: assistive
+    attributes:
+      label: Assistive technology, browser and OS
+      placeholder: VoiceOver on Safari 19, macOS 16; NVDA 2026.3 on Firefox 145, Windows 11
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Item versions
+      description: The version of each affected item in https://keyline-ui.dev/r/versions.json when you added it, or the date you added it.
+    validations:
+      required: true
