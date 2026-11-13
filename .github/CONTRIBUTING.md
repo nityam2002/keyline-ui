@@ -22,9 +22,9 @@ shadcn CLI copies into someone else's project. Everything else in the repository
 document those items.
 
 - **`src/registry/`** is the product. `src/registry/keyline/` holds the source (each component is
-  `ui/<name>.tsx` with its `ui/<name>.meta.ts`; a component not yet converted to utilities also has a
-  `ui/<name>.css`). Each item has a `<name>.meta.ts` beside its source (typed by `src/registry/item.ts`): its
-  title, description, files, CSS file if any, and dependencies. `sidebar` and `alert-dialog`,
+  `ui/<name>.tsx` with its `ui/<name>.meta.ts`, styled with Tailwind utilities and no CSS file). Each item has a
+  `<name>.meta.ts` beside its source (typed by `src/registry/item.ts`): its title, description, files, and
+  dependencies; only the theme items and blocks name a CSS file, and the build fails if a ui item does. `sidebar` and `alert-dialog`,
   which only install other items, live in `src/registry/keyline/virtual/`.
 - **`site/public/r/`** is the built registry, one JSON file per item, which is what `npx shadcn add` downloads.
   The documentation site serves it at `/r/{name}.json`, so deploying the site publishes the registry. It is
@@ -61,7 +61,7 @@ document those items.
    in light, dark, compact, RTL, narrow and reduced-motion configurations in both engines, and writes the images to
    `.artifacts/captures/`. The specs assert on geometry, styles and the accessibility tree rather than pixels, so
    this is how a visual change gets seen.
-   When a change must not alter the look (a refactor, a CSS-to-Tailwind conversion), prove it with
+   When a change must not alter the look (a refactor, a utility rewrite), prove it with
    `pnpm test:visual [--base <commit>] [--only <entries>]`: it screenshots every specimen entry and the app and
    playground routes across theme, density, direction and both engines, at the base commit and in the working
    tree, and fails on any pixel that differs. See [docs/recipe.md](../docs/recipe.md#visual-parity). It is not
@@ -105,8 +105,7 @@ written. A new component is done when it has all of these:
 - a `ui/<name>.meta.ts` beside it (copy a neighbour's), with `site/public/r/` rebuilt
 - a specimen in `src/demo/specimens/`, wired into `src/demo/App.tsx`
 - a page and example in `site/`
-- a part test in `tests/parts/` running the conformance suite and axe over every exported part, with any failure it
-  cannot fix yet recorded in `tests/parts/known-failures.ts`
+- a part test in `tests/parts/` running the conformance suite and axe over every exported part
 - page specs in `tests/browser/` covering behaviour, keyboard, focus and the accessibility tree in every engine
 
 ## Rules, and why

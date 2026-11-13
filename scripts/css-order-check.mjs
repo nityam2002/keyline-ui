@@ -1,7 +1,16 @@
-// Install-order independence. The shadcn CLI appends each item's CSS in the order items were added, so no
-// component may depend on its file coming after another's. This builds the app twice — as written, and with the
-// component and block imports in src/demo/globals.css reversed (in the build only; the source file is never touched) — captures
-// the computed styles of every Keyline element on the specimen and the playground preview in both, and diffs.
+// Install-order independence. Components carry no CSS of their own; what is left is the theme items' CSS (the
+// tokens and the foundation, keyline and keyline-shadcn) and the blocks' CSS. The shadcn CLI appends an item's CSS
+// where it lands in the order items are added, and a re-add appends any rule that is new, so no Keyline stylesheet
+// may depend on coming after another: a block's rules must not win over the foundation by order alone.
+//
+// This builds the app twice: as written, and with those imports in src/demo/globals.css reversed (in the build only;
+// the source file is never touched). It captures the computed styles of every Keyline element on the specimen and
+// the playground preview in both, and diffs.
+//
+// A canary proves the reversal and the capture work, so the check cannot pass by comparing two identical builds: both
+// builds import tests/css-order/canary-first.css before the Keyline stylesheets and canary-second.css after them,
+// inside the span that is reversed. The two set one property on the same probe element, so it must differ between
+// the builds, and nothing else may.
 //   pnpm test:css-order            (no dev server needed)
 import { chromium } from "playwright";
 import { join } from "node:path";
@@ -9,6 +18,7 @@ import { buildApp, serveApp } from "./test-app.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const OUT = join(ROOT, ".artifacts/css-order");
+const CANARY = "kl-css-order-canary";
 const PROPS = [
   "color",
   "backgroundColor",
@@ -36,27 +46,33 @@ const PROPS = [
   "outlineStyle",
 ];
 
-export const reverseUiImports = (css) => {
+const KEYLINE_IMPORT = /^@import "\.\.\/registry\/keyline\/(theme|blocks)\/[^"]+\.css";$/;
+const canary = (n) => `@import "../../tests/css-order/canary-${n}.css";`;
+
+/** Wraps the Keyline stylesheet imports in the canary pair and, with `reverse`, reverses the whole span. */
+export const orderImports = (css, { reverse }) => {
   const lines = css.split("\n");
-  const ui = lines
-    .map((l, i) => (/@import "\.\.\/registry\/keyline\/(ui|blocks)\//.test(l) ? i : -1))
-    .filter((i) => i >= 0);
-  const reversed = ui.map((i) => lines[i]).reverse();
-  ui.forEach((i, k) => (lines[i] = reversed[k]));
-  return { css: lines.join("\n"), count: ui.length };
+  const at = lines.map((l, i) => (KEYLINE_IMPORT.test(l) ? i : -1)).filter((i) => i >= 0);
+  const first = at[0] ?? -1;
+  const last = at.at(-1) ?? -1;
+  // contiguous, so moving the span moves nothing else
+  if (first < 0 || last - first + 1 !== at.length) return { css, imports: [] };
+  const span = [canary("first"), ...lines.slice(first, last + 1), canary("second")];
+  const ordered = reverse ? span.toReversed() : span;
+  lines.splice(first, at.length, ...ordered);
+  return { css: lines.join("\n"), imports: ordered };
 };
 
-let reversedCount = 0;
+const order = {};
+const transform = (name, reverse) => (id, code) => {
+  if (!/\/src\/demo\/globals\.css($|\?)/.test(id)) return null;
+  const r = orderImports(code, { reverse });
+  order[name] = r.imports;
+  return r.css;
+};
 await Promise.all([
-  buildApp(join(OUT, "as-written")),
-  buildApp(join(OUT, "reversed"), {
-    transformCss: (id, code) => {
-      if (!/\/src\/demo\/globals\.css($|\?)/.test(id)) return null;
-      const r = reverseUiImports(code);
-      reversedCount = r.count;
-      return r.css;
-    },
-  }),
+  buildApp(join(OUT, "as-written"), { transformCss: transform("as-written", false) }),
+  buildApp(join(OUT, "reversed"), { transformCss: transform("reversed", true) }),
 ]);
 const [s1, s2] = await Promise.all([serveApp(join(OUT, "as-written")), serveApp(join(OUT, "reversed"))]);
 const b = await chromium.launch({ channel: "chrome" });
@@ -84,8 +100,13 @@ async function capture(base) {
           ),
     );
     all[name] = await p.evaluate(
-      ([sel, PROPS]) =>
-        [...document.querySelector(sel).querySelectorAll("*")]
+      ([sel, PROPS, CANARY]) => {
+        const scope = document.querySelector(sel);
+        const probe = document.createElement("span");
+        probe.className = CANARY;
+        probe.textContent = "canary";
+        scope.append(probe);
+        return [...scope.querySelectorAll("*")]
           .filter((e) => String(e.className).includes("kl-"))
           .map((e) => {
             const s = getComputedStyle(e);
@@ -98,8 +119,9 @@ async function capture(base) {
                   .join("."),
               PROPS.map((k) => s[k]),
             ];
-          }),
-      [sel, PROPS],
+          });
+      },
+      [sel, PROPS, CANARY],
     );
   }
   await ctx.close();
@@ -118,18 +140,47 @@ for (const k of Object.keys(a))
   a[k].forEach(
     ([sel, va], i) =>
       z[k][i] &&
-      va.forEach((v, j) => v !== z[k][i][1][j] && diffs.push(`${k} ${sel} ${PROPS[j]}: ${v} → ${z[k][i][1][j]}`)),
+      va.forEach(
+        (v, j) => v !== z[k][i][1][j] && diffs.push({ sel, text: `${k} ${sel} ${PROPS[j]}: ${v} → ${z[k][i][1][j]}` }),
+      ),
   );
-const uniq = [...new Set(diffs)];
+const isCanary = (d) => d.sel === `SPAN.${CANARY}`;
+const canaryDiffs = [...new Set(diffs.filter(isCanary).map((d) => d.text))];
+const uniq = [...new Set(diffs.filter((d) => !isCanary(d)).map((d) => d.text))];
+const keyline = (order["as-written"] ?? []).filter((l) => !l.includes("/css-order/canary-"));
+const expectedCanary = [
+  "playground SPAN.kl-css-order-canary textDecorationLine: line-through → overline",
+  "specimen SPAN.kl-css-order-canary textDecorationLine: line-through → overline",
+];
 const n = a.playground.length + a.specimen.length;
 const sameShape = a.playground.length === z.playground.length && a.specimen.length === z.specimen.length;
-const line = (ok, name, d) => console.log(`${ok ? "  ✓" : "  ✖"} [chromium] ${name}${ok ? "" : " — " + d}`);
-line(reversedCount > 1, "css order: the reversed build reverses the component imports", `reversed ${reversedCount}`);
-line(
-  n > 500 && sameShape,
-  "css order: both builds render the same Keyline elements",
-  JSON.stringify({ n, z: z.playground.length + z.specimen.length }),
+const checks = [
+  [
+    keyline.length >= 2 &&
+      keyline.some((l) => l.includes("/theme/")) &&
+      JSON.stringify(order["reversed"]) === JSON.stringify(order["as-written"].toReversed()),
+    "css order: the reversed build reverses the theme and block imports",
+    JSON.stringify(order),
+  ],
+  [
+    n > 500 && sameShape,
+    "css order: both builds render the same Keyline elements",
+    JSON.stringify({ n, z: z.playground.length + z.specimen.length }),
+  ],
+  [
+    JSON.stringify(canaryDiffs) === JSON.stringify(expectedCanary),
+    "css order: the canary, and only its one property, follows the reversed order",
+    JSON.stringify(canaryDiffs),
+  ],
+  [
+    !uniq.length,
+    "css order: no computed style depends on the order of the theme and block CSS",
+    uniq.slice(0, 20).join("; "),
+  ],
+];
+for (const [ok, name, d] of checks) console.log(`${ok ? "  ✓" : "  ✖"} [chromium] ${name}${ok ? "" : " — " + d}`);
+console.log(
+  `css order: ${n} elements, ${keyline.length} Keyline stylesheets in the reordered span (${keyline.map((l) => l.split("/").at(-1)?.replace('";', "")).join(", ")}), ` +
+    `${canaryDiffs.length} canary differences, ${uniq.length} order-dependent styles`,
 );
-line(!uniq.length, "css order: no computed style depends on the component CSS order", uniq.slice(0, 20).join("; "));
-console.log(`css order: ${n} elements, ${reversedCount} imports reversed, ${uniq.length} order-dependent styles`);
-process.exit(uniq.length || reversedCount <= 1 || n <= 500 || !sameShape ? 1 : 0);
+process.exit(checks.every(([ok]) => ok) ? 0 : 1);

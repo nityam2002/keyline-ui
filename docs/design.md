@@ -242,10 +242,12 @@ One owner, one indicator, `:focus-visible` only, in `--kl-focus`.
    `dockGeometry`.
 8. Write only Keyline's own names. Outermost elements carry Keyline type; components that reset
    `font: inherit` re-state `font-family: var(--kl-font)`.
-9. Never depend on CSS order across items: the CLI appends CSS in install order. Where two items' rules meet,
-   the owning rule gets one more class, or the shared rule uses `:where()`.
+9. Never depend on CSS order across items. Components carry no CSS; the CLI appends the foundation (the theme
+   item) and a block's CSS in install order, and a re-add appends any rule that is new. Where a block's rules
+   meet the foundation's, the owning rule gets one more class, or the shared rule uses `:where()`.
+   `pnpm test:css-order` reverses their order and fails on any style that changes.
 10. Measure narrow layouts on the component, and keep the page from scrolling sideways.
 11. Work in light and dark, every density, cut off and on, RTL, reduced motion and forced colours.
-12. Register it in its `<name>.meta.ts`. Dependencies are derived from imports and from the `kl-` classes
-    it uses; the build fails on a missing file, an import outside the registry, an ambiguous class owner, a
-    CSS rule that does not reach its item, or declared dependencies that differ from the derived ones.
+12. Register it in its `<name>.meta.ts`. Dependencies are derived from imports; the build fails on a missing
+    file, an import outside the registry, a ui item that lists a CSS file, a theme or block CSS rule that does
+    not reach its item, or declared dependencies that differ from the derived ones.

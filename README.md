@@ -61,9 +61,10 @@ export function Save() {
 }
 ```
 
-Each component arrives with the Keyline components, packages and fonts it needs. Its CSS (the `--kl-*` tokens and
-its own `kl-` rules) is merged into the stylesheet named in your `components.json`; those rules only style
-Keyline's classes, so your existing components, tokens and `body` look the same.
+Each component arrives with the Keyline components, packages and fonts it needs. It is styled with Tailwind
+utilities in its source and adds no CSS of its own; the theme's CSS (the `--kl-*` tokens and the shared
+construction rules) is merged into the stylesheet named in your `components.json`. Those rules only style
+Keyline's names, so your existing components, tokens and `body` look the same.
 
 The [installation guide](https://keyline-ui.dev/docs/installation) (also in [docs/usage.md](docs/usage.md#install))
 covers new and existing projects, requirements, updating and removing.

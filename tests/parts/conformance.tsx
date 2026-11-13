@@ -12,13 +12,9 @@
 //   data-slot            the element carries the part's `data-slot`
 //   native-button        `nativeButton={false}` with a non-button render element keeps button semantics (role
 //                        button, and the part's tab index)
-//
-// Failures recorded in known-failures.ts run as expected failures.
 import * as React from "react";
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
-
-import { knownFailures } from "./known-failures";
 
 export const ASSERTIONS = [
   "forwards-props",
@@ -80,21 +76,10 @@ function byTestId(id: string): HTMLElement {
 
 /** Runs the contract over every part of `component`; `parts` is keyed by the exported part name. */
 export function describeConformance(component: string, parts: Record<string, Part>): void {
-  const known = knownFailures[component] ?? {};
-
   describe(`${component}: Base UI wrapper contract`, () => {
-    test("known failures name only parts and assertions that exist", () => {
-      for (const [name, assertions] of Object.entries(known)) {
-        expect(Object.keys(parts), `known-failures.ts lists ${component}.${name}, which is not tested`).toContain(name);
-        for (const a of assertions) expect(ASSERTIONS, `unknown assertion ${a}`).toContain(a);
-      }
-    });
-
     for (const [name, part] of Object.entries(parts)) {
       describe(name, () => {
-        const listed = known[name] ?? [];
-        const check = (assertion: Assertion, body: () => Promise<void>) =>
-          (listed.includes(assertion) ? it.fails : it)(assertion, body);
+        const check = (assertion: Assertion, body: () => Promise<void>) => it(assertion, body);
         // a button part renders its replacement as a button; nativeButton={false} with a div is tested apart
         const Element = part.button ? "button" : "div";
         const native = part.button ? { nativeButton: true } : {};

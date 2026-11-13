@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
+import { checkCss, loadMetas, RegistryError, type Meta } from "../../scripts/registry/build.ts";
 
 const DIR = new URL("../../site/public/r/", import.meta.url).pathname;
 type Item = {
@@ -28,6 +29,33 @@ test("no shipped file or CSS carries Radix idioms (radix-ui, --radix-, data-stat
       for (const banned of ["radix-ui", "--radix-", "data-state"])
         assert.ok(!text.includes(banned), `${it.name} ships "${banned}"`);
   }
+});
+
+test("no ui item ships CSS: no css or cssVars key, no .css file", () => {
+  const ui = items.filter((it) => it.type === "registry:ui");
+  assert.ok(ui.length > 60, `only ${ui.length} ui items`);
+  for (const it of ui) {
+    assert.ok(!("css" in it), `${it.name} has a css key`);
+    assert.ok(!("cssVars" in it), `${it.name} has a cssVars key`);
+    for (const f of it.files ?? []) assert.ok(!f.path.endsWith(".css"), `${it.name} ships ${f.path}`);
+  }
+});
+
+test("the build refuses a ui meta that lists a .css, and accepts the metas as they are", async () => {
+  const metas = await loadMetas();
+  assert.doesNotThrow(() => checkCss(metas));
+  const button = metas.find((m) => m.name === "button");
+  assert.ok(button, "no button meta");
+  const withCssFile: Meta = { ...button, cssFile: "src/registry/keyline/ui/button.css" };
+  const withCssPath: Meta = {
+    ...button,
+    files: [...(button.files ?? []), { path: "src/registry/keyline/ui/button.css", type: "registry:ui" }],
+  };
+  for (const bad of [withCssFile, withCssPath])
+    assert.throws(
+      () => checkCss([bad]),
+      (e) => e instanceof RegistryError && /a ui item cannot ship CSS/.test(e.message),
+    );
 });
 
 test("every ui item depends on the keyline theme", () => {

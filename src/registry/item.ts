@@ -16,13 +16,13 @@ export type KeylineItem = Without<
   "$schema" | "css" | "cssVars" | "dependencies" | "registryDependencies"
 > &
   Dependencies & {
-    /** The CSS file the build converts into the item's `css` (and, with `theme`, its `cssVars`). */
+    /** The CSS file the build converts into the item's `css` (and, with `theme`, its `cssVars`). Theme and block
+     *  items only: a ui item draws with utilities, and the build fails if one names a CSS file. */
     cssFile?: string;
     /** `:root`, `.dark` and `@theme` in cssFile become cssVars; `.light` mirrors `:root`. */
     theme?: true;
     /**
-     * Dependencies the build cannot see in the item's source (it reads imports and the kl-* classes the source
-     * uses). Each needs its reason beside it. They are part of `dependencies` / `registryDependencies` too: the
+     * Dependencies the build cannot see in the item's source (it reads its imports). Each needs its reason beside it. They are part of `dependencies` / `registryDependencies` too: the
      * build fails when those differ from what it derives plus these.
      */
     requires?: Dependencies;
