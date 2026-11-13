@@ -24,7 +24,7 @@ test("slots: unavailable days, the slot group, choosing, held day, reopen, form 
   const ts = p.getByTestId("ts-pick");
   const log = () => p.getByTestId("ts-log").innerText();
   const dlg = p.locator("[role=dialog]").last();
-  const dayBtn = (n) => dlg.locator(`[role=gridcell] button[aria-label*=", ${n} November 2026"]`);
+  const dayBtn = (n) => dlg.locator(`[role=gridcell] button[aria-label*=" ${n} November 2026"]`);
   const slot = (t) =>
     dlg.locator("[data-slot=date-time-picker-slots] [role=radio]").filter({ hasText: new RegExp(`^${t}$`) });
   const status = () => dlg.locator("[data-slot=date-time-picker-slot-status]").innerText();

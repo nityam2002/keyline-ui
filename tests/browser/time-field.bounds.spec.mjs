@@ -115,7 +115,7 @@ test("time bounds: DateTimePicker clamps the default time; the form refuses 23:3
   };
   const closed = () => until(async () => (await p.locator("[role=dialog]").count()) === 0);
   let dlg = await openPicker();
-  await dlg.getByRole("gridcell", { name: /, 12 November 2026/ }).click();
+  await dlg.getByRole("gridcell", { name: /\b12 November 2026/ }).click();
   const parts = () => dlg.locator("input[role=spinbutton]").evaluateAll((xs) => xs.map((x) => x.value));
   await until(async () => (await parts()).join(":") === "06:00");
   ok(

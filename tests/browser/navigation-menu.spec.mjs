@@ -38,25 +38,41 @@ for (const q of ["theme=light", "theme=dark&density=compact&cut=off"]) {
     await popup.waitFor({ state: "visible", timeout: 3000 }).catch(() => {});
     await idle(p);
     await stable(popup).catch(() => {});
+    // in flight the band is a static window over the whole travel; it is the trigger's box once the move lands
+    // (a slower machine is still mid-move when the popup has settled)
+    await until(
+      p,
+      (e) => !e.closest("[data-kl-stretch]").querySelector(":scope > [data-kl-band]").hasAttribute("data-kl-flight"),
+      svcEl,
+    );
+    const opened = {
+      expanded: await svc.getAttribute("aria-expanded"),
+      visible: await popup.isVisible(),
+      band: await svc.evaluate((e) => {
+        // The inverse cell is the list's Stretch band, laid exactly under the open trigger
+        const band = e.closest("[data-kl-stretch]").querySelector(":scope > [data-kl-band]");
+        const a = e.getBoundingClientRect(),
+          b = band.getBoundingClientRect();
+        return {
+          hidden: band.hidden,
+          dl: +(b.left - a.left).toFixed(2),
+          dr: +(b.right - a.right).toFixed(2),
+          covered: e.hasAttribute("data-kl-covered"),
+          bg: getComputedStyle(band).backgroundColor,
+        };
+      }),
+    };
     ok(
       `${q}: Enter opens the section: expanded, inverse trigger, panel visible`,
-      (await svc.getAttribute("aria-expanded")) === "true" &&
-        (await popup.isVisible()) &&
-        (await svc.evaluate((e) => {
-          // The inverse cell is the list's Stretch band, laid exactly under the open trigger
-          const band = e.closest("[data-kl-stretch]").querySelector(":scope > [data-kl-band]");
-          const a = e.getBoundingClientRect(),
-            b = band.getBoundingClientRect();
-          // the band runs 1px under the next item's seam, so its trailing edge may be up to 2px past the trigger
-          return (
-            !band.hidden &&
-            Math.abs(a.left - b.left) < 1 &&
-            Math.abs(a.right - b.right) < 2 &&
-            e.hasAttribute("data-kl-covered") &&
-            getComputedStyle(band).backgroundColor !== "rgba(0, 0, 0, 0)"
-          );
-        })),
-      null,
+      opened.expanded === "true" &&
+        opened.visible &&
+        !opened.band.hidden &&
+        Math.abs(opened.band.dl) < 1 &&
+        // the band runs 1px under the next item's seam, so its trailing edge may be up to 2px past the trigger
+        Math.abs(opened.band.dr) < 2 &&
+        opened.band.covered &&
+        opened.band.bg !== "rgba(0, 0, 0, 0)",
+      opened,
     );
     const dock = await p.evaluate(() => {
       const l = document

@@ -146,6 +146,10 @@ describe("chart: keyboard", () => {
   it("the plot is one tab stop; arrow keys announce each point's figures", async () => {
     await render(<Figure />);
     await expect.poll(() => document.querySelector('[role="application"]')).toBeTruthy();
+    // the arrows step through what recharts has laid out: a key pressed before the bars are drawn moves nothing
+    await expect
+      .poll(() => document.querySelectorAll('[data-slot="chart"] .recharts-bar-rectangle').length)
+      .toBe(DATA.length * 2);
     const view = document.querySelector<HTMLElement>('[role="radio"][aria-checked="true"]')!;
     view.focus();
     await userEvent.keyboard("{Tab}");

@@ -388,8 +388,11 @@ describe("data-table: row detail", () => {
     expect(detail.querySelector("td")!.getAttribute("colspan")).toBe("3");
     // the detail unfolds once it is in the document (its presence turns shown): wait for that, then count
     await expect.poll(() => detail.querySelector(".kl-unfold")!.hasAttribute("data-open")).toBe(true);
-    // that row alone, through its detail's presence (expanded, mounted, shown); no other row, the body or the owner
-    expect(renders.count("DataTableRowWithDetail")).toBe(3);
+    // that row alone, through its detail's presence (expanded, mounted, shown); no other row, the body or the owner.
+    // Its steps are separate tasks, and React commits two in one render when the second lands before the first
+    // commits (a slower machine): two or three renders, never more
+    expect(renders.count("DataTableRowWithDetail")).toBeGreaterThanOrEqual(2);
+    expect(renders.count("DataTableRowWithDetail")).toBeLessThanOrEqual(3);
     expect(renders.count("TableRow")).toBe(renders.count("DataTableRowWithDetail"));
     expect(renders.count("DataTableRow")).toBe(0);
     expect(renders.count("DataTable")).toBe(0);

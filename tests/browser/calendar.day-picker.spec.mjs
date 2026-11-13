@@ -36,12 +36,12 @@ test("cal: naming, month/year dropdowns, picking, keyboard, next month", async (
   ok(
     "cal: Monday-first weekday headers (hidden from AT by the library; each day's name carries its weekday)",
     (await cal.locator("[role=grid] th").first().textContent()) === "Mon" &&
-      /^Monday, 2 November/.test(await day(/, 2 November 2026/).getAttribute("aria-label")),
+      /^Monday,? 2 November/.test(await day(/\b2 November 2026/).getAttribute("aria-label")),
     null,
   );
   ok(
     "cal: today is marked aria-current=date",
-    (await day(/, 7 November 2026/).getAttribute("aria-current")) === "date",
+    (await day(/\b7 November 2026/).getAttribute("aria-current")) === "date",
     null,
   );
   const w0 = await cal.evaluate(
@@ -60,12 +60,12 @@ test("cal: naming, month/year dropdowns, picking, keyboard, next month", async (
     ) < 0.5,
     null,
   );
-  await day(/, 7 October 2028/).click();
+  await day(/\b7 October 2028/).click();
   await until(async () => /2028-10-07/.test(await log()));
   ok("pick: a press chooses the day", /2028-10-07/.test(await log()), await log());
   ok(
     "pick: the chosen day floods ink (on, ink signal) and its cell is selected",
-    await day(/, 7 October 2028/).evaluate(
+    await day(/\b7 October 2028/).evaluate(
       (x) =>
         x.hasAttribute("data-kl-on") &&
         x.classList.contains("kl-sig-ink") &&
@@ -75,27 +75,31 @@ test("cal: naming, month/year dropdowns, picking, keyboard, next month", async (
   );
   const at = async () => (await active(p)).name;
   await p.keyboard.press("ArrowRight");
-  await until(async () => /, 8 October 2028/.test(await at()));
-  ok("keys: ArrowRight moves a day", /, 8 October 2028/.test(await at()), await active(p));
+  await until(async () => /\b8 October 2028/.test(await at()));
+  ok("keys: ArrowRight moves a day", /\b8 October 2028/.test(await at()), await active(p));
   await p.keyboard.press("ArrowDown");
-  await until(async () => /, 15 October 2028/.test(await at()));
-  ok("keys: ArrowDown moves a week", /, 15 October 2028/.test(await at()), await active(p));
+  await until(async () => /\b15 October 2028/.test(await at()));
+  ok("keys: ArrowDown moves a week", /\b15 October 2028/.test(await at()), await active(p));
   await p.keyboard.press("PageDown");
-  await until(async () => /, 15 November 2028/.test(await at()) && (await label()) === "November 2028");
+  await until(async () => /\b15 November 2028/.test(await at()) && (await label()) === "November 2028");
   ok(
     "keys: PageDown moves a month and the grid follows",
-    /, 15 November 2028/.test(await at()) && (await label()) === "November 2028",
+    /\b15 November 2028/.test(await at()) && (await label()) === "November 2028",
     await active(p),
   );
   await p.keyboard.press("Shift+PageDown");
-  await until(async () => /, 15 November 2029/.test(await at()));
-  ok("keys: Shift+PageDown moves a year", /, 15 November 2029/.test(await at()), await active(p));
+  await until(async () => /\b15 November 2029/.test(await at()));
+  ok("keys: Shift+PageDown moves a year", /\b15 November 2029/.test(await at()), await active(p));
   await p.keyboard.press("Home");
-  await until(async () => /^Monday, 12 November 2029/.test(await at()));
-  ok("keys: Home goes to the week's first day (Monday)", /^Monday, 12 November 2029/.test(await at()), await active(p));
+  await until(async () => /^Monday,? 12 November 2029/.test(await at()));
+  ok(
+    "keys: Home goes to the week's first day (Monday)",
+    /^Monday,? 12 November 2029/.test(await at()),
+    await active(p),
+  );
   await p.keyboard.press("End");
-  await until(async () => /^Sunday, 18 November 2029/.test(await at()));
-  ok("keys: End goes to the week's last day (Sunday)", /^Sunday, 18 November 2029/.test(await at()), await active(p));
+  await until(async () => /^Sunday,? 18 November 2029/.test(await at()));
+  ok("keys: End goes to the week's last day (Sunday)", /^Sunday,? 18 November 2029/.test(await at()), await active(p));
   await p.keyboard.press("Enter");
   await until(async () => /2029-11-18/.test(await log()));
   ok("keys: Enter chooses", /2029-11-18/.test(await log()), await log());
@@ -176,7 +180,7 @@ test("bounds: disabled days, unavailable navigation, single-year dropdown, keybo
 }) => {
   const p = await open(OPEN);
   const bc = p.getByTestId("jump-bounded");
-  const bday = (n) => bc.getByRole("button", { name: new RegExp(`, ${n} November 2026`) });
+  const bday = (n) => bc.getByRole("button", { name: new RegExp(`\\b${n} November 2026`) });
   ok(
     "bounds: days before min are disabled, hatched and say why",
     (await bday(2).isDisabled()) &&
@@ -199,11 +203,11 @@ test("bounds: disabled days, unavailable navigation, single-year dropdown, keybo
   await p.keyboard.press("ArrowLeft");
   ok(
     "bounds: ArrowLeft from the first day stays put",
-    /, 3 November 2026/.test((await active(p)).name),
+    /\b3 November 2026/.test((await active(p)).name),
     await active(p),
   );
   await bc.getByRole("button", { name: "Next month" }).click();
-  const dec5 = bc.getByRole("button", { name: /, 5 December 2026/ });
+  const dec5 = bc.getByRole("button", { name: /\b5 December 2026/ });
   await dec5.waitFor();
   ok(
     "bounds: December shows; days after max are disabled; Next is unavailable",

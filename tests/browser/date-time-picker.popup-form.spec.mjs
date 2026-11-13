@@ -57,11 +57,11 @@ test("date-time picker: open, day keeps the time, time row, Done, Escape, preset
   await opened(p);
   ok(
     "opens on the chosen day in the grid",
-    (await active(p)).role === "gridcell" && /, 7 November 2026/.test((await active(p)).name),
+    (await active(p)).role === "gridcell" && /\b7 November 2026/.test((await active(p)).name),
     await active(p),
   );
   await dialog()
-    .getByRole("gridcell", { name: /, 10 November 2026/ })
+    .getByRole("gridcell", { name: /\b10 November 2026/ })
     .click();
   const l1 = await logIs(/2026-11-10 14:30/);
   ok("choosing a day keeps the time (2026-11-10 14:30)", /2026-11-10 14:30/.test(l1), l1);
@@ -130,7 +130,7 @@ test("date-time picker: time before day, 12-hour trigger, disabled, cell layout"
   await tabTo(p, "Hours");
   await p.keyboard.type("1105");
   await dialog()
-    .getByRole("gridcell", { name: /, 12 November 2026/ })
+    .getByRole("gridcell", { name: /\b12 November 2026/ })
     .click();
   await p.keyboard.press("Escape");
   await closed(p);
@@ -210,7 +210,7 @@ test("date-time picker in a Form: required, default time, validate, server error
   await slot.click();
   await opened(p);
   await dialog()
-    .getByRole("gridcell", { name: /, 9 November 2026/ })
+    .getByRole("gridcell", { name: /\b9 November 2026/ })
     .click();
   await p.keyboard.press("Escape");
   await closed(p);
@@ -271,10 +271,10 @@ test("date-time picker: portal carries compact density and RTL; RTL keys", async
   await p.keyboard.press("ArrowLeft");
   const a = await poll(
     () => active(p),
-    (x) => /, 8 November 2026/.test(x.name),
+    (x) => /\b8 November 2026/.test(x.name),
     2000,
   );
-  ok("RTL: ArrowLeft moves to the next day", /, 8 November 2026/.test(a.name), a);
+  ok("RTL: ArrowLeft moves to the next day", /\b8 November 2026/.test(a.name), a);
   const fit = await p
     .locator("[role=dialog]")
     .last()
