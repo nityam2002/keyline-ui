@@ -14,7 +14,7 @@ const font = (pkg, file) =>
   `data:font/woff2;base64,${readFileSync(new URL(`node_modules/@fontsource-variable/${pkg}/files/${file}`, ROOT)).toString("base64")}`;
 const OUT = new URL("site/public/og.png", ROOT);
 
-const HEADLINE = "Controls that fit together.";
+const HEADLINE = "Built like an instrument panel.";
 const LINE = "React components for dense interfaces, on Base UI, installed from a shadcn registry.";
 
 // the light theme's resolved colours (site/app/icon.svg and --kl-paper / --kl-line-soft in keyline.css)

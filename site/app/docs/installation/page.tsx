@@ -38,10 +38,10 @@ const TOC: TocGroup[] = [
   {
     label: "Install",
     items: [
+      { id: "requirements", label: "Requirements" },
       { id: "new-project", label: "New project" },
       { id: "existing-project", label: "Existing project" },
       { id: "item-names", label: "Item names" },
-      { id: "requirements", label: "Requirements" },
     ],
   },
   {
@@ -67,27 +67,56 @@ export default function InstallationPage() {
     <DocPage name="Installation" toc={TOC}>
       <h1>Installation</h1>
       <p className="s-doc-lede">
-        Keyline is a shadcn registry. The shadcn CLI copies each component&apos;s source into your project, with the
-        components, styles and packages it needs, so the code is yours to read and change. Nothing to clone, build or
-        host: you map the <code>@keyline-ui</code> registry once, then add components by name.
+        Keyline is a shadcn registry: the shadcn CLI copies each component&apos;s source, styles and packages into your
+        project, so the code is yours to change. Map the <code>@keyline-ui</code> registry once, then add components by
+        name.
       </p>
 
+      <h2 id="requirements">Requirements</h2>
+      <ul>
+        <li>React 19 and TypeScript.</li>
+        <li>
+          Tailwind CSS 4. Keyline&apos;s theme uses <code>@theme inline</code>, which Tailwind 3 does not have.
+        </li>
+        <li>
+          A shadcn project: a <code>components.json</code> with any style and base, and the <code>cn()</code> helper at
+          its <code>utils</code> alias. <code>shadcn init</code> sets both up.
+        </li>
+        <li>
+          Network access to npm and to this site while you run the CLI. Nothing is fetched from this site at runtime.
+        </li>
+      </ul>
+
       <h2 id="new-project">New project</h2>
-      <p>Create a Next.js or Vite app set up for shadcn (pick either):</p>
-      <CodeBlock code={NEXT} lang="bash" copyLabel="Next.js setup command" />
-      <CodeBlock code={VITE} lang="bash" copyLabel="Vite setup command" />
+      <p>Three steps take an empty folder to a page with a Keyline button on it.</p>
+
+      <h3 id="create-app">1. Create the app</h3>
       <p>
-        In the new app&apos;s folder, map the Keyline registry. This writes one line to <code>components.json</code>:
+        Run <strong>one</strong> of these. Each creates an app set up for shadcn. For Next.js:
+      </p>
+      <CodeBlock code={NEXT} lang="bash" copyLabel="Next.js setup command" />
+      <p>Or, for Vite:</p>
+      <CodeBlock code={VITE} lang="bash" copyLabel="Vite setup command" />
+
+      <h3 id="map-registry">2. Map the Keyline registry</h3>
+      <p>
+        In the new app&apos;s folder, run this once. It writes one line to <code>components.json</code>:
       </p>
       <CodeBlock code={ADD} lang="bash" copyLabel="registry command" />
-      <p>Add a component and use it:</p>
+
+      <h3 id="add-component">3. Add a component and use it</h3>
       <CodeBlock code={BUTTON} lang="bash" copyLabel="install command" />
       <CodeBlock code={USE} lang="tsx" copyLabel="usage" />
+      <p>
+        Every component page shows its own add command. To set your colours and fonts, read{" "}
+        <Link href="/docs/theming">Theming</Link>; to see how components fit together, read{" "}
+        <Link href="/docs/composition">Composition</Link>.
+      </p>
 
       <h2 id="existing-project">Existing shadcn project</h2>
       <p>
-        In the folder that holds <code>components.json</code>, map the registry once, then add what you need. Each
-        component page shows its command.
+        In the folder that holds <code>components.json</code>, run these in order. The first maps the registry and is
+        needed only once; the second adds components. Each component page shows its own add command.
       </p>
       <CodeBlock code={ADD} lang="bash" copyLabel="registry command" />
       <CodeBlock code={MANY} lang="bash" copyLabel="install command" />
@@ -104,22 +133,6 @@ export default function InstallationPage() {
         and <code>nav</code>, and <code>alert-dialog</code> installs <code>dialog</code>, which exports{" "}
         <code>AlertDialog</code>.
       </p>
-
-      <h2 id="requirements">Requirements</h2>
-      <ul>
-        <li>React 19 and TypeScript.</li>
-        <li>
-          Tailwind CSS 4. Keyline&apos;s theme uses <code>@theme inline</code>, which Tailwind 3 does not have.
-        </li>
-        <li>
-          A shadcn project: a <code>components.json</code> with any style and base, and the <code>cn()</code> helper at
-          its
-          <code> utils</code> alias. <code>shadcn init</code> sets both up.
-        </li>
-        <li>
-          Network access to npm and to this site while you run the CLI. Nothing is fetched from this site at runtime.
-        </li>
-      </ul>
 
       <h2 id="what-installs">What installing does</h2>
       <ul>
@@ -145,10 +158,9 @@ export default function InstallationPage() {
       <h2 id="your-app">Your app and Keyline</h2>
       <p>
         Keyline&apos;s CSS only styles Keyline&apos;s own names (<code>--kl-*</code> tokens, <code>kl-</code> classes,{" "}
-        <code>data-kl-*</code>
-        attributes). Your shadcn components, <code>body</code>, fonts and tokens look the same as before, and
-        Keyline&apos;s <code>Button</code> and shadcn&apos;s <code>Button</code> can sit on the same page. Dark mode
-        follows a <code>.dark</code> class on an ancestor, as shadcn&apos;s own setups already set it.
+        <code>data-kl-*</code> attributes). Your shadcn components, <code>body</code>, fonts and tokens look the same as
+        before, and Keyline&apos;s <code>Button</code> and shadcn&apos;s <code>Button</code> can sit on the same page.
+        Dark mode follows a <code>.dark</code> class on an ancestor, as shadcn&apos;s own setups already set it.
       </p>
       <p>To give the whole app Keyline&apos;s look, stock shadcn components included, add the opt-in theme:</p>
       <CodeBlock code={WHOLE_APP} lang="bash" copyLabel="whole-app theme command" />
@@ -163,9 +175,8 @@ export default function InstallationPage() {
       <h2 id="updating">Updating</h2>
       <p>
         Installed components are your code: nothing changes until you add them again. To take a newer version, re-add it
-        with
-        <code> --overwrite</code>. It replaces the component&apos;s files, so commit or keep your own edits first and
-        compare afterwards.
+        with <code>--overwrite</code>. It replaces the component&apos;s files, so commit or keep your own edits first
+        and compare afterwards.
       </p>
       <CodeBlock code={UPDATE} lang="bash" copyLabel="update command" />
       <p>
@@ -179,8 +190,7 @@ export default function InstallationPage() {
       <p>
         Delete the component&apos;s files from <code>components/keyline/</code>. A component adds no CSS, so its files
         are all there is; for a block, also delete the rules it added to your stylesheet. Remove any packages you no
-        longer use. For configuration, theming and the composition rules, start with{" "}
-        <Link href="/docs/theming">Theming</Link> and <Link href="/docs/composition">Composition</Link>.
+        longer use.
       </p>
 
       <h2 id="troubleshooting">Troubleshooting</h2>

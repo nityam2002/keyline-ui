@@ -8,7 +8,7 @@ const SHARE_IMAGE = {
   url: "/og.png",
   width: 1200,
   height: 630,
-  alt: "Keyline UI. Controls that fit together. React components for dense interfaces, on Base UI, installed from a shadcn registry.",
+  alt: "Keyline UI. Built like an instrument panel. React components for dense interfaces, on Base UI, installed from a shadcn registry.",
 };
 
 /** The canonical origin: package.json "homepage", the same origin the install commands and the registry use. A build

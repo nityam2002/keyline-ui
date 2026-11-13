@@ -65,6 +65,24 @@ export function DocsNav({ current }: { current: string }) {
   // the URL moved (the page landed, or back/forward): the choice is spent, never applied again on return
   if (chosen && chosen.on !== pathname) setChosen(null);
   const value = chosen && chosen.on === pathname ? chosen.name : current;
+  // the current page stays in view in the index: a page reached from elsewhere (the page's Previous/Next, search, a
+  // link) may sit below the index's fold. Only as far as it takes, and never the page's own scroller.
+  const listRef = React.useRef<HTMLDivElement>(null);
+  const first = React.useRef(true);
+  React.useLayoutEffect(() => {
+    const box = listRef.current?.querySelector<HTMLElement>("[data-slot=scroll-area-viewport]");
+    const here = box?.querySelector<HTMLElement>("[aria-current=page]");
+    if (!box || !here) return;
+    const b = box.getBoundingClientRect();
+    const r = here.getBoundingClientRect();
+    const air = r.height; // a row of context past the current one
+    const delta = r.top < b.top + air ? r.top - b.top - air : r.bottom > b.bottom - air ? r.bottom - b.bottom + air : 0;
+    if (delta) {
+      const still = first.current || matchMedia("(prefers-reduced-motion: reduce)").matches;
+      box.scrollBy({ top: delta, behavior: still ? "instant" : "smooth" });
+    }
+    first.current = false;
+  }, [pathname]);
   return (
     <Choose.Provider value={choose}>
       <Link
@@ -73,7 +91,7 @@ export function DocsNav({ current }: { current: string }) {
       >
         <NavIdentity mark={<Mark />} title="Keyline UI" meta="Components" />
       </Link>
-      <ScrollArea label="Component index" className="s-dnav">
+      <ScrollArea ref={listRef} label="Component index" className="s-dnav">
         <Nav linkComponent={NavLink} layout="cell" label="Components" value={value} groups={GROUPS} />
       </ScrollArea>
     </Choose.Provider>

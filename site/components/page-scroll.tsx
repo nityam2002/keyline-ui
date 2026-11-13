@@ -1,9 +1,29 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { ScrollArea } from "@/components/keyline/ui/scroll-area";
 
 const SCROLL_KEYS = new Set([" ", "PageDown", "PageUp", "Home", "End", "ArrowDown", "ArrowUp"]);
+
+/**
+ * A new page opens at its top. Next resets the window's scroll, but the document never scrolls here, so a page
+ * reached from a scrolled one kept that page's offset. Rendered ahead of the page so it runs before the page's own
+ * layout effects (the docs' page-enter measures what is on screen). A #link is left to Next, which scrolls to it.
+ */
+function ScrollReset() {
+  const pathname = usePathname();
+  const first = React.useRef(true);
+  React.useLayoutEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    if (window.location.hash) return;
+    document.querySelector(".s-page-vp")?.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
 
 /** The page's own scroller: the document never scrolls; the whole site scrolls in Keyline's ScrollArea, rail track
  *  (the page is not a frame). Anything that follows the page's scroll reads `pageScroller()`. */
@@ -36,6 +56,7 @@ export function PageScroll({ children }: { children: React.ReactNode }) {
       viewportClassName="s-page-vp data-has-overflow-y:pe-0"
       data-testid="page-scroll"
     >
+      <ScrollReset />
       {children}
     </ScrollArea>
   );

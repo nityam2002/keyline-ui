@@ -224,6 +224,17 @@
     padding: var(--s-title-top) var(--s-title-x) 0;
     font-size: var(--s-title-fs);
   }
+  /* where the heading shares its line with the controls, it is sized to the room left beside them (the heading is
+     about 13 times its size wide; the controls, the pause and the insets take about 445px), and that room is held
+     clear, so a wider rendering wraps under the heading's first line instead of running under the controls */
+  @media (min-width: 1024px) {
+    .s-home .s-frame {
+      --s-title-fs: clamp(40px, 7.5vw - 36px, 86px);
+    }
+    .s-home .s-frame > .s-title {
+      padding-inline-end: calc(var(--s-title-x) + 300px);
+    }
+  }
   .s-home .s-frame > .s-map {
     grid-row: 2;
     grid-column: 1;
@@ -930,6 +941,12 @@
     font-size: 16px;
     line-height: 1.65;
   }
+  /* text that follows a code block, a table or an example starts a new beat: the block belongs to the sentence that
+     introduced it, so the space after it is wider than the space before (a note on the block itself, .s-small,
+     stays attached) */
+  .s-read > :not(p, ul, h1, h2, h3, footer) + :is(p:not(.s-small), ul) {
+    margin-top: 24px;
+  }
   .s-read > ul > li {
     position: relative;
     padding-inline-start: 22px;
@@ -958,6 +975,13 @@
     padding: 1px 4px;
     background: var(--kl-cell);
     color: var(--kl-ink);
+  }
+  /* a name in running text stays whole (no "@keyline-" / "ui" split at its hyphen) wherever the measure has room
+     for the longest one; on a phone it may still break, so it never pushes the page sideways */
+  @media (min-width: 721px) {
+    .s-read > :is(p, ul > li) > code {
+      white-space: nowrap;
+    }
   }
   .s-read a:where(:not(.s-demo-stage *)) {
     color: var(--kl-cobalt-text);

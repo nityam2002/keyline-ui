@@ -28,8 +28,8 @@ export default function Home() {
       <div className="s-frame">
         <Land />
         {/* data-ghost: the heading's cobalt plate, printed under it and stepped into register (site.css: Register) */}
-        <h1 className="s-title" data-ghost="Controls that fit together.">
-          Controls that fit together.
+        <h1 className="s-title" data-ghost="Built like an instrument panel.">
+          Built like an instrument panel.
         </h1>
         <SiteControls className="s-site-ctl" />
         <HomeSpecimen

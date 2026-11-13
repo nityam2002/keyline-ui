@@ -24,13 +24,16 @@ const ok = (cond, msg) => {
 {
   console.log("server HTML");
   const home = await (await fetch(`${BASE}/`)).text();
-  ok(home.includes("Controls that fit together."), "home: headline in HTML");
+  ok(home.includes("Built like an instrument panel."), "home: headline in HTML");
   ok(
     /href="\/docs\/installation"[^>]*>(?:<[^>]+>[^<]*)*?Get started/.test(home),
     "home: the primary action, Get started, opens the installation guide",
   );
   ok(!/Toolbar docs|@keyline-ui\/toolbar/.test(home), "home: no single component is picked out");
-  ok(home.includes("Frame.") && home.includes("Seam.") && home.includes("Cell."), "home: legend in HTML");
+  ok(
+    ["Related controls touch.", "Line weight shows the role.", "State stays in place."].every((t) => home.includes(t)),
+    "home: legend in HTML",
+  );
   ok(!/Shipment|KL-4102|Dunder|Scranton/.test(home), "home: no shipments or Office names in the hero");
   const docs = await (await fetch(`${BASE}/docs/components/toolbar`)).text();
   ok(/<h1[^>]*>Toolbar<\/h1>/.test(docs), "docs: heading in HTML");
