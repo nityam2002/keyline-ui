@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Command as Cmdk } from "cmdk";
+import { Command as Cmdk, useCommandState } from "cmdk";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
@@ -9,6 +9,7 @@ import { useRender } from "@base-ui/react/use-render";
 import { cn } from "@/lib/utils";
 import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
 import { useTransientFlag } from "../lib/keyline-motion";
+import { useMergedRef } from "../lib/keyline-scope";
 import { Kbd } from "./kbd";
 import { DialogPopup } from "./dialog";
 
@@ -129,9 +130,19 @@ function CommandInput({ className, ...props }: React.ComponentProps<typeof Cmdk.
 
 /** The results. They scroll natively (cmdk scrolls the active row into view), in the Scroll Area's tones, and
  * number their rows with the kl-cmd counter. Rows are separated by soft rules. */
-function CommandList({ className, ...props }: React.ComponentProps<typeof Cmdk.List>): React.ReactElement {
+function CommandList({ className, ref, ...props }: React.ComponentProps<typeof Cmdk.List>): React.ReactElement {
+  const list = React.useRef<HTMLDivElement>(null);
+  const setRef = useMergedRef(list, ref);
+  const search = useCommandState((s) => s.search);
+  // A new query shows its results from the top, where cmdk selects. cmdk 1.1.1 can scroll to the previous selection
+  // before re-selecting the first row (when rows remount, e.g. a grouped index giving way to a flat result list) and
+  // does not scroll again, leaving the list parked at its end. Effects run after cmdk's layout-effect scroll.
+  React.useEffect(() => {
+    if (list.current) list.current.scrollTop = 0;
+  }, [search]);
   return (
     <Cmdk.List
+      ref={setRef}
       className={cn(
         "max-h-[min(380px,52vh)] overflow-auto overscroll-contain [counter-reset:kl-cmd]",
         "[scrollbar-width:thin] [scrollbar-color:var(--kl-ink-3)_transparent]",
