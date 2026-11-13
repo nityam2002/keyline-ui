@@ -23,7 +23,14 @@ export default {
     "@keyline-ui/toolbar",
     "@keyline-ui/collection",
   ],
-  version: "1.0.0",
-  updated: "2026-11-13",
-  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+  version: "1.0.1",
+  updated: "2026-11-14",
+  changelog: [
+    {
+      version: "1.0.1",
+      date: "2026-11-14",
+      note: "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table.",
+    },
+    { version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." },
+  ],
 } satisfies KeylineItem;

@@ -521,10 +521,15 @@
     ]
   },
   "command": {
-    "version": "1.0.1",
-    "updated": "2026-11-13",
-    "hash": "sha256-fc912477fd9843b6f118bceee5d7bfe476c7ab1ef4bf8c72f5adb350d77ecc60",
+    "version": "1.0.2",
+    "updated": "2026-11-14",
+    "hash": "sha256-c7f90caa76d03aafa51f3aa8ea7e70fbe1901bf93db562f23080355085064f81",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-11-14",
+        "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list."
+      },
       {
         "version": "1.0.1",
         "date": "2026-11-13",
@@ -1959,10 +1964,15 @@
     ]
   },
   "table": {
-    "version": "1.0.0",
-    "updated": "2026-11-13",
-    "hash": "sha256-af34ecfd10f8dacaa43cb06ea553e372ab8182b123a9dc6a905038fa4e94ee46",
+    "version": "1.0.1",
+    "updated": "2026-11-14",
+    "hash": "sha256-bac8c3bc614e65cee3fbb5bf966dc215e7af2cc5b0d875675160e155302b375f",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-14",
+        "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",

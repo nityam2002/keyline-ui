@@ -1,6 +1,23 @@
 {
   "releases": [
     {
+      "date": "2026-11-14",
+      "entries": [
+        {
+          "item": "command",
+          "version": "1.0.2",
+          "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list.",
+          "breaking": false
+        },
+        {
+          "item": "table",
+          "version": "1.0.1",
+          "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table.",
+          "breaking": false
+        }
+      ]
+    },
+    {
       "date": "2026-11-13",
       "entries": [
         {
@@ -1556,6 +1573,13 @@
     "command": [
       {
         "item": "command",
+        "version": "1.0.2",
+        "note": "Typing a query shows the results from the top. The list no longer parks at its end when the rows change shape, such as a grouped index giving way to a flat result list.",
+        "breaking": false,
+        "date": "2026-11-14"
+      },
+      {
+        "item": "command",
         "version": "1.0.1",
         "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
         "breaking": false,
@@ -2639,6 +2663,13 @@
       }
     ],
     "table": [
+      {
+        "item": "table",
+        "version": "1.0.1",
+        "note": "Scrolling the page over a table moves the page. Only the sideways scroll stays inside the grid; a vertical scroll the grid cannot take, or reaches the end of, passes to the page instead of stopping on the table.",
+        "breaking": false,
+        "date": "2026-11-14"
+      },
       {
         "item": "table",
         "version": "1.0.0",
