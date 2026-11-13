@@ -1048,6 +1048,7 @@
       "SortLevel",
       "ariaSortOf",
       "columnAlign",
+      "columnCellClassName",
       "describeFilter",
       "fromSortList",
       "isFilterActive",
@@ -3534,24 +3535,20 @@
     "slots": [],
     "dataAttributes": [
       "insp-field",
-      "inspecting",
       "inspector",
-      "late",
-      "status"
+      "status",
+      "table",
+      "testid"
     ],
     "cssProperties": [
-      "--kl-cell",
       "--kl-cobalt",
       "--kl-ctl",
       "--kl-font-mono",
       "--kl-gutter",
-      "--kl-ink-2",
       "--kl-inset",
       "--kl-k1",
       "--kl-k3",
-      "--kl-line-soft",
-      "--kl-press",
-      "--kl-red-text",
+      "--kl-ring",
       "--kl-row",
       "--kl-weight-strong"
     ]

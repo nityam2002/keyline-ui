@@ -590,7 +590,7 @@
   "data-table": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-7597f322c062531cb4a169cd410f3fdbf04a0ec42cbcf336bee2c0d758cd0c7a",
+    "hash": "sha256-312e0cb116699bde7079aa56056a9c4756c2af0588b2e88cd85c29dc1a328478",
     "changelog": [
       {
         "version": "1.0.0",
@@ -602,7 +602,7 @@
   "data-table-model": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-693b81562a17c929d6c0673b32cbdd34f77e0b3a523f490213720c5212b64355",
+    "hash": "sha256-80c58795636b17d6c3b4b786f4947be70072fcd0fb2391800e1d87675f9b8d12",
     "changelog": [
       {
         "version": "1.0.0",
@@ -1706,7 +1706,7 @@
   "shipments-demo": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-beb71f79ee68af5ea07a1fbd31097af5dc244a16380f5f8e86d46cb465755a6c",
+    "hash": "sha256-ae7a4baf1fc05e4d18166fd06cd392567ac643f781f818fddfa2c9332ff091cd",
     "changelog": [
       {
         "version": "1.0.0",
@@ -1934,7 +1934,7 @@
   "table": {
     "version": "1.0.0",
     "updated": "2026-11-13",
-    "hash": "sha256-28f8568dc54c67a695f906f165f92210c31779c902b7122e647be0af9ec4507b",
+    "hash": "sha256-96b7cc3716ba9cfb55067ab82c29f368ccf3cc03357bfffd0cc36b0214483cf6",
     "changelog": [
       {
         "version": "1.0.0",
