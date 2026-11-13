@@ -521,10 +521,15 @@
     ]
   },
   "command": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "updated": "2026-11-13",
-    "hash": "sha256-0ef101049cbedd07474118b0d9d9f4ec4b6cea0ea0088ccce3e2005501fb290d",
+    "hash": "sha256-fc912477fd9843b6f118bceee5d7bfe476c7ab1ef4bf8c72f5adb350d77ecc60",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-13",
+        "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",

@@ -8,6 +8,7 @@ import { useRender } from "@base-ui/react/use-render";
 
 import { cn } from "@/lib/utils";
 import { resolveClassName, resolveStyle, type PartProps } from "../lib/keyline-render";
+import { useTransientFlag } from "../lib/keyline-motion";
 import { Kbd } from "./kbd";
 import { DialogPopup } from "./dialog";
 
@@ -216,7 +217,8 @@ function CommandSeparator({ className, ...props }: React.ComponentProps<typeof C
 
 /**
  * One result: its digit cell (the counter; · after the ninth), the label, and its meta and shortcut. The cursor is
- * the inverse row; running it floods the row yellow (the flood owns the fill while it is on).
+ * the inverse row; running it floods the row yellow (the flood owns the fill while it is on). The flood is the moment
+ * of running, not a state: a result that keeps the menu open (a theme switch) lets it go again.
  */
 function CommandItem({
   className,
@@ -229,7 +231,7 @@ function CommandItem({
   meta?: React.ReactNode;
   shortcut?: React.ReactNode;
 }): React.ReactElement {
-  const [fired, setFired] = React.useState(false);
+  const [fired, fire] = useTransientFlag(360);
   return (
     <Cmdk.Item
       className={cn(
@@ -244,7 +246,7 @@ function CommandItem({
       data-kl-flood="manual"
       data-kl-on={fired ? "" : undefined}
       onSelect={(v) => {
-        setFired(true);
+        fire();
         onSelect?.(v);
       }}
       {...props}

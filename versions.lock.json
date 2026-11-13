@@ -173,8 +173,8 @@
       "hash": "sha256-1a37d35009cbd579398d27d32d3f46ebaf6c787bb7530449ed9f4567450149cf"
     },
     "command": {
-      "version": "1.0.0",
-      "hash": "sha256-0ef101049cbedd07474118b0d9d9f4ec4b6cea0ea0088ccce3e2005501fb290d"
+      "version": "1.0.1",
+      "hash": "sha256-fc912477fd9843b6f118bceee5d7bfe476c7ab1ef4bf8c72f5adb350d77ecc60"
     },
     "command-office": {
       "version": "1.0.0",

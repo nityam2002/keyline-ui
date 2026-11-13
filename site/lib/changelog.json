@@ -269,6 +269,12 @@
         },
         {
           "item": "command",
+          "version": "1.0.1",
+          "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
+          "breaking": false
+        },
+        {
+          "item": "command",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
           "breaking": false
@@ -1548,6 +1554,13 @@
       }
     ],
     "command": [
+      {
+        "item": "command",
+        "version": "1.0.1",
+        "note": "A result that keeps the menu open no longer stays flooded: the yellow flood marks the run, then lets go.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
       {
         "item": "command",
         "version": "1.0.0",
