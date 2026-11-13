@@ -49,14 +49,15 @@ test("chat: reduced motion — no unfolds, a static pending segment, the tick ke
   );
   await p.getByTestId("ms-attach").click();
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.mark === "done",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.mark === "done",
     null,
     { timeout: 6000 },
   );
   const mk = await frame
-    .locator(".kl-att")
+    .locator("[data-slot=attachment]")
     .last()
-    .locator(".kl-att-mark")
+    .locator("[data-slot=attachment-mark]")
     .evaluate((m) => getComputedStyle(m).clipPath);
   ok(
     "reduced: the done tick still shows (instantly full), so the feedback is kept",
@@ -102,9 +103,9 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
     side,
   );
   const det = await frame.evaluate((f) =>
-    [...f.querySelectorAll(".kl-att-desc")].map((d) => {
+    [...f.querySelectorAll("[data-slot=attachment-description]")].map((d) => {
       const t = d.querySelector("bdi").getBoundingClientRect();
-      const n = d.parentElement.querySelector(".kl-att-title").getBoundingClientRect();
+      const n = d.parentElement.querySelector("[data-slot=attachment-title]").getBoundingClientRect();
       return Math.round(Math.abs(t.right - n.right));
     }),
   );
@@ -138,25 +139,30 @@ test("chat: phone, dark, RTL page — the reading edge, sides, isolation, frames
   ok("touch: tapping Latest lands on the newest", (await geo()).gap <= 2, await geo());
   await p.getByTestId("ms-attach-fail").tap();
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "error",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
+      "error",
     null,
     { timeout: 4000 },
   );
   const rb = frame
-    .locator(".kl-att")
+    .locator("[data-slot=attachment]")
     .last()
     .getByRole("button", { name: /^Retry/ });
   const rbb = await rb.boundingBox();
   await rb.tap();
   await until(
     p,
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "uploading",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
+      "uploading",
     null,
     2000,
   );
   ok(
     "touch: Retry is a full-height cell (≥ 40px tall) and a tap resumes the upload",
-    rbb.height >= 40 && (await frame.locator(".kl-att").last().getAttribute("data-status")) === "uploading",
+    rbb.height >= 40 &&
+      (await frame.locator("[data-slot=attachment]").last().getAttribute("data-status")) === "uploading",
     rbb,
   );
   ok("phone: no page errors", p.errs.length + p.consoleErrs.length === 0, [...p.errs, ...p.consoleErrs]);

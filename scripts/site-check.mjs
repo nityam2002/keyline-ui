@@ -2744,11 +2744,13 @@ for (const [width, reduce] of run("conversation")
   await retry.click();
   await retry.waitFor({ state: "detached", timeout: 5000 });
   await p.waitForTimeout(2400);
+  // Attachment writes its state as data-status (Phase 3 renamed it from Radix's data-state)
+  const statuses = await box(d)
+    .locator("[data-slot=attachment]")
+    .evaluateAll((els) => els.map((e) => e.getAttribute("data-status")));
   ok(
-    await box(d)
-      .locator("[data-slot=attachment]")
-      .evaluateAll((els) => els.every((e) => e.getAttribute("data-state") === "done")),
-    `${tag} attachment: every file ends done`,
+    statuses.length === 3 && statuses.every((s) => s === "done"),
+    `${tag} attachment: every file ends done (${statuses.join(", ")})`,
   );
   await box(d).getByRole("button", { name: "Remove invoice-DM-4107.pdf" }).click();
   ok((await box(d).getByRole("listitem").count()) === 2, `${tag} attachment: Remove takes it off`);

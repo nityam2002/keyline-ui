@@ -272,6 +272,10 @@ export const STATES = {
       ],
       show: "data-testid=cr-one >> [data-slot=carousel-content]",
     },
+    // position ticks: the hover tint and the focus ring on a tick that is not the current one
+    { name: "hover-tick", do: [["hover", `data-testid=cr-one >> ${role("button", "Go to 3 of 5")}`]] },
+    { name: "focus-tick", do: [["focus", `data-testid=cr-one >> ${role("button", "Go to 3 of 5")}`]] },
+    { name: "focus-tick-rtl", do: [["focus", `data-testid=cr-rtl >> ${role("button", "Go to 2 of 5")}`]] },
   ],
   chart: [
     {
@@ -285,11 +289,50 @@ export const STATES = {
     },
     { name: "hover-bar", do: [["hover", "data-testid=ch-bars >> .recharts-bar-rectangle >> nth=3"]] },
     { name: "table-view", do: [["click", `#chart >> ${role("radio", "Table")} >> nth=0`]] },
+    // the plot's focus ring, before a point is chosen
+    { name: "focus-plot", do: [["focus", "data-testid=ch-line >> role=application"]] },
+    // a line: the crosshair, the active dot on its surface ring, the reference line's label
+    {
+      name: "line-tooltip",
+      do: [
+        ["focus", "data-testid=ch-line >> role=application"],
+        ["press", "ArrowRight"],
+        ["press", "ArrowRight"],
+      ],
+    },
+    // stacked bars: the category band and the 2px surface gap between segments
+    {
+      name: "stack-tooltip",
+      do: [
+        ["focus", "data-testid=ch-stack >> role=application"],
+        ["press", "ArrowRight"],
+      ],
+    },
+    { name: "table-view-stack", do: [["click", `data-testid=ch-stack >> ${role("radio", "Table")}`]] },
   ],
   chat: [
     // attachment
     { name: "hover-attachment-action", do: [["hover", `#chat >> role=button[name=/^Retry customs/]`]] },
     { name: "focus-attachment-open", do: [["focus", `#chat >> role=button[name=/^Open CMR/]`]] },
+    { name: "hover-attachment-open", do: [["hover", `#chat >> role=button[name=/^Open CMR/]`]] },
+    { name: "focus-attachment-action", do: [["focus", `#chat >> ${role("button", "Remove packing-list.xlsx")}`]] },
+    {
+      name: "hover-attachment-tile-action",
+      do: [["hover", `#chat >> ${role("button", "Remove seal-rear-door.jpg")}`]],
+    },
+    // a file that is a cell of a bubble: the press fill on hover, the inset ring on its open trigger
+    {
+      name: "hover-attachment-cell",
+      do: [["hover", `data-testid=files-only >> ${role("button", "Open dock-4.jpg")}`]],
+    },
+    {
+      name: "hover-attachment-cell-action",
+      do: [["hover", `data-testid=files-only >> ${role("button", "Download dock-4.jpg")}`]],
+    },
+    {
+      name: "focus-attachment-cell",
+      do: [["focus", `data-testid=files-only >> ${role("button", "Open dock-4.jpg")}`]],
+    },
     // bubble reactions
     { name: "focus-reaction", do: [["focus", `#chat >> role=button[name=/^Thumbs up/] >> nth=0`]] },
     { name: "hover-reaction", do: [["hover", `#chat >> role=button[name=/^Thumbs up/] >> nth=0`]] },

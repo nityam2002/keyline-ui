@@ -82,7 +82,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function CarouselPage() {
@@ -115,6 +121,24 @@ export default function CarouselPage() {
       <p className="s-small">
         Built on <a href="https://www.embla-carousel.com/">Embla Carousel</a>. It follows the page&apos;s direction: in
         right-to-left text the first slide sits on the right.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Carousel</code> is the region; <code>CarouselContent</code> is the viewport that clips the slides, and its{" "}
+        <code>trackClassName</code> styles the track that moves inside it. <code>CarouselItem</code> is a slide,{" "}
+        <code>CarouselBar</code> the control row, and <code>CarouselPosition</code> the count with its ticks. These are
+        parts Keyline renders: each takes <code>render</code>, and a <code>className</code> or <code>style</code> that
+        may be a function. <code>CarouselPrevious</code> and <code>CarouselNext</code> are Buttons and take
+        Button&apos;s props.
+      </p>
+      <p className="s-small">
+        Every element carries a <code>data-slot</code> for styling from outside: <code>carousel</code>,{" "}
+        <code>carousel-content</code>, <code>carousel-track</code>, <code>carousel-item</code>,{" "}
+        <code>carousel-bar</code>, <code>carousel-position</code> (with <code>carousel-count</code>,{" "}
+        <code>carousel-ticks</code> and <code>carousel-tick</code>) and <code>carousel-chevron</code>; Previous and Next
+        are <code>button</code>. The root mirrors <code>orientation</code> as <code>data-orientation</code>; a slide in
+        view has <code>data-in-view</code>, and the current tick <code>aria-current</code>.
       </p>
     </DocPage>
   );

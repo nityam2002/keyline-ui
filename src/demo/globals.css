@@ -6,12 +6,9 @@
 @import "../registry/keyline/theme/keyline.css";
 @import "../registry/keyline/theme/keyline-shadcn.css";
 @import "../registry/keyline/ui/table.css";
-@import "../registry/keyline/ui/chart.css";
-@import "../registry/keyline/ui/carousel.css";
 @import "../registry/keyline/ui/message.css";
 @import "../registry/keyline/ui/bubble.css";
 @import "../registry/keyline/ui/message-scroller.css";
-@import "../registry/keyline/ui/attachment.css";
 @import "../registry/keyline/ui/questionnaire.css";
 @import "../registry/keyline/blocks/shipments/shipments.css";
 @import "./slow-motion.css";

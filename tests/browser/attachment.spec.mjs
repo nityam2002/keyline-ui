@@ -32,7 +32,7 @@ test("attachment: the specimen states — progress, processing, failed, long nam
       s.getBoundingClientRect().width,
       s.parentElement.getBoundingClientRect().width,
       s.parentElement.getBoundingClientRect().bottom -
-        s.parentElement.closest(".kl-att").getBoundingClientRect().bottom,
+        s.parentElement.closest("[data-slot=attachment]").getBoundingClientRect().bottom,
     ]);
   ok(
     "attachment: the segment runs 42% along the inside of the bottom keyline",
@@ -57,16 +57,17 @@ test("attachment: the specimen states — progress, processing, failed, long nam
     "attachment: failed: attention frame, the media cell flooded red with !, the reason as an alert",
     (await err.evaluate((e) => getComputedStyle(e).borderTopColor)) === (await rgb(p, "var(--kl-red)")) &&
       (await err.getAttribute("data-mark")) === "error" &&
-      (await err.locator(".kl-att-mark").innerText()) === "!" &&
+      (await err.locator("[data-slot=attachment-mark]").innerText()) === "!" &&
       (await err.locator("[role=alert]").innerText()) === "Over the 25 MB limit. Split the scan and try again.",
   );
-  const ext = await err.locator(".kl-att-title").evaluate((t) => {
-    const e = t.querySelector(".kl-att-ext").getBoundingClientRect();
+  const ext = await err.locator("[data-slot=attachment-title]").evaluate((t) => {
+    const e = t.querySelector("[data-slot=attachment-title-extension]").getBoundingClientRect();
     const r = t.getBoundingClientRect();
     return [
-      t.querySelector(".kl-att-ext").textContent,
+      t.querySelector("[data-slot=attachment-title-extension]").textContent,
       e.right <= r.right + 0.5,
-      t.querySelector(".kl-att-stem").scrollWidth > t.querySelector(".kl-att-stem").clientWidth,
+      t.querySelector("[data-slot=attachment-title-stem]").scrollWidth >
+        t.querySelector("[data-slot=attachment-title-stem]").clientWidth,
     ];
   });
   ok(
@@ -86,7 +87,7 @@ test("attachment: the specimen states — progress, processing, failed, long nam
   );
   ok(
     "attachment: a Latin file name keeps ltr inside any page",
-    (await p.getByTestId("at-idle").locator(".kl-att-title").getAttribute("dir")) === "auto",
+    (await p.getByTestId("at-idle").locator("[data-slot=attachment-title]").getAttribute("dir")) === "auto",
   );
   noErrors(ok, p);
 });
@@ -97,10 +98,15 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
 }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame } = await chat(p);
-  const n = await frame.locator(".kl-att").count();
+  const n = await frame.locator("[data-slot=attachment]").count();
   await p.getByTestId("ms-attach").click();
-  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000);
-  const file = frame.locator(".kl-att").last();
+  await until(
+    p,
+    (n) => document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]').length > n,
+    n,
+    2000,
+  );
+  const file = frame.locator("[data-slot=attachment]").last();
   const width = () => file.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10);
   const ws = [await width()];
   const bar = file.locator("[role=progressbar]");
@@ -115,7 +121,7 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
     p,
     () =>
       Number(
-        [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')]
+        [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')]
           .at(-1)
           .querySelector("[role=progressbar]")
           ?.getAttribute("aria-valuenow"),
@@ -125,7 +131,7 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
   );
   // value, length and words read in one frame (the upload keeps moving)
   const [v1, frac, words] = await file.evaluate((x) => {
-    const s = x.querySelector(".kl-att-bar > span");
+    const s = x.querySelector("[data-slot=attachment-bar] > span");
     return [
       Number(x.querySelector("[role=progressbar]").getAttribute("aria-valuenow")),
       new DOMMatrix(getComputedStyle(s).transform).a,
@@ -142,25 +148,27 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
     () =>
       document
         .querySelector(
-          '[data-testid="ms-frame"] .kl-att:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child .kl-att',
+          '[data-testid="ms-frame"] [data-slot=attachment]:last-of-type, [data-testid="ms-frame"] .kl-bubble:last-child [data-slot=attachment]',
         )
         ?.closest(".kl-msg") &&
-      [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "processing",
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
+        "processing",
     null,
     { timeout: 4000 },
   );
   ws.push(await width());
   ok("upload: processing runs the pending segment", (await file.locator(".kl-pending").count()) === 1);
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.mark === "done",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.mark === "done",
     null,
     { timeout: 3000 },
   );
   ws.push(await width());
   ok(
     "upload: when it lands the media cell floods yellow with a tick",
-    (await file.locator(".kl-att-mark").evaluate((m) => getComputedStyle(m).clipPath)) !== "circle(0px at 50% 100%)" &&
-      (await file.locator(".kl-att-mark svg").count()) === 1,
+    (await file.locator("[data-slot=attachment-mark]").evaluate((m) => getComputedStyle(m).clipPath)) !==
+      "circle(0px at 50% 100%)" && (await file.locator("[data-slot=attachment-mark] svg").count()) === 1,
   );
   await p.waitForTimeout(1100); // timing: the done tick holds 900ms, then retracts
   ok(
@@ -191,14 +199,21 @@ test("attachment: an upload in the chat — progress, processing, the done tick,
 test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it in place", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=ms-frame]" });
   const { frame } = await chat(p);
-  const n = await frame.locator(".kl-att").count();
+  const n = await frame.locator("[data-slot=attachment]").count();
   await p.getByTestId("ms-attach-fail").click();
-  await until(p, (n) => document.querySelectorAll('[data-testid="ms-frame"] .kl-att').length > n, n, 2000);
-  const ff = frame.locator(".kl-att").last();
+  await until(
+    p,
+    (n) => document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]').length > n,
+    n,
+    2000,
+  );
+  const ff = frame.locator("[data-slot=attachment]").last();
   const fw = () => ff.evaluate((x) => Math.round(x.getBoundingClientRect().width * 10) / 10);
   const fws = [await fw()];
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "error",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
+      "error",
     null,
     { timeout: 4000 },
   );
@@ -206,9 +221,9 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   await until(
     p,
     () => {
-      const s = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')]
+      const s = [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')]
         .at(-1)
-        .querySelector(".kl-att-bar > span");
+        .querySelector("[data-slot=attachment-bar] > span");
       return (
         !s.getAnimations().some((a) => a.playState === "running") &&
         Math.abs(s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width - 0.61) < 0.02
@@ -219,7 +234,7 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   );
   fws.push(await fw());
   const fb = await ff
-    .locator(".kl-att-bar > span")
+    .locator("[data-slot=attachment-bar] > span")
     .evaluate((s) => [
       s.getBoundingClientRect().width / s.parentElement.getBoundingClientRect().width,
       getComputedStyle(s).backgroundColor,
@@ -242,7 +257,7 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
   await until(
     p,
     () => {
-      const a = [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1);
+      const a = [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1);
       return a.dataset.status === "uploading" && a.dataset.mark == null;
     },
     null,
@@ -264,7 +279,9 @@ test("attachment: a failed upload stops at 61%, and a keyboard retry resumes it 
     },
   );
   await p.waitForFunction(
-    () => [...document.querySelectorAll('[data-testid="ms-frame"] .kl-att')].at(-1).dataset.status === "done",
+    () =>
+      [...document.querySelectorAll('[data-testid="ms-frame"] [data-slot=attachment]')].at(-1).dataset.status ===
+      "done",
     null,
     { timeout: 5000 },
   );

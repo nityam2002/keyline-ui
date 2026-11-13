@@ -10,10 +10,11 @@ const noErrors = (ok, p) =>
 
 /** Waits for a carousel to show `n / N` and for its slides to stop moving. */
 async function landed(p, id, text) {
-  await until(p, ([id, text]) => document.querySelector(`[data-testid=${id}] .kl-carousel-n`)?.innerText === text, [
-    id,
-    text,
-  ]);
+  await until(
+    p,
+    ([id, text]) => document.querySelector(`[data-testid=${id}] [data-slot=carousel-count]`)?.innerText === text,
+    [id, text],
+  );
   await stable(p.getByTestId(id).locator("[aria-roledescription=slide]").first(), 4).catch(() => {});
 }
 
@@ -44,7 +45,7 @@ test("carousel: one-up semantics, prev/next, arrows, ticks and the tab order", a
     "carousel: at the start Previous is out of service but stays focusable",
     (await prev.getAttribute("aria-disabled")) === "true" && (await prev.getAttribute("tabindex")) !== "-1",
   );
-  const pos = () => one.locator(".kl-carousel-n").innerText();
+  const pos = () => one.locator("[data-slot=carousel-count]").innerText();
   await next.click();
   await landed(p, "cr-one", "2 / 5");
   await until(
@@ -57,7 +58,7 @@ test("carousel: one-up semantics, prev/next, arrows, ticks and the tab order", a
   ok(
     "carousel: Next moves one slide; position reads 2 / 5 and the second tick is current",
     (await pos()) === "2 / 5" &&
-      (await one.locator(".kl-carousel-tick[aria-current]").getAttribute("aria-label")) === "Go to 2 of 5" &&
+      (await one.locator("[data-slot=carousel-tick][aria-current]").getAttribute("aria-label")) === "Go to 2 of 5" &&
       (await inert()) === "01000",
     [await pos(), await inert()],
   );
@@ -116,7 +117,7 @@ test("carousel: two-up shows two slides with a shared seam", async ({ open, ok }
   ok(
     "carousel two-up: two slides in view, four positions",
     (await tslides.evaluateAll((s) => s.filter((x) => !x.inert).length)) === 2 &&
-      (await two.locator(".kl-carousel-n").innerText()) === "1 / 4",
+      (await two.locator("[data-slot=carousel-count]").innerText()) === "1 / 4",
   );
   const seam = await tslides
     .nth(1)
@@ -137,9 +138,9 @@ test("carousel: RTL steps forward with ArrowLeft, from the left", async ({ open,
   await p.keyboard.press("ArrowLeft");
   await landed(p, "cr-rtl", "2 / 5");
   await stable(rs.nth(1), 4).catch(() => {});
-  const rpos = await rtl.locator(".kl-carousel-n").innerText();
+  const rpos = await rtl.locator("[data-slot=carousel-count]").innerText();
   const rb = await rs.nth(1).boundingBox();
-  const vb = await rtl.locator(".kl-carousel-vp").boundingBox();
+  const vb = await rtl.locator("[data-slot=carousel-content]").boundingBox();
   ok(
     "carousel RTL: ArrowLeft steps forward and the next slide comes in from the left",
     rpos === "2 / 5" && Math.abs(rb.x - vb.x) < 2,
@@ -147,7 +148,7 @@ test("carousel: RTL steps forward with ArrowLeft, from the left", async ({ open,
   );
   ok(
     "carousel RTL: the count stays 2 / 5 (isolated ltr)",
-    (await rtl.locator(".kl-carousel-n").getAttribute("dir")) === "ltr",
+    (await rtl.locator("[data-slot=carousel-count]").getAttribute("dir")) === "ltr",
   );
   noErrors(ok, p);
 });
@@ -162,7 +163,7 @@ test("carousel: reduced motion lands a step at once", async ({ open, ok }) => {
   await q.waitForTimeout(60); // timing: "at once" — the slide must be in place 60ms after the click
   const [sb, vb] = [
     await one.locator("[aria-roledescription=slide]").nth(1).boundingBox(),
-    await one.locator(".kl-carousel-vp").boundingBox(),
+    await one.locator("[data-slot=carousel-content]").boundingBox(),
   ];
   ok("carousel: reduced motion: a step lands at once", Math.abs(sb.x - vb.x) < 1, [sb.x, vb.x]);
 });

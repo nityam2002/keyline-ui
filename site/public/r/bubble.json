@@ -100,10 +100,10 @@
         "grid-template-columns": "1fr",
         "transition": "grid-template-columns var(--kl-t-unfold) var(--kl-ease-out)"
       },
-      ".kl-bubble > .kl-att": {
+      ".kl-bubble > [data-slot=\"attachment\"]": {
         "border-block-start": "var(--kl-k1) solid var(--kl-seam)"
       },
-      ".kl-bubble > .kl-att:first-child": {
+      ".kl-bubble > [data-slot=\"attachment\"]:first-child": {
         "border-block-start": "0"
       },
       ".kl-bubble-pend": {

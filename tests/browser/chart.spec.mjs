@@ -67,8 +67,10 @@ test("chart: pointer hover shows the inverse tooltip, unannounced", async ({ ope
   const { bars, rects } = await barsReady(p);
   const bx = await rects.first().boundingBox();
   await p.mouse.move(bx.x + bx.width / 2, bx.y + bx.height / 2);
-  const tip = bars.locator(".kl-chart-tip");
-  await until(p, () => /pallets/.test(document.querySelector("[data-testid=ch-bars] .kl-chart-tip")?.innerText ?? ""));
+  const tip = bars.locator("[data-slot=chart-tooltip]");
+  await until(p, () =>
+    /pallets/.test(document.querySelector("[data-testid=ch-bars] [data-slot=chart-tooltip]")?.innerText ?? ""),
+  );
   await stable(tip).catch(() => {});
   const tt = (await tip.innerText().catch(() => "")).replace(/\s+/g, " ");
   ok(
@@ -108,17 +110,17 @@ test("chart: arrows step through the days, announced, with the focus ring", asyn
 test("chart: legends keep config order", async ({ open, ok }) => {
   const p = await open({ ...VIEW, ready: "[data-testid=specimen-chart]" });
   const { bars } = await barsReady(p);
-  const leg = await bars.locator(".kl-chart-legend li").allInnerTexts();
+  const leg = await bars.locator("[data-slot=chart-legend-item]").allInnerTexts();
   ok(
     "chart: legend lists the series in config order with square keys",
     leg.join("|") === "This week|Last week" &&
       (await bars
-        .locator(".kl-chart-legend .kl-chart-key")
+        .locator("[data-slot=chart-legend] [data-slot=chart-key]")
         .first()
         .evaluate((k) => getComputedStyle(k).borderRadius)) === "0px",
     leg,
   );
-  const stackLeg = await p.getByTestId("ch-stack").locator(".kl-chart-legend li").allInnerTexts();
+  const stackLeg = await p.getByTestId("ch-stack").locator("[data-slot=chart-legend-item]").allInnerTexts();
   ok("chart: a stacked chart's legend keeps config order", stackLeg.join("|") === "On time|Late", stackLeg);
   noErrors(ok, p);
 });

@@ -95,10 +95,10 @@
   }
 
   /* files inside the bubble are cells: a seam between each */
-  .kl-bubble > .kl-att {
+  .kl-bubble > [data-slot="attachment"] {
     border-block-start: var(--kl-k1) solid var(--kl-seam);
   }
-  .kl-bubble > .kl-att:first-child {
+  .kl-bubble > [data-slot="attachment"]:first-child {
     border-block-start: 0;
   }
 

@@ -122,6 +122,7 @@ const TOC: TocGroup[] = [
       { id: "line-and-target", label: "A line against a target" },
       { id: "alert-colour", label: "The alert colour" },
       { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
     ],
   },
 ];
@@ -178,6 +179,23 @@ export default function ChartPage() {
         Size the plot with CSS: it is 16:9 by default, or set a height and <code>aspect-auto</code>. Under reduced
         motion, series don&apos;t animate. <code>ChartTable</code> and <code>ChartLegendContent</code> are exported too.
         Install <a href="https://recharts.org">Recharts</a> 3 with it; the registry item does.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>ChartContainer</code>, <code>ChartFigure</code> and <code>ChartTable</code> are parts Keyline renders:
+        each takes <code>render</code>, and a <code>className</code> or <code>style</code> that may be a function.{" "}
+        <code>ChartTooltip</code> and <code>ChartLegend</code> are Recharts&apos; own <code>Tooltip</code> and{" "}
+        <code>Legend</code>; <code>ChartTooltipContent</code> and <code>ChartLegendContent</code> are what they draw, so
+        Recharts passes their props, and they take a string <code>className</code>.
+      </p>
+      <p className="s-small">
+        Every element carries a <code>data-slot</code> for styling from outside: <code>chart</code>,{" "}
+        <code>chart-figure</code> (with <code>chart-figure-caption</code>, <code>chart-figure-title</code> and{" "}
+        <code>chart-figure-description</code>), <code>chart-table</code>, <code>chart-tooltip</code> (with{" "}
+        <code>chart-tooltip-label</code>, <code>chart-tooltip-item</code>, <code>chart-tooltip-name</code> and{" "}
+        <code>chart-tooltip-value</code>), <code>chart-legend</code> and <code>chart-legend-item</code>, and{" "}
+        <code>chart-key</code> for every square key.
       </p>
     </DocPage>
   );

@@ -86,7 +86,9 @@ export const edges = (root) =>
       for (const f of m.querySelectorAll(".kl-msg-f")) xs.push(["footer", start(f)]);
       // a 16px glyph's ink starts 3px into its box
       if (!mine)
-        for (const g of m.querySelectorAll(".kl-att[data-kl-layout=cell] .kl-att-media > svg")) {
+        for (const g of m.querySelectorAll(
+          "[data-slot=attachment][data-kl-layout=cell] [data-slot=attachment-media] > svg",
+        )) {
           const b = g.getBoundingClientRect();
           xs.push(["glyph", rtl ? b.right - 3 : b.left + 3]);
         }
@@ -96,12 +98,12 @@ export const edges = (root) =>
     return out;
   });
 
-/** A CSS colour value resolved to rgb() inside the page (inside .kl-chart so chart-scoped tokens resolve too). */
+/** A CSS colour value resolved to rgb() inside the page (inside [data-slot=chart] so chart-scoped tokens resolve too). */
 export const rgb = (p, v) =>
   p.evaluate((v) => {
     const d = document.createElement("div");
     d.style.color = v;
-    (document.querySelector(".kl-chart") ?? document.body).appendChild(d);
+    (document.querySelector("[data-slot=chart]") ?? document.body).appendChild(d);
     const c = getComputedStyle(d).color;
     d.remove();
     return c;

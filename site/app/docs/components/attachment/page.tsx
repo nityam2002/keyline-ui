@@ -89,7 +89,13 @@ const TOC: TocGroup[] = [
       { id: "usage", label: "Usage" },
     ],
   },
-  { label: "Reference", items: [{ id: "props", label: "Props" }] },
+  {
+    label: "Reference",
+    items: [
+      { id: "props", label: "Props" },
+      { id: "parts", label: "Parts" },
+    ],
+  },
 ];
 
 export default function AttachmentPage() {
@@ -121,6 +127,25 @@ export default function AttachmentPage() {
       <PropsReference label="Attachment props" props={PROPS} />
       <p className="s-small">
         Attach the dock photo in the example: it fails part way the first time, so you can see the error and Retry.
+      </p>
+
+      <h3 id="parts">Parts</h3>
+      <p>
+        <code>Attachment</code> is the frame; <code>AttachmentMedia</code>, <code>AttachmentContent</code> (with{" "}
+        <code>AttachmentTitle</code> and <code>AttachmentDescription</code>) and <code>AttachmentActions</code> are its
+        cells, <code>AttachmentAction</code> a key in the action cell, and <code>AttachmentTrigger</code> the overlay
+        that opens the file. Each is a part Keyline renders: it takes <code>render</code> (an{" "}
+        <code>AttachmentTrigger</code> rendered as a link opens the file by its URL), and a <code>className</code> or{" "}
+        <code>style</code> that may be a function of its state.
+      </p>
+      <p className="s-small">
+        Every element carries a <code>data-slot</code> for styling from outside: <code>attachment</code>,{" "}
+        <code>attachment-media</code> (with <code>attachment-mark</code>, where the outcome lands),{" "}
+        <code>attachment-content</code>, <code>attachment-title</code> (with <code>attachment-title-stem</code> and{" "}
+        <code>attachment-title-extension</code>), <code>attachment-description</code>, <code>attachment-actions</code>,{" "}
+        <code>attachment-action</code>, <code>attachment-trigger</code> and <code>attachment-bar</code>, the progress
+        along the foot. The frame mirrors its state as <code>data-status</code>, <code>data-size</code> and{" "}
+        <code>data-kl-layout</code>, and the outcome in its media cell as <code>data-mark</code>.
       </p>
     </DocPage>
   );
