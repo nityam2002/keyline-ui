@@ -36,11 +36,15 @@ export type Prop = {
   description: React.ReactNode;
 };
 
-// Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes a
-// block: name and default on one line, the type under them, the description below. The block has no inner
-// keylines (the table's divider between cells would stop short of the block), only the seam between props.
-const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0! max-[721px]:py-1";
+// Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes an
+// entry read in the order a reader asks: the name, what it does, then the type and default as a small spec set
+// against a fixed label column, so the values line up from prop to prop. The entry carries its own padding and
+// only the seam between props; a default of "—" says nothing, so its line is dropped.
+const CELL =
+  "h-auto py-3 align-top whitespace-normal max-[721px]:block max-[721px]:h-auto max-[721px]:border-0! max-[721px]:py-0";
 const CODE = "bg-transparent p-0 font-kl-mono";
+const SPEC = "max-[721px]:flex max-[721px]:items-baseline max-[721px]:gap-3 max-[721px]:pt-0.5";
+const LABEL = "hidden w-14 shrink-0 text-[12px] text-kl-ink-3 max-[721px]:inline";
 
 /** Props set in Keyline's own Table: one row per prop, the code columns in the Code voice. */
 export function PropsReference({ label, props }: { label: string; props: Prop[] }) {
@@ -62,24 +66,27 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
                 <TableRow
                   key={p.name}
                   id={`prop-${p.name}`}
-                  className="max-[721px]:grid max-[721px]:grid-cols-[minmax(0,1fr)_auto] max-[721px]:border-b max-[721px]:border-kl-seam max-[721px]:last:border-b-0"
+                  className="max-[721px]:flex max-[721px]:flex-col max-[721px]:border-b max-[721px]:border-kl-seam max-[721px]:pt-3.5 max-[721px]:pb-4 max-[721px]:last:border-b-0"
                 >
-                  <TableCell className={`${CELL} max-[721px]:row-start-1 max-[721px]:pt-3`}>
-                    <code className={`${CODE} text-[14px] font-medium whitespace-nowrap text-kl-ink`}>{p.name}</code>
+                  <TableCell className={CELL}>
+                    <code
+                      className={`${CODE} text-[14px] font-medium whitespace-nowrap text-kl-ink max-[721px]:text-[15px] max-[721px]:whitespace-normal`}
+                    >
+                      {p.name}
+                    </code>
                   </TableCell>
-                  <TableCell className={`${CELL} max-[721px]:col-span-full max-[721px]:pb-2`}>
-                    <code className={`${CODE} text-[13px]/[1.6] text-kl-ink-2`}>{unionParts(p.type)}</code>
+                  <TableCell className={`${CELL} ${SPEC} max-[721px]:order-2`}>
+                    <span className={LABEL}>Type</span>
+                    <code className={`${CODE} min-w-0 text-[13px]/[1.6] text-kl-ink-2`}>{unionParts(p.type)}</code>
                   </TableCell>
                   <TableCell
-                    className={`${CELL} max-[721px]:col-start-2 max-[721px]:row-start-1 max-[721px]:pt-3 max-[721px]:text-end`}
+                    className={`${CELL} ${SPEC} max-[721px]:order-3 ${p.default === "—" ? "max-[721px]:hidden" : ""}`}
                   >
-                    <span className="hidden text-[12px] text-kl-ink-3 max-[721px]:inline" aria-hidden="true">
-                      Default{" "}
-                    </span>
+                    <span className={LABEL}>Default</span>
                     <code className={`${CODE} text-[13px] whitespace-nowrap text-kl-ink-2`}>{p.default}</code>
                   </TableCell>
                   <TableCell
-                    className={`${CELL} min-w-60 text-[14px]/[1.55] text-kl-ink-2 max-[721px]:col-span-full max-[721px]:min-w-0 max-[721px]:pb-3 [&_code]:bg-kl-paper [&_code]:px-1 [&_code]:py-0 [&_code]:text-[12.5px] [&_code]:text-kl-ink ${p.description === "—" ? "max-[721px]:hidden" : ""}`}
+                    className={`${CELL} min-w-60 text-[14px]/[1.55] text-kl-ink-2 max-[721px]:order-1 max-[721px]:min-w-0 max-[721px]:pt-1 max-[721px]:pb-2 [&_code]:bg-kl-paper [&_code]:px-1 [&_code]:py-0 [&_code]:text-[12.5px] [&_code]:text-kl-ink ${p.description === "—" ? "max-[721px]:hidden" : ""}`}
                   >
                     {inlineCode(p.description)}
                   </TableCell>

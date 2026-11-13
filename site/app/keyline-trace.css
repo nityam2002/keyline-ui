@@ -13,12 +13,48 @@
     min-height: 0;
     grid-template-rows: auto minmax(0, 1fr) auto;
   }
-  .s-lost .s-frame > .s-title {
+  /* the head: one strip (the mark home at the start, the site controls at the end, on the heading's inset), then
+     the heading and the address that led here. It lies over the land; only the strip takes the pointer, so a trace
+     can run under the lettering. */
+  .s-kt-head {
+    grid-row: 1;
+    grid-column: 1;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 20px var(--s-title-x) 0;
     pointer-events: none;
   }
-  /* no pause control on this sheet (its land holds still), so the site controls take the corner */
-  .s-lost.s-home .s-frame > .s-site-ctl {
-    margin-inline-end: var(--s-title-x);
+  .s-kt-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: var(--kl-ctl);
+    pointer-events: auto;
+  }
+  .s-kt-bar > .s-mark {
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .s-kt-head > .s-title {
+    padding: 0;
+    margin-top: clamp(28px, 4vw, 48px);
+    font-size: var(--s-title-fs);
+  }
+  .s-kt-path {
+    margin: 14px 0 0;
+    font-family: var(--kl-font-mono);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--kl-ink-2);
+    overflow-wrap: anywhere;
+  }
+  .s-kt-path > code {
+    font: inherit;
+    font-weight: 700;
+    color: var(--kl-ink);
   }
 
   .s-kt-board {
@@ -28,7 +64,7 @@
     overflow: hidden;
     min-height: 0;
     /* faint behind the lettering, as sheet 1's land is */
-    --s-fade: linear-gradient(to bottom, rgb(0 0 0 / 0.35) 0, rgb(0 0 0 / 0.4) 90px, #000 170px);
+    --s-fade: linear-gradient(to bottom, rgb(0 0 0 / 0.3) 0, rgb(0 0 0 / 0.38) 150px, #000 250px);
   }
   .s-kt-board > svg {
     position: absolute;
@@ -215,12 +251,7 @@
 
   /* the title block, cut to one row: who, how far, the way out */
   .s-kt-block {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) auto;
-  }
-  .s-kt-block .s-tb-id {
-    justify-content: center;
-    gap: 6px;
-    padding: 14px 20px;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
   .s-kt-status {
     display: flex;
@@ -237,6 +268,11 @@
     flex-direction: row;
     align-items: center;
     padding: 14px 20px;
+  }
+  /* the two ways out share one width, so neither reads as the afterthought */
+  .s-kt-act > * {
+    flex: 1 1 0;
+    min-width: 128px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -268,17 +304,6 @@
       stroke: CanvasText;
     }
   }
-  @media (max-width: 1080px) {
-    .s-kt-block {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
-    .s-kt-block .s-tb-id {
-      display: none;
-    }
-    .s-kt-block > .s-kt-status {
-      border-inline-start: 0;
-    }
-  }
   @media (max-width: 720px) {
     .s-kt-block {
       grid-template-columns: minmax(0, 1fr);
@@ -289,8 +314,14 @@
     .s-kt-act {
       padding: 12px 16px;
     }
-    .s-kt-act > :first-child {
-      flex: 1;
+    .s-kt-act > * {
+      min-width: 0;
+    }
+    .s-kt-head {
+      padding-top: 16px;
+    }
+    .s-kt-head > .s-title {
+      margin-top: 28px;
     }
     .s-kt-word {
       font-size: 40px;

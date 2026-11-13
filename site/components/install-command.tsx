@@ -9,12 +9,7 @@ export function InstallCommand({ item }: { item: string }) {
   const source = sourceUrl(item);
   return (
     <>
-      <CodeBlock
-        code={installCommand(item)}
-        lang="bash"
-        copyLabel="install command"
-        after="Run it in the folder that holds your components.json, once the @keyline-ui registry is mapped (see Installation)."
-      />
+      <CodeBlock code={installCommand(item)} lang="bash" copyLabel="install command" />
       <p className="s-small">
         Run it where your <code>components.json</code> is. The first time, map the <code>@keyline-ui</code> registry:
         one command, in <Link href="/docs/installation">Installation</Link>.

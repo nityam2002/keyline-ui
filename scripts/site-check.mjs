@@ -1049,19 +1049,8 @@ for (const width of run("docs") ? [1440, 390] : []) {
     (await p.evaluate(() => navigator.clipboard.readText())) === "npx shadcn@latest add @keyline-ui/toolbar",
     `${tag}: copied install command`,
   );
-  ok(
-    (await p.getByTestId("copy-after").textContent()).includes("components.json"),
-    `${tag}: after copying, the next step shows`,
-  );
-  // the hint sits under the whole install block, from its start edge, on one line where there is room
-  {
-    const blk = await p.locator("#installation + .s-cb").boundingBox();
-    const hint = await p.getByTestId("copy-after").boundingBox();
-    ok(
-      Math.abs(hint.x - blk.x) < 1 && hint.y >= blk.y + blk.height && (width < 720 || hint.height < 30),
-      `${tag}: copy hint sits under the block's start edge (x ${Math.round(hint.x)} / ${Math.round(blk.x)}, h ${Math.round(hint.height)})`,
-    );
-  }
+  // the next step is the static note under the block, not a second copy that lands on top of it after Copy
+  ok((await p.getByTestId("copy-after").count()) === 0, `${tag}: no post-copy hint overlaps the install note`);
   // every example: the code panel copies the module the preview renders
   for (const [i, file, label] of [
     [1, "toolbar-panel.tsx", "panel example code"],
