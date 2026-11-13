@@ -6,18 +6,18 @@
   "parts": [
     {
       "name": "NativeSelect",
-      "description": "NativeSelect: the platform's own <select> in a Keyline field frame. For long forms on touch devices, autofill (country, region), and anywhere the OS picker is the better list; Select is the styled listbox for everything else. A Field participant (name, required, validate, Form errors). ┌─────────────────────────────┬────┐ │ Rotterdam ECT Delta │ ⌄ │ one frame: the select fills it, the caret cell is drawn └─────────────────────────────┴────┘ over its end (clicks reach the select) The open list is the operating system's: it follows the page's light or dark scheme, not the theme. Single choice only: a multiple select is a CheckboxGroup or Multiselect here.",
+      "description": "NativeSelect: the platform's own <select> in a Keyline field frame. For long forms on touch devices, autofill (country, region), and anywhere the OS picker is the better list; Select is the styled listbox for everything else. A Field participant (name, required, validate, Form errors). The open list is the operating system's: it follows the page's light or dark scheme, not the theme. Single choice only: a multiple select is a CheckboxGroup or Multiselect here.",
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { DocPage } from "@site/components/doc-page";
 import { InstallCommand } from "@site/components/install-command";
 import { PropsReference, type Prop } from "@site/components/props-reference";
+import { inlineCode } from "@site/lib/inline-code";
 import { ReferenceTable } from "@site/components/reference-table";
 import type { TocGroup } from "@site/components/page-toc";
 import { CONTENT } from "@site/content/components";
@@ -48,8 +49,20 @@ function attributeMeaning(name: string, api: ApiPage) {
   );
 }
 
+// A list of values: each its own token, wrapping between tokens and never inside one (a long data-slot list read as
+// one comma-run of mono text).
 const code = (values: string[]) =>
-  values.length ? values.map((v, i) => [i ? ", " : "", <code key={v}>{v}</code>]) : "—";
+  values.length ? (
+    <span className="flex flex-wrap gap-x-3 gap-y-1">
+      {values.map((v) => (
+        <code key={v} className="whitespace-nowrap">
+          {v}
+        </code>
+      ))}
+    </span>
+  ) : (
+    "—"
+  );
 
 export default async function ComponentPage({ params }: Params) {
   const { name } = await params;
@@ -117,7 +130,7 @@ export default async function ComponentPage({ params }: Params) {
               <h4 id={`api-${kebab(p.name)}`}>
                 <code>{p.name}</code>
               </h4>
-              {p.description ? <p className="s-small">{p.description}</p> : null}
+              {p.description ? <p className="s-small">{inlineCode(p.description)}</p> : null}
               <PropsReference label={`${p.name} props`} props={propRows(p, [])} />
             </section>
           ))}

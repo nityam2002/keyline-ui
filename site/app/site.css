@@ -902,6 +902,37 @@
     max-width: 68ch;
     margin: 14px 0 0;
   }
+  /* a list reads at the paragraphs' size and measure; its marker is a small square, as the language has no round */
+  .s-read > ul {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    max-width: 68ch;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .s-read > ul > li {
+    position: relative;
+    padding-inline-start: 22px;
+    break-inside: avoid;
+  }
+  .s-read > ul > li + li {
+    margin-top: 10px;
+  }
+  .s-read > ul > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 4px;
+    top: calc(0.825em - 2.5px);
+    width: 5px;
+    height: 5px;
+    background: var(--kl-ink-3);
+  }
+  /* a lead-in names the item; the sentence after it is the plain voice */
+  .s-read > ul > li > :is(b, strong):first-child {
+    font-weight: 700;
+    color: var(--kl-ink);
+  }
   .s-read :not(pre) > code:where(:not(.s-demo-stage *)) {
     font-family: var(--kl-font-mono);
     font-size: 0.86em;
@@ -923,9 +954,9 @@
     background: none;
     color: var(--kl-ink-2);
   }
-  /* A docs page arrives at once, with its own index: no entrance. Moving between pages is the most repeated thing a
-     reader does here, and a page that fades up reads as a page that is late (the reference docs sites swap). The
-     motion that says where you went is the component index's band, which moves on the press. */
+  /* Moving between pages: the frame, index and title block stay put; only the new page's words come into focus (a
+     180ms blur-to-sharp in DocsShell that starts legible, because it is the most repeated thing a reader does and
+     must never read as late). The component index's band still says where you went. */
   /* Landed: a jump (the page index, a shared #link) draws a cobalt keyline along the section's seam from its start
      edge, holds it while the eye arrives, and lifts it. Orientation, not decoration: it says where the page put you. */
   .s-read > :is(h2, h3) {

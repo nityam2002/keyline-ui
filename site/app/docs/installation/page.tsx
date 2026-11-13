@@ -124,32 +124,21 @@ export default function InstallationPage() {
       <h2 id="what-installs">What installing does</h2>
       <ul>
         <li>
-          <strong>Files</strong> go to <code>components/keyline/</code> (<code>ui</code>, <code>lib</code>, and{" "}
-          <code>blocks</code> for a block), under <code>src/</code> when your project uses it, following your{" "}
-          <code>components</code> alias. Import them as <code>@/components/keyline/ui/button</code>, with your own alias
-          in place of <code>@</code>: a project with <code>src/</code> and a <code>~/*</code> alias imports{" "}
-          <code>~/components/keyline/ui/button</code>. The <code>keyline/</code> folder is fixed: your <code>ui</code>{" "}
-          alias does not move it, which keeps Keyline apart from shadcn&apos;s <code>components/ui/</code>.
-          Keyline&apos;s files import each other by relative path, and <code>cn()</code> through your <code>utils</code>{" "}
-          alias.
+          <strong>Files.</strong> Components land in <code>components/keyline/</code> (inside <code>src/</code> if you
+          use one), apart from shadcn&apos;s <code>components/ui/</code>. Import them through your alias:{" "}
+          <code>@/components/keyline/ui/button</code>.
         </li>
         <li>
-          <strong>Dependencies</strong> come along: the Keyline components a component is built from, Base UI, the
-          fonts, and any library it wraps (for example <code>recharts</code> for Chart), at the version Keyline is
-          tested with. Wrapped libraries are pinned exactly; npm records an exact pin as a caret range (
-          <code>^4.14.8</code>) in your <code>package.json</code>, so edit it, or set <code>save-exact</code>, to hold
-          the version.
+          <strong>Dependencies.</strong> Base UI, the fonts and any wrapped library (<code>recharts</code> for Chart)
+          come along at the version Keyline is tested with. npm saves exact pins as <code>^</code> ranges; set{" "}
+          <code>save-exact</code> to hold them.
         </li>
         <li>
-          <strong>CSS</strong>: every component depends on <code>@keyline-ui/keyline</code>, the theme, which merges the{" "}
-          <code>--kl-*</code> tokens, the shared construction rules and the <code>kl-</code> Tailwind utilities into the
-          stylesheet named in <code>components.json</code>. Components are styled with Tailwind utilities in their own
-          source, which your Tailwind picks up from <code>components/keyline/</code>; a block may add <code>kl-</code>{" "}
-          rules of its own. Adding an item again updates its rules in place; it does not add a second copy.
+          <strong>CSS.</strong> The theme, <code>@keyline-ui/keyline</code>, adds the <code>--kl-*</code> tokens and{" "}
+          <code>kl-</code> utilities to your stylesheet once. Components bring no CSS of their own.
         </li>
         <li>
-          <strong>Fonts</strong> (Atkinson Hyperlegible Next and Mono) are npm packages imported from that stylesheet,
-          so they are bundled with your app.
+          <strong>Fonts.</strong> Atkinson Hyperlegible Next and Mono, as npm packages bundled with your app.
         </li>
       </ul>
 

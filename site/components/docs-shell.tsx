@@ -24,6 +24,40 @@ export function useDocToc(toc: TocGroup[]) {
   React.useLayoutEffect(() => set(toc), [set, toc]);
 }
 
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+
+/**
+ * A new page comes into focus: the frame, index and title block stay put, and only the blocks on screen go from a
+ * faint blur to sharp in 180ms. Nothing travels, so it suits reduced motion as it is. WAAPI keeps it off the main
+ * thread while the page renders; a quick second navigation cancels the first. Not on the first load (the page is
+ * simply there) and not on a #jump (same path).
+ */
+function usePageEnter(pathname: string) {
+  const first = React.useRef(true);
+  React.useLayoutEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    const main = document.getElementById("main");
+    if (!main) return;
+    // starts already legible and comes into focus: nothing waits on it, and nothing moves
+    const frames: Keyframe[] = [
+      { opacity: 0.4, filter: "blur(3px)" },
+      { opacity: 1, filter: "blur(0)" },
+    ];
+    const bottom = window.innerHeight;
+    const anims = [...main.children]
+      .filter((el) => el.tagName !== "FOOTER" && el.tagName !== "SCRIPT")
+      .filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.height > 0 && r.top < bottom;
+      })
+      .map((el) => el.animate(frames, { duration: 180, easing: EASE_OUT }));
+    return () => anims.forEach((a) => a.cancel());
+  }, [pathname]);
+}
+
 /** Docs page: Keyline's AppShell. The component index is the sidebar (a sheet on narrow screens), the page's own index the aside. */
 export function DocsShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -45,6 +79,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  usePageEnter(pathname);
   return (
     <SetToc.Provider value={setToc}>
       <div ref={ref} className="s-docs">

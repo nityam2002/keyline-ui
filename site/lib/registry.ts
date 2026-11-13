@@ -1,7 +1,8 @@
 import manifest from "../public/r/registry.json";
 import pkg from "../../package.json";
+import { REPO_URL } from "./repo";
 
-type Item = { name: string };
+type Item = { name: string; files?: { path: string }[] };
 const items: Item[] = manifest.items;
 
 /**
@@ -32,4 +33,10 @@ export function registryAddCommand(origin: string = SITE_ORIGIN ?? ORIGIN_SLOT) 
 export function installCommand(...names: string[]) {
   for (const n of names) if (!items.some((i) => i.name === n)) throw new Error(`Keyline site: no registry item "${n}"`);
   return `npx shadcn@latest add ${names.map((n) => `@keyline-ui/${n}`).join(" ")}`;
+}
+
+/** The item's main file in the repository (the file the CLI copies), or undefined for an item with no file. */
+export function sourceUrl(name: string) {
+  const path = items.find((i) => i.name === name)?.files?.[0]?.path;
+  return path ? `${REPO_URL}/blob/main/${path}` : undefined;
 }

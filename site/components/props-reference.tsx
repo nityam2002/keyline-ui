@@ -11,13 +11,18 @@ import {
   TableHead,
   TableCell,
 } from "@/components/keyline/ui/table";
+import { inlineCode } from "@site/lib/inline-code";
 
-/** A union wraps between members, never inside one: `"horizontal" |` then `"vertical"`. */
+/** A union wraps between members, never inside one: `"horizontal" |` then `"vertical"`. The bars are quieter than
+ *  the members, so the eye reads the values, not the punctuation. */
 function unionParts(type: string) {
   const parts = type.split(" | ");
   return parts.map((t, i) => (
     <React.Fragment key={i}>
-      <span className="whitespace-nowrap">{i < parts.length - 1 ? `${t} |` : t}</span>
+      <span className="whitespace-nowrap">
+        {t}
+        {i < parts.length - 1 ? <span className="text-kl-ink-3"> |</span> : null}
+      </span>
       {i < parts.length - 1 ? " " : null}
     </React.Fragment>
   ));
@@ -32,8 +37,10 @@ export type Prop = {
 };
 
 // Every cell: top-aligned and wrapping (a description runs to several lines). On a phone each prop becomes a
-// block: name and default on one line, the type under them, the description below.
-const CELL = "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:py-1";
+// block: name and default on one line, the type under them, the description below. The block has no inner
+// keylines (the table's divider between cells would stop short of the block), only the seam between props.
+const CELL =
+  "h-auto py-3 align-top whitespace-normal max-[721px]:border-0 max-[721px]:[[data-slot=table-cell]+&]:border-s-0 max-[721px]:py-1";
 const CODE = "bg-transparent p-0 font-kl-mono";
 
 /** Props set in Keyline's own Table: one row per prop, the code columns in the Code voice. */
@@ -61,8 +68,8 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
                   <TableCell className={`${CELL} max-[721px]:row-start-1 max-[721px]:pt-3`}>
                     <code className={`${CODE} text-[14px] font-medium whitespace-nowrap text-kl-ink`}>{p.name}</code>
                   </TableCell>
-                  <TableCell className={`${CELL} max-[721px]:col-span-full`}>
-                    <code className={`${CODE} text-[13px] text-kl-ink-2`}>{unionParts(p.type)}</code>
+                  <TableCell className={`${CELL} max-[721px]:col-span-full max-[721px]:pb-2`}>
+                    <code className={`${CODE} text-[13px]/[1.6] text-kl-ink-2`}>{unionParts(p.type)}</code>
                   </TableCell>
                   <TableCell
                     className={`${CELL} max-[721px]:col-start-2 max-[721px]:row-start-1 max-[721px]:pt-3 max-[721px]:text-end`}
@@ -73,9 +80,9 @@ export function PropsReference({ label, props }: { label: string; props: Prop[] 
                     <code className={`${CODE} text-[13px] whitespace-nowrap text-kl-ink-2`}>{p.default}</code>
                   </TableCell>
                   <TableCell
-                    className={`${CELL} min-w-60 text-[14px]/[1.55] text-kl-ink-2 max-[721px]:col-span-full max-[721px]:min-w-0 max-[721px]:pb-3 [&_code]:bg-kl-paper [&_code]:px-1 [&_code]:py-0 [&_code]:text-[12.5px] [&_code]:text-kl-ink`}
+                    className={`${CELL} min-w-60 text-[14px]/[1.55] text-kl-ink-2 max-[721px]:col-span-full max-[721px]:min-w-0 max-[721px]:pb-3 [&_code]:bg-kl-paper [&_code]:px-1 [&_code]:py-0 [&_code]:text-[12.5px] [&_code]:text-kl-ink ${p.description === "—" ? "max-[721px]:hidden" : ""}`}
                   >
-                    {p.description}
+                    {inlineCode(p.description)}
                   </TableCell>
                 </TableRow>
               ))}

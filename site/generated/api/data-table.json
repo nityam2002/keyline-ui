@@ -17,7 +17,7 @@
         },
         {
           "name": "caption",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The table's name, read before its rows (a TableCaption)."
@@ -100,14 +100,14 @@
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | ((count: number) => ReactNode)",
+          "type": "ReactNode | ((count: number) => ReactNode)",
           "default": "",
           "required": false,
           "description": "the actions; a function of the selected count (to disable them at 0)"
         },
         {
           "name": "scope",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | ((count: number) => ReactNode)",
+          "type": "ReactNode | ((count: number) => ReactNode)",
           "default": "",
           "required": false,
           "description": "what the selection covers; a function of the selected count"
@@ -127,7 +127,7 @@
       "props": [
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "fills the cell between the range and the buttons (a ToastDock)"

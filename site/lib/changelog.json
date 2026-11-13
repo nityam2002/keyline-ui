@@ -29,6 +29,12 @@
         },
         {
           "item": "app-shell",
+          "version": "1.1.0",
+          "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press.",
+          "breaking": false
+        },
+        {
+          "item": "app-shell",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
           "breaking": false
@@ -743,6 +749,12 @@
         },
         {
           "item": "questionnaire",
+          "version": "1.0.1",
+          "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question.",
+          "breaking": false
+        },
+        {
+          "item": "questionnaire",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
           "breaking": false
@@ -1178,6 +1190,13 @@
       }
     ],
     "app-shell": [
+      {
+        "item": "app-shell",
+        "version": "1.1.0",
+        "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
       {
         "item": "app-shell",
         "version": "1.0.0",
@@ -2249,6 +2268,13 @@
       }
     ],
     "questionnaire": [
+      {
+        "item": "questionnaire",
+        "version": "1.0.1",
+        "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question.",
+        "breaking": false,
+        "date": "2026-11-13"
+      },
       {
         "item": "questionnaire",
         "version": "1.0.0",

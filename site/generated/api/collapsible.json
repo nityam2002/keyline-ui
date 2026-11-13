@@ -19,7 +19,7 @@
     },
     {
       "name": "CollapsibleRoot",
-      "description": "One disclosure, unframed, for a form or a panel body (\"Advanced options\", \"Show 12 more\"). ⊟ Advanced options the trigger: a square caret box and the label │ panel content the box's keyline runs down the panel's start edge, │ so the panel reads as the trigger's continuation The panel UNFOLDS from the trigger (160ms, folds in 120ms; instant under reduced motion). The spine is the same idea as the table detail's merged index cell: continuity drawn by a keyline, not a connector. Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.",
+      "description": "One disclosure, unframed, for a form or a panel body (\"Advanced options\", \"Show 12 more\"). ⊟ Advanced options the trigger: a square caret box and the label The panel UNFOLDS from the trigger (160ms, folds in 120ms; instant under reduced motion). The spine is the same idea as the table detail's merged index cell: continuity drawn by a keyline, not a connector. Open state, keyboard, `aria-expanded` and find-in-page (`hiddenUntilFound`) are Base UI Collapsible's.",
       "props": []
     },
     {
@@ -28,7 +28,7 @@
       "props": [
         {
           "name": "meta",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Trailing text in the Code voice: a count of what is hidden (\"12\"), a short status."

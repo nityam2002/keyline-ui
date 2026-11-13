@@ -202,10 +202,15 @@
     color: var(--kl-ink-2);
     text-wrap: pretty;
   }
+  /* the two ways on share the plate's width: on a narrow plate they wrap into two full rows of one width, not two
+     ragged lengths (a focused primary above a longer secondary read as cut short) */
   .s-kt-acts {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+  }
+  .s-kt-acts > * {
+    flex: 1 1 auto;
   }
 
   /* the title block, cut to one row: who, how far, the way out */

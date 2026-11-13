@@ -17,8 +17,8 @@
       "hash": "sha256-c9126388095f776cf73d2d2d3b624d86ccfeac4a69552928a08d5b669ea0ba6a"
     },
     "app-shell": {
-      "version": "1.0.0",
-      "hash": "sha256-f58e0b1e6d9de3f7308023663bc629cc620d2084114db0c3817f7e9afe3d02f1"
+      "version": "1.1.0",
+      "hash": "sha256-acda162948b451a3412408a05acb04bed7d08936287e439864fe8a32ceea9620"
     },
     "app-shell-office": {
       "version": "1.0.0",
@@ -493,8 +493,8 @@
       "hash": "sha256-5d646760f4996de0f43e49e3666812c0e61ce41221b741ebb9d714571f798075"
     },
     "questionnaire": {
-      "version": "1.0.0",
-      "hash": "sha256-8eb369ebb9ed71cf0a0437d3af551e11682d133cdf9f422cd25715eece577715"
+      "version": "1.0.1",
+      "hash": "sha256-0c44703d0ab362d896e21a4de9e03d0eb8193183a5d9d02142ce468292b7f1bd"
     },
     "questionnaire-party": {
       "version": "1.0.0",

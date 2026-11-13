@@ -6,18 +6,18 @@
   "parts": [
     {
       "name": "AppShell",
-      "description": "The page around a product's screens: a header frame, the sidebar, the page, and an optional aside, built from the parts above (AppShellRoot, AppShellHeader with AppShellToggle, AppShellCrumbs and AppShellActions, AppShellNav, AppShellMain, AppShellAside). ┌──┬──────────────────────────────────────────────────┬───────┐ │▥ │ Shipments / Rotterdam / SHP-24018 │ acts │ header frame: toggle cell · crumbs · actions └──┴──────────────────────────────────────────────────┴───────┘ ┌────────┐ ┌──────────────────────────────┐ ┌──────────────┐ │ Nav │ │ main │ │ aside │ one gutter apart (C1) └────────┘ └──────────────────────────────┘ └──────────────┘ Three layouts, by the shell's own width: - wide (≥ asideInlineAt): sidebar, page and aside side by side. The toggle cell shows and hides the sidebar column (aria-expanded, aria-controls). The sidebar and aside are sticky, one gutter from the top. - medium (≥ narrowAt): the sidebar stays; the aside opens as an end Sheet, so it never crushes the page. - narrow: the sidebar is a start Sheet opened by the same cell and closed by choosing an item; the aside is an end Sheet bound to `asideOpen` (focus moves in, Escape and the scrim close it, focus returns). - The width is the shell's own, so a shell inside a pane or a preview frame decides for itself. CSS lays the columns out by it (a container query), so the server's HTML is already right for the width it lands in; the measurement (ResizeObserver) then decides only which parts become sheets, and moves nothing. - Motion: the sheets unfold from their edge; the wide column toggles without animation (a layout change that moves the page should be immediate).",
+      "description": "The page around a product's screens: a header frame, the sidebar, the page, and an optional aside, built from the parts above (AppShellRoot, AppShellHeader with AppShellToggle, AppShellCrumbs and AppShellActions, AppShellNav, AppShellMain, AppShellAside). Three layouts, by the shell's own width: - wide (≥ asideInlineAt): sidebar, page and aside side by side. The toggle cell shows and hides the sidebar column (aria-expanded, aria-controls). The sidebar and aside are sticky, one gutter from the top. - medium (≥ narrowAt): the sidebar stays; the aside opens as an end Sheet, so it never crushes the page. - narrow: the sidebar is a start Sheet opened by the same cell and closed by choosing an item; the aside is an end Sheet bound to `asideOpen` (focus moves in, Escape and the scrim close it, focus returns). - The width is the shell's own, so a shell inside a pane or a preview frame decides for itself. CSS lays the columns out by it (a container query), so the server's HTML is already right for the width it lands in; the measurement (ResizeObserver) then decides only which parts become sheets, and moves nothing. - Motion: the sheets unfold from their edge; the wide column toggles without animation (a layout change that moves the page should be immediate).",
       "props": [
         {
           "name": "actions",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Cells at the header's end. For several commands pass a `<Toolbar layout=\"cell\" overflow=\"menu\">`: it is one Tab stop, and when the header narrows the crumbs give up room first, then the toolbar's last items move into More."
         },
         {
           "name": "aside",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Contextual panel at the end (an Inspector). Shown while `asideOpen`."
@@ -59,7 +59,7 @@
         },
         {
           "name": "children",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -87,7 +87,7 @@
         },
         {
           "name": "header",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Header content after the toggle cell: usually <Breadcrumb layout=\"cell\" …/>."
@@ -108,7 +108,7 @@
         },
         {
           "name": "nav",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": "The sidebar: usually <Nav layout=\"cell\" …/>."

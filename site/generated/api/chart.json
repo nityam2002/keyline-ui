@@ -10,7 +10,7 @@
       "props": [
         {
           "name": "children",
-          "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+          "type": "ReactElement",
           "default": "",
           "required": true,
           "description": "A recharts chart (BarChart, LineChart, AreaChart …)."
@@ -44,7 +44,7 @@
       "props": [
         {
           "name": "children",
-          "type": "ReactNode & ReactElement<ChartContainerProps, string | JSXElementConstructor<any>>",
+          "type": "ReactNode & ReactElement<ChartContainerProps>",
           "default": "",
           "required": true,
           "description": "The plot (a ChartContainer); it is named by the title."
@@ -72,7 +72,7 @@
         },
         {
           "name": "description",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -86,7 +86,7 @@
         },
         {
           "name": "labelHeader",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -107,7 +107,7 @@
         },
         {
           "name": "title",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": true,
           "description": ""
@@ -140,7 +140,7 @@
       "props": [
         {
           "name": "caption",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -168,7 +168,7 @@
         },
         {
           "name": "labelHeader",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Header of the category column."
@@ -216,7 +216,7 @@
         },
         {
           "name": "label",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""

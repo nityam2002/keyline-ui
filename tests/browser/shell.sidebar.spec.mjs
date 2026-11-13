@@ -224,6 +224,17 @@ test("shell sidebar: the narrow sheet (390px)", async ({ open, ok }) => {
     null,
   );
   await sheet.getByRole("link", { name: /^Invoices/ }).click();
+  // the choice lands before the sheet folds: closing on the press folded it over a band still travelling
+  ok(
+    "sheet: it stays open while the choice lands",
+    await sheet.evaluate(
+      (s) =>
+        new Promise((done) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => done(!s.hasAttribute("data-ending-style")))),
+        ),
+    ),
+    null,
+  );
   await p
     .getByRole("dialog", { name: "Navigation" })
     .waitFor({ state: "detached", timeout: 3000 })
@@ -232,6 +243,26 @@ test("shell sidebar: the narrow sheet (390px)", async ({ open, ok }) => {
     "sheet: choosing an item closes the sheet",
     (await p.getByRole("dialog", { name: "Navigation" }).count()) === 0,
     null,
+  );
+  // reopened on a short screen, the sheet opens on the place just chosen, not at the top of the list
+  await p.setViewportSize({ width: 390, height: 320 });
+  await p.locator("[data-slot=app-shell-toggle]").click();
+  await sheet.waitFor({ state: "visible" });
+  await idle(p);
+  ok(
+    "sheet: it opens on your place (the current item takes focus, inside the sheet's view)",
+    await sheet.evaluate((s) => {
+      const a = document.activeElement;
+      const r = a?.getBoundingClientRect();
+      const b = s.getBoundingClientRect();
+      return (
+        /^Invoices/.test(a?.textContent ?? "") &&
+        !!a?.matches("[aria-current]") &&
+        r.top >= b.top &&
+        r.bottom <= b.bottom
+      );
+    }),
+    await p.evaluate(() => document.activeElement?.outerHTML.slice(0, 120)),
   );
   ok("no page errors (sheet)", p.errs.length === 0, p.errs);
 });

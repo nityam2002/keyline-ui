@@ -48,10 +48,15 @@
     ]
   },
   "app-shell": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "updated": "2026-11-13",
-    "hash": "sha256-f58e0b1e6d9de3f7308023663bc629cc620d2084114db0c3817f7e9afe3d02f1",
+    "hash": "sha256-acda162948b451a3412408a05acb04bed7d08936287e439864fe8a32ceea9620",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-11-13",
+        "note": "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",
@@ -1476,10 +1481,15 @@
     ]
   },
   "questionnaire": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "updated": "2026-11-13",
-    "hash": "sha256-8eb369ebb9ed71cf0a0437d3af551e11682d133cdf9f422cd25715eece577715",
+    "hash": "sha256-0c44703d0ab362d896e21a4de9e03d0eb8193183a5d9d02142ce468292b7f1bd",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-13",
+        "note": "The seam above a step runs unbroken in Safari: it no longer stops either side of the question."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",

@@ -13,12 +13,20 @@ export default {
   registryDependencies: [
     "@keyline-ui/keyline",
     "utils",
+    "@keyline-ui/keyline-motion",
     "@keyline-ui/keyline-render",
     "@keyline-ui/keyline-scope",
     "@keyline-ui/nav",
     "@keyline-ui/sheet",
   ],
-  version: "1.0.0",
+  version: "1.1.0",
   updated: "2026-11-13",
-  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+  changelog: [
+    {
+      version: "1.1.0",
+      date: "2026-11-13",
+      note: "The narrow nav sheet opens on your place: the current item is centred and takes focus. Choosing a place lets the band land on it before the sheet folds, instead of folding on the press.",
+    },
+    { version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." },
+  ],
 } satisfies KeylineItem;

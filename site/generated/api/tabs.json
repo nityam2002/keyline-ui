@@ -33,7 +33,7 @@
       "props": [
         {
           "name": "count",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "The count voice under the label (e.g. records in a view)."

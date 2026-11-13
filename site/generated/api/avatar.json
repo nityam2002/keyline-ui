@@ -24,7 +24,7 @@
         },
         {
           "name": "fallback",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Overrides the initials, e.g. a two-letter org code or a 16px glyph."

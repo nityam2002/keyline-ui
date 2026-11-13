@@ -21,7 +21,14 @@ export default {
     "@keyline-ui/field",
     "@keyline-ui/progress",
   ],
-  version: "1.0.0",
+  version: "1.0.1",
   updated: "2026-11-13",
-  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+  changelog: [
+    {
+      version: "1.0.1",
+      date: "2026-11-13",
+      note: "The seam above a step runs unbroken in Safari: it no longer stops either side of the question.",
+    },
+    { version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." },
+  ],
 } satisfies KeylineItem;

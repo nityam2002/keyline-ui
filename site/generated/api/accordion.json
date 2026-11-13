@@ -44,7 +44,7 @@
     },
     {
       "name": "AccordionRoot",
-      "description": "Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge, one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the header row never moves). Opening does not also flood: the caret turns, the panel arrives. ┌─────────────────────────────────────────┬────┐ │ Customs documents 3 files │ ⌃ │ title (+ description) and meta · caret cell ├─────────────────────────────────────────┴────┤ │ panel content │ ├─────────────────────────────────────────┬────┤ │ Billing │ ⌄ │ └─────────────────────────────────────────┴────┘ The caret cell is the only divided column, so it runs straight down the frame whether or not a row has meta (a column, once started, runs the full height). One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.",
+      "description": "Stacked sections in one frame. Each item is a header row and a panel; rows share keylines (one edge, one owner), and an open panel UNFOLDS from its header's bottom keyline (160ms, folds back in 120ms; the header row never moves). Opening does not also flood: the caret turns, the panel arrives. The caret cell is the only divided column, so it runs straight down the frame whether or not a row has meta (a column, once started, runs the full height). One or many open (`multiple`), controlled or not, keyboard (Tab between headers, as the current APG pattern has it; Enter and Space toggle), heading semantics and find-in-page (`hiddenUntilFound`) are Base UI Accordion's.",
       "props": [
         {
           "name": "layout",
@@ -61,7 +61,7 @@
       "props": [
         {
           "name": "description",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": ""
@@ -75,7 +75,7 @@
         },
         {
           "name": "meta",
-          "type": "string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode>",
+          "type": "ReactNode",
           "default": "",
           "required": false,
           "description": "Trailing text before the caret cell: a count, a status, a short code. It never wraps; the title does."
