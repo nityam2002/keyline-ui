@@ -34,7 +34,7 @@ const PROPS: Prop[] = [
     name: "attachWeight",
     type: "1 | 2 | 3",
     default: "2",
-    description: "The trigger&apos;s edge weight, so the shared edge matches: 1 for a cell, 2 for a control.",
+    description: "The trigger's edge weight, so the shared edge matches: 1 for a cell, 2 for a control.",
   },
   {
     name: "detached",

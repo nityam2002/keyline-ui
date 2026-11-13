@@ -77,7 +77,7 @@ const PROPS: Prop[] = [
     name: "MessageScrollerSeparator",
     type: "div",
     default: "\u2014",
-    description: "A day or &ldquo;New messages&rdquo; divider: a seam with its words in the code voice.",
+    description: "A day or “New messages” divider: a seam with its words in the code voice.",
   },
   {
     name: "direction",

@@ -30,7 +30,7 @@ const PROPS: Prop[] = [
     name: "side",
     type: '"top" | "bottom" | "left" | "right" | "inline-start" | "inline-end"',
     default: '"top"',
-    description: "Where it sits. It flips when there&apos;s no room.",
+    description: "Where it sits. It flips when there's no room.",
   },
   {
     name: "delay",

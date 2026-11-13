@@ -5,7 +5,16 @@ import { PropsReference, type Prop } from "@site/components/props-reference";
 import { ReferenceTable } from "@site/components/reference-table";
 import type { TocGroup } from "@site/components/page-toc";
 import { CONTENT } from "@site/content/components";
-import { apiPage, type ApiPage, type ApiPart } from "@site/lib/api";
+import { apiPage, type ApiPage } from "@site/lib/api";
+import {
+  attributeMeaning as meaningOf,
+  cssVariableMeaning,
+  kebab,
+  otherParts,
+  pageRows,
+  PARTS_API_LEDE,
+  propRows,
+} from "@site/lib/component-page";
 import { componentMetadata } from "@site/lib/seo";
 
 // One page per component, generated from its item: the metadata (title, when to use it), the install command, and
@@ -28,38 +37,15 @@ export async function generateMetadata({ params }: Params) {
   return componentMetadata(content.seoTitle ?? content.title ?? api.title, content.seo, name);
 }
 
-const pascal = (name: string) => name.replace(/(^|-)(\w)/g, (_, _d: string, c: string) => c.toUpperCase());
-const kebab = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-
-/** The part the page is about: the one named after the item, else the one with the most props. */
-function mainPart(api: ApiPage): ApiPart | undefined {
-  return (
-    api.parts.find((p) => p.name === pascal(api.name)) ??
-    api.parts.toSorted((a, b) => b.props.length - a.props.length)[0]
-  );
-}
-
-/** The generated rows (name, type, default from the source), described by the page's prose or else the JSDoc. */
-function propRows(part: ApiPart, prose: Prop[]): Prop[] {
-  const said = new Map(prose.map((p) => [p.name, p]));
-  return part.props.map((p) => ({
-    name: p.name,
-    type: p.type,
-    default: p.default || (p.required ? "required" : "—"),
-    description: said.get(p.name)?.description ?? (p.description || "—"),
-  }));
-}
-
 function attributeMeaning(name: string, api: ApiPage) {
-  if (name === "data-slot") return "Names the part that rendered the element.";
-  const prop = name.replace(/^data-(kl-)?/, "");
-  if (api.parts.some((p) => p.props.some((x) => x.name === prop)))
-    return (
-      <>
-        Mirrors the <code>{prop}</code> prop.
-      </>
-    );
-  return "Set by the component; style or test against it.";
+  const m = meaningOf(name, api);
+  return "mirrors" in m ? (
+    <>
+      Mirrors the <code>{m.mirrors}</code> prop.
+    </>
+  ) : (
+    m.text
+  );
 }
 
 const code = (values: string[]) =>
@@ -71,10 +57,8 @@ export default async function ComponentPage({ params }: Params) {
   if (!content) notFound();
   const api = apiPage(name);
   const title = content.title ?? api.title;
-  const main = mainPart(api);
-  const generated = new Set(main?.props.map((p) => p.name));
-  const rows = [...(main ? propRows(main, content.props) : []), ...content.props.filter((p) => !generated.has(p.name))];
-  const others = api.parts.filter((p) => p !== main && p.props.length);
+  const rows: Prop[] = pageRows(api, content.props);
+  const others = otherParts(api);
 
   const kept = content.toc.filter((g) => g.label !== "Setup" && g.label !== "Reference");
   const extraReference = content.toc.find((g) => g.label === "Reference")?.items.filter((i) => i.id !== "props") ?? [];
@@ -127,7 +111,7 @@ export default async function ComponentPage({ params }: Params) {
       {others.length ? (
         <>
           <h3 id="parts-api">Parts API</h3>
-          <p>The props each part declares beyond the element or Base UI part it renders.</p>
+          <p>{PARTS_API_LEDE}</p>
           {others.map((p) => (
             <section key={p.name} aria-labelledby={`api-${kebab(p.name)}`}>
               <h4 id={`api-${kebab(p.name)}`}>
@@ -164,9 +148,7 @@ export default async function ComponentPage({ params }: Params) {
             rows={api.cssVariables.map((v) => ({
               name: <code>{v.name}</code>,
               value: code(v.values),
-              description: v.name.startsWith(`--kl-${name}`)
-                ? "The component's own; set it on the part to change it."
-                : "A theme token the component sets locally.",
+              description: cssVariableMeaning(v.name, name),
             }))}
           />
         </>

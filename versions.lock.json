@@ -336,6 +336,10 @@
       "version": "1.0.0",
       "hash": "sha256-bf2582b80c36741d310584e6cc560ac4d0766fb42800c2cc3cff52afffc6e809"
     },
+    "keyline-skill": {
+      "version": "1.0.0",
+      "hash": "sha256-33aa7f060f9aef21a7a16bd1691b8de54fbd057cf57edf665228073df874ffe9"
+    },
     "marker": {
       "version": "1.0.0",
       "hash": "sha256-2a5ebbd222ab36eea84e49b6c0d54685d7b0f69dff3e49f065922717c9ed2361"

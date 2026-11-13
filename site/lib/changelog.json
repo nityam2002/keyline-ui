@@ -508,6 +508,12 @@
           "breaking": false
         },
         {
+          "item": "keyline-skill",
+          "version": "1.0.0",
+          "note": "First release: the 1.0.0 baseline.",
+          "breaking": false
+        },
+        {
           "item": "marker",
           "version": "1.0.0",
           "note": "First release: the 1.0.0 baseline.",
@@ -1885,6 +1891,15 @@
     "keyline-shadcn": [
       {
         "item": "keyline-shadcn",
+        "version": "1.0.0",
+        "note": "First release: the 1.0.0 baseline.",
+        "breaking": false,
+        "date": "2026-11-13"
+      }
+    ],
+    "keyline-skill": [
+      {
+        "item": "keyline-skill",
         "version": "1.0.0",
         "note": "First release: the 1.0.0 baseline.",
         "breaking": false,

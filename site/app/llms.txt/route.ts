@@ -52,6 +52,10 @@ function body() {
       "Every component page below shows its install command, live examples with their source, and a props reference. " +
       `Each registry item is also JSON at \`${url("/r/<name>.json")}\`.`,
     "",
+    `Every page below is also Markdown: add \`.md\` to its URL, or request it with \`Accept: text/markdown\`. ` +
+      `[llms-full.txt](${url("/llms-full.txt")}) holds every page in one file. Coding agents can install the Keyline ` +
+      `skill (adding, composing and upgrading items): \`${installCommand("keyline-skill")}\`.`,
+    "",
     "## Guides",
     "",
     ...GUIDES.map((g) => line(g.name, g.href, g.description)),

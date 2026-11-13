@@ -45,6 +45,10 @@ export function pageMetadata({
   if (description.length > 160)
     throw new Error(`${path}: meta description is ${description.length} characters (max 160)`);
   const full = absolute ? title : `${title} · ${SITE_NAME}`;
+  // a docs page has its own card (app/og), drawn at build with its name and install command
+  const image = path.startsWith("/docs/")
+    ? { url: `/og${path}`, width: 1200, height: 630, alt: `${title}. ${description}` }
+    : SHARE_IMAGE;
   return {
     title: absolute ? { absolute: title } : title,
     description,
@@ -56,9 +60,9 @@ export function pageMetadata({
       url: path,
       title: full,
       description,
-      images: [SHARE_IMAGE],
+      images: [image],
     },
-    twitter: { card: "summary_large_image", title: full, description, images: [SHARE_IMAGE] },
+    twitter: { card: "summary_large_image", title: full, description, images: [image] },
   };
 }
 
@@ -83,4 +87,27 @@ export function websiteJsonLd() {
     url: `${SITE_URL ?? ""}/`,
     description: SITE_DESCRIPTION,
   };
+}
+
+/** Structured data for a component or block page (drift-ui): the source a reader installs is the registry item's
+ *  JSON, TypeScript for React. Only what the page shows is claimed. DocPage renders it. */
+export function sourceCodeJsonLd(page: { name: string; item: string; href: string; description: string }) {
+  const origin = SITE_URL ?? "";
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: `${page.name} · ${SITE_NAME}`,
+    description: page.description,
+    url: `${origin}${page.href}`,
+    codeRepository: `${origin}/r/${page.item}.json`,
+    programmingLanguage: ["TypeScript", "React"],
+    runtimePlatform: "React 19",
+    license: "https://opensource.org/licenses/MIT",
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: `${origin}/` },
+  };
+}
+
+/** JSON for a script of type application/ld+json, with `<` escaped so the text can never close the script (reui). */
+export function stringifyJsonLd(data: object): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }

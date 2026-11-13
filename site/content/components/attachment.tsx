@@ -67,7 +67,7 @@ const PROPS: Prop[] = [
     name: "AttachmentGlyph",
     type: '{ name: "file" | "image" | "close" | "retry" | "download" }',
     default: "\u2014",
-    description: "Keyline&apos;s glyphs for files and their actions.",
+    description: "Keyline's glyphs for files and their actions.",
   },
 ];
 

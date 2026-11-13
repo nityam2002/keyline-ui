@@ -1961,6 +1961,15 @@
       "--sidebar-ring"
     ]
   },
+  "keyline-skill": {
+    "version": "1.0.0",
+    "exports": [],
+    "slots": [],
+    "dataAttributes": [],
+    "cssProperties": [
+      "--overwrite"
+    ]
+  },
   "keyline": {
     "version": "1.0.0",
     "exports": [

@@ -11,6 +11,13 @@ export function locate(rel: string): string {
   throw new Error(`Keyline site: cannot find ${rel} from ${process.cwd()}`);
 }
 
+/** A file of the site (site/<rel>), e.g. a page's source. */
+export function siteFile(rel: string): string {
+  const p = path.join(/*turbopackIgnore: true*/ locate("app"), "..", rel);
+  if (!fs.existsSync(/*turbopackIgnore: true*/ p)) throw new Error(`Keyline site: no file ${rel}`);
+  return p;
+}
+
 /**
  * The installable source of an example: the example is a registry:block (src/registry/keyline/examples), and the
  * code shown is `files[0].content` of its built item, site/public/r/<name>.json: what `shadcn add` writes is what
