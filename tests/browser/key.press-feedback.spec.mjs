@@ -85,9 +85,9 @@ test("key: specimen families answer the press before release", async ({ open, ok
 });
 
 test("key: a shipment ID answers the press", async ({ open, ok }) => {
-  const p = await open({ ...VP, route: "app", ready: ".kl-sx-open" });
+  const p = await open({ ...VP, route: "app", ready: "[data-testid=shipment-open]" });
   // Shipments: the ID that opens the inspector
-  const id = p.locator(".kl-sx-open").nth(1);
+  const id = p.locator("[data-testid=shipment-open]").nth(1);
   const [ix, iy] = await centre(id);
   await p.mouse.move(ix, iy);
   await p.waitForTimeout(60); // timing: hover settles before the press is compared against it

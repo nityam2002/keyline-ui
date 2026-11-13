@@ -8,8 +8,8 @@ const Q = "theme=light&cut=on&density=default&motion=normal&dir=ltr";
 
 async function app(open) {
   const p = await open({ route: "app", q: Q, width: 1440, height: 900, ready: ".kl-frame" });
-  const http = await trackHttp(p, ".kl-sx-table tbody tr[data-slot=table-row]");
-  const rows = p.locator(".kl-sx-table tbody tr[data-slot=table-row]");
+  const http = await trackHttp(p, "[data-testid=shipments-table] tbody tr[data-slot=table-row]");
+  const rows = p.locator("[data-testid=shipments-table] tbody tr[data-slot=table-row]");
   const carrier = (i) => rows.nth(i).locator("td").nth(4).textContent();
   const a = {
     p,
@@ -20,7 +20,9 @@ async function app(open) {
     search: p.locator("[data-slot=table-search] input"),
     selectedTab: () =>
       p
-        .locator('.kl-sx-table [role=tab][aria-selected="true"], [role=tablist] [role=tab][aria-selected="true"]')
+        .locator(
+          '[data-testid=shipments-table] [role=tab][aria-selected="true"], [role=tablist] [role=tab][aria-selected="true"]',
+        )
         .first()
         .textContent(),
     errors: () => [...p.errs, ...p.consoleErrs, ...http],
@@ -84,7 +86,7 @@ test("app: assign + Undo restores each row's own value", async ({ open, ok }) =>
 test("app: async failure changes nothing", async ({ open, ok }) => {
   const a = await app(open);
   const { p } = a;
-  await p.locator(".kl-sx-table thead [data-slot=checkbox]").click();
+  await p.locator("[data-testid=shipments-table] thead [data-slot=checkbox]").click();
   const n = Number(await a.count());
   const before = await a.carriers(6);
   await p.locator("[data-slot=table-bulk-bar] button", { hasText: "Assign carrier" }).click();
@@ -132,12 +134,28 @@ test("app: destructive confirm, Escape, Undo", async ({ open, ok }) => {
   ok("Escape keeps the selection", same(c, "2"), { actual: c, expected: "2" });
   await p.locator("[data-slot=table-bulk-bar] [role=toolbar] button", { hasText: "Actions" }).click();
   await p.locator("[data-slot=menu-item]", { hasText: "Cancel" }).click();
+  // the rows that start a slide are recorded as they start (a slide is shorter than a round trip to the page)
+  await p.evaluate(() => {
+    window.__rowSlides = [];
+    const animate = Element.prototype.animate;
+    Element.prototype.animate = function (...args) {
+      if (this.matches("[data-testid=shipments-table] tbody > tr")) window.__rowSlides.push(this.rowIndex);
+      return animate.apply(this, args);
+    };
+  });
+  const slides = () => p.evaluate(() => window.__rowSlides.splice(0).length);
   await p.locator("[data-slot=alert-dialog-confirm]").click();
   const removed = await firstTab();
   ok("cancel removes the rows", removed !== total, { total });
+  await until(async () => (await p.evaluate(() => window.__rowSlides.length)) > 0);
+  const closing = await slides();
+  ok("the rows below close the gap with motion", closing > 0, { closing });
   await a.undo().click();
   const back = await firstTab();
   ok("Undo restores the count", same(back, total), { actual: back, expected: total });
+  await until(async () => (await p.evaluate(() => window.__rowSlides.length)) > 0);
+  const opening = await slides();
+  ok("Undo opens the room again with motion", opening > 0, { opening });
   noErrors(ok, a);
 });
 
@@ -176,10 +194,10 @@ test("app: the expand button keeps its 44px target when the table scrolls sidewa
       q: Q,
       width,
       height: 900,
-      ready: ".kl-sx-table tbody tr[data-slot=table-row]",
+      ready: "[data-testid=shipments-table] tbody tr[data-slot=table-row]",
     });
     const sizes = await p
-      .locator(".kl-sx-table tbody tr[data-slot=table-row] [data-slot=table-expand-cell] button")
+      .locator("[data-testid=shipments-table] tbody tr[data-slot=table-row] [data-slot=table-expand-cell] button")
       .evaluateAll((bs) => bs.map((b) => Math.round(b.getBoundingClientRect().width)));
     ok(
       `expand buttons at ${width}px are 44px wide (WCAG 2.5.8 needs 24)`,

@@ -332,3 +332,107 @@ describe("data-table: controlled state", () => {
     expect(header("Shipment").getAttribute("aria-sort")).toBe("descending");
   });
 });
+
+/* ---------------- row detail, loading and error rows, cell classes ---------------- */
+
+const DETAIL_COLUMNS: DataTableColumnDef<Shipment>[] = [
+  { accessorKey: "id", header: "Shipment", meta: { cellClassName: "font-mono" } },
+  { accessorKey: "carrier", header: "Carrier" },
+];
+const renderLegs = (row: { original: Shipment }) => <p>Legs of {row.original.id}</p>;
+const legsLabel = (row: { original: Shipment }, expanded: boolean) =>
+  `${expanded ? "Hide" : "Show"} legs for ${row.original.id}`;
+
+function Detail({ loading, error }: { loading?: boolean; error?: boolean }) {
+  const table = useDataTable({ data: SHIPMENTS, columns: DETAIL_COLUMNS });
+  return (
+    <TableFrame>
+      <TableScroll>
+        <DataTable
+          table={table}
+          caption="Shipments"
+          rowLabel={(row) => `Select ${row.original.id}`}
+          renderDetail={renderLegs}
+          expandLabel={legsLabel}
+          loading={loading}
+          error={error ? { title: "Shipments couldn't load." } : undefined}
+        />
+      </TableScroll>
+    </TableFrame>
+  );
+}
+
+const expandButton = (name: string) => document.querySelector<HTMLElement>(`button[aria-label="${name}"]`)!;
+const rowOf = (id: string) => bodyRows().find((r) => r.textContent!.includes(id))!;
+
+describe("data-table: row detail", () => {
+  it("expands a row into its detail; the index cell spans it; only that row renders", async () => {
+    await render(
+      <main>
+        <Detail />
+      </main>,
+    );
+    expect(document.querySelectorAll("thead [data-slot=table-expand-cell]")).toHaveLength(1);
+    const renders = countRenders();
+    await userEvent.click(expandButton("Show legs for SH-20482"));
+    await frame();
+    const button = expandButton("Hide legs for SH-20482");
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    const row = rowOf("SH-20482");
+    expect(row.dataset["expanded"]).toBe("");
+    expect(row.querySelector("[data-slot=table-index-cell]")!.getAttribute("rowspan")).toBe("2");
+    const detail = row.nextElementSibling as HTMLElement;
+    expect(detail.dataset["slot"]).toBe("table-detail");
+    expect(detail.textContent).toBe("Legs of SH-20482");
+    // every column after the index cell: the expand column and the two data columns
+    expect(detail.querySelector("td")!.getAttribute("colspan")).toBe("3");
+    // the detail unfolds once it is in the document (its presence turns shown): wait for that, then count
+    await expect.poll(() => detail.querySelector(".kl-unfold")!.hasAttribute("data-open")).toBe(true);
+    // that row alone, through its detail's presence (expanded, mounted, shown); no other row, the body or the owner
+    expect(renders.count("DataTableRowWithDetail")).toBe(3);
+    expect(renders.count("TableRow")).toBe(renders.count("DataTableRowWithDetail"));
+    expect(renders.count("DataTableRow")).toBe(0);
+    expect(renders.count("DataTable")).toBe(0);
+    expect(renders.count("TableBody")).toBe(0);
+    await expectNoAxeViolations();
+
+    // closing folds the detail away; the span goes with it
+    await userEvent.click(button);
+    await expect.poll(() => document.querySelectorAll("[data-slot=table-detail]").length, { timeout: 2000 }).toBe(0);
+    expect(rowOf("SH-20482").querySelector("[data-slot=table-index-cell]")!.hasAttribute("rowspan")).toBe(false);
+  });
+
+  it("a column's meta.cellClassName reaches its body cells", async () => {
+    await render(
+      <main>
+        <Detail />
+      </main>,
+    );
+    const cells = bodyRows()[0]!.querySelectorAll("[data-slot=table-cell]");
+    expect(cells[0]!.classList.contains("font-mono")).toBe(true);
+    expect(cells[1]!.classList.contains("font-mono")).toBe(false);
+  });
+
+  it("loading shows a page of loading rows across every column; error shows the error row", async () => {
+    const view = await render(
+      <main>
+        <Detail loading />
+      </main>,
+    );
+    const loadingRows = document.querySelectorAll<HTMLElement>("tbody tr[aria-hidden=true]");
+    expect(loadingRows).toHaveLength(10);
+    // index, expand and the two data columns
+    expect(loadingRows[0]!.children).toHaveLength(4);
+    expect(loadingRows[0]!.getAttribute("aria-hidden")).toBe("true");
+
+    await view.rerender(
+      <main>
+        <Detail error />
+      </main>,
+    );
+    const state = document.querySelector<HTMLElement>("tbody [data-slot=table-state]")!;
+    expect(state.textContent).toContain("Shipments couldn't load.");
+    expect(state.querySelector("td")!.getAttribute("colspan")).toBe("4");
+    expect(bodyRows()).toHaveLength(0);
+  });
+});

@@ -3,22 +3,20 @@
 import { test, idle } from "./fixtures.mjs";
 import { poll, near, box, stableBox } from "./lib/probes-c.mjs";
 
-const READY = ".kl-sx-table tbody tr[data-slot=table-row]";
+const READY = "[data-testid=shipments-table] tbody tr[data-slot=table-row]";
+// the block is the AppShell around the shipments table
+const SHELL = "[data-slot=app-shell]:has([data-testid=shipments-table])";
 
 test("block wide (1440): Inspector as the shell's aside, Notice when filtered out", async ({ open, ok }) => {
   const a = await open({ route: "app", width: 1440, height: 900, ready: READY });
-  const shell = a.locator(".kl-sx");
+  const shell = a.locator(SHELL);
   ok(
     "block: the block is an AppShell; wide at 1440",
     (await shell.getAttribute("data-slot")) === "app-shell" && (await shell.getAttribute("data-kl-shell")) === "wide",
     await shell.getAttribute("data-kl-shell"),
   );
-  ok(
-    "block: no private layout or banner markup remains",
-    (await a.locator(".kl-sx-conflict, .kl-sx-nav").count()) === 0,
-    null,
-  );
-  const row = a.locator(".kl-sx-open").nth(2);
+  ok("block: no private layout or banner markup remains", (await a.locator("[class*=kl-sx]").count()) === 0, null);
+  const row = a.locator("[data-testid=shipment-open]").nth(2);
   const id = (await row.textContent()).trim();
   await row.click();
   const aside = a.locator("[data-slot=app-shell-aside] [data-slot=inspector]");
@@ -33,12 +31,12 @@ test("block wide (1440): Inspector as the shell's aside, Notice when filtered ou
   ok("block: the header breadcrumb ends at the inspected shipment", crumbText.includes(id), crumbText);
   await idle(a);
   await stableBox(aside);
-  const sb = await box(a.locator(".kl-sx-table")),
+  const sb = await box(a.locator("[data-testid=shipments-table]")),
     ab = await box(aside);
   ok("block: table and Inspector are one gutter apart (C1)", near(ab.x - sb.r, 12, 1.5), ab.x - sb.r);
   // hidden by a filter → the Notice (neutral) with Show in table
   await a
-    .locator(".kl-sx-table")
+    .locator("[data-testid=shipments-table]")
     .getByRole("tab", { name: /Delivered/ })
     .click();
   const notice = aside.locator('[data-slot="notice"]');
@@ -74,10 +72,10 @@ test("block medium (1024): the Inspector is an end sheet", async ({ open, ok }) 
   const m = await open({ route: "app", width: 1024, height: 800, ready: READY });
   ok(
     "block: medium at 1024 (aside becomes a sheet)",
-    (await m.locator(".kl-sx").getAttribute("data-kl-shell")) === "medium",
-    await m.locator(".kl-sx").getAttribute("data-kl-shell"),
+    (await m.locator(SHELL).getAttribute("data-kl-shell")) === "medium",
+    await m.locator(SHELL).getAttribute("data-kl-shell"),
   );
-  const r2 = m.locator(".kl-sx-open").nth(1);
+  const r2 = m.locator("[data-testid=shipment-open]").nth(1);
   await r2.click();
   const dlg = m.getByRole("dialog");
   await dlg.waitFor({ state: "visible" }).catch(() => {});
@@ -92,12 +90,16 @@ test("block medium (1024): the Inspector is an end sheet", async ({ open, ok }) 
   await idle(m);
   await m.keyboard.press("Escape");
   await dlg.waitFor({ state: "hidden" }).catch(() => {});
-  await poll(() => m.evaluate(() => document.activeElement?.classList.contains("kl-sx-open")), Boolean, 3000);
+  await poll(
+    () => m.evaluate(() => document.activeElement?.getAttribute("data-testid") === "shipment-open"),
+    Boolean,
+    3000,
+  );
   ok(
     "block medium: Escape closes the sheet, clears the inspection and returns focus to the row",
     !(await dlg.isVisible()) &&
-      (await m.evaluate(() => document.activeElement?.classList.contains("kl-sx-open"))) &&
-      (await m.locator(".kl-sx-open[aria-pressed=true]").count()) === 0,
+      (await m.evaluate(() => document.activeElement?.getAttribute("data-testid") === "shipment-open")) &&
+      (await m.locator("[data-testid=shipment-open][aria-pressed=true]").count()) === 0,
     await m.evaluate(() => document.activeElement?.className),
   );
   ok("block medium: no page errors", m.errs.length === 0, m.errs);
@@ -107,7 +109,7 @@ test("block narrow (600): navigation sheet", async ({ open, ok }) => {
   const nn = await open({ route: "app", width: 600, height: 800, ready: READY });
   ok(
     "block: narrow at 600 (sidebar and aside are sheets)",
-    (await nn.locator(".kl-sx").getAttribute("data-kl-shell")) === "narrow" &&
+    (await nn.locator(SHELL).getAttribute("data-kl-shell")) === "narrow" &&
       (await nn.locator("[data-slot=app-shell-nav]").count()) === 0,
     null,
   );

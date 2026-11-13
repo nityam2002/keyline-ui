@@ -7,6 +7,7 @@ await import("./resolve-ts.ts");
 const {
   ariaSortOf,
   columnAlign,
+  columnCellClassName,
   describeFilter,
   fromSortList,
   isFilterActive,
@@ -90,6 +91,13 @@ test("column alignment comes from meta.align; anything else is the start", () =>
   assert.equal(columnAlign({ align: "start" }), undefined);
   assert.equal(columnAlign(undefined), undefined);
   assert.equal(columnAlign("end"), undefined);
+});
+
+test("a column's cell classes come from meta.cellClassName; empty or not a string is none", () => {
+  assert.equal(columnCellClassName({ cellClassName: "p-0" }), "p-0");
+  assert.equal(columnCellClassName({ cellClassName: "" }), undefined);
+  assert.equal(columnCellClassName({ cellClassName: 1 }), undefined);
+  assert.equal(columnCellClassName(undefined), undefined);
 });
 
 test("page range: 1-based rows, page count at least 1, the page clamped to the last", () => {

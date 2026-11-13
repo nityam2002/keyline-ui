@@ -63,11 +63,19 @@ export function ariaSortOf(
 export type DataTableColumnMeta = {
   /** "end" for figures: the cell and its header align to the end, with tabular numerals. */
   align?: "end" | undefined;
+  /** Classes for the column's body cells (a width, a truncation, a cell that its content fills). */
+  cellClassName?: string | undefined;
 };
 
 /** The column's alignment from its meta (anything but "end" is the start). */
 export function columnAlign(meta: unknown): "end" | undefined {
   return meta && typeof meta === "object" && (meta as DataTableColumnMeta).align === "end" ? "end" : undefined;
+}
+
+/** The classes for the column's body cells from its meta, if any. */
+export function columnCellClassName(meta: unknown): string | undefined {
+  const c = meta && typeof meta === "object" ? (meta as DataTableColumnMeta).cellClassName : undefined;
+  return typeof c === "string" && c ? c : undefined;
 }
 
 /* ---------------- pager ---------------- */

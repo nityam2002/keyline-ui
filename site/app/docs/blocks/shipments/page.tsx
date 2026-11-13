@@ -122,7 +122,8 @@ export default function ShipmentsPage() {
       <InstallCommand item={ITEM} />
       <p>
         It installs <code>shipments.tsx</code> and <code>shipments-data.ts</code> to{" "}
-        <code>components/keyline/blocks/shipments/</code>, the block&apos;s own CSS, and every component it uses.
+        <code>components/keyline/blocks/shipments/</code>, and every component it uses. It has no CSS of its own: its
+        styles are utilities on Keyline&apos;s tokens.
       </p>
 
       <h2 id="usage">Usage</h2>
@@ -148,8 +149,10 @@ export default function ShipmentsPage() {
           <Link href="/docs/components/toolbar">Toolbar</Link> that move into More when the row runs out of room.
         </li>
         <li>
-          A <Link href="/docs/components/table">Table</Link> sorted by several columns, with hideable columns, rows that
-          expand into a timeline of legs, loading, empty and error rows, and a pager that sets the page size.
+          A <Link href="/docs/components/data-table">Data Table</Link> sorted by several columns, with hideable columns,
+          rows that expand into a timeline of legs, loading, empty and error rows, and a pager that sets the page size.
+          TanStack Table holds the sort, the filters, the page, the open rows and the column choice; the block holds the
+          selection, which its bulk bar, command menu and cancel alert read.
         </li>
         <li>
           Selection by id that survives filtering and paging, with a bulk bar that says how many selected shipments are

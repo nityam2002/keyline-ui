@@ -15,3 +15,6 @@ site/next-env.d.ts
 *.log
 .vscode/
 .idea/
+
+# local agent worktrees (Claude Code)
+.claude/worktrees/

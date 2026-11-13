@@ -5,7 +5,6 @@
 @import "@fontsource/ibm-plex-mono/500.css";
 @import "../registry/keyline/theme/keyline.css";
 @import "../registry/keyline/theme/keyline-shadcn.css";
-@import "../registry/keyline/blocks/shipments/shipments.css";
 @import "./slow-motion.css";
 
 @custom-variant dark (&:is(.dark *));

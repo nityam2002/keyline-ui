@@ -12,6 +12,7 @@ import {
   createSortedRowModel,
   functionalUpdate,
   globalFilteringFeature,
+  rowExpandingFeature,
   rowPaginationFeature,
   rowSelectionFeature,
   rowSortingFeature,
@@ -24,6 +25,7 @@ import {
   type ColumnDef,
   type ColumnFiltersState,
   type ColumnVisibilityState,
+  type ExpandedState,
   type Header,
   type PaginationState,
   type ReactTable,
@@ -41,20 +43,25 @@ import {
   TableBulkBar,
   TableCaption,
   TableCell,
+  TableDetail,
+  TableExpandCell,
   TableHead,
   TableHeader,
   TableIndexCell,
+  TableLoadingRows,
   TablePagination,
   TableRow,
   TableSearch,
   TableSortHeader,
   TableState as TableStateRow,
+  useDetailPresence,
   type TableBulkBarProps,
   type TableRowProps,
 } from "./table";
 import type { PartProps } from "../lib/keyline-render";
 import {
   columnAlign,
+  columnCellClassName,
   isFilterActive,
   matchesFilter,
   matchesSearch,
@@ -79,8 +86,8 @@ import {
  * caller's (keep it in sync from `onStateChange`), any other slice is the table's, seeded from `defaultState`.
  * `onStateChange(next, eventDetails)` reports every change either way, so a URL adapter can follow the table.
  *
- * Rendering is narrow. Each row subscribes to its own entry in the selection, so selecting a row re-renders that
- * row alone; the header's select-all and the bulk bar subscribe to the selection themselves. The owner of
+ * Rendering is narrow. Each row subscribes to its own entries in the selection and the expansion, so selecting or
+ * expanding a row re-renders that row alone; the header's select-all and the bulk bar subscribe to the selection themselves. The owner of
  * useDataTable re-renders for sorting, filters, paging and column visibility, not for selection.
  * ------------------------------------------------------------------ */
 
@@ -106,6 +113,7 @@ const features = tableFeatures({
   rowPaginationFeature,
   paginatedRowModel: createPaginatedRowModel(),
   rowSelectionFeature,
+  rowExpandingFeature,
   columnVisibilityFeature,
 });
 
@@ -124,6 +132,8 @@ export type DataTableState = {
   pagination: PaginationState;
   rowSelection: RowSelectionState;
   columnVisibility: ColumnVisibilityState;
+  /** the rows whose detail is open (DataTable's `renderDetail`), by row id */
+  expanded: ExpandedState;
 };
 export type DataTableSlice = keyof DataTableState;
 export type DataTableChangeDetails = { slice: DataTableSlice };
@@ -135,6 +145,7 @@ const SLICES = [
   "pagination",
   "rowSelection",
   "columnVisibility",
+  "expanded",
 ] as const satisfies readonly DataTableSlice[];
 // every slice of DataTableState is wired: a slice missing from SLICES fails to compile here
 type Unwired = Exclude<DataTableSlice, (typeof SLICES)[number]>;
@@ -148,6 +159,7 @@ const DEFAULT_STATE: DataTableState = {
   pagination: { pageIndex: 0, pageSize: 10 },
   rowSelection: {},
   columnVisibility: {},
+  expanded: {},
 };
 
 const HANDLER = {
@@ -157,6 +169,7 @@ const HANDLER = {
   pagination: "onPaginationChange",
   rowSelection: "onRowSelectionChange",
   columnVisibility: "onColumnVisibilityChange",
+  expanded: "onExpandedChange",
 } as const satisfies Record<DataTableSlice, `on${string}Change`>;
 
 export type UseDataTableOptions<TData extends RowData> = {
@@ -183,7 +196,13 @@ export type UseDataTableOptions<TData extends RowData> = {
   rowCount?: number;
   /** Return to the first page when data, filters or sorting change. Default true. */
   autoResetPageIndex?: boolean;
+  /** Which rows have a detail to expand (DataTable's `renderDetail`). Default: every row. */
+  getRowCanExpand?: (row: Row<Features, TData>) => boolean;
+  /** Close every open detail when data changes. Default true. */
+  autoResetExpanded?: boolean;
 };
+
+const expandAny = () => true;
 
 const defaultRowId = (row: unknown, index: number) => {
   const id = (row as { id?: unknown } | null)?.id;
@@ -217,6 +236,8 @@ function useDataTable<TData extends RowData>({
   manualFiltering,
   rowCount,
   autoResetPageIndex,
+  getRowCanExpand = expandAny,
+  autoResetExpanded,
 }: UseDataTableOptions<TData>): DataTableInstance<TData> {
   const latest = React.useRef({ state, onStateChange });
   React.useLayoutEffect(() => {
@@ -268,6 +289,8 @@ function useDataTable<TData extends RowData>({
       manualFiltering,
       rowCount,
       autoResetPageIndex,
+      getRowCanExpand,
+      autoResetExpanded,
       globalFilterFn: "search",
     },
     ownerSlices,
@@ -280,32 +303,53 @@ function useDataTable<TData extends RowData>({
  * PARTS
  * ------------------------------------------------------------------ */
 
+type DataTableRowInstance<TData extends RowData> = Row<Features, TData>;
+
 type DataTableProps<TData extends RowData> = Omit<PartProps<"table", Record<string, never>>, "children"> & {
   table: DataTableInstance<TData>;
   /** The selection checkbox's name for a row ("Select SH-20481"). Default: "Select row" and its code. */
-  rowLabel?: (row: Row<Features, TData>) => string;
+  rowLabel?: (row: DataTableRowInstance<TData>) => string;
   /** The select-all checkbox's name. */
   selectAllLabel?: string;
   /** The index column's code for a row: its place across pages ("01") by default; null prints none. */
-  rowCode?: ((row: Row<Features, TData>, index: number) => React.ReactNode) | null;
+  rowCode?: ((row: DataTableRowInstance<TData>, index: number) => React.ReactNode) | null;
   /** Props for a row's TableRow (an onClick, a data attribute). Keep the function stable: a new one re-renders
    *  every row. */
-  rowProps?: (row: Row<Features, TData>) => Omit<TableRowProps, "selected">;
+  rowProps?: (row: DataTableRowInstance<TData>) => Omit<TableRowProps, "selected" | "expanded">;
+  /** A row's detail, shown under it while it is expanded (the `expanded` slice). Adds an expand column; the row's
+   *  index cell spans its detail. Keep the function stable: a new one re-renders every row. */
+  renderDetail?: (row: DataTableRowInstance<TData>) => React.ReactNode;
+  /** The expand toggle's name for a row. Default: "Show details" / "Hide details". */
+  expandLabel?: (row: DataTableRowInstance<TData>, expanded: boolean) => string;
+  /** Props for the body (a `ref` for useRowMotion). */
+  bodyProps?: PartProps<"tbody", Record<string, never>>;
   /** The table's name, read before its rows (a TableCaption). */
   caption?: React.ReactNode;
+  /** While data loads: a page of loading rows in place of the rows (mark the frame `aria-busy`). */
+  loading?: boolean;
+  /** Data failed to load: an error row (announced) in place of the rows. */
+  error?: { title: React.ReactNode; body?: React.ReactNode; action?: React.ReactNode; count?: React.ReactNode };
   /** What shows when no row passes the filters (an Empty spanning the grid). */
   empty?: { title: React.ReactNode; body?: React.ReactNode; action?: React.ReactNode; count?: React.ReactNode };
 };
 
+const detailLabel = (_row: unknown, expanded: boolean) => (expanded ? "Hide details" : "Show details");
+
 /** The rows of a TanStack table as Keyline table parts: sort headers with aria-sort and the sort order, an index
- *  column of selection checkboxes (Shift extends a range), and an empty row. Put it in a TableScroll. */
+ *  column of selection checkboxes (Shift extends a range), rows that expand into a detail, and the loading, error
+ *  and empty rows. Put it in a TableScroll. */
 function DataTable<TData extends RowData>({
   table,
   rowLabel,
   selectAllLabel = "Select this page",
   rowCode: code,
   rowProps,
+  renderDetail,
+  expandLabel = detailLabel,
+  bodyProps,
   caption,
+  loading,
+  error,
   empty,
   ...props
 }: DataTableProps<TData>): React.ReactElement {
@@ -315,28 +359,43 @@ function DataTable<TData extends RowData>({
   const columns = table.getVisibleLeafColumns();
   // a row re-renders when the columns it shows change; its cells are read through the row, which stays the same
   const shown = columns.map((c) => c.id).join("\u0000");
+  const span = columns.length + (selectable ? 1 : 0) + (renderDetail ? 1 : 0);
+  const groups = table.getHeaderGroups();
   return (
     <Table {...props}>
       {caption ? <TableCaption>{caption}</TableCaption> : null}
       <TableHeader>
-        {table.getHeaderGroups().map((group, g) => (
-          <TableRow key={group.id}>
-            {selectable && g === table.getHeaderGroups().length - 1 ? (
+        {groups.map((group, g) => (
+          // a plain row: the header takes no row hover or selection
+          <tr key={group.id}>
+            {selectable && g === groups.length - 1 ? (
               <DataTableSelectAll table={table} label={selectAllLabel} />
             ) : selectable ? (
               <TableHead aria-hidden />
             ) : null}
+            {renderDetail ? g === groups.length - 1 ? <TableExpandCell header /> : <TableHead aria-hidden /> : null}
             {group.headers.map((header) => (
               <DataTableColumnHeader key={header.id} header={header} sorting={sorting} />
             ))}
-          </TableRow>
+          </tr>
         ))}
       </TableHeader>
-      <TableBody>
-        {rows.length === 0 && empty ? (
+      <TableBody {...bodyProps}>
+        {loading ? (
+          <TableLoadingRows cols={span} rows={pagination.pageSize} />
+        ) : error ? (
+          <TableStateRow
+            kind="error"
+            colSpan={span}
+            count={error.count ?? "!"}
+            title={error.title}
+            body={error.body}
+            action={error.action}
+          />
+        ) : rows.length === 0 && empty ? (
           <TableStateRow
             kind="empty"
-            colSpan={columns.length + (selectable ? 1 : 0)}
+            colSpan={span}
             count={empty.count ?? 0}
             title={empty.title}
             body={empty.body}
@@ -358,6 +417,9 @@ function DataTable<TData extends RowData>({
               }
               label={rowLabel ? rowLabel(row) : `Select row ${rowCode(pagination.pageIndex, pagination.pageSize, i)}`}
               rowProps={rowProps as DataTableRowProps["rowProps"]}
+              detail={renderDetail as DataTableRowProps["detail"]}
+              expandLabel={expandLabel as DataTableRowProps["expandLabel"]}
+              detailSpan={columns.length + 1}
             />
           ))
         )}
@@ -438,45 +500,117 @@ type DataTableRowProps = {
   selectable: boolean;
   code: React.ReactNode;
   label: string;
-  rowProps: ((row: Row<Features, any>) => Omit<TableRowProps, "selected">) | undefined;
+  rowProps: ((row: Row<Features, any>) => Omit<TableRowProps, "selected" | "expanded">) | undefined;
+  detail: ((row: Row<Features, any>) => React.ReactNode) | undefined;
+  expandLabel: (row: Row<Features, any>, expanded: boolean) => string;
+  /** the detail's colSpan: every column after the index cell, which spans the detail */
+  detailSpan: number;
 };
 
-/** One row. Memoised, and subscribed to its own selection entry: toggling a row re-renders that row alone. */
-const DataTableRow = React.memo(function DataTableRow({
+/** One row. Memoised, and subscribed to its own selection entry (and its expansion, when rows have a detail):
+ *  toggling a row re-renders that row alone. */
+const DataTableRow = React.memo(function DataTableRow(props: DataTableRowProps): React.ReactElement {
+  const { row, detail } = props;
+  return (
+    <Subscribe source={row.table.atoms.rowSelection} selector={(selection) => !!selection?.[row.id]}>
+      {(selected) =>
+        detail ? (
+          <Subscribe
+            source={row.table.atoms.expanded}
+            selector={(expanded) => expanded === true || !!expanded?.[row.id]}
+          >
+            {(expanded) => (
+              <DataTableRowWithDetail {...props} detail={detail} selected={selected} expanded={expanded} />
+            )}
+          </Subscribe>
+        ) : (
+          <DataTableRowCells {...props} selected={selected} />
+        )
+      }
+    </Subscribe>
+  );
+});
+
+/** A row and its detail. The row's index cell spans the detail for as long as the detail is mounted (through its
+ *  fold), so the row never moves. */
+function DataTableRowWithDetail(
+  props: DataTableRowProps & {
+    detail: NonNullable<DataTableRowProps["detail"]>;
+    selected: boolean;
+    expanded: boolean;
+  },
+): React.ReactElement {
+  const { row, detail, expanded, detailSpan } = props;
+  const presence = useDetailPresence(expanded);
+  return (
+    <>
+      <DataTableRowCells {...props} span={presence.mounted ? 2 : undefined} />
+      {presence.mounted ? (
+        <TableDetail presence={presence} colSpan={detailSpan}>
+          {detail(row)}
+        </TableDetail>
+      ) : null}
+    </>
+  );
+}
+
+function DataTableRowCells({
   row,
   selectable,
   code,
   label,
   rowProps,
-}: DataTableRowProps): React.ReactElement {
+  detail,
+  expandLabel,
+  selected,
+  expanded,
+  span,
+}: DataTableRowProps & { selected: boolean; expanded?: boolean; span?: number | undefined }): React.ReactElement {
   return (
-    <Subscribe source={row.table.atoms.rowSelection} selector={(selection) => !!selection?.[row.id]}>
-      {(selected) => (
-        <TableRow {...rowProps?.(row)} selected={selected} aria-selected={selectable ? selected : undefined}>
-          {selectable ? (
-            <TableIndexCell
-              checked={selected}
-              onCheckedChange={(checked, eventDetails) =>
-                // TanStack's handler reads the checkbox's new value, and Shift for a range from the last row toggled
-                row.getToggleSelectedHandler()({
-                  target: { checked },
-                  shiftKey: (eventDetails.event as { shiftKey?: boolean } | undefined)?.shiftKey ?? false,
-                })
-              }
-              code={code}
-              label={label}
-            />
-          ) : null}
-          {row.getVisibleCells().map((cell) => (
-            <TableCell key={cell.id} align={columnAlign(cell.column.columnDef.meta)}>
-              <FlexRender cell={cell} />
-            </TableCell>
-          ))}
-        </TableRow>
-      )}
-    </Subscribe>
+    <TableRow
+      {...rowProps?.(row)}
+      selected={selected}
+      expanded={!!expanded}
+      aria-selected={selectable ? selected : undefined}
+    >
+      {selectable ? (
+        <TableIndexCell
+          rowSpan={span}
+          checked={selected}
+          onCheckedChange={(checked, eventDetails) =>
+            // TanStack's handler reads the checkbox's new value, and Shift for a range from the last row toggled
+            row.getToggleSelectedHandler()({
+              target: { checked },
+              shiftKey: (eventDetails.event as { shiftKey?: boolean } | undefined)?.shiftKey ?? false,
+            })
+          }
+          code={code}
+          label={label}
+        />
+      ) : null}
+      {detail ? (
+        row.getCanExpand() ? (
+          <TableExpandCell
+            expanded={!!expanded}
+            onToggle={() => row.toggleExpanded()}
+            label={expandLabel(row, !!expanded)}
+          />
+        ) : (
+          <TableExpandCell />
+        )
+      ) : null}
+      {row.getVisibleCells().map((cell) => (
+        <TableCell
+          key={cell.id}
+          align={columnAlign(cell.column.columnDef.meta)}
+          className={columnCellClassName(cell.column.columnDef.meta)}
+        >
+          <FlexRender cell={cell} />
+        </TableCell>
+      ))}
+    </TableRow>
   );
-});
+}
 
 type DataTableBulkBarProps<TData extends RowData> = Omit<TableBulkBarProps, "count" | "scope" | "children"> & {
   table: DataTableInstance<TData>;
