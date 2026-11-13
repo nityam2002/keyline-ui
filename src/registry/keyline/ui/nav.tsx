@@ -156,8 +156,11 @@ const fold = cn(
   "grid grid-rows-[0fr] [transition:grid-template-rows_var(--kl-t-fold)_var(--kl-ease-in)]",
   "data-open:grid-rows-[1fr] data-open:[transition:grid-template-rows_var(--kl-t-unfold)_var(--kl-ease-out)]",
 );
+// overflow clip, not hidden: a hidden box is still a scroll container, so focusing or scrolling to a row while the
+// list unfolds scrolls the list inside its fold, and as the fold grows the browser clamps that scroll back, sliding
+// the rows under a held pointer (the press lands on two rows and its click on the list, choosing nothing)
 const sub = cn(
-  "m-0 flex min-h-0 list-none flex-col overflow-hidden border-s-(length:--kl-k1) border-s-kl-seam p-0",
+  "m-0 flex min-h-0 list-none flex-col overflow-clip border-s-(length:--kl-k1) border-s-kl-seam p-0",
   "[&>li]:border-t-(length:--kl-k1) [&>li]:border-t-kl-line",
 );
 
