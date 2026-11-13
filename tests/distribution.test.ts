@@ -96,7 +96,9 @@ test("every item file the catalog lists is built, and none reaches outside the i
     const built = JSON.parse(read(`site/public/r/${name}.json`));
     for (const file of built.files ?? []) {
       assert.ok(file.content, `${name}: ${file.path} has no content`);
-      assert.match(file.target, /^components\/keyline\//, `${name}: ${file.path} installs outside components/keyline`);
+      // the agent skill is the one file that installs elsewhere: where coding agents read project skills
+      const home = file.type === "registry:file" ? /^\.claude\/skills\/keyline\// : /^components\/keyline\//;
+      assert.match(file.target, home, `${name}: ${file.path} installs outside ${home.source}`);
       assert.doesNotMatch(
         file.content,
         /from ["'](@site\/|\.\.\/\.\.\/\.\.\/|registry\/)/,

@@ -47,7 +47,7 @@ const PROPS: Prop[] = [
     name: "moreLabel",
     type: "string",
     default: '"Earlier levels"',
-    description: "The name of the &ldquo;\u2026&rdquo; button.",
+    description: "The name of the “…” button.",
   },
   {
     name: "layout",

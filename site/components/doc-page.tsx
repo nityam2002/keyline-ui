@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { TocGroup } from "./page-toc";
 import { DocToc } from "./doc-toc";
-import { sheet } from "@site/lib/catalog";
+import { BLOCKS, CATALOG, sheet } from "@site/lib/catalog";
+import manifest from "../public/r/registry.json";
+import { sourceCodeJsonLd, stringifyJsonLd } from "@site/lib/seo";
 
 /** A neighbour in the title block; on a phone the two share the row and wrap their label under "Previous"/"Next". */
 const LINK =
@@ -14,8 +16,22 @@ const LINK =
  */
 export function DocPage({ name, toc, children }: { name: string; toc: TocGroup[]; children: React.ReactNode }) {
   const s = sheet(name);
+  // a component or block page: SoftwareSourceCode pointing at the registry item it installs
+  const entry = [...CATALOG, BLOCKS].flatMap((g) => g.items).find((e) => e.name === name && e.href);
+  const item = entry && manifest.items.find((i) => i.name === entry.item);
   return (
     <>
+      {entry && item ? (
+        <script
+          type="application/ld+json"
+          data-testid="source-code-jsonld"
+          dangerouslySetInnerHTML={{
+            __html: stringifyJsonLd(
+              sourceCodeJsonLd({ name, item: item.name, href: entry.href!, description: item.description ?? "" }),
+            ),
+          }}
+        />
+      ) : null}
       <DocToc toc={toc} />
       {children}
       <footer className="-mx-(--s-read-px) mt-auto flex min-h-12 max-w-none items-stretch border-t-3 border-kl-line bg-kl-cell [&>*+*]:border-s [&>*+*]:border-kl-seam">

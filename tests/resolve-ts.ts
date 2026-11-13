@@ -6,6 +6,9 @@ import { registerHooks } from "node:module";
 
 registerHooks({
   resolve(specifier, context, next) {
+    // site/lib imports JSON the way the Next.js bundler does, without an import attribute
+    if (specifier.endsWith(".json") && !context.importAttributes?.["type"])
+      return { ...next(specifier, context), importAttributes: { ...context.importAttributes, type: "json" } };
     if (!/^\.\.?\//.test(specifier) || /\.[cm]?[jt]sx?$|\.json$|\.css$/.test(specifier))
       return next(specifier, context);
     for (const ext of [".ts", ".tsx"])

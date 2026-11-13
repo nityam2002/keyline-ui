@@ -65,7 +65,7 @@ const PROPS: Prop[] = [
     name: "navLabel",
     type: "string",
     default: "\u2014",
-    description: "Names the sidebar: the toggle says &ldquo;Show&rdquo; it, and its narrow sheet takes the name.",
+    description: "Names the sidebar: the toggle says “Show” it, and its narrow sheet takes the name.",
   },
   {
     name: "navOpen \u00b7 defaultNavOpen \u00b7 onNavOpenChange",
@@ -104,7 +104,7 @@ const PROPS: Prop[] = [
     name: "asideFinalFocus",
     type: "ref",
     default: "\u2014",
-    description: "Where focus goes when the aside&apos;s sheet closes. Pass the control that opened it.",
+    description: "Where focus goes when the aside's sheet closes. Pass the control that opened it.",
   },
   {
     name: "narrowAt \u00b7 asideInlineAt",
@@ -124,7 +124,7 @@ const PROPS: Prop[] = [
     default: "false",
     description: "Keeps the header in view; the columns stay put while the page scrolls past.",
   },
-  { name: "mainProps", type: "props of <main>", default: "\u2014", description: "For the page&apos;s main element." },
+  { name: "mainProps", type: "props of <main>", default: "\u2014", description: "For the page's main element." },
 ];
 
 const TOC: TocGroup[] = [

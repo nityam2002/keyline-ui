@@ -64,7 +64,7 @@ const PROPS: Prop[] = [
     name: "ToastDock",
     type: "Viewport",
     default: "\u2014",
-    description: "Shows toasts inside a cell of your layout, such as a table&apos;s footer, so they never cover data.",
+    description: "Shows toasts inside a cell of your layout, such as a table's footer, so they never cover data.",
   },
   {
     name: "placement",

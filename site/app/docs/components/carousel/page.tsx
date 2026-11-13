@@ -60,7 +60,7 @@ const PROPS: Prop[] = [
     name: "setApi",
     type: "(api) => void",
     default: "\u2014",
-    description: "Embla&apos;s API, to drive it from outside.",
+    description: "Embla's API, to drive it from outside.",
   },
   {
     name: "basis",

@@ -142,6 +142,99 @@ const GUIDE_PAGES = [
     broken.length === 0,
     `llms.txt: all ${links.length} links answer 200${broken.length ? " (" + broken.join(", ") + ")" : ""}`,
   );
+
+  /* ---------- Markdown twins, content negotiation, llms-full.txt, JSON-LD, share cards, sitemap dates, search ---------- */
+  console.log("agent docs and SEO");
+  const text = (html) =>
+    html
+      .replace(/<[^>]+>/g, "")
+      .replace(/&#x27;|&#39;|&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/`/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  const mdHeadings = (md) => {
+    let fence = false;
+    const out = [];
+    for (const line of md.split("\n")) {
+      if (line.startsWith("```")) fence = !fence;
+      else if (!fence && /^#{1,6} /.test(line)) out.push(text(line.replace(/^#+ /, "").replace(/ \{#[^}]+\}$/, "")));
+    }
+    return out;
+  };
+  const twinFails = [];
+  for (const p of sitemap) {
+    const page = await fetch(`${BASE}${p}`);
+    const html = await page.text();
+    const twin = await fetch(`${BASE}${p}.md`);
+    const md = await twin.text();
+    const negotiated = await fetch(`${BASE}${p}`, { headers: { Accept: "text/markdown" } });
+    const nmd = await negotiated.text();
+    const main = html.match(/<main[\s\S]*<\/main>/)?.[0] ?? html;
+    const htmlHeadings = [...main.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/g)].map((m) => text(m[2]));
+    const why = [
+      !twin.ok && `.md ${twin.status}`,
+      !(twin.headers.get("content-type") ?? "").startsWith("text/markdown") && ".md content-type",
+      !md.startsWith("> Keyline UI is a shadcn registry") && ".md preamble",
+      !(negotiated.headers.get("content-type") ?? "").startsWith("text/markdown") && "Accept: text/markdown got HTML",
+      nmd !== md && "negotiated body differs from .md",
+      !(page.headers.get("link") ?? "").includes(`<${p}.md>; rel="alternate"; type="text/markdown"`) && "Link header",
+      !/accept/i.test(negotiated.headers.get("vary") ?? "") && "Vary: Accept on the twin",
+      htmlHeadings.join("|") !== mdHeadings(md).join("|") &&
+        `headings ${JSON.stringify(htmlHeadings)} vs ${JSON.stringify(mdHeadings(md))}`,
+    ].filter(Boolean);
+    if (why.length) twinFails.push(`${p}: ${why.join(", ")}`);
+  }
+  ok(
+    sitemap.length > 60 && twinFails.length === 0,
+    `twins: all ${sitemap.length} docs pages have a .md twin with the page's headings, served for Accept: text/markdown${twinFails.length ? "\n      " + twinFails.slice(0, 5).join("\n      ") : ""}`,
+  );
+  const htmlOnly = await fetch(`${BASE}/docs/components/button`, { headers: { Accept: "text/html" } });
+  ok(
+    (htmlOnly.headers.get("content-type") ?? "").startsWith("text/html"),
+    "twins: Accept: text/html still gets the page",
+  );
+
+  const full = await (await fetch(`${BASE}/llms-full.txt`)).text();
+  const uiItems = reg.filter((i) => i.type === "registry:ui").length;
+  ok(
+    full.includes("> Keyline UI is a shadcn registry") && (full.match(/^## /gm) ?? []).length >= uiItems,
+    `llms-full.txt: preamble, and a section for at least each of the ${uiItems} ui items (${(full.match(/^## /gm) ?? []).length})`,
+  );
+
+  const button = await (await fetch(`${BASE}/docs/components/button`)).text();
+  const ld = [...button.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) =>
+    JSON.parse(m[1]),
+  );
+  const source = ld.find((d) => d["@type"] === "SoftwareSourceCode");
+  ok(
+    source?.["@context"] === "https://schema.org" &&
+      source.codeRepository?.endsWith("/r/button.json") &&
+      source.url?.endsWith("/docs/components/button"),
+    "JSON-LD: the Button page has SoftwareSourceCode pointing at r/button.json",
+  );
+  ok(!(await (await fetch(`${BASE}/docs/theming`)).text()).includes("SoftwareSourceCode"), "JSON-LD: not on a guide");
+
+  const card = button.match(/<meta property="og:image" content="([^"]+)"/)?.[1] ?? "";
+  const img = card
+    ? await fetch(card.startsWith("http") ? `${BASE}${new URL(card).pathname}` : `${BASE}${card}`)
+    : null;
+  ok(
+    card.endsWith("/og/docs/components/button") && img?.ok && img.headers.get("content-type") === "image/png",
+    `share card: the Button page has its own og:image (${card})`,
+  );
+
+  const lastmods = [...(await (await fetch(`${BASE}/sitemap.xml`)).text()).matchAll(/<lastmod>([^<]+)<\/lastmod>/g)];
+  ok(lastmods.length >= sitemap.length, `sitemap: lastModified on the docs pages (${lastmods.length})`);
+
+  const index = await (await fetch(`${BASE}/search-index.json`)).json();
+  ok(
+    index.some((r) => r.href === "/docs/theming#tokens" && /oklch/.test(r.text)),
+    "search index: the theming tokens section, with its body text",
+  );
 }
 
 /* ---------- the catalogue against the registry ---------- */

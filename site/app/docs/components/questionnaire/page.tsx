@@ -87,7 +87,7 @@ const PROPS: Prop[] = [
     name: "onSubmit",
     type: "(event) => void",
     default: "\u2014",
-    description: "Read the answers from the form&apos;s FormData.",
+    description: "Read the answers from the form's FormData.",
   },
   { name: "shortcuts", type: '"letters" | "numbers"', default: "\u2014", description: "Keys that pick a choice." },
   { name: "item \u00b7 onItemChange", type: "string", default: "\u2014", description: "Control which step shows." },

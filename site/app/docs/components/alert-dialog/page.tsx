@@ -35,13 +35,13 @@ const PROPS: Prop[] = [
     name: "description",
     type: "ReactNode",
     default: "\u2014",
-    description: "What happens, and that it can&apos;t be undone.",
+    description: "What happens, and that it can't be undone.",
   },
   {
     name: "cancelLabel \u00b7 confirmLabel",
     type: "string",
     default: "\u2014",
-    description: "Verbs for both cells. &ldquo;Keep the client&rdquo; reads better than &ldquo;Cancel&rdquo;.",
+    description: "Verbs for both cells. “Keep the client” reads better than “Cancel”.",
   },
   {
     name: "onConfirm",
