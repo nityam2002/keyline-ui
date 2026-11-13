@@ -138,6 +138,8 @@
       "--kl-shell-aside",
       "--kl-shell-bg",
       "--kl-shell-cols-top",
+      "--kl-shell-crumbs-flex",
+      "--kl-shell-crumbs-min",
       "--kl-shell-head-h",
       "--kl-shell-nav",
       "--kl-shell-nav-h",
@@ -701,7 +703,10 @@
       "kl-parent"
     ],
     "cssProperties": [
+      "--kl-cbg-empty",
       "--kl-cbg-meta",
+      "--kl-cbg-pbs",
+      "--kl-cbg-pmin",
       "--kl-cut-line",
       "--kl-dis-line",
       "--kl-hatch",
@@ -1723,13 +1728,26 @@
       "--kl-font",
       "--kl-font-mono",
       "--kl-inset",
+      "--kl-item-c-col",
+      "--kl-item-c-pb",
+      "--kl-item-c-row",
+      "--kl-item-lead",
+      "--kl-item-m-col",
+      "--kl-item-m-pb",
+      "--kl-item-m-ps",
+      "--kl-item-m-pt",
+      "--kl-item-m-row",
+      "--kl-item-m-self",
+      "--kl-item-m-text",
+      "--kl-item-span",
       "--kl-k1",
       "--kl-ring-in",
       "--kl-row",
       "--kl-t-flood",
       "--kl-t-unflood",
       "--kl-text-label",
-      "--kl-weight-strong"
+      "--kl-weight-strong",
+      "--spacing"
     ]
   },
   "kbd-shortcuts": {
@@ -2234,6 +2252,7 @@
       "--kl-bw",
       "--kl-font-mono",
       "--kl-k1",
+      "--kl-marker-run",
       "--kl-text-meta"
     ]
   },
@@ -2306,6 +2325,7 @@
       "--kl-hatch",
       "--kl-k1",
       "--kl-k2",
+      "--kl-menu-code-e",
       "--kl-row",
       "--kl-text-body",
       "--kl-text-code",
@@ -2454,8 +2474,10 @@
       "--kl-inset",
       "--kl-k2",
       "--kl-msg-av",
+      "--kl-msg-av-mt",
       "--kl-msg-gap",
       "--kl-msg-head",
+      "--kl-msg-measure",
       "--kl-msg-x",
       "--kl-ring",
       "--kl-weight-strong"
@@ -3210,6 +3232,7 @@
       "--kl-hatch",
       "--kl-inset",
       "--kl-k1",
+      "--kl-radio-fill",
       "--kl-radio-meta",
       "--kl-ring",
       "--kl-ring-in",
@@ -4006,6 +4029,7 @@
       "--kl-run-dir",
       "--kl-t-fold",
       "--kl-t-unfold",
+      "--kl-tv-shrink",
       "--kl-weight-display",
       "--kl-weight-strong",
       "--kl-yellow-row"

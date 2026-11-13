@@ -50,29 +50,41 @@ function ItemList({ layout = "control", render, className, style, ...props }: It
  * classes), so they win in any order. At 420px of list width and under, the meta moves under the title, in the
  * content column, instead of being dropped; the media and actions cells span both lines (column -4 is the content
  * column with or without a media cell).
+ *
+ * The row reads its own children (:has() on the row itself) and hands the answer to its parts as --kl-item-*
+ * properties; no rule tests the row from a part's selector. A :has() that is not the rule's subject makes the engine
+ * restyle the whole document on any DOM change anywhere (Chrome: ~10ms a change on a docs page, every row on the
+ * page or not). Each row resets the properties, so a row nested in another's content reads its own.
  */
 const item = cn(
   "group/item grid min-h-[calc(var(--kl-row)+12px)] w-full grid-cols-[auto_minmax(0,1fr)_auto_auto] items-stretch",
   "bg-kl-cell text-start font-(family-name:--kl-font) text-kl-ink no-underline",
+  "[--kl-item-c-col:initial] [--kl-item-c-row:initial] [--kl-item-lead:initial] [--kl-item-span:initial]",
+  "[--kl-item-c-pb:initial] [--kl-item-m-col:initial] [--kl-item-m-row:initial] [--kl-item-m-self:initial]",
+  "[--kl-item-m-pb:initial] [--kl-item-m-ps:initial] [--kl-item-m-pt:initial] [--kl-item-m-text:initial]",
   "not-has-[>[data-slot=item-media]]:grid-cols-[minmax(0,1fr)_auto_auto]",
-  "not-has-[>[data-slot=item-media]]:*:data-[slot=item-content]:ps-[calc(var(--kl-inset)+var(--kl-c-room,0px))]",
+  "not-has-[>[data-slot=item-media]]:[--kl-item-lead:calc(var(--kl-inset)+var(--kl-c-room,0px))]",
+  // placement is the row's: by slot, so the parts win in any order
+  "*:row-[var(--kl-item-span,auto)]",
+  "*:data-[slot=item-content]:col-[var(--kl-item-c-col,auto)] *:data-[slot=item-content]:row-[var(--kl-item-c-row,auto)]",
+  "*:data-[slot=item-meta]:col-[var(--kl-item-m-col,auto)] *:data-[slot=item-meta]:row-[var(--kl-item-m-row,auto)]",
   "data-current:*:data-[slot=item-media]:bg-kl-cobalt data-current:*:data-[slot=item-media]:text-kl-on-cobalt",
   "data-current:*:data-[slot=item-media]:duration-(--kl-t-flood)",
   "data-interactive:cursor-pointer hover:data-interactive:bg-kl-tint active:data-interactive:bg-kl-press",
   "focus-visible:data-interactive:outline-offset-(--kl-ring-in)",
   "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:grid-rows-[auto_auto]",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:row-[1/span_2]",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:col-[-4/-3]",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:row-1",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-content]:pb-0.5",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:col-[-4/-3]",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:row-2",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:self-start",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:text-start",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:px-(--kl-inset)",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:pt-0",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:*:data-[slot=item-meta]:pb-2",
-  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:not-has-[>[data-slot=item-media]]:*:data-[slot=item-meta]:ps-[calc(var(--kl-inset)+var(--kl-c-room,0px))]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-span:1/span_2]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-c-col:-4/-3]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-c-row:1]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-c-pb:calc(var(--spacing)*0.5)]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-col:-4/-3]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-row:2]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-self:start]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-text:start]",
+  // under the title the meta starts where the content does (the corner room without a media cell)
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-ps:var(--kl-item-lead,var(--kl-inset))]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-pt:0px]",
+  "[@container_(max-width:420px)]:has-[>[data-slot=item-meta]]:[--kl-item-m-pb:calc(var(--spacing)*2)]",
 );
 
 type ItemState = { current: boolean; interactive: boolean };
@@ -153,7 +165,10 @@ function ItemContent({
 }: ItemContentProps): React.ReactElement {
   const own = {
     "data-slot": "item-content",
-    className: resolveClassName("grid min-w-0 content-center gap-0.5 px-(--kl-inset) py-2", className)(PART_STATE),
+    className: resolveClassName(
+      "grid min-w-0 content-center gap-0.5 ps-[var(--kl-item-lead,var(--kl-inset))] pe-(--kl-inset) pt-2 pb-[var(--kl-item-c-pb,calc(var(--spacing)*2))]",
+      className,
+    )(PART_STATE),
     style: resolveStyle(undefined, style)(PART_STATE),
     children: (
       <>
@@ -179,7 +194,10 @@ function ItemContent({
 function ItemMeta({ render, className, style, ...props }: PartProps<"span", ItemPartState>): React.ReactElement {
   const own = {
     "data-slot": "item-meta",
-    className: resolveClassName("kl-code self-center px-(--kl-inset) text-end", className)(PART_STATE),
+    className: resolveClassName(
+      "kl-code [align-self:var(--kl-item-m-self,center)] ps-[var(--kl-item-m-ps,var(--kl-inset))] pe-(--kl-inset) pt-[var(--kl-item-m-pt,0px)] pb-[var(--kl-item-m-pb,0px)] [text-align:var(--kl-item-m-text,end)]",
+      className,
+    )(PART_STATE),
     style: resolveStyle(undefined, style)(PART_STATE),
   };
   return useRender({ defaultTagName: "span", render, state: PART_STATE, props: mergeProps<"span">(props, own) });

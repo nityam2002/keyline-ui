@@ -75,9 +75,10 @@ const frame = "kl-frame kl-rows flex min-h-0 min-w-0 flex-col @container/kl-tf";
 /** a row of the frame never grows or shrinks; the grid's scroller takes the frame's spare height */
 const views = cn(
   "kl-cells min-h-[58px] flex-none",
-  // the tabs scroll before the toolbar gives up its last cell, so "More" always stays in the row
-  "has-[>[data-slot=table-views-end]>[data-slot=toolbar]]:*:data-[slot=tabs]:flex-[0_1_auto]",
-  "has-[>[data-slot=table-views-end]>[data-slot=toolbar]]:*:data-[slot=tabs]:min-w-0",
+  // the tabs scroll before the toolbar gives up its last cell, so "More" always stays in the row. The row reads its
+  // own children and the tabs read --kl-tv-shrink: a :has() on the row's selector for the tabs would restyle the
+  // whole document on every DOM change (see item.tsx)
+  "[--kl-tv-shrink:0] has-[>[data-slot=table-views-end]>[data-slot=toolbar]]:[--kl-tv-shrink:1]",
 );
 const viewsEnd = cn(
   "ms-auto flex items-center gap-2.5 px-(--kl-inset)",
@@ -288,7 +289,11 @@ function TableViews({
 }: TableViewsProps): React.ReactElement {
   const content = (
     <>
-      <Tabs value={value} onValueChange={(v) => onValueChange(v as string)} className="flex flex-none gap-0">
+      <Tabs
+        value={value}
+        onValueChange={(v) => onValueChange(v as string)}
+        className="flex flex-[0_var(--kl-tv-shrink,0)_auto] gap-0"
+      >
         <TabsList
           layout="cell"
           aria-label={label}

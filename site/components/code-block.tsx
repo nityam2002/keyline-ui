@@ -26,7 +26,7 @@ export async function CodeBlock({
   const single = !code.trimEnd().includes("\n");
   return (
     <div
-      className="s-cb group/code relative mt-4 min-w-0 border-2 border-kl-line-soft bg-kl-cell in-[.s-demo-code]:mt-0 in-[.s-demo-code]:border-0 [&_.shiki]:text-(--shiki-light) in-[.dark]:[&_.shiki]:text-(--shiki-dark) [&_.shiki_span]:text-(--shiki-light) in-[.dark]:[&_.shiki_span]:text-(--shiki-dark) [.s-cb+&]:mt-3"
+      className="s-cb group/code relative mt-4 min-w-0 border-2 border-kl-line-soft bg-kl-cell [--s-cb-top:initial] in-[.s-demo-code]:mt-0 in-[.s-demo-code]:border-0 data-[single]:has-[[data-has-overflow-x]]:[--s-cb-top:calc(50%-6px)] [&_.shiki]:text-(--shiki-light) in-[.dark]:[&_.shiki]:text-(--shiki-dark) [&_.shiki_span]:text-(--shiki-light) in-[.dark]:[&_.shiki_span]:text-(--shiki-dark) [.s-cb+&]:mt-3"
       data-single={single ? "" : undefined}
       data-tall={tall ? "" : undefined}
     >

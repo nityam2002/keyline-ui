@@ -29,6 +29,9 @@ import { choiceStyles } from "./checkbox";
 const radioStyles = {
   group: cn(
     "kl-ctl kl-rows group/radio-group relative isolate flex min-w-0 flex-col bg-kl-cell data-[kl-layout=cell]:bg-transparent",
+    // a row with meta: the group says so to its rows (a :has() on the group itself; a group-has-* rule restyles the
+    // whole document on any DOM change)
+    "[--kl-radio-fill:initial] has-[.kl-radio-meta]:[--kl-radio-fill:'']",
     // the band is the first child, so the first row is the second: it sits on the frame's top edge, not a divider
     "*:nth-2:[border-block-start:0]",
   ),
@@ -44,11 +47,10 @@ const radioStyles = {
     "data-disabled:data-kl-covered:text-kl-on-inverse",
     "forced-colors:data-kl-covered:text-[HighlightText] forced-colors:data-kl-covered:forced-color-adjust-none",
     // one row with meta: every row keeps the meta column (an empty cell), so the divider runs straight
-    "group-has-[.kl-radio-meta]/radio-group:not-has-[.kl-radio-meta]:after:min-w-(--kl-radio-meta,64px)",
-    "group-has-[.kl-radio-meta]/radio-group:not-has-[.kl-radio-meta]:after:flex-none",
-    "group-has-[.kl-radio-meta]/radio-group:not-has-[.kl-radio-meta]:after:border-s-(length:--kl-k1)",
-    "group-has-[.kl-radio-meta]/radio-group:not-has-[.kl-radio-meta]:after:border-s-current",
-    "group-has-[.kl-radio-meta]/radio-group:not-has-[.kl-radio-meta]:after:content-['']",
+    // (the cell exists only while the group's fill is set: without it the content is invalid, so no ::after)
+    "not-has-[.kl-radio-meta]:after:min-w-(--kl-radio-meta,64px) not-has-[.kl-radio-meta]:after:flex-none",
+    "not-has-[.kl-radio-meta]:after:border-s-(length:--kl-k1) not-has-[.kl-radio-meta]:after:border-s-current",
+    "not-has-[.kl-radio-meta]:after:content-[var(--kl-radio-fill)]",
   ),
   indicator: "group/radio-indicator grid size-[18px] place-items-center border-2 border-current",
   dot: "size-2 bg-current group-data-unchecked/radio-indicator:invisible",

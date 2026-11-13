@@ -22,9 +22,12 @@ const surface = cn(
   "bg-kl-cell text-(length:--kl-text-body) text-kl-ink outline-0 *:col-span-full",
   "grid-cols-[minmax(32px,max-content)_minmax(0,1fr)_auto]",
   "[&_[data-kl-menu-row]+[data-kl-menu-row]]:border-t-(length:--kl-k1) [&_[data-kl-menu-row]+[data-kl-menu-row]]:border-t-kl-line-soft",
-  // no row carries a code or an indicator: the code column is not drawn (no empty, ruled gutter)
+  // no row carries a code or an indicator: the code column is not drawn (no empty, ruled gutter). The popup reads
+  // its own rows and the code cells read --kl-menu-code-e: a :has() on the popup in the code cell's selector would
+  // restyle the whole document on every DOM change (see item.tsx)
+  "[--kl-menu-code-e:initial]",
   "not-has-[[data-slot=menu-item-code]:not(:empty)]:grid-cols-[0_minmax(0,1fr)_auto]",
-  "not-has-[[data-slot=menu-item-code]:not(:empty)]:**:data-[slot=menu-item-code]:border-e-0",
+  "not-has-[[data-slot=menu-item-code]:not(:empty)]:[--kl-menu-code-e:0px]",
 );
 
 type SurfaceProps = MenuPrimitive.Popup.Props & {
@@ -175,7 +178,7 @@ const row = cn(
 
 /* the leading cell: an index code, or a checkbox or radio indicator */
 const codeCell = cn(
-  "grid place-items-center border-e-(length:--kl-k1) border-e-kl-seam px-2 whitespace-nowrap empty:px-0",
+  "grid place-items-center border-e-[length:var(--kl-menu-code-e,var(--kl-k1))] border-e-kl-seam px-2 whitespace-nowrap empty:px-0",
   "font-(family-name:--kl-font-mono) text-(length:--kl-text-code) text-kl-ink-2",
   "group-data-highlighted/menu-item:border-e-kl-on-inverse group-data-highlighted/menu-item:text-inherit",
   "group-data-popup-open/menu-item:border-e-kl-on-inverse group-data-popup-open/menu-item:text-inherit",

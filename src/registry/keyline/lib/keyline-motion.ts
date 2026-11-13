@@ -676,15 +676,18 @@ export function useStretch(
     }
     m.band.hidden = false;
     const tgt = m.boxes[active];
-    const lead = tokenMs(m.host, "--kl-stretch-lead", 100);
-    const trail = tokenMs(m.host, "--kl-stretch-trail", 220);
     const st = state.current;
     // the same element at a new index: items were inserted or removed around it. The selection did not change,
     // so the band stays on it; travelling from the old coordinates would sweep across the neighbours that now
     // sit there (closing a nested Nav list swept the band over the next row)
     const same = lastEl.current === m.items[active];
     lastEl.current = m.items[active] ?? null;
-    if (!st || lead === 0 || same || instantRef.current) return place(m, tgt);
+    if (!st || same || instantRef.current) return place(m, tgt);
+    // the timing tokens are read only for a move: a computed-style read after this commit's writes recalculates
+    // the whole document's styles, and a page mounting many bands (a docs page) paid it twice per band
+    const lead = tokenMs(m.host, "--kl-stretch-lead", 100);
+    if (lead === 0) return place(m, tgt);
+    const trail = tokenMs(m.host, "--kl-stretch-trail", 220);
     advance(st);
     // the edge on the travel side leads; the other trails. Semantics are already committed (this runs after render)
     const forward = tgt.a > st.a.t;

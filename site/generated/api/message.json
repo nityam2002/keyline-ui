@@ -86,6 +86,13 @@
       ]
     },
     {
+      "name": "--kl-msg-av-mt",
+      "values": [
+        "calc(var(--kl-msg-head)+var(--kl-msg-gap))",
+        "initial"
+      ]
+    },
+    {
       "name": "--kl-msg-gap",
       "values": [
         "6px"
@@ -95,6 +102,14 @@
       "name": "--kl-msg-head",
       "values": [
         "18px"
+      ]
+    },
+    {
+      "name": "--kl-msg-measure",
+      "values": [
+        "88%",
+        "initial",
+        "min(82%,36rem)"
       ]
     },
     {

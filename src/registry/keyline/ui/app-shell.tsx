@@ -94,7 +94,14 @@ const sentinel = "pointer-events-none invisible absolute inset-x-0 top-0 h-0";
  * and between it and the columns are painted in the page background (--kl-shell-bg), so scrolled content never shows
  * through them.
  */
-const header = "kl-frame kl-cells [grid-area:head] min-h-[calc(var(--kl-ctl)+2*var(--kl-k3))]";
+// the header reads its own actions (a :has() on the header itself) and hands the crumbs their flex as properties: a
+// :has() outside a rule's subject restyles the whole document on every DOM change
+const header = cn(
+  "kl-frame kl-cells min-h-[calc(var(--kl-ctl)+2*var(--kl-k3))] [grid-area:head]",
+  "[--kl-shell-crumbs-flex:initial] [--kl-shell-crumbs-min:initial]",
+  "has-[>[data-slot=app-shell-actions]>[data-slot=toolbar]]:[--kl-shell-crumbs-min:min(14rem,45%)]",
+  "has-[>[data-slot=app-shell-actions]>[data-slot=toolbar]]:[--kl-shell-crumbs-flex:1_1_0]",
+);
 const headerSticky = cn(
   "sticky top-[var(--kl-shell-top,var(--kl-gutter))] z-3",
   "[box-shadow:0_calc(-1*var(--kl-shell-top,var(--kl-gutter)))_0_var(--kl-shell-bg,var(--kl-paper)),0_var(--kl-gutter)_0_var(--kl-shell-bg,var(--kl-paper))]",
@@ -113,10 +120,9 @@ const toggle = cn(
  * items into More: the crumbs' basis is 0, so the toolbar keeps its natural width while there is room.
  */
 const crumbs = cn(
-  "flex min-w-0 flex-auto items-stretch [:where(&>*)]:min-w-0 [:where(&>*)]:flex-auto",
+  "flex min-w-[var(--kl-shell-crumbs-min,0px)] flex-[var(--kl-shell-crumbs-flex,1_1_auto)] items-stretch",
+  "[:where(&>*)]:min-w-0 [:where(&>*)]:flex-auto",
   "[&_[data-slot=breadcrumb-list]]:min-h-0 [&_[data-slot=breadcrumb-list]]:flex-auto [:where(&>[data-slot=breadcrumb])]:flex",
-  "[[data-slot=app-shell-header]:has(>[data-slot=app-shell-actions]>[data-slot=toolbar])>&]:min-w-[min(14rem,45%)]",
-  "[[data-slot=app-shell-header]:has(>[data-slot=app-shell-actions]>[data-slot=toolbar])>&]:flex-[1_1_0]",
 );
 /** a framed toolbar is w-max and doesn't flex: as the actions it shrinks from its natural width */
 const actions = cn(

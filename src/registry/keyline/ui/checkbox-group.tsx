@@ -106,6 +106,12 @@ type FrameState = { layout: Layout };
 
 const frame = cn(
   "kl-ctl flex min-w-0 flex-col bg-kl-cell data-[kl-layout=cell]:bg-transparent",
+  // no option has meta: the frame says so to its meta cells (a :has() on the frame itself; one in the cells' selector
+  // restyles the whole document on any DOM change). An empty cell hides; the parent's count sits undivided.
+  "[--kl-cbg-empty:initial] [--kl-cbg-pbs:initial] [--kl-cbg-pmin:initial]",
+  "not-has-[[data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])]:[--kl-cbg-empty:none]",
+  "not-has-[[data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])]:[--kl-cbg-pmin:0px]",
+  "not-has-[[data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])]:[--kl-cbg-pbs:0px]",
   // attention: the frame turns red (a Base UI check, Form errors, or `invalid`); the message is below
   "[[data-slot=checkbox-group][data-invalid]:not([data-disabled])>&]:border-kl-red",
   "[[data-slot=checkbox-group][data-invalid]:not([data-disabled])>&]:[--kl-cut-line:var(--kl-red)]",
@@ -150,9 +156,9 @@ const meta = cn(
   "flex min-w-(--kl-cbg-meta,64px) flex-none items-center justify-end px-(--kl-inset)",
   "border-s-(length:--kl-k1) border-s-kl-seam font-(--kl-weight-strong) text-kl-ink-2 tabular-nums",
   "group-data-disabled/cbg-row:text-kl-dis [&_.kl-code]:text-(length:--kl-text-meta) [&_.kl-code]:text-inherit",
-  "[[data-slot=checkbox-group-frame]:not(:has([data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])))_&]:data-empty:hidden",
-  "[[data-slot=checkbox-group-frame]:not(:has([data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])))>[data-kl-parent]_&]:min-w-0",
-  "[[data-slot=checkbox-group-frame]:not(:has([data-slot=checkbox-group-item]:not([data-kl-parent])_[data-slot=checkbox-group-item-meta]:not([data-empty])))>[data-kl-parent]_&]:border-s-0",
+  "data-empty:[display:var(--kl-cbg-empty,flex)]",
+  "[[data-slot=checkbox-group-frame]>[data-kl-parent]_&]:min-w-[var(--kl-cbg-pmin,var(--kl-cbg-meta,64px))]",
+  "[[data-slot=checkbox-group-frame]>[data-kl-parent]_&]:border-s-[length:var(--kl-cbg-pbs,var(--kl-k1))]",
 );
 
 type CheckboxGroupItemProps = Omit<React.ComponentProps<typeof Checkbox>, "children" | "className"> & {

@@ -36,12 +36,13 @@ const frame = cn(
   // surface takes its owner's weight on the shared edge). Where widths differ the line runs on as the wider bubble's
   // own edge: a clean T-junction, never a doubled or thinned line. Only the first of a run has the cut.
   "[[data-slot=bubble]+&]:-mt-(--kl-k2) [[data-slot=bubble]+&]:[--kl-cut-size:0px]",
-  // a bubble after an attention bubble, or after reactions, stands apart (each selector names its own case, so
-  // neither depends on the other's order)
-  "[[data-slot=bubble][data-tone=attention]:not(:has(>[data-slot=bubble-reactions]))+&]:mt-[var(--kl-msg-gap,6px)]",
-  "[[data-slot=bubble]:has(>[data-slot=bubble-reactions])+&]:mt-[14px]",
   // reactions hang over the bottom keyline
   "has-[>[data-slot=bubble-reactions]]:mb-3",
+  // a bubble after an attention bubble, or after reactions, stands apart: the gap is set on the bubble before (a :has()
+  // on the bubble itself; one tested from the next bubble's selector restyles the whole document on any DOM change).
+  // The next bubble keeps its attached -2px, so each margin here adds it back: attention + gap, reactions 12 + 14px.
+  "data-[tone=attention]:not-has-[>[data-slot=bubble-reactions]]:has-[+[data-slot=bubble]]:mb-[calc(var(--kl-msg-gap,6px)+var(--kl-k2))]",
+  "has-[>[data-slot=bubble-reactions]]:has-[+[data-slot=bubble]]:mb-[calc(26px+var(--kl-k2))]",
   // files inside the bubble are cells: a seam between each (zero specificity on the file, so its states restyle it)
   "[&>:where([data-slot=attachment])]:border-t-(length:--kl-k1) [&>:where([data-slot=attachment])]:border-t-kl-seam",
   "[&>:where([data-slot=attachment]:first-child)]:border-t-0",

@@ -121,7 +121,15 @@
       ]
     }
   ],
-  "cssVariables": [],
+  "cssVariables": [
+    {
+      "name": "--kl-radio-fill",
+      "values": [
+        "''",
+        "initial"
+      ]
+    }
+  ],
   "examples": [
     {
       "name": "radio-group-delivery",
