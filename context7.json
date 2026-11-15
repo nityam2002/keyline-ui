@@ -1,0 +1,14 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "url": "https://context7.com/nityam2002/keyline-ui",
+  "public_key": "pk_jmY7tlwAuVF2oIx8mMZo4",
+  "projectTitle": "Keyline UI",
+  "description": "React and TypeScript components for dense interfaces such as toolbars, data tables, menus, inspectors and app shells. Built on Base UI and distributed as a shadcn registry: the shadcn CLI copies each component's source into the project.",
+  "excludeFolders": ["tests", "scripts", "lint", "site", "src", ".github"],
+  "excludeFiles": ["AGENTS.md", "REVIEW.md", "CHANGELOG.md", "releasing.md", "recipe.md"],
+  "rules": [
+    "Keyline is a shadcn registry, not an npm package: add items with the shadcn CLI (npx shadcn@latest add @keyline-ui/<name>), never npm install.",
+    "Keyline requires React 19, TypeScript, Tailwind CSS 4 and a shadcn project with a components.json.",
+    "Import installed components from @/components/keyline/ui/<name>, for example import { Button } from \"@/components/keyline/ui/button\"."
+  ]
+}
