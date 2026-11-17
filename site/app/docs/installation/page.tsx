@@ -68,8 +68,8 @@ export default function InstallationPage() {
       <h1>Installation</h1>
       <p className="s-doc-lede">
         Keyline is a shadcn registry: the shadcn CLI copies each component&apos;s source, styles and packages into your
-        project, so the code is yours to change. Map the <code>@keyline-ui</code> registry once, then add components by
-        name.
+        project, so the code is yours to change. <code>@keyline-ui</code> is listed in shadcn&apos;s registry directory,
+        so you add components by name with no setup.
       </p>
 
       <h2 id="requirements">Requirements</h2>
@@ -83,12 +83,13 @@ export default function InstallationPage() {
           its <code>utils</code> alias. <code>shadcn init</code> sets both up.
         </li>
         <li>
-          Network access to npm and to this site while you run the CLI. Nothing is fetched from this site at runtime.
+          Network access to npm, shadcn&apos;s registry directory and this site while you run the CLI. Nothing is
+          fetched from this site at runtime.
         </li>
       </ul>
 
       <h2 id="new-project">New project</h2>
-      <p>Three steps take an empty folder to a page with a Keyline button on it.</p>
+      <p>Two steps take an empty folder to a page with a Keyline button on it.</p>
 
       <h3 id="create-app">1. Create the app</h3>
       <p>
@@ -98,13 +99,8 @@ export default function InstallationPage() {
       <p>Or, for Vite:</p>
       <CodeBlock code={VITE} lang="bash" copyLabel="Vite setup command" />
 
-      <h3 id="map-registry">2. Map the Keyline registry</h3>
-      <p>
-        In the new app&apos;s folder, run this once. It writes one line to <code>components.json</code>:
-      </p>
-      <CodeBlock code={ADD} lang="bash" copyLabel="registry command" />
-
-      <h3 id="add-component">3. Add a component and use it</h3>
+      <h3 id="add-component">2. Add a component and use it</h3>
+      <p>In the new app&apos;s folder:</p>
       <CodeBlock code={BUTTON} lang="bash" copyLabel="install command" />
       <CodeBlock code={USE} lang="tsx" copyLabel="usage" />
       <p>
@@ -115,15 +111,16 @@ export default function InstallationPage() {
 
       <h2 id="existing-project">Existing shadcn project</h2>
       <p>
-        In the folder that holds <code>components.json</code>, run these in order. The first maps the registry and is
-        needed only once; the second adds components. Each component page shows its own add command.
+        In the folder that holds <code>components.json</code>, add components by name. Each component page shows its own
+        add command.
       </p>
-      <CodeBlock code={ADD} lang="bash" copyLabel="registry command" />
       <CodeBlock code={MANY} lang="bash" copyLabel="install command" />
       <p>
-        The first command adds this to <code>components.json</code>, which you can also write by hand:
+        The first add records where <code>@keyline-ui</code> lives in <code>components.json</code>. You can also write
+        it by hand, or with <code>registry add</code>, to set it before adding anything:
       </p>
       <CodeBlock code={MAPPED} lang="json" copyLabel="registry mapping" />
+      <CodeBlock code={ADD} lang="bash" copyLabel="registry command" />
 
       <h3 id="item-names">Item names</h3>
       <p>
@@ -199,9 +196,9 @@ export default function InstallationPage() {
       <h3 id="not-found">&ldquo;Unknown registry &quot;@keyline-ui&quot;&rdquo;</h3>
       <CodeBlock code={NOT_FOUND} lang="text" copyLabel="error" />
       <p>
-        The project has no <code>@keyline-ui</code> mapping, and the CLI does not know the name on its own. Map the
-        namespace first with the registry command under <a href="#existing-project">Existing shadcn project</a>, then
-        add the item again.
+        The project has no <code>@keyline-ui</code> mapping and the CLI did not get the name from shadcn&apos;s registry
+        directory. Map the namespace yourself with the registry command under{" "}
+        <a href="#existing-project">Existing shadcn project</a>, then add the item again.
       </p>
 
       <h3 id="already-configured">The registry command says &ldquo;already configured&rdquo;</h3>

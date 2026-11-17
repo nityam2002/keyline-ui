@@ -39,12 +39,15 @@ test("install commands use @latest and one of the documented forms", () => {
     /^npx shadcn@latest add( @keyline-ui\/[a-z-]+)+( --overwrite)?$/,
     /^npx shadcn@latest add \.\/keyline-config\.json$/, // the playground's export
   ];
-  // the homepage's install strip shows the generic step after the mapping; only there may the item be a placeholder
-  const PLACEHOLDER = { file: "site/app/page.tsx", command: "npx shadcn@latest add @keyline-ui/<name>" };
+  // the homepage's install strip and the Markdown twins' preamble show the generic add; only there may the item be a placeholder
+  const PLACEHOLDER = {
+    files: ["site/app/page.tsx", "site/lib/docs-markdown.ts"],
+    command: "npx shadcn@latest add @keyline-ui/<name>",
+  };
   for (const f of [...DOCS, ...SITE, ...APP]) {
     for (const c of commands(read(f))) {
       if (c.includes("${")) continue; // built by site/lib/registry.ts, checked below
-      if (f === PLACEHOLDER.file && c === PLACEHOLDER.command) continue;
+      if (PLACEHOLDER.files.includes(f) && c === PLACEHOLDER.command) continue;
       assert.ok(
         forms.some((r) => r.test(c)),
         `${f}: unexpected command "${c}"`,

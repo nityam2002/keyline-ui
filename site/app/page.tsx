@@ -1,5 +1,4 @@
 import { HomeInstall } from "@site/components/home-install";
-import { ORIGIN_SLOT, registryAddCommand } from "@site/lib/registry";
 import { HomeSpecimen } from "@site/components/home-specimen";
 import { PrimaryLink } from "@site/components/primary-link";
 import { Land, CropMarks, Mark } from "@site/components/land";
@@ -51,11 +50,7 @@ export default function Home() {
           actions={
             <>
               <PrimaryLink href="/docs/installation">Get started</PrimaryLink>
-              <HomeInstall
-                map={registryAddCommand()}
-                add="npx shadcn@latest add @keyline-ui/<name>"
-                slot={ORIGIN_SLOT}
-              />
+              <HomeInstall add="npx shadcn@latest add @keyline-ui/<name>" />
             </>
           }
         />

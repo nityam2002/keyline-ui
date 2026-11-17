@@ -125,7 +125,7 @@ export const GUIDES: Guide[] = [
     href: "/docs/installation",
     keywords: "install setup get started shadcn registry namespace components.json troubleshooting error",
     description:
-      "Install Keyline into a React app with the shadcn CLI: map the @keyline-ui registry once, then add components by name. Requirements, updates, troubleshooting.",
+      "Install Keyline into a React app with the shadcn CLI: add components by name from the @keyline-ui registry. Requirements, updates, troubleshooting.",
   },
   {
     name: "Theming",

@@ -69,18 +69,21 @@ KEYLINE_REGISTRY='https://keyline-ui.dev/r/{name}.json' bash tests/consumer/next
 The second command is the Next.js consumer check, installing from the public site. To rerun the whole workflow,
 use **Run workflow** on `release.yml` in the Actions tab, on main.
 
-## Optional: the shadcn registry directory
+## The shadcn registry directory
 
-Listing `@keyline-ui` in shadcn's registry directory lets the CLI map the namespace itself, so users can skip the
-`registry add` step. Keep `registry add` in the docs until the listing is merged.
+`@keyline-ui` is listed in shadcn's registry directory (shadcn-ui/ui#12677, merged 2026-11-17), so the CLI maps the
+namespace itself and the docs install with the `add` command alone. `registry add` stays
+documented as the fallback when the CLI cannot read the directory. The entry's `url` must keep pointing at
+`https://keyline-ui.dev/r/{name}.json`: moving the registry means a pull request to the directory first.
 
 The namespace is `@keyline-ui` because `@keyline` is already listed (Keyline Icons), and the directory's validator
-(`pnpm validate:registries` in shadcn-ui/ui) rejects a duplicate namespace. As checked on 2026-11-11, a listing needs:
+(`pnpm validate:registries` in shadcn-ui/ui) rejects a duplicate namespace. To stay listed (as checked on 2026-11-11), keep:
 
 - the repository public and open source (`github.com/nityam2002/keyline-ui`, MIT);
 - the release live on HTTPS, with `https://keyline-ui.dev/r/registry.json` and every `/r/<item>.json` answering;
-- an entry in `apps/v4/registry/directory.json`: `name`, `homepage`, `url` (with `{name}`), `description`, `logo`
-  (an inline SVG string) and optionally `author`, no other keys; then `pnpm validate:registries` and a pull request.
+- the entry in `apps/v4/registry/directory.json` accurate: `name`, `homepage`, `url` (with `{name}`), `description`,
+  `logo` (an inline SVG string) and `author`, no other keys. Change it by pull request, after
+  `pnpm validate:registries`.
 
-Re-read https://ui.shadcn.com/docs/registry/registry-index before submitting; once merged, shadcn monitors the
-registry's availability.
+shadcn monitors a listed registry's availability, so an outage of `/r/` can get the entry removed. Re-read
+https://ui.shadcn.com/docs/registry/registry-index before changing the entry.

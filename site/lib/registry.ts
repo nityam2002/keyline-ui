@@ -7,7 +7,8 @@ const items: Item[] = manifest.items;
 
 /**
  * The site serves the registry it is built with (site/public/r) at /r/{name}.json. Items name each other as
- * @keyline-ui/<name>, so a project maps the namespace to this path once, then adds items by name.
+ * @keyline-ui/<name>. shadcn's registry directory maps the namespace to this path, so a project adds items by name;
+ * a project can also map it itself in components.json (registryAddCommand).
  */
 export const REGISTRY_PATH = "/r/{name}.json";
 
@@ -24,7 +25,7 @@ export const ORIGIN_SLOT = "https://<keyline-site>";
 /** ORIGIN_SLOT while highlighting: Shiki splits "<" into its own token, this stays one word to swap afterwards. */
 export const ORIGIN_SENTINEL = "https://KEYLINESITEORIGIN";
 
-/** The one-time step: map @keyline-ui to this site's registry in the project's components.json. */
+/** The fallback when the CLI cannot read shadcn's directory: map @keyline-ui in the project's components.json. */
 export function registryAddCommand(origin: string = SITE_ORIGIN ?? ORIGIN_SLOT) {
   return `npx shadcn@latest registry add @keyline-ui=${origin}${REGISTRY_PATH}`;
 }

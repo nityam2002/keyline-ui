@@ -45,11 +45,10 @@ single keyline, and every state change happens inside a cell.
 
 ## Quick start
 
-In a React 19 + Tailwind CSS 4 app set up for shadcn (`npx shadcn@latest init` creates one), map the Keyline
-registry once, then add components by name:
+In a React 19 + Tailwind CSS 4 app set up for shadcn (`npx shadcn@latest init` creates one), add components by
+name. `@keyline-ui` is listed in shadcn's registry directory, so the CLI finds it without any setup:
 
 ```sh
-npx shadcn@latest registry add @keyline-ui=https://keyline-ui.dev/r/{name}.json
 npx shadcn@latest add @keyline-ui/button
 ```
 

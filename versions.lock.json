@@ -337,8 +337,8 @@
       "hash": "sha256-bf2582b80c36741d310584e6cc560ac4d0766fb42800c2cc3cff52afffc6e809"
     },
     "keyline-skill": {
-      "version": "1.0.0",
-      "hash": "sha256-33aa7f060f9aef21a7a16bd1691b8de54fbd057cf57edf665228073df874ffe9"
+      "version": "1.0.1",
+      "hash": "sha256-498d8879418972da83b93045749db4538e1963c102fa5a4871eb7073dd564dbe"
     },
     "marker": {
       "version": "1.0.0",

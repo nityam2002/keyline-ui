@@ -23,7 +23,8 @@ npx --yes "create-next-app@$NEXT_VERSION" app --ts --tailwind --app --src-dir --
   --use-npm --disable-git --no-agent-feedback --yes
 cd app
 
-# The guide's steps: init shadcn, map the registry, add components. Plus a stock shadcn component to coexist with.
+# The guide's steps: init shadcn, add components (mapped to the local registry under test, which wins over shadcn's
+# directory). Plus a stock shadcn component to coexist with.
 $SHADCN init -b base -p nova -y --no-monorepo
 $SHADCN add button -y
 $SHADCN registry add "@keyline-ui=$REG"

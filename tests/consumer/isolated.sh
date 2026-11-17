@@ -29,7 +29,7 @@ echo '<!doctype html><html lang="en"><head><meta charset="UTF-8" /><title>isolat
 echo '@import "tailwindcss";' > src/index.css
 npm install --no-audit --no-fund
 $SHADCN init -t vite -b base -p nova -y --no-monorepo
-# the documented one-time step (docs: Installation), pointed at the local registry
+# map @keyline-ui to the local registry under test; a project's own mapping wins over shadcn's directory
 $SHADCN registry add "@keyline-ui=$REG"
 
 fails=0
