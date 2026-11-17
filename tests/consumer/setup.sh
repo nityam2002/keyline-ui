@@ -37,7 +37,7 @@ npm install --no-audit --no-fund react-hook-form@7
 npm install --no-audit --no-fund @tanstack/react-table@8
 $SHADCN init -t vite -b base -p nova -y --no-monorepo
 $SHADCN add card input -y
-# the documented one-time step (docs: Installation), pointed at the local registry
+# map @keyline-ui to the local registry under test; a project's own mapping wins over shadcn's directory
 $SHADCN registry add "@keyline-ui=$REG"
 # isolated first, then combined in separate runs (exercises CSS merging across adds)
 $SHADCN add @keyline-ui/switch -y

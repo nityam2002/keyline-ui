@@ -9,7 +9,14 @@ export default {
   description:
     "An agent skill for coding assistants: add Keyline items, compose them, and upgrade installed items from the changelog.",
   files: [{ path: "skills/keyline/SKILL.md", type: "registry:file", target: ".claude/skills/keyline/SKILL.md" }],
-  version: "1.0.0",
-  updated: "2026-11-13",
-  changelog: [{ version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." }],
+  version: "1.0.1",
+  updated: "2026-11-18",
+  changelog: [
+    {
+      version: "1.0.1",
+      date: "2026-11-18",
+      note: "Add items by name with no mapping step: @keyline-ui is now in shadcn's registry directory. The registry add command stays as the fallback.",
+    },
+    { version: "1.0.0", date: "2026-11-13", note: "First release: the 1.0.0 baseline." },
+  ],
 } satisfies KeylineItem;

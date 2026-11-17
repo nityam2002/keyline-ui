@@ -33,7 +33,7 @@ printf 'import { createRoot } from "react-dom/client"\nimport "./index.css"\nimp
 npm install --no-audit --no-fund >/dev/null
 $SHADCN init -t vite -b base -p nova -y --no-monorepo >/dev/null
 $SHADCN add card button -y >/dev/null
-# the documented one-time step (docs: Installation), pointed at the local registry
+# map @keyline-ui to the local registry under test; a project's own mapping wins over shadcn's directory
 $SHADCN registry add "@keyline-ui=$REG"
 $SHADCN add @keyline-ui/keyline-shadcn -y >/dev/null
 $SHADCN add @keyline-ui/keyline-shadcn --overwrite -y >/dev/null

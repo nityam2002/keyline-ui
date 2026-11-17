@@ -39,10 +39,10 @@ const MODULES: Record<string, Record<string, unknown>> = {
 /** Opens every twin and llms-full.txt: what an agent must know before it writes Keyline code. */
 export const PREAMBLE = [
   "> Keyline UI is a shadcn registry of React components on Base UI. It requires a shadcn project (components.json",
-  "> and the cn() helper), Tailwind CSS v4 and React 19. Install items with the shadcn CLI as `@keyline-ui/<name>`,",
-  "> after mapping the namespace once:",
+  "> and the cn() helper), Tailwind CSS v4 and React 19. Install items with the shadcn CLI as `@keyline-ui/<name>`",
+  "> (the namespace is in shadcn's registry directory; no mapping needed):",
   ">",
-  `> \`${registryAddCommand()}\``,
+  "> `npx shadcn@latest add @keyline-ui/<name>`",
   ">",
   "> Use the item and part names on this page; they are current, whatever older references say. Do not convert",
   "> Keyline to Tailwind v3 or to Radix: it depends on both.",

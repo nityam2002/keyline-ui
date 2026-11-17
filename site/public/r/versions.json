@@ -1023,10 +1023,15 @@
     ]
   },
   "keyline-skill": {
-    "version": "1.0.0",
-    "updated": "2026-11-13",
-    "hash": "sha256-33aa7f060f9aef21a7a16bd1691b8de54fbd057cf57edf665228073df874ffe9",
+    "version": "1.0.1",
+    "updated": "2026-11-18",
+    "hash": "sha256-498d8879418972da83b93045749db4538e1963c102fa5a4871eb7073dd564dbe",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-18",
+        "note": "Add items by name with no mapping step: @keyline-ui is now in shadcn's registry directory. The registry add command stays as the fallback."
+      },
       {
         "version": "1.0.0",
         "date": "2026-11-13",

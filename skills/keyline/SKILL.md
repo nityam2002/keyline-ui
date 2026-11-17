@@ -19,20 +19,18 @@ there are current.
 ## Add items
 
 1. Work in the folder that holds `components.json`.
-2. Map the namespace once (it is not in shadcn's public directory, so an unmapped add fails with
-   `Unknown registry "@keyline-ui"`):
-
-   ```bash
-   npx shadcn@latest registry add @keyline-ui=https://keyline-ui.dev/r/{name}.json
-   ```
-
-3. Add items by name. Dependencies (other Keyline items, Base UI, fonts, CSS) come along:
+2. Add items by name. `@keyline-ui` is in shadcn's registry directory, so no mapping is needed. Dependencies
+   (other Keyline items, Base UI, fonts, CSS) come along:
 
    ```bash
    npx shadcn@latest add @keyline-ui/button @keyline-ui/toolbar
    ```
 
-4. Use them from `@/components/keyline/ui/<name>` (with the project's alias in place of `@`), for example
+   If the CLI answers `Unknown registry "@keyline-ui"`, it could not read the directory: map the namespace in
+   `components.json` with `npx shadcn@latest registry add @keyline-ui=https://keyline-ui.dev/r/{name}.json` and add
+   again.
+
+3. Use them from `@/components/keyline/ui/<name>` (with the project's alias in place of `@`), for example
    `Button` from `@/components/keyline/ui/button`.
 
 Find an item's name, parts and props on its docs page, or list everything in `https://keyline-ui.dev/r/registry.json`.

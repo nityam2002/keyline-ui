@@ -39,14 +39,15 @@ function body() {
     "Requirements: React 19, TypeScript, Tailwind CSS 4 and a shadcn project (a `components.json` and the `cn()` helper; " +
       "`npx shadcn@latest init` sets both up).",
     "",
-    "Install: in the folder that holds `components.json`, map the `@keyline-ui` namespace once, then add items by name. " +
-      "Map it first: `@keyline-ui` is not in shadcn's public registry directory, so an unmapped `add @keyline-ui/<name>` " +
-      'fails with `Unknown registry "@keyline-ui"`.',
+    "Install: in the folder that holds `components.json`, add items by name. `@keyline-ui` is listed in shadcn's registry " +
+      "directory, so the CLI resolves it without a mapping step.",
     "",
     "```bash",
-    registryAddCommand(),
     installCommand("button"),
     "```",
+    "",
+    'If the CLI answers `Unknown registry "@keyline-ui"`, it could not read the directory: map the namespace with ' +
+      `\`${registryAddCommand()}\` and add again.`,
     "",
     'Import installed components from `@/components/keyline/ui/<name>`, e.g. `import { Button } from "@/components/keyline/ui/button"`. ' +
       "Every component page below shows its install command, live examples with their source, and a props reference. " +

@@ -45,18 +45,18 @@ const ok = (cond, msg) => {
   ok(/<h1[^>]*>Installation<\/h1>/.test(install), "installation: heading in HTML");
   ok(
     install.includes("npx shadcn@latest registry add @keyline-ui=") && install.includes("/r/{name}.json"),
-    "installation: registry command in HTML",
+    "installation: the fallback registry command in HTML",
   );
   ok(install.includes("npx shadcn@latest add @keyline-ui/button"), "installation: install command in HTML");
   ok(!/localhost|127\.0\.0\.1|example\.invalid/.test(install), "installation: no local or placeholder hosts");
   ok(home.includes('href="/docs/installation"'), "home: Install links to the installation guide");
   {
-    // @keyline-ui is not a name the CLI knows alone (it is not in shadcn's directory): the home strip
-    // shows the mapping, then the add, in that order
-    const strip = home.match(/data-testid="home-install"[\s\S]*?<\/ol>/)?.[0] ?? "";
-    const map = strip.indexOf(`npx shadcn@latest registry add @keyline-ui=${ORIGIN}/r/{name}.json`);
-    const add = strip.indexOf("npx shadcn@latest add @keyline-ui/&lt;name&gt;");
-    ok(map >= 0 && add > map, `home: the install strip maps the registry, then adds an item by name (${map}, ${add})`);
+    // @keyline-ui is in shadcn's registry directory: the home strip is the add alone, with no mapping step
+    const strip = home.match(/data-testid="home-install"[\s\S]*?<\/div>/)?.[0] ?? "";
+    ok(
+      strip.includes("npx shadcn@latest add @keyline-ui/&lt;name&gt;") && !strip.includes("registry add"),
+      "home: the install strip adds an item by name, with no mapping step",
+    );
   }
   const item = await fetch(`${BASE}/r/button.json`);
   ok(item.ok && (await item.json()).name === "button", "registry: the site serves /r/button.json");
@@ -109,7 +109,7 @@ const GUIDE_PAGES = [
   );
 }
 
-/* ---------- /llms.txt: the same pages as the sitemap, every link retrievable, the mapping before the add ---------- */
+/* ---------- /llms.txt: the same pages as the sitemap, every link retrievable, the add before the fallback mapping ---------- */
 {
   console.log("llms.txt");
   const res = await fetch(`${BASE}/llms.txt`);
@@ -117,10 +117,10 @@ const GUIDE_PAGES = [
   ok(res.ok && (res.headers.get("content-type") ?? "").startsWith("text/plain"), "llms.txt: served as text");
   ok(res.headers.get("x-robots-tag") === "noindex", "llms.txt: kept out of search results (X-Robots-Tag), fetchable");
   ok(txt.startsWith("# Keyline UI\n\n> "), "llms.txt: H1 then the summary blockquote");
-  const map = txt.indexOf(`npx shadcn@latest registry add @keyline-ui=${ORIGIN}/r/{name}.json`);
+  const add = txt.indexOf("npx shadcn@latest add @keyline-ui/button");
   ok(
-    map >= 0 && txt.indexOf("npx shadcn@latest add @keyline-ui/button") > map,
-    "llms.txt: maps the registry, then adds an item",
+    add >= 0 && txt.indexOf(`npx shadcn@latest registry add @keyline-ui=${ORIGIN}/r/{name}.json`) > add,
+    "llms.txt: adds an item by name, with the mapping only as the fallback after it",
   );
   const links = [...txt.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
   const local = (u) => (u.startsWith(ORIGIN) ? u.slice(ORIGIN.length) : u);
